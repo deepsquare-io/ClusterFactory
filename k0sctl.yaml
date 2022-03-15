@@ -1,0 +1,165 @@
+apiVersion: k0sctl.k0sproject.io/v1beta1
+kind: Cluster
+metadata:
+  name: k8s.ch1.csquare.run-cluster
+spec:
+  hosts:
+    - ssh:
+        address: 10.10.2.16
+        user: root
+        port: 22
+        keyPath: ~/.ssh/id_ed25519_csquare
+      role: controller+worker
+
+  k0s:
+    version: 1.23.3+k0s.1
+    dynamicConfig: false
+    config:
+      apiVersion: k0s.k0sproject.io/v1beta1
+      kind: Cluster
+      metadata:
+        name: k8s.ch1.csquare.run
+      spec:
+        api:
+          k0sApiPort: 9443
+          port: 6443
+        installConfig:
+          users:
+            etcdUser: etcd
+            kineUser: kube-apiserver
+            konnectivityUser: konnectivity-server
+            kubeAPIserverUser: kube-apiserver
+            kubeSchedulerUser: kube-scheduler
+        konnectivity:
+          adminPort: 8133
+          agentPort: 8132
+        network:
+          kubeProxy:
+            disabled: false
+            mode: iptables
+          kuberouter:
+            autoMTU: true
+            mtu: 0
+            peerRouterASNs: ''
+            peerRouterIPs: ''
+          podCIDR: 10.244.0.0/16
+          provider: kuberouter
+          serviceCIDR: 10.96.0.0/12
+        podSecurityPolicy:
+          defaultPolicy: 00-k0s-privileged
+        storage:
+          type: etcd
+        telemetry:
+          enabled: false
+        extensions:
+          helm:
+            repositories:
+              - name: traefik
+                url: https://helm.traefik.io/traefik
+              - name: bitnami
+                url: https://charts.bitnami.com/bitnami
+              - name: argo
+                url: https://argoproj.github.io/argo-helm
+              - name: jetstack
+                url: https://charts.jetstack.io
+            charts:
+              - name: traefik
+                chartname: traefik/traefik
+                version: '10.15.0'
+                namespace: default
+                values: |
+                  ingressClass:
+                    enabled: true
+                    isDefaultClass: true
+
+                  providers:
+                    kubernetesCRD:
+                      enabled: true
+                      allowCrossNamespace: true
+                      allowExternalNameServices: true
+                      namespaces: []
+                    kubernetesIngress:
+                      enabled: true
+                      allowExternalNameServices: true
+                      namespaces: []
+                      ingressClass: traefik
+                      publishedService:
+                        enabled: false
+
+                  globalArguments:
+                    - '--global.checknewversion'
+                    - '--api.dashboard=true'
+
+                  additionalArguments:
+                    - '--entryPoints.websecure.proxyProtocol.insecure'
+                    - '--entryPoints.websecure.forwardedHeaders.insecure'
+                    - '--entrypoints.web.http.redirections.entryPoint.to=websecure'
+
+                  ingressRoute:
+                    dashboard:
+                      enabled: false
+
+                  ports:
+                    traefik:
+                      port: 9000
+                      expose: false
+                      exposedPort: 9000
+                      protocol: TCP
+                    web:
+                      port: 80
+                      expose: true
+                      exposedPort: 80
+                      protocol: TCP
+                    websecure:
+                      port: 443
+                      expose: true
+                      exposedPort: 443
+                      protocol: TCP
+                      # NOTE from csquare: use cert-manager.
+                      tls:
+                        enabled: false
+                    metrics:
+                      port: 9100
+                      expose: false
+                      exposedPort: 9100
+                      protocol: TCP
+
+                  securityContext:
+                    capabilities:
+                      drop: [ALL]
+                      add: [NET_BIND_SERVICE]
+                    readOnlyRootFilesystem: true
+                    runAsGroup: 0
+                    runAsNonRoot: false
+                    runAsUser: 0
+
+                  podSecurityContext:
+                    fsGroup: 65532
+
+              - name: metallb
+                chartname: bitnami/metallb
+                version: '2.6.8'
+                namespace: default
+                values: |
+                  configInline:
+                    address-pools:
+                      - name: generic-cluster-pool
+                        protocol: layer2
+                        addresses:
+                          - 10.10.2.100-10.10.2.105
+
+              - name: argo-cd
+                chartname: argo/argo-cd
+                version: '3.35.4'
+                namespace: argo
+                values: |
+                  server:
+                    extraArgs:
+                      - --insecure
+
+              - name: cert-manager
+                chartname: jetstack/cert-manager
+                version: v1.7.1
+                namespace: cert-manager
+                values: |
+                  installCRDs: true

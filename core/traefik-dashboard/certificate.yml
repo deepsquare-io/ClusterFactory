@@ -1,0 +1,27 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: traefik.ch1.csquare.run-cert
+spec:
+  secretName: traefik.ch1.csquare.run-secret
+  issuerRef:
+    name: selfsigned-cluster-issuer
+    kind: ClusterIssuer
+  commonName: traefik.ch1.csquare.run
+  duration: 43800h
+  subject:
+    countries: [CH]
+    localities: [Lonay]
+    organizationalUnits: [IT]
+    organizations: [SquareFactory SA]
+    postalCodes: ['1027']
+    provinces: [Laud]
+    streetAddresses: [Chemin des Mouettes 1]
+  dnsNames:
+    - traefik.ch1.csquare.run
+  emailAddresses:
+    - nguyen_marc@live.fr
+    - marc@squarefactory.io
+  privateKey:
+    size: 4096
+    algorithm: RSA
