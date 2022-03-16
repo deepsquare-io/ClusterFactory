@@ -2,7 +2,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: argocd.ch1.csquare.run-cert
-  namespace: argo
+  namespace: argocd
 spec:
   secretName: argocd.ch1.csquare.run-secret
   issuerRef:

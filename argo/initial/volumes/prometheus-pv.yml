@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: prometheus-pv
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: prometheus
+spec:
+  capacity:
+    storage: 50Gi
+  mountOptions:
+    - hard
+    - nfsvers=4.2
+    - noatime
+    - nodiratime
+  csi:
+    driver: nfs.csi.k8s.io
+    readOnly: false
+    volumeHandle: cee73a66-5e34-4e62-a825-fd1f10596425
+    volumeAttributes:
+      server: 10.10.2.11
+      share: '/mnt/pool1/k8s/prometheus'
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain

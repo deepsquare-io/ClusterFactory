@@ -1,0 +1,12 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: "{{ template "rittal-exporter.name" . }}-config"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}"
+    app: "{{ template "rittal-exporter.name" . }}"
+data:
+  config.json: |-
+{{ toJson .Values.config| indent 4 }}

@@ -1,0 +1,218 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: monitoring
+  source:
+    chart: prometheus-snmp-exporter
+    repoURL: https://prometheus-community.github.io/helm-charts
+    targetRevision: 33.2.1
+    helm:
+      releaseName: snmp-exporter
+
+      values: |
+        config:
+          # WARNING: This file was auto-generated using snmp_exporter generator, manual changes will be lost.
+          rittal:
+            walk:
+            - 1.3.6.1.4.1.2606.7.4.2.2.1.11
+            - 1.3.6.1.4.1.2606.7.4.2.2.1.3
+            - 1.3.6.1.4.1.2606.7.4.2.2.1.4
+            - 1.3.6.1.4.1.2606.7.4.2.2.1.5
+            - 1.3.6.1.4.1.2606.7.4.2.2.1.6
+            metrics:
+            - name: cmcIIIVarValueInt
+              oid: 1.3.6.1.4.1.2606.7.4.2.2.1.11
+              type: gauge
+              help: Value as integer. - 1.3.6.1.4.1.2606.7.4.2.2.1.11
+              indexes:
+              - labelname: cmcIIIVarDeviceIndex
+                type: gauge
+              - labelname: cmcIIIVarIndex
+                type: gauge
+            - name: cmcIIIVarName
+              oid: 1.3.6.1.4.1.2606.7.4.2.2.1.3
+              type: DisplayString
+              help: Clear name of variable. - 1.3.6.1.4.1.2606.7.4.2.2.1.3
+              indexes:
+              - labelname: cmcIIIVarDeviceIndex
+                type: gauge
+              - labelname: cmcIIIVarIndex
+                type: gauge
+            - name: cmcIIIVarType
+              oid: 1.3.6.1.4.1.2606.7.4.2.2.1.4
+              type: gauge
+              help: Type of variable. - 1.3.6.1.4.1.2606.7.4.2.2.1.4
+              indexes:
+              - labelname: cmcIIIVarDeviceIndex
+                type: gauge
+              - labelname: cmcIIIVarIndex
+                type: gauge
+              enum_values:
+                1: description
+                2: value
+                3: setHigh
+                4: setWarn
+                5: setLow
+                6: hysteresis
+                7: status
+                8: statusEnum
+                9: setWarnLow
+                10: unit
+                11: alarmDur
+                12: steps
+                13: configPar
+                14: category
+                15: logic
+                16: logicEnum
+                17: setCntrl
+                18: offset
+                19: type
+                20: output
+                21: outputdelay
+                22: outputaction
+                23: outdelayExec
+                24: outputEnum
+                25: config
+                26: configNum
+                27: configLcpFcs
+                28: assembly
+                29: configWiring
+                30: sensitivity
+                31: accessTime
+                32: accessLogic
+                33: position
+                34: positionEnum
+                35: pin
+                36: sequence
+                37: remote
+                38: stringValue
+                39: remoteTimeout
+                40: outputPWM
+                41: rotation
+                42: circuit
+                43: rizoneArray
+                44: socketType
+                45: customValue
+                46: rcmPosition
+                47: rcmPosEnum
+                48: rcmResult
+                50: productDate
+                51: orderNr
+                52: devName
+                53: devLocation
+                54: currentMin
+                55: currentMax
+                56: mode
+                80: keycode
+                81: command
+                82: commandEnum
+                83: commandKeypad
+                84: commandService
+                85: commandRack
+                86: commandRCM
+                87: commandStatus
+                90: unitType
+                91: swVersion
+                92: serialNumber
+                93: mountPos
+                94: mountPosEnum
+                95: gsmStatus
+                96: connected
+                97: connectedEnum
+                98: hwVersion
+                100: grouping
+                110: scaleValue
+                111: scaleUnit
+                112: scaleStart
+                113: scaleEnd
+                120: commandCtrl
+                121: commandCtrlDP
+                122: commandCtrlWdt
+                123: fanAffect
+                124: waterAffect
+                125: commandDP
+                126: commandBEP
+                127: commandMiniCh
+                128: remoteBEP
+                130: location
+                131: building
+                132: level
+                133: room
+                134: row
+                135: rack
+                136: operatingTime
+                137: numberOfRU
+                138: tagsQuit
+                139: tagsChanged
+                140: uid
+                145: opModeBEP
+                146: opModeMiniCh
+                150: commandControl
+                151: commandSignal
+                254: ignore
+                255: illegal
+            - name: cmcIIIVarUnit
+              oid: 1.3.6.1.4.1.2606.7.4.2.2.1.5
+              type: DisplayString
+              help: Unit of variable e - 1.3.6.1.4.1.2606.7.4.2.2.1.5
+              indexes:
+              - labelname: cmcIIIVarDeviceIndex
+                type: gauge
+              - labelname: cmcIIIVarIndex
+                type: gauge
+            - name: cmcIIIVarDataType
+              oid: 1.3.6.1.4.1.2606.7.4.2.2.1.6
+              type: gauge
+              help: Datatype of variable. - 1.3.6.1.4.1.2606.7.4.2.2.1.6
+              indexes:
+              - labelname: cmcIIIVarDeviceIndex
+                type: gauge
+              - labelname: cmcIIIVarIndex
+                type: gauge
+              enum_values:
+                1: notAvail
+                2: int
+                3: string
+                4: enum
+
+        serviceMonitor:
+          enabled: true
+          namespace: monitoring
+
+          path: /snmp
+
+          # fallback to the prometheus default unless specified
+          interval: 60s
+          scrapeTimeout: 30s
+          module:
+            - rittal
+          relabelings:
+            - source_labels: [__address__]
+              target_label: __param_target
+            - source_labels: [__param_target]
+              target_label: instance
+            - target_label: __address__
+              replacement: snmp-exporter:9116 # The SNMP exporter's real hostname:port.
+          additionalMetricsRelabels: {}
+
+          ## Defaults to what's used if you follow CoreOS [Prometheus Install Instructions](https://github.com/helm/charts/tree/master/stable/prometheus-operator#tldr)
+          ## [Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#prometheus-operator-1)
+          ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
+          selector:
+            prometheus: kube-prometheus
+          # Retain the job and instance labels of the metrics pushed to the snmp-exporter
+          # [Scraping SNMP-exporter](https://github.com/prometheus/snmp_exporter#configure-the-snmp_exporter-as-a-target-to-scrape)
+          honorLabels: true
+
+          params:
+            - name: PDU-RITTAL
+              target: 10.10.3.5
+
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: monitoring

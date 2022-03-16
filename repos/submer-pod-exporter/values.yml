@@ -1,0 +1,81 @@
+---
+replicas: 1
+
+image: 'ghcr.io/csquare-ai/submer-pod-exporter:0.1.0'
+imagePullPolicy: 'IfNotPresent'
+
+args: ['--api-url', 'http://10.10.3.7/api/realTime']
+
+podAnnotations: {}
+
+# additionals labels
+labels: {}
+
+resources:
+  requests:
+    cpu: '50m'
+    memory: '64Mi'
+  limits:
+    cpu: '250m'
+    memory: '128Mi'
+
+# This is the node affinity settings as defined in
+# https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#node-affinity-beta-feature
+nodeAffinity: {}
+
+service:
+  labels: {}
+  type: ClusterIP
+  port: 3000
+
+serviceMonitor:
+  enabled: true
+  namespace: monitoring
+
+  labels: {}
+
+  path: /
+
+  # fallback to the prometheus default unless specified
+  # interval: 10s
+  scrapeTimeout: 10s
+  # relabelings: []
+
+updateStrategy: RollingUpdate
+
+podSecurityContext:
+  fsGroup: 1000
+  runAsUser: 1000
+
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  # readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
+
+# How long to wait for elasticsearch to stop gracefully
+terminationGracePeriod: 10
+
+readinessProbe:
+  failureThreshold: 3
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  successThreshold: 3
+  timeoutSeconds: 5
+
+livenessProbe:
+  failureThreshold: 3
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+
+## Use an alternate scheduler.
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+schedulerName: ''
+
+imagePullSecrets: []
+nodeSelector: {}
+tolerations: []

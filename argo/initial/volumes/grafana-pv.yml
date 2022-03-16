@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: grafana-pv
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: grafana
+spec:
+  capacity:
+    storage: 10Gi
+  mountOptions:
+    - hard
+    - nfsvers=4.2
+    - noatime
+    - nodiratime
+  csi:
+    driver: nfs.csi.k8s.io
+    readOnly: false
+    volumeHandle: 832db2e6-2ac9-416f-969e-b2e173c29c85
+    volumeAttributes:
+      server: 10.10.2.11
+      share: '/mnt/pool1/k8s/grafana'
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain

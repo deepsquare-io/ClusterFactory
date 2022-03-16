@@ -1,0 +1,89 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "rittal-exporter.name" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}"
+    app: "{{ template "rittal-exporter.name" . }}"
+spec:
+  selector:
+    matchLabels:
+      app: "{{ template "rittal-exporter.name" . }}"
+  replicas: {{ .Values.replicas }}
+  podManagementPolicy: {{ .Values.podManagementPolicy }}
+  strategy:
+    type: {{ .Values.updateStrategy }}
+  template:
+    metadata:
+      name: "{{ template "rittal-exporter.name" . }}"
+      labels:
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}"
+        app: "{{ template "rittal-exporter.name" . }}"
+        {{- range $key, $value := .Values.labels }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      annotations:
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+    spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
+      securityContext:
+{{ toYaml .Values.podSecurityContext | indent 8 }}
+      {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 6 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.nodeAffinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriod }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
+      containers:
+        - name: "{{ template "rittal-exporter.name" . }}"
+          securityContext:
+{{ toYaml .Values.securityContext | indent 12 }}
+          image: "{{ .Values.image }}"
+          imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+          ports:
+            - name: http
+              containerPort: 8123
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+{{ toYaml .Values.livenessProbe | indent 12 }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+{{ toYaml .Values.readinessProbe | indent 12 }}
+          volumeMounts:
+            - name: "{{ template "rittal-exporter.name" . }}-config-volume"
+              mountPath: /app/config.json
+              subPath: config.json
+          env:
+            {{- range $name, $value := .Values.env }}
+            - name: {{ $name }}
+              value: {{ $value | quote }}
+            {{- end}}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    volumes:
+      - name: "{{ template "rittal-exporter.name" . }}-config-volume"
+        configMap:
+          name: "{{ template "rittal-exporter.name" . }}-config"

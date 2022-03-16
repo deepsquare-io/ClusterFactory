@@ -10,6 +10,8 @@ spec:
         port: 22
         keyPath: ~/.ssh/id_ed25519_csquare
       role: controller+worker
+      installFlags:
+        - --debug
 
   k0s:
     version: 1.23.3+k0s.1
@@ -58,15 +60,27 @@ spec:
                 url: https://helm.traefik.io/traefik
               - name: bitnami
                 url: https://charts.bitnami.com/bitnami
-              - name: argo
-                url: https://argoproj.github.io/argo-helm
               - name: jetstack
                 url: https://charts.jetstack.io
+              - name: csi-driver-nfs
+                url: https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts
             charts:
+              - name: metallb
+                chartname: bitnami/metallb
+                version: '2.6.8'
+                namespace: metallb
+                values: |
+                  configInline:
+                    address-pools:
+                      - name: generic-cluster-pool
+                        protocol: layer2
+                        addresses:
+                          - 10.10.2.100-10.10.2.105
+
               - name: traefik
                 chartname: traefik/traefik
                 version: '10.15.0'
-                namespace: default
+                namespace: traefik
                 values: |
                   ingressClass:
                     enabled: true
@@ -136,30 +150,18 @@ spec:
                   podSecurityContext:
                     fsGroup: 65532
 
-              - name: metallb
-                chartname: bitnami/metallb
-                version: '2.6.8'
-                namespace: default
-                values: |
-                  configInline:
-                    address-pools:
-                      - name: generic-cluster-pool
-                        protocol: layer2
-                        addresses:
-                          - 10.10.2.100-10.10.2.105
-
-              - name: argo-cd
-                chartname: argo/argo-cd
-                version: '3.35.4'
-                namespace: argo
-                values: |
-                  server:
-                    extraArgs:
-                      - --insecure
-
               - name: cert-manager
                 chartname: jetstack/cert-manager
                 version: v1.7.1
                 namespace: cert-manager
                 values: |
                   installCRDs: true
+
+              - name: csi-driver-nfs
+                chartname: csi-driver-nfs/csi-driver-nfs
+                version: 'v3.2.0'
+                namespace: csi-driver-nfs
+                values: |
+                  driver:
+                    mountPermissions: 0755
+                  kubeletDir: /var/lib/k0s/kubelet

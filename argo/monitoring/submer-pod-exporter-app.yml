@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: submer-pod-exporter-app
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: monitoring
+  source:
+    chart: rittal-exporter
+    repoURL: https://github.com/csquare-ai/squareops-kubernetes-stack.git
+    targetRevision: HEAD
+    path: repos/rittal-exporter
+    helm:
+      releaseName: rittal-exporter
+
+      valueFiles:
+        - values.yml
+
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: monitoring

@@ -1,0 +1,10 @@
+- TODO: All Storage PV Deploy
+- TODO: Vault deploy
+- TODO: ArgoCD redeploy
+- TODO: Cluster Redeploy and test
+- TODO: Prometheus migration
+- TODO: Prometheus+Grafana Deploy
+- TODO: Add exporters
+- TODO: Kubernetize SlurmCtl
+- TODO: Kubernetize Slurm Head
+- TODO: Kubernetize MAAS

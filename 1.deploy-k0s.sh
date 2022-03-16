@@ -1,0 +1,55 @@
+#!/bin/sh
+
+section() {
+  echo
+  echo "---$1---"
+}
+
+section "Checking prerequisites"
+
+mkdir -p ./bin
+PATH="$(pwd)/bin:${PATH}"
+export PATH
+
+K0SCTL="$(command -v k0sctl)"
+if ! [ -x "${K0SCTL}" ]; then
+  if ! [ -f ./bin/k0sctl ]; then
+    echo "k0sctl could not be found. Downloading it locally in ./bin"
+    rm -f ./bin/k0sctl
+    wget -qO ./bin/k0sctl https://github.com/k0sproject/k0sctl/releases/download/v0.13.0-beta.5/k0sctl-linux-x64
+    chmod +x ./bin/k0sctl
+  fi
+  K0SCTL="$(pwd)/bin/k0sctl"
+fi
+
+KUBECTL="$(command -v kubectl)"
+if ! [ -x "${KUBECTL}" ]; then
+  if ! [ -f ./bin/kubectl ]; then
+    echo "kubectl could not be found. Downloading it locally in ./bin"
+    rm -f ./bin/kubectl
+    wget -qO ./bin/kubectl "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+    chmod +x ./bin/kubectl
+  fi
+  K0SCTL="$(pwd)/bin/kubectl"
+fi
+
+set -e
+
+section "Setup the whole cluster"
+$K0SCTL apply --config ./k0sctl.yaml
+
+section "Wait 30 sec"
+sleep 30
+
+section "Fetch the config"
+$K0SCTL kubeconfig --config ./k0sctl.yaml >./kubeconfig
+chmod 600 ./kubeconfig
+
+section "Remove Master NoSchedule Taint"
+$KUBECTL taint nodes --kubeconfig kubeconfig --all node-role.kubernetes.io/master:NoSchedule-
+
+cat <<EOF
+---Step 1 finished---
+Wait 1 minute before deploying the core apps.
+
+EOF
