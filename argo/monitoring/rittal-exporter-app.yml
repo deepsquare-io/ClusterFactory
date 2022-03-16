@@ -8,10 +8,9 @@ metadata:
 spec:
   project: monitoring
   source:
-    chart: rittal-exporter
-    repoURL: https://github.com/csquare-ai/squareops-kubernetes-stack.git
+    repoURL: https://github.com/csquare-ai/rittal-exporter.git
     targetRevision: HEAD
-    path: repos/rittal-exporter
+    path: helm/chart
     helm:
       releaseName: rittal-exporter
 

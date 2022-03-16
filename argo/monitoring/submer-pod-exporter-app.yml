@@ -8,10 +8,9 @@ metadata:
 spec:
   project: monitoring
   source:
-    chart: rittal-exporter
-    repoURL: https://github.com/csquare-ai/squareops-kubernetes-stack.git
+    repoURL: https://github.com/csquare-ai/submer-pod-exporter.git
     targetRevision: HEAD
-    path: repos/submer-pod-exporter
+    path: helm/chart
     helm:
       releaseName: submer-pod-exporter
 
