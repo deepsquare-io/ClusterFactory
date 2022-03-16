@@ -15,7 +15,7 @@ spec:
       releaseName: snmp-exporter
 
       values: |
-        config:
+        config: |
           # WARNING: This file was auto-generated using snmp_exporter generator, manual changes will be lost.
           rittal:
             walk:
@@ -180,6 +180,11 @@ spec:
                 3: string
                 4: enum
 
+        service:
+          labels:
+            app.kubernetes.io/name: snmp-exporter-service
+            app.kubernetes.io/component: service
+
         serviceMonitor:
           enabled: true
           namespace: monitoring
@@ -200,19 +205,25 @@ spec:
               replacement: snmp-exporter:9116 # The SNMP exporter's real hostname:port.
           additionalMetricsRelabels: {}
 
-          ## Defaults to what's used if you follow CoreOS [Prometheus Install Instructions](https://github.com/helm/charts/tree/master/stable/prometheus-operator#tldr)
-          ## [Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#prometheus-operator-1)
-          ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
-          selector:
-            prometheus: kube-prometheus
-          # Retain the job and instance labels of the metrics pushed to the snmp-exporter
-          # [Scraping SNMP-exporter](https://github.com/prometheus/snmp_exporter#configure-the-snmp_exporter-as-a-target-to-scrape)
           honorLabels: true
 
           params:
-            - name: PDU-RITTAL
+            - name: pdu-rittal
               target: 10.10.3.5
 
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: monitoring
+
+  syncPolicy:
+    automated:
+      prune: false # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+      allowEmpty: false # Allows deleting all application resources during automatic syncing ( false by default ).
+    syncOptions: []
+    retry:
+      limit: 5 # number of failed sync attempt retries; unlimited number of attempts if less than 0
+      backoff:
+        duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
+        factor: 2 # a factor to multiply the base duration after each failed retry
+        maxDuration: 3m # the maximum amount of time allowed for the backoff strategy
