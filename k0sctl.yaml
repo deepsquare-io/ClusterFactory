@@ -98,7 +98,7 @@ spec:
                       namespaces: []
                       ingressClass: traefik
                       publishedService:
-                        enabled: false
+                        enabled: true
 
                   globalArguments:
                     - '--global.checknewversion'

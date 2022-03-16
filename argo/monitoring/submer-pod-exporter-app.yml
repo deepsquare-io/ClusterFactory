@@ -11,9 +11,9 @@ spec:
     chart: rittal-exporter
     repoURL: https://github.com/csquare-ai/squareops-kubernetes-stack.git
     targetRevision: HEAD
-    path: repos/rittal-exporter
+    path: repos/submer-pod-exporter
     helm:
-      releaseName: rittal-exporter
+      releaseName: submer-pod-exporter
 
       valueFiles:
         - values.yml

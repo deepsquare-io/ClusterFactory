@@ -100,3 +100,5 @@ kubectl apply -f https://raw.githubusercontent.com/prometheus-community/helm-cha
 kubectl apply -f https://raw.githubusercontent.com/prometheus-community/helm-charts/main/charts/kube-prometheus-stack/crds/crd-thanosrulers.yaml --force-conflicts=true --server-side
 
 kubectl apply -f ./argo/monitoring/prometheus-app.yml
+kubectl apply -f ./argo/monitoring/rittal-exporter-app.yml
+kubectl apply -f ./argo/monitoring/snmp-exporter-app.yml

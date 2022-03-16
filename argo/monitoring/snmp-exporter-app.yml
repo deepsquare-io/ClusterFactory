@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: monitoring
+  name: snmp-exporter-app
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -10,7 +10,7 @@ spec:
   source:
     chart: prometheus-snmp-exporter
     repoURL: https://prometheus-community.github.io/helm-charts
-    targetRevision: 33.2.1
+    targetRevision: 1.0.0
     helm:
       releaseName: snmp-exporter
 
