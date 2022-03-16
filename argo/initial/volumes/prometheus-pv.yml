@@ -10,7 +10,7 @@ spec:
     storage: 50Gi
   mountOptions:
     - hard
-    - nfsvers=4.2
+    - nfsvers=4.1
     - noatime
     - nodiratime
   csi:

@@ -86,3 +86,17 @@ EOF
 fi
 
 kubectl apply -f ./argo/initial/secrets
+
+section "Deploy monitoring project"
+kubectl apply -f ./argo/monitoring/app-project.yml
+
+kubectl apply -f https://raw.githubusercontent.com/prometheus-community/helm-charts/main/charts/kube-prometheus-stack/crds/crd-alertmanagerconfigs.yaml --force-conflicts=true --server-side
+kubectl apply -f https://raw.githubusercontent.com/prometheus-community/helm-charts/main/charts/kube-prometheus-stack/crds/crd-alertmanagers.yaml --force-conflicts=true --server-side
+kubectl apply -f https://raw.githubusercontent.com/prometheus-community/helm-charts/main/charts/kube-prometheus-stack/crds/crd-podmonitors.yaml --force-conflicts=true --server-side
+kubectl apply -f https://raw.githubusercontent.com/prometheus-community/helm-charts/main/charts/kube-prometheus-stack/crds/crd-probes.yaml --force-conflicts=true --server-side
+kubectl apply -f https://raw.githubusercontent.com/prometheus-community/helm-charts/main/charts/kube-prometheus-stack/crds/crd-prometheuses.yaml --force-conflicts=true --server-side
+kubectl apply -f https://raw.githubusercontent.com/prometheus-community/helm-charts/main/charts/kube-prometheus-stack/crds/crd-prometheusrules.yaml --force-conflicts=true --server-side
+kubectl apply -f https://raw.githubusercontent.com/prometheus-community/helm-charts/main/charts/kube-prometheus-stack/crds/crd-servicemonitors.yaml --force-conflicts=true --server-side
+kubectl apply -f https://raw.githubusercontent.com/prometheus-community/helm-charts/main/charts/kube-prometheus-stack/crds/crd-thanosrulers.yaml --force-conflicts=true --server-side
+
+kubectl apply -f ./argo/monitoring/prometheus-app.yml

@@ -10,7 +10,7 @@ spec:
   source:
     chart: kube-prometheus-stack
     repoURL: https://prometheus-community.github.io/helm-charts
-    targetRevision: 33.2.1
+    targetRevision: 34.0.0
     helm:
       releaseName: prometheus
 
@@ -73,13 +73,16 @@ spec:
             userKey: admin-user
             passwordKey: admin-password
 
+          initChownData:
+            enabled: false
+
           ingress:
             enabled: true
             ingressClassName: traefik
 
             annotations:
               cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
-              traefik.ingress.kubernetes.io/router.entrypoints: websecure-local
+              traefik.ingress.kubernetes.io/router.entrypoints: websecure
               traefik.ingress.kubernetes.io/router.tls: 'true'
 
             hosts:
@@ -170,8 +173,8 @@ spec:
             enabled: true
 
             annotations:
-              cert-manager.io/cluster-issuer: private-cluster-issuer
-              traefik.ingress.kubernetes.io/router.entrypoints: websecure-local
+              cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
+              traefik.ingress.kubernetes.io/router.entrypoints: websecure
               traefik.ingress.kubernetes.io/router.tls: 'true'
 
             hosts:
@@ -212,3 +215,16 @@ spec:
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: monitoring
+
+  syncPolicy:
+    automated:
+      prune: false # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+      allowEmpty: false # Allows deleting all application resources during automatic syncing ( false by default ).
+    syncOptions: []
+    retry:
+      limit: 5 # number of failed sync attempt retries; unlimited number of attempts if less than 0
+      backoff:
+        duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
+        factor: 2 # a factor to multiply the base duration after each failed retry
+        maxDuration: 3m # the maximum amount of time allowed for the backoff strategy
