@@ -14,6 +14,8 @@ spec:
     helm:
       releaseName: prometheus
 
+      skipCrds: true
+
       values: |
         alertmanager:
           enabled: false
