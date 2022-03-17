@@ -37,8 +37,8 @@ spec:
           path: /ipmi
 
           # fallback to the prometheus default unless specified
-          interval: 60s
-          scrapeTimeout: 30s
+          interval: 10s
+          scrapeTimeout: 10s
 
           module: [default]
 

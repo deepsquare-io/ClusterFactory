@@ -41,10 +41,6 @@ spec:
         - name: ipmi-exporter
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 1000
-            readOnlyRootFilesystem: false
           args:
 {{- if .Values.config }}
             - "--config.file=/config/config.yaml"
