@@ -44,7 +44,7 @@ spec:
           securityContext:
             runAsNonRoot: true
             runAsUser: 1000
-            readOnlyRootFilesystem: true
+            readOnlyRootFilesystem: false
           args:
 {{- if .Values.config }}
             - "--config.file=/config/config.yaml"
