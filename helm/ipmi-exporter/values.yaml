@@ -1,0 +1,132 @@
+restartPolicy: Always
+
+image:
+  repository: docker.io/prometheuscommunity/ipmi-exporter
+  tag: v1.5.2
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+## Additional labels to add to all resources
+customLabels:
+  {}
+  # app: ipmi-exporter
+
+# config:
+
+extraConfigmapMounts:
+  []
+  # - name: ipmi-exporter-configmap
+  #   mountPath: /run/secrets/ipmi-exporter
+  #   subPath: ipmi.yaml # (optional)
+  #   configMap: ipmi-exporter-configmap-configmap
+  #   readOnly: true
+  #   defaultMode: 420
+
+## Additional secret mounts
+# Defines additional mounts with secrets. Secrets must be manually created in the namespace.
+extraSecretMounts:
+  []
+  # - name: secret-files
+  #   mountPath: /run/secrets/ipmi-exporter
+  #   secretName: ipmi-exporter-secret-files
+  #   readOnly: true
+  #   defaultMode: 420
+
+## For RBAC support:
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+resources:
+  {}
+  # limits:
+  #   memory: 300Mi
+  # requests:
+  #   memory: 50Mi
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: http
+readinessProbe:
+  httpGet:
+    path: /health
+    port: http
+
+service:
+  annotations: {}
+  type: ClusterIP
+  port: 9290
+
+podAnnotations: {}
+
+extraArgs: []
+#  --history.limit=1000
+
+replicas: 1
+## Monitors ConfigMap changes and POSTs to a URL
+## Ref: https://github.com/jimmidyson/configmap-reload
+##
+configmapReload:
+  ## configmap-reload container name
+  ##
+  name: configmap-reload
+
+  ## configmap-reload container image
+  ##
+  image:
+    repository: jimmidyson/configmap-reload
+    tag: v0.5.0
+    pullPolicy: IfNotPresent
+
+  ## configmap-reload resource requests and limits
+  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources: {}
+
+# Enable this if you're using https://github.com/coreos/prometheus-operator
+serviceMonitor:
+  enabled: false
+  namespace: monitoring
+
+  path: /ipmi
+
+  # fallback to the prometheus default unless specified
+  # interval: 10s
+  scrapeTimeout: 10s
+  module:
+    - default
+  # relabelings: []
+  additionalMetricsRelabels: {}
+
+  ## Defaults to what's used if you follow CoreOS [Prometheus Install Instructions](https://github.com/helm/charts/tree/master/stable/prometheus-operator#tldr)
+  ## [Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#prometheus-operator-1)
+  ## [Kube Prometheus Selector Label](https://github.com/helm/charts/tree/master/stable/prometheus-operator#exporters)
+  selector:
+    prometheus: kube-prometheus
+  # Retain the job and instance labels of the metrics pushed to the ipmi-exporter
+  # [Scraping ipmi-exporter](https://github.com/prometheus/ipmi_exporter#configure-the-ipmi_exporter-as-a-target-to-scrape)
+  honorLabels: true
+
+  params:
+    # - name: localhost                 # Human readable URL that will appear in Prometheus / AlertManager
+    #   target: 127.0.0.1               # The target that ipmi will scrape
+    #   module:                         # Module used for scraping. Overrides value set in `serviceMonitor.module`
+    #     - if_mib
+    #   labels: {}                      # Map of labels for ServiceMonitor. Overrides value set in `serviceMonitor.selector`
+    #   interval: 30s                   # Scraping interval. Overrides value set in `serviceMonitor.interval`
+    #   scrapeTimeout: 30s              # Scrape timeout. Overrides value set in `serviceMonitor.scrapeTimeout`
+    #   relabelings: []                 # MetricRelabelConfigs to apply to samples before ingestion. Overrides value set in `serviceMonitor.relabelings`
+    #   additionalMetricsRelabels: {}   # Map of metric labels and values to add

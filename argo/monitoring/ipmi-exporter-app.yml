@@ -1,0 +1,96 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ipmi-exporter-app
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: monitoring
+  source:
+    repoURL: https://github.com/csquare-ai/squareops-kubernetes-stack.git
+    targetRevision: HEAD
+    path: helm/ipmi-exporter
+    helm:
+      releaseName: ipmi-exporter
+
+      values: |
+        config: |
+          modules:
+            default:
+              user: admin
+              pass: password
+              driver: LAN_2_0
+              privilege: admin
+              timeout: 10000
+              collectors:
+                - bmc
+                - ipmi
+                #- dcmi
+                - chassis
+                #- sel
+
+        serviceMonitor:
+          enabled: true
+          namespace: monitoring
+
+          path: /ipmi
+
+          # fallback to the prometheus default unless specified
+          interval: 60s
+          scrapeTimeout: 30s
+
+          params:
+            - name: cn1
+              module: [rittal]
+              target: 10.10.3.51
+            - name: cn2
+              module: [rittal]
+              target: 10.10.3.52
+            - name: cn3
+              module: [rittal]
+              target: 10.10.3.53
+            - name: cn4
+              module: [rittal]
+              target: 10.10.3.54
+            - name: cn5
+              module: [rittal]
+              target: 10.10.3.55
+            - name: cn6
+              module: [rittal]
+              target: 10.10.3.56
+            - name: cn7
+              module: [rittal]
+              target: 10.10.3.57
+            - name: cn8
+              module: [rittal]
+              target: 10.10.3.58
+            - name: cn9
+              module: [rittal]
+              target: 10.10.3.59
+            - name: cn10
+              module: [rittal]
+              target: 10.10.3.60
+            - name: cn11
+              module: [rittal]
+              target: 10.10.3.61
+            - name: cn12
+              module: [rittal]
+              target: 10.10.3.62
+
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: monitoring
+
+  syncPolicy:
+    automated:
+      prune: false # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+      allowEmpty: false # Allows deleting all application resources during automatic syncing ( false by default ).
+    syncOptions: []
+    retry:
+      limit: 5 # number of failed sync attempt retries; unlimited number of attempts if less than 0
+      backoff:
+        duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
+        factor: 2 # a factor to multiply the base duration after each failed retry
+        maxDuration: 3m # the maximum amount of time allowed for the backoff strategy

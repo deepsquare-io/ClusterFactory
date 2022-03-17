@@ -1,0 +1,12 @@
+{{- if .Values.config }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "ipmi-exporter.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "ipmi-exporter.labels" . | indent 4 }}
+data:
+  config.yaml: |
+{{ .Values.config | indent 4 }}
+{{- end }}
