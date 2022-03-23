@@ -69,6 +69,9 @@ cd "$WORKDIR"
 
 echo "Credentials for ArgoCD are admin $($KUBECTL get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 --decode)"
 
+section "Wait for all deployments to be Available"
+kubectl wait deployments --all --all-namespaces --for condition=Available
+
 cat <<EOF
 ---Step 2 finished---
 You can now deploy our stack or deploy your own apps with ArgoCD !

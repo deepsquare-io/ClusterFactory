@@ -104,3 +104,6 @@ kubectl apply -f ./argo/monitoring/rittal-exporter-app.yml
 kubectl apply -f ./argo/monitoring/snmp-exporter-app.yml
 kubectl apply -f ./argo/monitoring/submer-pod-exporter-app.yml
 kubectl apply -f ./argo/monitoring/ipmi-exporter-app.yml
+
+section "Wait for all deployments to be Available"
+kubectl wait deployments --all --all-namespaces --for condition=Available

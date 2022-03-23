@@ -30,6 +30,12 @@ spec:
                 - chassis
                 #- sel
 
+        additionalMetricsRelabels:
+          - targetLabel: pod
+            regex: (.*)
+            action: drop
+            replacement: $1
+
         serviceMonitor:
           enabled: true
           namespace: monitoring

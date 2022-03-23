@@ -1,10 +1,8 @@
-- TODO: All Storage PV Deploy
-- TODO: Vault deploy
-- TODO: ArgoCD redeploy
-- TODO: Cluster Redeploy and test
-- TODO: Prometheus migration
-- TODO: Prometheus+Grafana Deploy
-- TODO: Add exporters
 - TODO: Kubernetize SlurmCtl
 - TODO: Kubernetize Slurm Head
-- TODO: Kubernetize MAAS
+- TODO: Kubernetize Packer
+- TODO: Packerize xCat
+- TODO: Deploy xcat via kubevirt
+- TODO: Set SELinux to permissive
+- TODO: Set qemu on nodes
+- TODO: Symbolic link `ln -s /var/lib/kubelet /var/lib/k0s/kubelet`

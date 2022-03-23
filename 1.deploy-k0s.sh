@@ -38,8 +38,8 @@ set -e
 section "Setup the whole cluster"
 $K0SCTL apply --config ./k0sctl.yaml
 
-section "Wait 30 sec"
-sleep 30
+section "Wait for all node to be ready"
+kubectl wait nodes --all --for condition=Ready
 
 section "Fetch the config"
 $K0SCTL kubeconfig --config ./k0sctl.yaml >./kubeconfig
@@ -48,8 +48,18 @@ chmod 600 ./kubeconfig
 section "Remove Master NoSchedule Taint"
 $KUBECTL taint nodes --kubeconfig kubeconfig --all node-role.kubernetes.io/master:NoSchedule-
 
+section "Wait for all deployments to be Available"
+kubectl wait deployments --all --all-namespaces --for condition=Available
+
+section "Deploy kubevirt"
+# Updating is only supported to n-1 to n. Be warned.
+# https://kubevirt.io/user-guide/operations/updating_and_deletion/
+#RELEASE=v0.51.0
+kubectl apply -k core/kubevirt
+
+section "Wait for all deployments to be Available"
+kubectl wait deployments --all --all-namespaces --for condition=Available
+
 cat <<EOF
 ---Step 1 finished---
-Wait 1 minute before deploying the core apps.
-
 EOF
