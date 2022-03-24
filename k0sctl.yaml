@@ -36,6 +36,11 @@ spec:
           adminPort: 8133
           agentPort: 8132
         network:
+          calico:
+            mode: 'vxlan'
+            overlay: Always
+            mtu: 0
+            wireguard: false
           kubeProxy:
             disabled: false
             mode: iptables
@@ -45,7 +50,7 @@ spec:
             peerRouterASNs: ''
             peerRouterIPs: ''
           podCIDR: 10.244.0.0/16
-          provider: kuberouter
+          provider: calico
           serviceCIDR: 10.96.0.0/12
         podSecurityPolicy:
           defaultPolicy: 00-k0s-privileged

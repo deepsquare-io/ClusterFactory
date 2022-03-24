@@ -5,6 +5,8 @@ section() {
   echo "---$1---"
 }
 
+WORKDIR=$(pwd)
+
 section "Checking prerequisites"
 
 mkdir -p ./bin
@@ -38,27 +40,40 @@ set -e
 section "Setup the whole cluster"
 $K0SCTL apply --config ./k0sctl.yaml
 
-section "Wait for all node to be ready"
-kubectl wait nodes --all --for condition=Ready
-
 section "Fetch the config"
 $K0SCTL kubeconfig --config ./k0sctl.yaml >./kubeconfig
 chmod 600 ./kubeconfig
 
+export KUBECONFIG="$WORKDIR/kubeconfig"
+
+section "Wait for all node to be ready"
+sleep 30
+$KUBECTL wait nodes --all --for condition=Ready
+
 section "Remove Master NoSchedule Taint"
-$KUBECTL taint nodes --kubeconfig kubeconfig --all node-role.kubernetes.io/master:NoSchedule-
+$KUBECTL taint nodes --kubeconfig kubeconfig --all --force node-role.kubernetes.io/master:NoSchedule-
 
 section "Wait for all deployments to be Available"
-kubectl wait deployments --all --all-namespaces --for condition=Available
+sleep 10
+$KUBECTL wait deployments --all --all-namespaces --for condition=Available
 
-section "Deploy kubevirt"
+section "Deploy kubevirt (virtual machines deployments)"
 # Updating is only supported to n-1 to n. Be warned.
 # https://kubevirt.io/user-guide/operations/updating_and_deletion/
-#RELEASE=v0.51.0
-kubectl apply -k core/kubevirt/overlays/prod
+RELEASE=v0.51.0
+$KUBECTL apply -f https://github.com/kubevirt/kubevirt/releases/download/${RELEASE}/kubevirt-operator.yaml
+$KUBECTL apply -k core/kubevirt/overlays/prod
 
 section "Wait for all deployments to be Available"
-kubectl wait deployments --all --all-namespaces --for condition=Available
+sleep 10
+$KUBECTL wait deployments --all --all-namespaces --for condition=Available
+
+section "Deploy multus (multiple network interfaces support)"
+$KUBECTL apply -f https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset-thick-plugin.yml
+
+section "Wait for all deployments to be Available"
+sleep 10
+$KUBECTL wait deployments --all --all-namespaces --for condition=Available
 
 cat <<EOF
 ---Step 1 finished---
