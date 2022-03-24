@@ -88,8 +88,14 @@ spec:
 
                   service:
                     enabled: true
+                    annotations:
+                      metallb.universe.tf/address-pool: generic-cluster-pool
+                      metallb.universe.tf/allow-shared-ip: traefik-lb-key
                     spec:
+                      externalTrafficPolicy: Cluster
                       loadBalancerIP: 10.10.2.100
+                    loadBalancerSourceRanges:
+                      - 10.10.2.0/24
 
                   providers:
                     kubernetesCRD:
