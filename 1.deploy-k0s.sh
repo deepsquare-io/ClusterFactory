@@ -55,7 +55,7 @@ section "Deploy kubevirt"
 # Updating is only supported to n-1 to n. Be warned.
 # https://kubevirt.io/user-guide/operations/updating_and_deletion/
 #RELEASE=v0.51.0
-kubectl apply -k core/kubevirt
+kubectl apply -k core/kubevirt/overlays/prod
 
 section "Wait for all deployments to be Available"
 kubectl wait deployments --all --all-namespaces --for condition=Available
