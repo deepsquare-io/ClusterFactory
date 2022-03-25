@@ -50,6 +50,10 @@ imagePullSecrets: {}
 nodeSelector: {}
 tolerations: []
 
+tmp:
+  medium: ''
+  size: 50Gi
+
 persistence:
   storageClassName: ''
   accessModes: ['ReadWriteOnce']

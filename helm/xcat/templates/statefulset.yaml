@@ -166,8 +166,8 @@ spec:
             type: Directory
         - name: tmp
           emptyDir:
-            medium: Memory
-            sizeLimit: 1Gi
+            medium: {{ .Values.tmp.medium }}
+            sizeLimit: {{ .Values.tmp.size }}
   volumeClaimTemplates:
     - metadata:
         name: xcatdata
