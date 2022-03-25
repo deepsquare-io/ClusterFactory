@@ -1,4 +1,4 @@
-# SquareOps Kubernetes Stack
+# Cluster Factory Community Edition Kubernetes Stack
 
 ## Deployment method
 
