@@ -40,14 +40,14 @@ securityContext:
 terminationGracePeriod: 10
 
 readinessProbe:
-  failureThreshold: 30
+  failureThreshold: 60
   initialDelaySeconds: 600
   periodSeconds: 10
   successThreshold: 3
   timeoutSeconds: 5
 
 livenessProbe:
-  failureThreshold: 30
+  failureThreshold: 60
   initialDelaySeconds: 600
   periodSeconds: 10
   timeoutSeconds: 5
