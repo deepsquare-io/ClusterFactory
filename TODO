@@ -1,8 +1,7 @@
 - TODO: Kubernetize SlurmCtl
 - TODO: Kubernetize Slurm Head
 - TODO: Kubernetize Packer
-- TODO: Packerize xCat
-- TODO: Deploy xcat via kubevirt
 - TODO: Set SELinux to permissive
 - TODO: Set qemu on nodes
 - TODO: Symbolic link `ln -s /var/lib/kubelet /var/lib/k0s/kubelet`
+- TODO: Be able to macvlan for a VM
