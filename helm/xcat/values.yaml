@@ -36,21 +36,8 @@ securityContext:
   runAsNonRoot: false
   runAsUser: 0
 
-# How long to wait for elasticsearch to stop gracefully
+# How long to wait for xcat to stop gracefully
 terminationGracePeriod: 10
-
-readinessProbe:
-  failureThreshold: 60
-  initialDelaySeconds: 300
-  periodSeconds: 10
-  successThreshold: 3
-  timeoutSeconds: 5
-
-livenessProbe:
-  failureThreshold: 60
-  initialDelaySeconds: 300
-  periodSeconds: 10
-  timeoutSeconds: 5
 
 ## Use an alternate scheduler.
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/

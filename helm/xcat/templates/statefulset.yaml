@@ -155,14 +155,6 @@ spec:
             - mountPath: /run/lock
               name: tmp
               subPath: run-lock
-          readinessProbe:
-            tcpSocket:
-              port: 3001
-{{ toYaml .Values.readinessProbe | indent 12 }}
-          livenessProbe:
-            tcpSocket:
-              port: 3001
-{{ toYaml .Values.livenessProbe | indent 12 }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:
