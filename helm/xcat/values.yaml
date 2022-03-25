@@ -41,14 +41,14 @@ terminationGracePeriod: 10
 
 readinessProbe:
   failureThreshold: 3
-  initialDelaySeconds: 300
+  initialDelaySeconds: 600
   periodSeconds: 10
   successThreshold: 3
   timeoutSeconds: 5
 
 livenessProbe:
   failureThreshold: 3
-  initialDelaySeconds: 300
+  initialDelaySeconds: 600
   periodSeconds: 10
   timeoutSeconds: 5
 
