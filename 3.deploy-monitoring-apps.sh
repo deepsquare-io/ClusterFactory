@@ -5,6 +5,8 @@ section() {
   echo "---$1---"
 }
 
+PROJECT=monitoring
+
 WORKDIR=$(pwd)
 export KUBECONFIG="$WORKDIR/kubeconfig"
 
@@ -47,39 +49,27 @@ section "Fetch the config"
 $K0SCTL kubeconfig --config ./k0sctl.yaml >"$KUBECONFIG"
 chmod 600 ./kubeconfig
 
-section "Deploy initial namespaces"
-$KUBECTL apply -f ./argo/initial/namespaces
+section "Deploy initial namespace"
+$KUBECTL apply -f ./argo/${PROJECT}/namespace.yml
 
 section "Deploy initial volumes"
-$KUBECTL apply -f ./argo/initial/volumes
+$KUBECTL apply -f ./argo/${PROJECT}/volumes
 
 section "Deploy initial secrets"
-if ! [ -f ./argo/initial/secrets/grafana-admin-sealed-secret.yml ]; then
-  echo "Grafana Sealed Secret not found. Generating Grafana Password..."
-  cat <<EOF | $KUBESEAL \
-    --controller-namespace sealed-secrets \
-    --controller-name sealed-secrets \
-    --format yaml \
-    >./argo/initial/secrets/grafana-admin-sealed-secret.yml
-
-apiVersion: v1
-kind: Secret
-metadata:
-  name: grafana-admin-secret
-  namespace: monitoring
-type: Opaque
-stringData:
-  admin-user: admin
-  admin-password: '$(tr </dev/urandom -dc 'a-zA-Z0-9' | head -c 32)'
-
-EOF
+if ! [ -f ./argo/${PROJECT}/secrets/grafana-admin-sealed-secret.yml ]; then
+  echo "Grafana Sealed Secret not found."
+  exit 1
 fi
 
-kubectl apply -f ./argo/initial/secrets
+kubectl apply -f ./argo/${PROJECT}/secrets
 
-section "Deploy monitoring project"
-kubectl apply -f ./argo/monitoring/app-project.yml
+section "Deploy ${PROJECT} project"
+kubectl apply -f ./argo/${PROJECT}/app-project.yml
 
+# TODO: Wait for fix : https://github.com/prometheus-community/helm-charts/issues/1500
+# For now, let's do it manually.
+# skipCrd has also been enabled in the prometheus argo app.
+# If the issue is closed, remove skipCrd from the argo app and the lines below.
 kubectl apply -f https://raw.githubusercontent.com/prometheus-community/helm-charts/main/charts/kube-prometheus-stack/crds/crd-alertmanagerconfigs.yaml --force-conflicts=true --server-side
 kubectl apply -f https://raw.githubusercontent.com/prometheus-community/helm-charts/main/charts/kube-prometheus-stack/crds/crd-alertmanagers.yaml --force-conflicts=true --server-side
 kubectl apply -f https://raw.githubusercontent.com/prometheus-community/helm-charts/main/charts/kube-prometheus-stack/crds/crd-podmonitors.yaml --force-conflicts=true --server-side
@@ -89,11 +79,7 @@ kubectl apply -f https://raw.githubusercontent.com/prometheus-community/helm-cha
 kubectl apply -f https://raw.githubusercontent.com/prometheus-community/helm-charts/main/charts/kube-prometheus-stack/crds/crd-servicemonitors.yaml --force-conflicts=true --server-side
 kubectl apply -f https://raw.githubusercontent.com/prometheus-community/helm-charts/main/charts/kube-prometheus-stack/crds/crd-thanosrulers.yaml --force-conflicts=true --server-side
 
-kubectl apply -f ./argo/monitoring/prometheus-app.yml
-kubectl apply -f ./argo/monitoring/rittal-exporter-app.yml
-kubectl apply -f ./argo/monitoring/snmp-exporter-app.yml
-kubectl apply -f ./argo/monitoring/submer-pod-exporter-app.yml
-kubectl apply -f ./argo/monitoring/ipmi-exporter-app.yml
+kubectl apply -f ./argo/${PROJECT}/apps
 
-section "Wait for all deployments to be Available"
-kubectl wait deployments --all --all-namespaces --for condition=Available
+section "Wait for all pods to be Ready"
+kubectl wait pods --all -n ${PROJECT} --for condition=Ready
