@@ -1,7 +1,7 @@
 ---
 replicas: 1
 
-image: 'ghcr.io/csquare-ai/xcat-rocky:xcat-rocky:0.1.0-xcat2.16.3-rocky8.4'
+image: 'ghcr.io/csquare-ai/xcat-rocky:0.1.0-xcat2.16.3-rocky8.4'
 imagePullPolicy: 'IfNotPresent'
 
 podAnnotations: {}
@@ -29,8 +29,6 @@ podSecurityContext:
 
 securityContext:
   capabilities:
-    drop:
-      - ALL
     add:
       - CAP_SYS_ADMIN
       - NET_ADMIN
