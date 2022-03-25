@@ -21,25 +21,19 @@ fi
 
 K0SCTL="$(command -v k0sctl)"
 if ! [ -x "${K0SCTL}" ]; then
-  if ! [ -f ./bin/k0sctl ]; then
-    K0SCTL_VERSION=0.13.0-beta.5
-    echo "k0sctl could not be found. Downloading it locally in ./bin"
-    rm -f ./bin/k0sctl
-    wget -qO ./bin/k0sctl https://github.com/k0sproject/k0sctl/releases/download/v${K0SCTL_VERSION}/k0sctl-linux-x64
-    chmod +x ./bin/k0sctl
-  fi
-  K0SCTL="$(pwd)/bin/k0sctl"
+  K0SCTL_VERSION=0.13.0-beta.5
+  echo "k0sctl could not be found. Downloading it locally in ./bin"
+  rm -f ./bin/k0sctl
+  curl -fsSL -o ./bin/k0sctl https://github.com/k0sproject/k0sctl/releases/download/v${K0SCTL_VERSION}/k0sctl-linux-x64
+  chmod +x ./bin/k0sctl
 fi
 
 KUBECTL="$(command -v kubectl)"
 if ! [ -x "${KUBECTL}" ]; then
-  if ! [ -f ./bin/kubectl ]; then
-    echo "kubectl could not be found. Downloading it locally in ./bin"
-    rm -f ./bin/kubectl
-    wget -qO ./bin/kubectl "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-    chmod +x ./bin/kubectl
-  fi
-  K0SCTL="$(pwd)/bin/kubectl"
+  echo "kubectl could not be found. Downloading it locally in ./bin"
+  rm -f ./bin/kubectl
+  curl -fsSL -o ./bin/kubectl "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+  chmod +x ./bin/kubectl
 fi
 
 set -e
@@ -51,6 +45,16 @@ chmod 600 ./kubeconfig
 section "Deploy sealed secrets"
 cd ./core/sealed-secrets
 ./install.sh
+
+KUBESEAL="$(command -v kubeseal)"
+if ! [ -x "$KUBESEAL" ]; then
+  KUBESEAL_VERSION=0.17.3
+  echo "kubeseal could not be found. Downloading it locally in ./bin."
+  rm -f ./bin/kubeseal
+  curl -fsSL "https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-linux-amd64.tar.gz" | tar -zxvf kubeseal
+  mv kubeseal ./bin/kubeseal
+  chmod +x ./bin/kubeseal
+fi
 
 cd "$WORKDIR"
 
