@@ -1,0 +1,55 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: xcat-app
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: provisioning
+  source:
+    repoURL: git@github.com:csquare-ai/squareops-kubernetes-stack.git
+    targetRevision: HEAD
+    path: helm/xcat
+    helm:
+      releaseName: xcat
+
+      values: |
+        net:
+          # Kubernetes host interface
+          masterInterface: eno2
+          mode: bridge
+          # https://www.cni.dev/plugins/current/ipam/static/
+          ipam:
+            type: static
+            addresses:
+              - address: 10.10.2.244/24
+                gateway: 10.10.2.1
+            routes:
+              - dst: 0.0.0.0/0
+              - dst: 10.10.2.0/24
+                gw: 10.10.2.1
+            dns:
+              nameservers:
+                - 10.10.2.10
+                - 8.8.8.8
+              domain: ch1.csquare.run
+              search:
+                - ch1.csquare.run
+
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: monitoring
+
+  syncPolicy:
+    automated:
+      prune: false # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+      allowEmpty: false # Allows deleting all application resources during automatic syncing ( false by default ).
+    syncOptions: []
+    retry:
+      limit: 5 # number of failed sync attempt retries; unlimited number of attempts if less than 0
+      backoff:
+        duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
+        factor: 2 # a factor to multiply the base duration after each failed retry
+        maxDuration: 3m # the maximum amount of time allowed for the backoff strategy

@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: xcat-pv
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: xcat
+spec:
+  capacity:
+    storage: 50Gi
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+    - noatime
+    - nodiratime
+  csi:
+    driver: nfs.csi.k8s.io
+    readOnly: false
+    volumeHandle: 0993a28c-4c2f-4edb-94ee-ec0e8a20efff
+    volumeAttributes:
+      server: 10.10.2.11
+      share: '/mnt/pool1/k8s/xcat'
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
