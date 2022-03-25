@@ -8,7 +8,7 @@ metadata:
 spec:
   project: monitoring
   source:
-    repoURL: git@github.com:csquare-ai/squareops-kubernetes-stack.git
+    repoURL: git@github.com:csquare-ai/cluster-factory-ce.git
     targetRevision: HEAD
     path: helm/ipmi-exporter
     helm:

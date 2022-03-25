@@ -1,0 +1,15 @@
+apiVersion: v2
+name: xcat
+description: xCAT Extreme Cloud Administration Toolkit, xCAT offers complete management for bare-metal based cluster.
+type: application
+home: https://github.com/csquare-ai/xcat-rocky
+icon: https://raw.githubusercontent.com/xcat2/xcat2.github.io/master/webcontent/assets/logo.jpeg
+sources:
+  - https://github.com/csquare-ai/xcat-rocky
+version: 0.1.0
+appVersion: '0.1.0-xcat2.11-rocky8.4'
+maintainers:
+  - name: Marc Nguyen
+    email: marc@squarefactory.io
+  - name: Christophe Lillo
+    email: lillo@squarefactory.io

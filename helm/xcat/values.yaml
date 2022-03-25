@@ -1,0 +1,94 @@
+---
+replicas: 1
+
+image: 'ghcr.io/csquare-ai/xcat-rocky:xcat-rocky:0.1.0-xcat2.16.3-rocky8.4'
+imagePullPolicy: 'IfNotPresent'
+
+podAnnotations: {}
+
+# additionals labels
+labels: {}
+
+resources:
+  requests:
+    cpu: '250m'
+    memory: '1Gi'
+  limits:
+    cpu: '2'
+    memory: '8Gi'
+
+# This is the node affinity settings as defined in
+# https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#node-affinity-beta-feature
+nodeAffinity: {}
+
+updateStrategy: RollingUpdate
+
+podSecurityContext:
+  fsGroup: 0
+  runAsUser: 0
+
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+    add:
+      - CAP_SYS_ADMIN
+      - NET_ADMIN
+  readOnlyRootFilesystem: false
+  runAsNonRoot: false
+  runAsUser: 0
+
+# How long to wait for elasticsearch to stop gracefully
+terminationGracePeriod: 10
+
+readinessProbe:
+  failureThreshold: 3
+  initialDelaySeconds: 60
+  periodSeconds: 10
+  successThreshold: 3
+  timeoutSeconds: 5
+
+livenessProbe:
+  failureThreshold: 3
+  initialDelaySeconds: 60
+  periodSeconds: 10
+  timeoutSeconds: 5
+
+## Use an alternate scheduler.
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+schedulerName: ''
+
+imagePullSecrets: {}
+
+# Try to use nodeSelector to filter the hosts without the master interface
+nodeSelector: {}
+tolerations: []
+
+persistence:
+  storageClassName: ''
+  accessModes: ['ReadWriteOnce']
+  size: 50Gi
+  selectorLabels:
+    app: xcat
+
+net:
+  # Kubernetes host interface
+  masterInterface: eth0
+  mode: bridge
+  # https://www.cni.dev/plugins/current/ipam/static/
+  ipam:
+    type: static
+    addresses:
+      - address: 10.10.2.2/24
+        gateway: 10.10.2.1
+    routes:
+      - dst: 0.0.0.0/0
+      - dst: 10.10.2.0/24
+        gw: 10.10.2.1
+    dns:
+      nameservers:
+        - 8.8.8.8
+      domain: example.com
+      search:
+        - example.com
