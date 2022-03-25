@@ -23,7 +23,7 @@ spec:
           ipam:
             type: static
             addresses:
-              - address: 10.10.2.244/24
+              - address: 10.10.2.160/24
                 gateway: 10.10.2.1
             routes:
               - dst: 0.0.0.0/0
@@ -39,7 +39,7 @@ spec:
 
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: monitoring
+    namespace: provisioning
 
   syncPolicy:
     automated:

@@ -29,7 +29,7 @@ spec:
         {{ $key }}: {{ $value | quote }}
         {{- end }}
       annotations:
-        k8s.v1.cni.cncf.io/networks: '[{ "name": "{{ template "xcat.name" . }}-net" }]"'
+        k8s.v1.cni.cncf.io/networks: '[{ "name": "{{ template "xcat.name" . }}-net" }]'
         {{- range $key, $value := .Values.podAnnotations }}
         {{ $key }}: {{ $value | quote }}
         {{- end }}
