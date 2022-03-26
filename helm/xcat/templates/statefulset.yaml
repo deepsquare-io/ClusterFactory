@@ -30,17 +30,6 @@ spec:
         {{- end }}
       annotations:
         v1.multus-cni.io/default-network: "{{ .Release.Namespace }}/{{ template "xcat.name" . }}-net"
-        k8s.v1.cni.cncf.io/networks: |
-          [
-            {
-              "name": "{{ template "xcat.name" . }}-net",
-              "namespace": "{{ .Release.Namespace }}",
-              "dns": {
-                "servers": {{.Values.net.ipam.dns.nameservers | toJson }},
-                "searches": {{.Values.net.ipam.dns.search | toJson }}
-              }
-            }
-          ]
         {{- range $key, $value := .Values.podAnnotations }}
         {{ $key }}: {{ $value | quote }}
         {{- end }}

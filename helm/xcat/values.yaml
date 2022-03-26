@@ -66,12 +66,6 @@ net:
   masterInterface: eth0
   mode: bridge
 
-  # https://github.com/containernetworking/cni/blob/main/CONVENTIONS.md#dynamic-plugin-specific-fields-capabilities--runtime-configuration
-  capabilities:
-    dns: true
-    ips: true
-    mac: true
-
   # https://www.cni.dev/plugins/current/ipam/static/
   ipam:
     type: static
@@ -82,9 +76,3 @@ net:
       - dst: 0.0.0.0/0
       - dst: 10.10.2.0/24
         gw: 10.10.2.1
-    dns:
-      nameservers:
-        - 8.8.8.8
-      domain: example.com
-      search:
-        - example.com
