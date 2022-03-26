@@ -155,6 +155,9 @@ spec:
             - mountPath: /run/lock
               name: tmp
               subPath: run-lock
+          dnsPolicy: "None"
+          dnsConfig:
+{{ toYaml .Values.net.dns | indent 12 }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:

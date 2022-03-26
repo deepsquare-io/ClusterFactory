@@ -40,7 +40,7 @@ spec:
               nameservers:
                 - 10.10.2.10
                 - 8.8.8.8
-              search:
+              searches:
                 - ch1.csquare.run
 
   destination:

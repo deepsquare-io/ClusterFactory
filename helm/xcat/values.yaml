@@ -76,3 +76,10 @@ net:
       - dst: 0.0.0.0/0
       - dst: 10.10.2.0/24
         gw: 10.10.2.1
+
+  # https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config
+  dns:
+    nameservers:
+      - 1.1.1.1
+    searches:
+      - example.com
