@@ -65,6 +65,13 @@ net:
   # Kubernetes host interface
   masterInterface: eth0
   mode: bridge
+
+  # https://github.com/containernetworking/cni/blob/main/CONVENTIONS.md#dynamic-plugin-specific-fields-capabilities--runtime-configuration
+  capabilities:
+    dns: true
+    ips: true
+    mac: true
+
   # https://www.cni.dev/plugins/current/ipam/static/
   ipam:
     type: static

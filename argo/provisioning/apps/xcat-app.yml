@@ -27,6 +27,13 @@ spec:
           # Kubernetes host interface
           masterInterface: eno2
           mode: bridge
+
+          # https://github.com/containernetworking/cni/blob/main/CONVENTIONS.md#dynamic-plugin-specific-fields-capabilities--runtime-configuration
+          capabilities:
+            dns: true
+            ips: true
+            mac: true
+
           # https://www.cni.dev/plugins/current/ipam/static/
           ipam:
             type: static
@@ -39,7 +46,6 @@ spec:
               nameservers:
                 - 10.10.2.10
                 - 8.8.8.8
-              domain: ch1.csquare.run
               search:
                 - ch1.csquare.run
 
