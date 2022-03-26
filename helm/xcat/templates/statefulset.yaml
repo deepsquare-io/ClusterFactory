@@ -39,9 +39,14 @@ spec:
       {{- end }}
       securityContext:
 {{ toYaml .Values.podSecurityContext | indent 8 }}
+      {{- with .Values.net.dns }}
+      dnsPolicy: "None"
+      dnsConfig:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       {{- with .Values.tolerations }}
       tolerations:
-{{ toYaml . | indent 6 }}
+{{ toYaml . | indent 8 }}
       {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
@@ -155,9 +160,6 @@ spec:
             - mountPath: /run/lock
               name: tmp
               subPath: run-lock
-          dnsPolicy: "None"
-          dnsConfig:
-{{ toYaml .Values.net.dns | indent 12 }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:

@@ -36,12 +36,13 @@ spec:
                 gateway: 10.10.2.1
             routes:
               - dst: 0.0.0.0/0
-            dns:
-              nameservers:
-                - 10.10.2.10
-                - 8.8.8.8
-              searches:
-                - ch1.csquare.run
+
+          dns:
+            nameservers:
+              - 10.10.2.10
+              - 8.8.8.8
+            searches:
+              - ch1.csquare.run
 
   destination:
     server: 'https://kubernetes.default.svc'
