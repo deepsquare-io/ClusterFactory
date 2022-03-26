@@ -7,7 +7,7 @@ icon: https://raw.githubusercontent.com/xcat2/xcat2.github.io/master/webcontent/
 sources:
   - https://github.com/csquare-ai/xcat-rocky
 version: 0.1.0
-appVersion: '0.1.0-xcat2.11-rocky8.4'
+appVersion: '0.1.1'
 maintainers:
   - name: Marc Nguyen
     email: marc@squarefactory.io

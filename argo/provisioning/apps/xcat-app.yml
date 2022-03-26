@@ -35,8 +35,6 @@ spec:
                 gateway: 10.10.2.1
             routes:
               - dst: 0.0.0.0/0
-              - dst: 10.10.2.0/24
-                gw: 10.10.2.1
             dns:
               nameservers:
                 - 10.10.2.10
