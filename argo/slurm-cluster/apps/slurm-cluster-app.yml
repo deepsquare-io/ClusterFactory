@@ -95,8 +95,8 @@ spec:
                 - sh
                 - -c
                 - |-
-                  cp -Rp /in-ssh /out-ssh
-                  chmod -R 0600 /out-ssh
+                  cp -Rp /in-ssh/* /out-ssh/
+                  chmod -R 0600 /out-ssh/
               volumeMounts:
                 - name: slurmctl-ssh
                   mountPath: /in-ssh
