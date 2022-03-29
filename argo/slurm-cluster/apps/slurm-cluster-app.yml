@@ -88,9 +88,24 @@ spec:
             selectorLabels:
               app: slurm-controller
 
+          initContainers:
+            - name: init-perms-ssh
+              image: busybox:1.34.1
+              command:
+                - sh
+                - -c
+                - |-
+                  cp -Rp /in-ssh /out-ssh
+                  chmod -R 0600 /out-ssh
+              volumeMounts:
+                - name: slurmctl-ssh
+                  mountPath: /in-ssh
+                - name: root-ssh-dir
+                  mountPath: /out-ssh
+
           # Extra volume mounts
           volumeMounts:
-            - name: slurmctl-ssh
+            - name: root-ssh-dir
               mountPath: /root/.ssh
             - name: ca-cert
               mountPath: /etc/pki/ca-trust/source/anchors/csquare.gcloud.ca.pem
@@ -105,6 +120,9 @@ spec:
             - name: ca-cert
               secret:
                 secretName: local-ca-secret
+            - name: root-ssh-dir
+              emptyDir:
+                medium: memory
 
           # Extra volume claims
           volumeClaimTemplates: []

@@ -122,6 +122,8 @@ controller:
     periodSeconds: 10
     timeoutSeconds: 5
 
+  initContainers: []
+
   # Extra volume mounts
   volumeMounts: []
 
