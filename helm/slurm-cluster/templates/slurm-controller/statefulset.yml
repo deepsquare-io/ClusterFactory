@@ -64,7 +64,7 @@ spec:
 {{ toYaml .Values.controller.command | indent 12 }}
           ports:
             - containerPort: 6817
-              name: slurmcltd
+              name: slurmctld
           readinessProbe:
             tcpSocket:
               port: 6817
