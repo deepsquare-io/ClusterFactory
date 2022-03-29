@@ -134,7 +134,7 @@ controller:
   service:
     annotations: {}
     labels: {}
-    clusterIP: ''
+    clusterIP: 'None'
 
     ## Port for Slurm Controller Service to listen on
     ##
@@ -154,7 +154,7 @@ controller:
 
     ## Denotes if this Service desires to route external traffic to node-local or cluster-wide endpoints
     ##
-    externalTrafficPolicy: Local
+    externalTrafficPolicy: Cluster
 
     ## Service type
     ##

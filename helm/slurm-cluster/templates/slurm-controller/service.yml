@@ -48,7 +48,6 @@ spec:
     app.kubernetes.io/name: "{{ template "slurm-cluster.controller.name" . }}"
     app.kubernetes.io/instance: "{{ template "slurm-cluster.controller.name" . }}"
     app.kubernetes.io/component: controller
-    statefulset.kubernetes.io/pod-name: "{{ template "slurm-cluster.controller.name" . }}-0"
 {{- if .Values.controller.service.sessionAffinity }}
   sessionAffinity: {{ .Values.controller.service.sessionAffinity }}
 {{- end }}
