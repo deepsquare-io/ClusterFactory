@@ -118,7 +118,7 @@ spec:
             name: "{{ template "slurm-cluster.name" . }}-slurm-spank-config"
         - name: slurmctl-prologs
           projected:
-            defaultMode: 0755
+            defaultMode: 493
             sources:
               - configMap:
                   name: "{{ template "slurm-cluster.name" . }}-slurmctl-prologs"
@@ -128,7 +128,7 @@ spec:
               {{- end }}
         - name: slurmctl-epilogs
           projected:
-            defaultMode: 0755
+            defaultMode: 493
             sources:
               - configMap:
                   name: "{{ template "slurm-cluster.name" . }}-slurmctl-epilogs"
@@ -139,15 +139,15 @@ spec:
         - name: slurm-jwt
           secret:
             secretName: "{{ .Values.slurmConfig.controller.jwt.secretName }}"
-            defaultMode: 0600
+            defaultMode: 384
         - name: sssd
           secret:
             secretName: "{{ .Values.sssd.secretName }}"
-            defaultMode: 0400
+            defaultMode: 256
         - name: munge
           secret:
             secretName: "{{ .Values.munge.secretName }}"
-            defaultMode: 0600
+            defaultMode: 384
         {{- if .Values.controller.volumes }}
 {{ toYaml .Values.controller.volumes | indent 8 }}
         {{- end }}

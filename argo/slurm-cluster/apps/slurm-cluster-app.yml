@@ -101,7 +101,7 @@ spec:
             - name: slurmctl-ssh
               secret:
                 secretName: slurmctl-ssh-secret
-                defaultMode: 0600
+                defaultMode: 384
             - name: ca-cert
               secret:
                 secretName: local-ca-secret
