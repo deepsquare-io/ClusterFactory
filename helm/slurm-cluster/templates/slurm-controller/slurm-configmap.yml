@@ -98,7 +98,7 @@ data:
     #-- Multi Authentication
     AuthType=auth/munge
     AuthAltTypes=auth/jwt
-    AuthAltParameters=jwt_key=/etc/slurm/jwt_hs256.key
+    AuthAltParameters=jwt_key=/var/spool/slurm/jwt_hs256.key
 
     # Federation
     FederationParameters=fed_display

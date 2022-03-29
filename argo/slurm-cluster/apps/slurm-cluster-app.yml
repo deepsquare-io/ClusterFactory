@@ -68,13 +68,11 @@ spec:
             JobAcctGatherType=jobacct_gather/cgroup
             #MailProg=/usr/bin/fakemail
 
-
-
         controller:
-          image:
+          image: 'ghcr.io/squarefactory/slurm-docker:reindeer'
           replicas: 1
 
-          command: ['sh', '-c' 'update-ca-trust && /init']
+          command: ['sh', '-c', 'update-ca-trust && /init']
 
           imagePullSecrets:
             - name: ghcr-marc-secret

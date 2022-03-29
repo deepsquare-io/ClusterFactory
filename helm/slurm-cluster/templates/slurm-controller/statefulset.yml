@@ -63,6 +63,7 @@ spec:
               mountPath: /var/spool/slurmctl
             - name: slurm-conf
               mountPath: /etc/slurm
+              readOnly: false
             - name: slurm-jwt
               mountPath: /secrets/slurm
             - name: sssd
