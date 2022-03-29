@@ -6,7 +6,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: slurm
+  project: slurm-cluster
   source:
     repoURL: git@github.com:squarefactory/cluster-factory-ce.git
     targetRevision: HEAD
