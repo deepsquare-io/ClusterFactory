@@ -17,6 +17,10 @@ spec:
 {{- if .Values.controller.service.clusterIP }}
   clusterIP: {{ .Values.controller.service.clusterIP }}
 {{- end }}
+{{- if .Values.controller.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.controller.service.externalIPs | indent 4 }}
+{{- end }}
 {{- if .Values.controller.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.controller.service.loadBalancerIP }}
 {{- end }}
@@ -44,6 +48,7 @@ spec:
     app.kubernetes.io/name: "{{ template "slurm-cluster.controller.name" . }}"
     app.kubernetes.io/instance: "{{ template "slurm-cluster.controller.name" . }}"
     app.kubernetes.io/component: controller
+    statefulset.kubernetes.io/pod-name: "{{ template "slurm-cluster.controller.name" . }}-0"
 {{- if .Values.controller.service.sessionAffinity }}
   sessionAffinity: {{ .Values.controller.service.sessionAffinity }}
 {{- end }}

@@ -154,7 +154,7 @@ controller:
 
     ## Denotes if this Service desires to route external traffic to node-local or cluster-wide endpoints
     ##
-    externalTrafficPolicy: Cluster
+    externalTrafficPolicy: Local
 
     ## Service type
     ##
