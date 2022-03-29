@@ -51,7 +51,7 @@ slurmConfig:
 controller:
   replicas: 1
 
-  image: 'ghcr.io/deepsquare/slurm:0.1.0-controller'
+  image: 'ghcr.io/squarefactory/slurm:0.1.0-controller'
   imagePullPolicy: 'IfNotPresent'
 
   labels: []

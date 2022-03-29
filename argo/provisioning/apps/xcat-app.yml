@@ -8,7 +8,7 @@ metadata:
 spec:
   project: provisioning
   source:
-    repoURL: git@github.com:deepsquare/cluster-factory-ce.git
+    repoURL: git@github.com:squarefactory/cluster-factory-ce.git
     targetRevision: HEAD
     path: helm/xcat
     helm:

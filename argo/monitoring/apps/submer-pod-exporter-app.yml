@@ -8,7 +8,7 @@ metadata:
 spec:
   project: monitoring
   source:
-    repoURL: https://github.com/deepsquare/submer-pod-exporter.git
+    repoURL: https://github.com/squarefactory/submer-pod-exporter.git
     targetRevision: HEAD
     path: helm/chart
     helm:
