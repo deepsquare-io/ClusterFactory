@@ -85,16 +85,22 @@ spec:
               readOnly: false
             - name: slurmctl-prologs
               mountPath: /etc/slurm/prolog-slurmctld.d
+              readOnly: true
             - name: slurmctl-epilogs
               mountPath: /etc/slurm/epilog-slurmctld.d
+              readOnly: true
             - name: slurm-spank
               mountPath: /etc/slurm/plugstack.conf.d
+              readOnly: true
             - name: slurm-jwt
               mountPath: /secrets/slurm
+              readOnly: true
             - name: sssd
               mountPath: /secrets/sssd
+              readOnly: true
             - name: munge
               mountPath: /secrets/munge
+              readOnly: true
             - mountPath: /tmp
               name: tmp
               subPath: tmp
