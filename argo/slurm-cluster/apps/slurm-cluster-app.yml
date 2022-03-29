@@ -122,7 +122,7 @@ spec:
                 secretName: local-ca-secret
             - name: root-ssh-dir
               emptyDir:
-                medium: memory
+                medium: "Memory"
 
           # Extra volume claims
           volumeClaimTemplates: []
