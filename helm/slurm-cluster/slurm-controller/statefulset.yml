@@ -1,0 +1,124 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: "{{ template "slurm-cluster.controller.name" . }}"
+  namespace: '{{ .Release.Namespace }}'
+  labels:
+    release: '{{ .Release.Name }}'
+    chart: '{{ .Chart.Name }}'
+spec:
+  serviceName: "{{ template "slurm-cluster.controller.name" . }}"
+  selector:
+    matchLabels:
+      app: "{{ template "slurm-cluster.controller.name" . }}"
+  replicas: {{ .Values.replicas }}
+  template:
+      name: "{{ template "slurm-cluster.controller.name" . }}"
+      labels:
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}"
+        app: "{{ template "slurm-cluster.controller.name" . }}"
+        {{- range $key, $value := .Values.controller.labels }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      annotations:
+        {{- range $key, $value := .Values.controller.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+    spec:
+      {{- if .Values.controller.schedulerName }}
+      schedulerName: "{{ .Values.controller.schedulerName }}"
+      {{- end }}
+      securityContext:
+{{ toYaml .Values.controller.podSecurityContext | indent 8 }}
+      {{- with .Values.controller.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.controller.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.controller.nodeAffinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.controller.terminationGracePeriod }}
+      {{- if .Values.controller.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.controller.imagePullSecrets | indent 8 }}
+      {{- end }}
+      containers:
+        - name: "{{ template "slurm-cluster.controller.name" . }}"
+          image: "{{ .Values.controller.image }}"
+          imagePullPolicy: "{{ .Values.controller.imagePullPolicy }}"
+          command:
+{{ toYaml .Values.controller.command | indent 12 }}
+          ports:
+            - containerPort: 6817
+              name: slurmcltd
+          volumeMounts:
+            - name: state
+              mountPath: /var/spool/slurmctl
+            - name: slurm-conf
+              mountPath: /etc/slurm
+            - name: slurm-jwt
+              mountPath: /secrets/slurm
+            - name: sssd
+              mountPath: /secrets/sssd
+            - name: munge
+              mountPath: /secrets/munge
+            - mountPath: /tmp
+              name: tmp
+              subPath: tmp
+            - mountPath: /run
+              name: tmp
+              subPath: run
+            - mountPath: /var/log
+              name: tmp
+              subPath: log
+            {{- if .Values.controller.volumeMounts }}
+{{ toYaml .Values.controller.volumeMounts | indent 12 }}
+            {{- end }}
+          resources:
+{{ toYaml .Values.controller.resources | indent 12 }}
+      volumes:
+        - name: tmp
+          emptyDir:
+            medium: "{{ .Values.controller.tmp.medium }}"
+            sizeLimit: "{{ .Values.controller.tmp.size }}"
+        - name: slurm-conf
+          configMap:
+            name: "{{ template "slurm-cluster.name" . }}-slurm-config"
+        - name: slurm-jwt
+          secret:
+            secretName: "{{ .Values.slurmConfig.controller.jwt.secretName }}"
+            defaultMode: 0600
+        - name: sssd
+          secret:
+            secretName: "{{ .Values.sssd.secretName }}"
+            defaultMode: 0400
+        - name: munge
+          secret:
+            secretName: "{{ .Values.munge.secretName }}"
+            defaultMode: 0600
+        {{- if .Values.controller.volumes }}
+{{ toYaml .Values.controller.volumes | indent 8 }}
+        {{- end }}
+  volumeClaimTemplates:
+    - metadata:
+        name: state
+      spec:
+        accessModes: {{ .Values.controller.persistence.accessModes }}
+        storageClassName: "{{ .Values.controller.persistence.storageClassName }}"
+        resources:
+          requests:
+            storage: {{ .Values.controller.persistence.size }}
+        {{- with .Values.controller.persistence.selectorLabels }}
+        selector:
+          matchLabels:
+{{ toYaml . | indent 12 }}
+        {{- end }}
+    {{- if .Values.controller.volumeClaimTemplates }}
+{{ toYaml .Values.controller.volumeClaimTemplates | indent 4 }}
+    {{- end }}

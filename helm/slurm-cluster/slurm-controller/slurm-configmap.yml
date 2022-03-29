@@ -1,0 +1,116 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: "{{ template "slurm-cluster.name" . }}-slurm-config"
+  namespace: '{{ .Release.Namespace }}'
+  labels:
+    release: '{{ .Release.Name }}'
+    chart: '{{ .Chart.Name }}'
+data:
+  slurm.conf: |
+    ##-- Cluster definition
+    ClusterName={{ .Values.slurmConfig.clusterName }}
+
+    SlurmUser=slurm
+    LaunchParameters=enable_nss_slurm
+
+    #-- Slurmctl
+    SlurmctldHost=={{ .Values.slurmConfig.controller.host }}
+    SlurmctldDebug={{ .Values.slurmConfig.controller.debug }}
+    SlurmctldParameters={{ .Values.slurmConfig.controller.parameters }}
+    DebugFlags=Script,Gang,SelectType
+    StateSaveLocation=/var/spool/slurmctl
+    SlurmctldPidFile=/var/run/slurmctld.pid
+    SlurmctldLogFile=/var/log/slurm/slurmctld.log
+    PrologSlurmctld=/etc/slurm/prolog-slurmctld
+    EpilogSlurmctld=/etc/slurm/epilog-slurmctld
+    UnkillableStepTimeout=300
+    TCPTimeout=5
+
+    #-- Slurmd
+    SlurmdDebug={{ .Values.slurmConfig.compute.debug }}
+    SlurmdLogFile=/var/log/slurm/slurmd.log
+    SrunPortRange={{ .Values.slurmConfig.compute.srunPortRange }}
+
+    #-- Default ressources allocation
+    DefCpuPerGPU=4
+    DefMemPerCpu=7000
+    SchedulerTimeSlice=60
+
+    ### Cluster settings
+    # MPI stacks running over Infiniband or OmniPath require the ability to allocate more
+    # locked memory than the default limit. Unfortunately, user processes on login nodes
+    # may have a small memory limit (check it by ulimit -a) which by default are propagated
+    # into Slurm jobs and hence cause fabric errors for MPI.
+    PropagateResourceLimitsExcept=MEMLOCK
+
+    ProctrackType=proctrack/cgroup
+    #TaskPlugin=task/affinity,task/cgroup
+    TaskPlugin=task/cgroup
+    SwitchType=switch/none
+    MpiDefault=pmix_v2
+    ReturnToService=2 #temp
+    GresTypes=gpu
+    PreemptType=preempt/qos
+    #PreemptMode=SUSPEND,GANG
+    PreemptMode=REQUEUE
+    #JobRequeue=1
+    PreemptExemptTime=-1
+    #TaskProlog=/etc/slurm/taskprolog
+    Prolog=/etc/slurm/prolog.d/*
+    Epilog=/etc/slurm/epilog.d/*
+
+    #-- Scheduling
+    #SchedulerType=sched/builtin
+    SchedulerType=sched/backfill
+    #SchedulerParameters=sched_interval=10
+    SelectType=select/cons_tres
+    #SelectType=select/linear
+    #SelectTypeParameters=CR_Memory
+    #SelectTypeParameters=CR_Core
+    #SelectTypeParameters=CR_CPU
+    #SelectTypeParameters=CR_Core_Memory
+    SelectTypeParameters=CR_CPU_Memory
+
+    #-- Multifactor priority
+    PriorityType=priority/multifactor
+    # The larger the job, the greater its job size priority.
+    PriorityFavorSmall=NO
+    # The job's age factor reaches 1.0 after waiting in the
+    # queue for 2 weeks.
+    #PriorityMaxAge=14-0
+    # This next group determines the weighting of each of the
+    # components of the Multi-factor Job Priority Plugin.
+    # The default value for each of the following is 1.
+    PriorityWeightAge=0
+    PriorityWeightFairshare=0
+    PriorityWeightJobSize=0
+    PriorityWeightPartition=0
+    PriorityWeightQOS=100
+
+    #-- Accounting
+    {{ .Values.slurmConfig.account }}
+    AccountingStoreFlags=job_comment,job_env,job_script
+    AccountingStorageEnforce=associations,limits,qos
+    PriorityDecayHalfLife=0
+    PriorityUsageResetPeriod=MONTHLY
+
+    #-- Multi Authentication
+    AuthType=auth/munge
+    AuthAltTypes=auth/jwt
+    AuthAltParameters=jwt_key=/etc/slurm/jwt_hs256.key
+
+    # Federation
+    FederationParameters=fed_display
+
+    #-- Compute nodes
+    {{ .Values.slurmConfig.nodes }}
+
+    #-- Partitions
+    {{ .Values.slurmConfig.partitions }}
+
+    #-- Extra
+    {{ .Values.slurmConfig.extra }}
+
+  gres.conf: |
+{{ .Values.slurmConfig.gres | indent 4 }}

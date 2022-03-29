@@ -5,11 +5,11 @@ section() {
   echo "---$1---"
 }
 
-PROJECT=provisioning
+PROJECT=slurm-cluster
 
 section "Checking prerequisites"
 
-. "./scripts/common.sh"
+. "$(pwd)/scripts/common.sh"
 
 set -e
 

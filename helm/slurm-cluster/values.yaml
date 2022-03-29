@@ -1,0 +1,147 @@
+sssd:
+  # secret containing sssd.conf
+  # Will be mounted in /secrets/sssd
+  secretName:
+
+munge:
+  # secret containing munge.key
+  # Will be mounted in /secrets/munge
+  secretName:
+
+slurmConfig:
+  clusterName: my-cluster
+
+  compute:
+    srunPortRange: 60001-63000
+    debug: debug5
+
+  accounting: |
+    AccountingStorageType=accounting_storage/slurmdbd
+    AccountingStorageExternalHost=slurmdb.example.com:6819
+    AccountingStorageHost=slurmdb.example.com
+    AccountingStoragePort=6819
+    AccountingStorageTRES=gres/gpu
+
+  controller:
+    host: slurm-controller.example.com
+    parameters: enable_configless
+    debug: debug5
+
+    # secret containing jwt_hs256.key
+    # Will be mounted in /secrets/slurm
+    jwt:
+      secretName:
+
+  nodes: |
+    NodeName=cn[1-10] Sockets=8 CoresPerSocket=2 ThreadsPerCore=2 RealMemory=112000 Gres=gpu:2
+    NodeName=cn[11-12] Sockets=8 CoresPerSocket=2 ThreadsPerCore=2 RealMemory=112000 Gres=gpu:2
+
+  partitions: |
+    PartitionName=main Nodes=cn[1-10] Default=YES MaxTime=INFINITE State=UP OverSubscribe=NO TRESBillingWeights="CPU=2.6,Mem=0.25G,GRES/gpu=24.0"
+    PartitionName=main-beeond Nodes=cn[1-10] Default=NO MaxTime=INFINITE State=UP OverSubscribe=EXCLUSIVE TRESBillingWeights="CPU=2.6,Mem=0.25G,GRES/gpu=24.0"
+    PartitionName=private Nodes=cn[11-12] Default=NO MaxTime=INFINITE State=UP OverSubscribe=NO Hidden=YES AllowQos=admin
+
+  gres: |
+    NodeName=cn[1-12] File=/dev/nvidia[0-3] AutoDetect=nvml
+
+  # Extra slurm.conf configuration
+  # TODO: Move this to argocd
+  extra: ''
+
+controller:
+  replicas: 1
+
+  image: 'ghcr.io/deepsquare/slurm:0.1.0-controller'
+  imagePullPolicy: 'IfNotPresent'
+
+  labels: []
+  podAnnotations: []
+
+  command: ['/init']
+
+  resources:
+    requests:
+      cpu: '250m'
+      memory: '256Mi'
+    limits:
+      cpu: '1'
+      memory: '1Gi'
+
+  nodeAffinity: {}
+
+  updateStrategy: RollingUpdate
+
+  podSecurityContext:
+    fsGroup: 0
+    runAsUser: 0
+
+  # schedulerName:
+
+  securityContext:
+    capabilities:
+      drop: [ALL]
+  readOnlyRootFilesystem: false
+  runAsNonRoot: false
+  runAsUser: 0
+
+  # How long to wait to stop gracefully
+  terminationGracePeriod: 10
+
+  ## Use an alternate scheduler.
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  schedulerName: ''
+
+  imagePullSecrets: {}
+
+  nodeSelector: {}
+  tolerations: []
+
+  tmp:
+    medium: ''
+    size: 50Gi
+
+  persistence:
+    storageClassName: ''
+    accessModes: ['ReadWriteOnce']
+    size: 50Gi
+    selectorLabels:
+      app: slurm-controller
+
+  # Extra volume mounts
+  volumeMounts: []
+
+  # Extra volumes
+  volumes: []
+
+  # Extra volume claims
+  volumeClaimTemplates: []
+
+  service:
+    annotations: {}
+    labels: {}
+    clusterIP: ''
+
+    ## Port for Slurm Controller Service to listen on
+    ##
+    port: 6817
+
+    ## Port to expose on each node
+    ## Only used if service.type is 'NodePort'
+    ##
+    nodePort: 36817
+
+    ## Additional ports to open for Slurm Controller service
+    additionalPorts: []
+
+    externalIPs: []
+    loadBalancerIP: ''
+    loadBalancerSourceRanges: []
+
+    ## Denotes if this Service desires to route external traffic to node-local or cluster-wide endpoints
+    ##
+    externalTrafficPolicy: Cluster
+
+    ## Service type
+    ##
+    type: ClusterIP
