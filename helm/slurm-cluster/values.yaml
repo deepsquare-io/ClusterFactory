@@ -54,8 +54,8 @@ controller:
   image: 'ghcr.io/squarefactory/slurm:0.1.0-controller'
   imagePullPolicy: 'IfNotPresent'
 
-  labels: []
-  podAnnotations: []
+  labels: {}
+  annotations: {}
 
   command: ['/init']
 

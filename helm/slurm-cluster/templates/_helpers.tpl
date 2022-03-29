@@ -16,11 +16,19 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/* Fullname suffixed with controller */}}
+{{- define "slurm-cluster.controller.name" -}}
+{{- printf "%s-controller" (include "slurm-cluster.name" .) -}}
+{{- end }}
+
 {{- define "slurm-cluster.controller.fullname" -}}
 {{- printf "%s-controller" (include "slurm-cluster.fullname" .) -}}
 {{- end }}
 
 {{/* Fullname suffixed with login */}}
+{{- define "slurm-cluster.login.name" -}}
+{{- printf "%s-login" (include "slurm-cluster.name" .) -}}
+{{- end }}
+
 {{- define "slurm-cluster.login.fullname" -}}
 {{- printf "%s-login" (include "slurm-cluster.fullname" .) -}}
 {{- end }}

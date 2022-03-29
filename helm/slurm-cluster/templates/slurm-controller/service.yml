@@ -43,11 +43,10 @@ spec:
 {{- if .Values.controller.service.additionalPorts }}
 {{ toYaml .Values.controller.service.additionalPorts | indent 4 }}
 {{- end }}
-  publishNotReadyAddresses: {{ .Values.prometheus.service.publishNotReadyAddresses }}
+  publishNotReadyAddresses: {{ .Values.controller.service.publishNotReadyAddresses }}
   selector:
     app: "{{ template "slurm-cluster.controller.name" . }}"
 {{- if .Values.controller.service.sessionAffinity }}
   sessionAffinity: {{ .Values.controller.service.sessionAffinity }}
 {{- end }}
   type: "{{ .Values.controller.service.type }}"
-{{- end }}

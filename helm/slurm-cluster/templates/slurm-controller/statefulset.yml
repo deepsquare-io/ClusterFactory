@@ -13,18 +13,19 @@ spec:
       app: "{{ template "slurm-cluster.controller.name" . }}"
   replicas: {{ .Values.replicas }}
   template:
+    metadata:
       name: "{{ template "slurm-cluster.controller.name" . }}"
       labels:
         release: {{ .Release.Name | quote }}
         chart: "{{ .Chart.Name }}"
         app: "{{ template "slurm-cluster.controller.name" . }}"
-        {{- range $key, $value := .Values.controller.labels }}
-        {{ $key }}: {{ $value | quote }}
-        {{- end }}
+{{- if .Values.controller.labels }}
+{{ toYaml .Values.controller.labels | indent 8 }}
+{{- end }}
+{{- if .Values.controller.annotations }}
       annotations:
-        {{- range $key, $value := .Values.controller.podAnnotations }}
-        {{ $key }}: {{ $value | quote }}
-        {{- end }}
+{{ toYaml .Values.controller.annotations | indent 8 }}
+{{- end }}
     spec:
       {{- if .Values.controller.schedulerName }}
       schedulerName: "{{ .Values.controller.schedulerName }}"

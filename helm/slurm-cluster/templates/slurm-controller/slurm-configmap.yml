@@ -89,7 +89,7 @@ data:
     PriorityWeightQOS=100
 
     #-- Accounting
-    {{ .Values.slurmConfig.account }}
+{{ .Values.slurmConfig.accounting | indent 4 }}
     AccountingStoreFlags=job_comment,job_env,job_script
     AccountingStorageEnforce=associations,limits,qos
     PriorityDecayHalfLife=0
@@ -104,13 +104,13 @@ data:
     FederationParameters=fed_display
 
     #-- Compute nodes
-    {{ .Values.slurmConfig.nodes }}
+{{ .Values.slurmConfig.nodes | indent 4 }}
 
     #-- Partitions
-    {{ .Values.slurmConfig.partitions }}
+{{ .Values.slurmConfig.partitions | indent 4 }}
 
     #-- Extra
-    {{ .Values.slurmConfig.extra }}
+{{ .Values.slurmConfig.extra | indent 4 }}
 
   gres.conf: |
 {{ .Values.slurmConfig.gres | indent 4 }}
