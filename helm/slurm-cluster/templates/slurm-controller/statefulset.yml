@@ -6,6 +6,7 @@ metadata:
   labels:
     release: '{{ .Release.Name }}'
     chart: '{{ .Chart.Name }}'
+    app: "{{ template "slurm-cluster.controller.name" . }}"
 spec:
   serviceName: "{{ template "slurm-cluster.controller.name" . }}"
   selector:
