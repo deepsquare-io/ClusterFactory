@@ -111,7 +111,8 @@ spec:
 
           service:
             port: 6817
-            externalIPs: [10.10.2.152]
+            loadBalancerIP: 10.10.2.152
+            type: LoadBalancer
 
   destination:
     server: 'https://kubernetes.default.svc'

@@ -114,3 +114,48 @@ data:
 
   gres.conf: |
 {{ .Values.slurmConfig.gres | indent 4 }}
+
+  cgroup.conf: |
+    CgroupAutomount=yes
+    TaskAffinity=no
+    ## Isolate CPUs cores using cgroups
+    ConstrainCores=yes
+    ## Isolate GPUs using cgroups
+    ConstrainDevices=yes
+    ## Isolate RAM using cgroups
+    ConstrainRAMSpace=yes
+    AllowedRAMSpace=130
+    #ConstrainSwapSpace=yes
+
+    #### From a old cgroup.conf
+    #ConstrainKmemSpace=yes
+    #CgroupReleaseAgentDir="/etc/slurm/cgroup"
+    #AllowedRAMSpace=20 #not working
+    #### end old cgroup.conf
+
+  plugstack.conf: |
+    include /etc/slurm/plugstack.conf.d/*
+
+  epilog-slurmctld: |
+    #!/bin/bash
+    set -ex
+
+    EPILOG_DIR=/etc/slurm/epilog-slurmctld.d
+
+    for script in "${EPILOG_DIR}"/*; do
+      if [ -x "${script}" ]; then
+          source "${script}"
+      fi
+    done
+
+  prolog-slurmctld: |
+    #!/bin/bash
+
+    set -ex
+    PROLOG_DIR=/etc/slurm/prolog-slurmctld.d
+
+    for script in ${PROLOG_DIR}/*; do
+      if [ -x "${script}" ]; then
+      source "${script}"
+      fi
+    done

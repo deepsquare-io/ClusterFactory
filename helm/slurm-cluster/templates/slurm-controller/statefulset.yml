@@ -79,6 +79,12 @@ spec:
             - name: slurm-conf
               mountPath: /etc/slurm
               readOnly: false
+            - name: slurmctl-prologs
+              mountPath: /etc/slurm/prolog-slurmctld.d
+            - name: slurmctl-epilogs
+              mountPath: /etc/slurm/epilog-slurmctld.d
+            - name: slurm-spank
+              mountPath: /etc/slurm/plugstack.conf.d
             - name: slurm-jwt
               mountPath: /secrets/slurm
             - name: sssd
@@ -107,6 +113,17 @@ spec:
         - name: slurm-conf
           configMap:
             name: "{{ template "slurm-cluster.name" . }}-slurm-config"
+        - name: slurm-spank
+          configMap:
+            name: "{{ template "slurm-cluster.name" . }}-slurm-spank-config"
+        - name: slurmctl-prologs
+          configMap:
+            name: "{{ template "slurm-cluster.name" . }}-slurmctl-prologs"
+            defaultMode: 0755
+        - name: slurmctl-epilogs
+          configMap:
+            name: "{{ template "slurm-cluster.name" . }}-slurmctl-epilogs"
+            defaultMode: 0755
         - name: slurm-jwt
           secret:
             secretName: "{{ .Values.slurmConfig.controller.jwt.secretName }}"
