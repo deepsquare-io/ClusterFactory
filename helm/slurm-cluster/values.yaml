@@ -134,7 +134,7 @@ controller:
   service:
     annotations: {}
     labels: {}
-    clusterIP: 'None'
+    clusterIP: ''
 
     ## Port for Slurm Controller Service to listen on
     ##
