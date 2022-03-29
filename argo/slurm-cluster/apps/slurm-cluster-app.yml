@@ -34,14 +34,13 @@ spec:
 
           accounting: |
             AccountingStorageType=accounting_storage/slurmdbd
-            AccountingStorageExternalHost=slurmdb.csquare.gcloud:6819
-            AccountingStorageHost=slurmdb.csquare.gcloud
+            AccountingStorageExternalHost=slurmdbd.csquare.gcloud:6819
+            AccountingStorageHost=slurmdbd.csquare.gcloud
             AccountingStoragePort=6819
             AccountingStorageTRES=gres/gpu
 
           controller:
-            host: slurmctl
-            domain: ch1.csquare.run
+            ip: 10.10.2.152
             parameters: enable_configless
             debug: debug5
 

@@ -23,9 +23,8 @@ slurmConfig:
     AccountingStorageTRES=gres/gpu
 
   controller:
-    # SlurmctldHost = {{host}}.{{domain}}
-    host: slurm-controller
-    domain: example.com
+    # ip: for slurmd to be able to connect to slurmctld (i.e and externalIP ou your load balancer IP)
+    ip: 0.0.0.0
     parameters: enable_configless
     debug: debug5
 
