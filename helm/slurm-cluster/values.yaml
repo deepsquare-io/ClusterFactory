@@ -109,6 +109,19 @@ controller:
     selectorLabels:
       app: slurm-controller
 
+  readinessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    successThreshold: 3
+    timeoutSeconds: 5
+
+  livenessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+
   # Extra volume mounts
   volumeMounts: []
 

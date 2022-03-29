@@ -62,6 +62,14 @@ spec:
           ports:
             - containerPort: 6817
               name: slurmcltd
+          readinessProbe:
+            tcpSocket:
+              port: 6817
+{{ toYaml .Values.controller.readinessProbe | indent 12 }}
+          livenessProbe:
+            tcpSocket:
+              port: 6817
+{{ toYaml .Values.controller.livenessProbe | indent 12 }}
           volumeMounts:
             - name: state
               mountPath: /var/spool/slurmctl
