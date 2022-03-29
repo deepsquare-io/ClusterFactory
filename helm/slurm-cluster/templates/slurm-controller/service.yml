@@ -17,10 +17,6 @@ spec:
 {{- if .Values.controller.service.clusterIP }}
   clusterIP: {{ .Values.controller.service.clusterIP }}
 {{- end }}
-{{- if .Values.controller.service.externalIPs }}
-  externalIPs:
-{{ toYaml .Values.controller.service.externalIPs | indent 4 }}
-{{- end }}
 {{- if .Values.controller.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.controller.service.loadBalancerIP }}
 {{- end }}
