@@ -131,6 +131,14 @@ controller:
   # Extra volume claims
   volumeClaimTemplates: []
 
+  # Extra prologs (permissions will be 755)
+  #prologsConfigMap: 'prologs-config-map'
+  prologsConfigMap: ''
+
+  # Extra epilogs (permissions will be 755)
+  #epilogsConfigMap: 'epilogs-config-map'
+  epilogsConfigMap: ''
+
   service:
     annotations: {}
     labels: {}
