@@ -121,20 +121,20 @@ spec:
             defaultMode: 0755
             sources:
               - configMap:
-                name: "{{ template "slurm-cluster.name" . }}-slurmctl-prologs"
+                  name: "{{ template "slurm-cluster.name" . }}-slurmctl-prologs"
               {{- if .Values.controller.prologsConfigMap }}
               - configMap:
-                name: "{{ .Values.controller.prologsConfigMap }}"
+                  name: "{{ .Values.controller.prologsConfigMap }}"
               {{- end }}
         - name: slurmctl-epilogs
           projected:
             defaultMode: 0755
             sources:
               - configMap:
-                name: "{{ template "slurm-cluster.name" . }}-slurmctl-epilogs"
+                  name: "{{ template "slurm-cluster.name" . }}-slurmctl-epilogs"
               {{- if .Values.controller.epilogsConfigMap }}
               - configMap:
-                name: "{{ .Values.controller.epilogsConfigMap }}"
+                  name: "{{ .Values.controller.epilogsConfigMap }}"
               {{- end }}
         - name: slurm-jwt
           secret:
