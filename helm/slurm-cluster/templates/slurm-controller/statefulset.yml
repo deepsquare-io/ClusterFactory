@@ -55,6 +55,8 @@ spec:
           imagePullPolicy: "{{ .Values.controller.imagePullPolicy }}"
           command:
 {{ toYaml .Values.controller.command | indent 12 }}
+          host: "{{ .Values.controller.host }}"
+          subdomain: "{{ .Values.controller.domain }}"
           ports:
             - containerPort: 6817
               name: slurmcltd

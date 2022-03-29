@@ -40,7 +40,8 @@ spec:
             AccountingStorageTRES=gres/gpu
 
           controller:
-            host: slurmctl.ch1.csquare.run
+            host: slurmctl
+            domain: ch1.csquare.run
             parameters: enable_configless
             debug: debug5
 
@@ -69,7 +70,7 @@ spec:
             #MailProg=/usr/bin/fakemail
 
         controller:
-          image: 'ghcr.io/squarefactory/slurm-docker:reindeer'
+          image: 'ghcr.io/squarefactory/slurm-docker:0.1.1-slurmctl-reindeer'
           replicas: 1
 
           command: ['sh', '-c', 'update-ca-trust && /init']
@@ -93,8 +94,8 @@ spec:
             - name: slurmctl-ssh
               mountPath: /root/.ssh
             - name: ca-cert
-              mountPath: /etc/pki/ca-trust/source/anchors/csquare.gcloud.pem
-              subPath: csquare.gcloud.pa.pem
+              mountPath: /etc/pki/ca-trust/source/anchors/csquare.gcloud.ca.pem
+              subPath: csquare.gcloud.ca.pem
 
           # Extra volumes
           volumes:

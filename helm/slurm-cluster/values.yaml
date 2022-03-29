@@ -23,7 +23,9 @@ slurmConfig:
     AccountingStorageTRES=gres/gpu
 
   controller:
-    host: slurm-controller.example.com
+    # SlurmctldHost = {{host}}.{{domain}}
+    host: slurm-controller
+    domain: example.com
     parameters: enable_configless
     debug: debug5
 
