@@ -49,8 +49,8 @@ spec:
       imagePullSecrets:
 {{ toYaml .Values.controller.imagePullSecrets | indent 8 }}
       {{- end }}
-      hostname: "{{ .Values.controller.host }}"
-      subdomain: "{{ .Values.controller.domain }}"
+      hostname: "{{ .Values.slurmConfig.controller.host }}"
+      subdomain: "{{ .Values.slurmConfig.controller.domain }}"
       containers:
         - name: "{{ template "slurm-cluster.controller.name" . }}"
           image: "{{ .Values.controller.image }}"
