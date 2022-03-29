@@ -45,7 +45,9 @@ spec:
 {{- end }}
   publishNotReadyAddresses: {{ .Values.controller.service.publishNotReadyAddresses }}
   selector:
-    app: "{{ template "slurm-cluster.controller.name" . }}"
+    app.kubernetes.io/name: "{{ template "slurm-cluster.controller.name" . }}"
+    app.kubernetes.io/instance: "{{ template "slurm-cluster.controller.name" . }}"
+    app.kubernetes.io/component: controller
 {{- if .Values.controller.service.sessionAffinity }}
   sessionAffinity: {{ .Values.controller.service.sessionAffinity }}
 {{- end }}

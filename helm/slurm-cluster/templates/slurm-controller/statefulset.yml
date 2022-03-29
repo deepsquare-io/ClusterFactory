@@ -20,6 +20,9 @@ spec:
         release: {{ .Release.Name | quote }}
         chart: "{{ .Chart.Name }}"
         app: "{{ template "slurm-cluster.controller.name" . }}"
+        app.kubernetes.io/name: "{{ template "slurm-cluster.controller.name" . }}"
+        app.kubernetes.io/instance: "{{ template "slurm-cluster.controller.name" . }}"
+        app.kubernetes.io/component: controller
 {{- if .Values.controller.labels }}
 {{ toYaml .Values.controller.labels | indent 8 }}
 {{- end }}
