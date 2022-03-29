@@ -4,8 +4,12 @@ metadata:
   name: "{{ template "slurm-cluster.controller.name" . }}"
   namespace: '{{ .Release.Namespace }}'
   labels:
-    release: '{{ .Release.Name }}'
-    chart: '{{ .Chart.Name }}'
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}"
+    app: "{{ template "slurm-cluster.controller.name" . }}"
+    app.kubernetes.io/name: "{{ template "slurm-cluster.controller.name" . }}"
+    app.kubernetes.io/instance: "{{ template "slurm-cluster.controller.name" . }}"
+    app.kubernetes.io/component: controller
 {{- if .Values.controller.service.labels }}
 {{ toYaml .Values.controller.service.labels | indent 4 }}
 {{- end }}

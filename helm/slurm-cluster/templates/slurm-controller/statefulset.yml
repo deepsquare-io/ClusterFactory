@@ -12,6 +12,9 @@ spec:
   selector:
     matchLabels:
       app: "{{ template "slurm-cluster.controller.name" . }}"
+      app.kubernetes.io/name: "{{ template "slurm-cluster.controller.name" . }}"
+      app.kubernetes.io/instance: "{{ template "slurm-cluster.controller.name" . }}"
+      app.kubernetes.io/component: controller
   replicas: {{ .Values.replicas }}
   template:
     metadata:
