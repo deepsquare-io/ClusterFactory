@@ -52,13 +52,13 @@ spec:
             {{- end }}
           env:
             - name: ADDRESS
-              value: {{ .Values.csiPlugin.pluginDirectory }}/csi.sock
+              value: /var/lib/kubelet/plugins/csi-cvmfsplugin/csi.sock
           imagePullPolicy: "IfNotPresent"
           volumeMounts:
             - name: socket-dir
-              mountPath: {{ .Values.csiPlugin.pluginDirectory }}
+              mountPath: /var/lib/kubelet/plugins/csi-cvmfsplugin
       volumes:
         - name: socket-dir
           hostPath:
-            path: {{ .Values.csiPlugin.pluginDirectory }}
+            path: {{ .Values.csiPlugin.kubeletDir }}/plugins/csi-cvmfsplugin
             type: DirectoryOrCreate

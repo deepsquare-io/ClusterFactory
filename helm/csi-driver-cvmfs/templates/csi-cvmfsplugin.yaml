@@ -25,7 +25,7 @@ spec:
           image: {{ .Values.csiPlugin.nodeDriverImage }}
           args:
             - "--csi-address=/csi/csi.sock"
-            - "--kubelet-registration-path={{ .Values.csiPlugin.pluginDirectory }}/csi.sock"
+            - "--kubelet-registration-path=/var/lib/kubelet/plugins/csi-cvmfsplugin/csi.sock"
           lifecycle:
             preStop:
               exec:
