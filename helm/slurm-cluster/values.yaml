@@ -171,7 +171,7 @@ controller:
     type: ClusterIP
 
 login:
-  enabled: true
+  enabled: false
   replicas: 1
 
   image: 'ghcr.io/squarefactory/slurm:0.1.0-login'
