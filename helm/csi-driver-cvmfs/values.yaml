@@ -11,14 +11,12 @@ configs:
       CVMFS_QUOTA_LIMIT=-1
       CVMFS_CACHE_BASE={{ .Values.cache.localCache.mountPath }}
       CVMFS_USE_GEOAPI=no
+      CVMFS_HTTP_PROXY="DIRECT"
+      CVMFS_KEYS_DIR="/etc/cvmfs/keys"
       {{- if .Values.cache.alienCache.enabled }}
       CVMFS_ALIEN_CACHE={{ .Values.cache.alienCache.mountPath }}
       CVMFS_SHARED_CACHE=no
       {{- end -}}
-  #     CVMFS_SERVER_URL="http://cvmfs1-iu0.galaxyproject.org/cvmfs/@fqrn@;http://cvmfs1-tacc0.galaxyproject.org/cvmfs/@fqrn@;http://cvmfs1-psu0.galaxyproject.org/cvmfs/@fqrn@;http://cvmfs1-mel0.gvl.org.au/cvmfs/@fqrn@;http://cvmfs1-ufr0.galaxyproject.eu/cvmfs/@fqrn@"
-  #     CVMFS_KEYS_DIR="/etc/cvmfs/keys/galaxyproject.org"
-  #     CVMFS_USE_GEOAPI=yes
-  #     CVMFS_HTTP_PROXY="DIRECT"
   # gxyDataKey:
   #   mountPath: keys/data.galaxyproject.org.pub
   #   contents: |
