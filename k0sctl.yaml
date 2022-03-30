@@ -198,7 +198,7 @@ spec:
                   repositories:
                     software-sion-csquare-run: software.sion.csquare.run
                     unpacked-sion-csquare-run: unpacked.sion.csquare.run
-                    stdenv-sion-csquare-run: stdenv.sion.csquare.run.pub
+                    stdenv-sion-csquare-run: stdenv.sion.csquare.run
 
                   configs:
                     software-sion-csquare-run-keys:
@@ -260,6 +260,7 @@ spec:
                       enabled: false
 
                   csiPlugin:
+                    nodeDriverImage: quay.io/k8scsi/csi-node-driver-registrar:v2.1.0
                     pluginDirectory: /var/lib/k0s/kubelet/plugins/csi-cvmfsplugin
                   csiAttacher:
                     image: quay.io/k8scsi/csi-attacher:v3.1.0
@@ -269,5 +270,5 @@ spec:
                   csiProvisioner:
                     image: quay.io/k8scsi/csi-provisioner:v2.1.2
                     args:
-                      - "--v=5"
-                      - "--csi-address=$(ADDRESS)
+                      - '--v=5'
+                      - '--csi-address=$(ADDRESS)'

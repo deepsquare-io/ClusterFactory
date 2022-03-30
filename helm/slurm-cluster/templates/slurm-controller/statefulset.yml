@@ -83,12 +83,16 @@ spec:
             - name: slurm-conf
               mountPath: /etc/slurm
               readOnly: false
+            {{- if .Values.controller.prologsConfigMap }}
             - name: slurmctl-prologs
               mountPath: /etc/slurm/prolog-slurmctld.d
               readOnly: true
+            {{- end }}
+            {{- if .Values.controller.epilogsConfigMap }}
             - name: slurmctl-epilogs
               mountPath: /etc/slurm/epilog-slurmctld.d
               readOnly: true
+            {{- end }}
             - name: slurm-spank
               mountPath: /etc/slurm/plugstack.conf.d
               readOnly: true
