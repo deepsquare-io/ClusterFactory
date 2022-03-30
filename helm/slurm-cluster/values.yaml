@@ -12,7 +12,8 @@ slurmConfig:
   clusterName: my-cluster
 
   compute:
-    srunPortRange: 60001-63000
+    srunPortRangeStart: 60001
+    srunPortRangeEnd: 63000
     debug: debug5
 
   accounting: |
@@ -170,7 +171,7 @@ controller:
     type: ClusterIP
 
 login:
-  enabled: false
+  enabled: true
   replicas: 1
 
   image: 'ghcr.io/squarefactory/slurm:0.1.0-login'
@@ -256,37 +257,6 @@ login:
   # Extra volume claims
   volumeClaimTemplates: []
 
-  # Service is not recommended, prefer servicePerReplicas
-  service:
-    enabled: false
-    annotations: {}
-    labels: {}
-    clusterIP: ''
-
-    ## Port for Slurm Login Service to listen on
-    ##
-    port: 22
-
-    ## Port to expose on each node
-    ## Only used if service.type is 'NodePort'
-    ##
-    nodePort: 30022
-
-    ## Additional ports to open for Slurm Controller service
-    additionalPorts: []
-
-    externalIPs: []
-    loadBalancerIP: ''
-    loadBalancerSourceRanges: []
-
-    ## Denotes if this Service desires to route external traffic to node-local or cluster-wide endpoints
-    ##
-    externalTrafficPolicy: Cluster
-
-    ## Service type
-    ##
-    type: ClusterIP
-
   servicePerReplica:
     enabled: true
     # You may have to add an anotation to indicate the type of load balancer
@@ -302,9 +272,6 @@ login:
     ## Only used if service.type is 'NodePort'
     ##
     nodePort: 30022
-
-    ## Additional ports to open for Slurm Controller service
-    additionalPorts: []
 
     externalIPs: []
     loadBalancerIP: ''

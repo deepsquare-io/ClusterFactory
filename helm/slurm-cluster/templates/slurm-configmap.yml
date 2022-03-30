@@ -30,7 +30,7 @@ data:
     #-- Slurmd
     SlurmdDebug={{ .Values.slurmConfig.compute.debug }}
     SlurmdLogFile=/var/log/slurm/slurmd.log
-    SrunPortRange={{ .Values.slurmConfig.compute.srunPortRange }}
+    SrunPortRange={{ .Values.slurmConfig.compute.srunPortRangeStart }}-{{ .Values.slurmConfig.compute.srunPortRangeEnd }}
 
     #-- Default ressources allocation
     DefCpuPerGPU=4

@@ -54,9 +54,11 @@ items:
           {{- end }}
           port: {{ $serviceValues.port }}
           targetPort: sshd
-        {{- if $serviceValues.additionalPorts }}
-{{ toYaml $serviceValues.additionalPorts | indent 8 }}
-        {{- end }}
+      {{- range untilStep ($.Values.slurmConfig.compute.srunPortRangeStart|int) ($.Values.slurmConfig.compute.srunPortRangeEnd|int) 1 }}
+        - name: "srun-{{ . }}"
+          port: {{ . }}
+          targetPort: "srun-{{ . }}"
+      {{- end }}
       selector:
         app.kubernetes.io/name: "{{ template "slurm-cluster.login.name" $ }}"
         app.kubernetes.io/instance: "{{ template "slurm-cluster.login.name" $ }}"
