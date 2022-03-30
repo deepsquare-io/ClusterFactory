@@ -1,0 +1,142 @@
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: csi-cvmfsplugin
+  labels:
+    app.kubernetes.io/name: {{ include "cvmfs-csi.name" . }}
+    helm.sh/chart: {{ include "cvmfs-csi.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: csi-cvmfsplugin
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "cvmfs-csi.fullname" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app: csi-cvmfsplugin
+    spec:
+      serviceAccount: {{include "cvmfs-csi.fullname" .}}-cvmfs-nodeplugin
+      hostNetwork: true
+      containers:
+        - name: csi-driver-registrar
+          image: {{ .Values.csiPlugin.nodeDriverImage }}
+          args:
+            - "--csi-address=/csi/csi.sock"
+            - "--kubelet-registration-path={{ .Values.csiPlugin.pluginDirectory }}/csi.sock"
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "rm -rf /registration/csi-cvmfsplugin /registration/csi-cvmfsplugin-reg.sock"]
+          volumeMounts:
+            - name: plugin-dir
+              mountPath: /csi
+            - name: registration-dir
+              mountPath: /registration
+        - name: csi-cvmfsplugin
+          securityContext:
+            privileged: true
+            capabilities:
+              add: ["SYS_ADMIN"]
+            allowPrivilegeEscalation: true
+          image: {{ .Values.csiPlugin.image }}
+          args :
+            {{- range $arg := .Values.csiPlugin.args }}
+            - {{ $arg | quote -}}
+            {{- end }}
+          env:
+            - name: NODE_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: CSI_ENDPOINT
+              value: unix:/{{ .Values.csiPlugin.pluginDirectory }}/csi.sock
+          imagePullPolicy: "Always"
+          volumeMounts:
+            - name: plugin-dir
+              mountPath: {{ .Values.csiPlugin.pluginDirectory }}
+            - name: pods-mount-dir
+              mountPath: /var/lib/kubelet/pods
+              mountPropagation: "Bidirectional"
+            - mountPath: /sys
+              name: host-sys
+            - name: lib-modules
+              mountPath: /lib/modules
+              readOnly: true
+            - name: host-dev
+              mountPath: /dev
+            {{- range $key, $entry := .Values.configs }}
+            - name: cvmfs-config
+              mountPath: /etc/cvmfs/{{ $entry.mountPath }}
+              subPath: {{ $key }}
+            {{- end }}
+            - name: cvmfs-local-cache
+              mountPath: {{ .Values.cache.localCache.mountPath }}
+            {{- if .Values.cache.alienCache.enabled }}
+            - name: cvmfs-alien-cache
+              mountPath: {{ .Values.cache.alienCache.mountPath }}
+            {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: plugin-dir
+          hostPath:
+            path: {{ .Values.csiPlugin.pluginDirectory }}
+            type: DirectoryOrCreate
+        - name: registration-dir
+          hostPath:
+            path: /var/lib/kubelet/plugins_registry/
+            type: DirectoryOrCreate
+        - name: pods-mount-dir
+          hostPath:
+            path: /var/lib/kubelet/pods
+            type: Directory
+        - name: host-sys
+          hostPath:
+            path: /sys
+        - name: lib-modules
+          hostPath:
+            path: /lib/modules
+        - name: host-dev
+          hostPath:
+            path: /dev
+        - name: cvmfs-config
+          configMap:
+            name: cvmfs-configmap
+        {{- if (and .Values.cache.alienCache.enabled .Values.cache.localCache.enabled) }}
+        {{- fail "Only one of alien or local cache should be enabled."}}
+        {{- end }}
+        {{- if .Values.cache.alienCache.enabled }}
+        {{- if .Values.cache.alienCache.existingClaim }}
+        - name: cvmfs-alien-cache
+          persistentVolumeClaim:
+            claimName: {{ .Values.cache.alienCache.existingClaim }}
+        - name: cvmfs-local-cache
+          emptyDir: {}
+        {{- else }}
+        - name: cvmfs-alien-cache
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-cvmfs-alien-cache-pvc
+        - name: cvmfs-local-cache
+          emptyDir: {}
+        {{- end }}
+        {{- else }}
+        {{- if .Values.cache.localCache.enabled }}
+        {{- if .Values.cache.localCache.existingClaim }}
+        - name: cvmfs-local-cache
+          persistentVolumeClaim:
+            claimName: {{ .Values.cache.localCache.existingClaim }}
+        {{- else }}
+        - name: cvmfs-local-cache
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-cvmfs-local-cache-pvc
+        {{- end }}
+        {{- else }}
+        - name: cvmfs-local-cache
+          emptyDir: {}
+        {{- end }}
+        {{- end }}

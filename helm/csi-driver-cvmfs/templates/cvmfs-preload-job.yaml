@@ -1,0 +1,104 @@
+{{- if .Values.cache.preload.enabled }}
+{{- range $key, $repo := .Values.repositories -}}
+{{- range $prerepo := $.Values.cache.preload.repositories }}
+{{- if eq $repo $prerepo.name }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $.Release.Name }}-cvmfs-pvc-{{ $key }}
+  labels:
+    app.kubernetes.io/name: {{ include "cvmfs-csi.name" $ }}
+    helm.sh/chart: {{ include "cvmfs-csi.chart" $ }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    app.kubernetes.io/managed-by: {{ $.Release.Service }}
+  annotations:
+    "helm.sh/hook": "post-install"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+spec:
+  accessModes:
+  - ReadOnlyMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: {{ $key }}
+---
+{{- end }}
+{{- end }}
+{{- end }}
+{{- range $key, $repo := .Values.repositories -}}
+{{- range $num, $prerepo := $.Values.cache.preload.repositories }}
+{{- if eq $repo $prerepo.name }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ $.Release.Name }}-cvmfs-cache-preload-{{ $num }}
+  labels:
+    app.kubernetes.io/name: {{ include "cvmfs-csi.name" $ }}
+    helm.sh/chart: {{ include "cvmfs-csi.chart" $ }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    app.kubernetes.io/managed-by: {{ $.Release.Service }}
+spec:
+  backoffLimit: 10
+  template:
+    spec:
+      restartPolicy: Never
+      {{- with $.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: preload-cache-{{ $key }}
+        image: {{ $prerepo.image }}
+        command: ["sh", "-c", {{- join " & " $prerepo.commands | quote }}]
+        volumeMounts:
+          - name: {{ $key }}-vol
+            mountPath: {{ $prerepo.mountPath }}
+          {{- if $prerepo.mountConfigs }}
+          {{- range $config := $prerepo.mountConfigs }}
+          {{- range $key, $entry := $.Values.configs }}
+          {{- if eq $key $config }}
+          - name: cvmfs-config
+            mountPath: /etc/cvmfs/{{ $entry.mountPath }}
+            subPath: {{ $key }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          {{- if $prerepo.mountCache }}
+          - name: cvmfs-local-cache
+            mountPath: {{ $.Values.cache.localCache.mountPath }}
+          {{- if $.Values.cache.alienCache.enabled }}
+          - name: cvmfs-alien-cache
+            mountPath: {{ $.Values.cache.alienCache.mountPath }}
+          {{- end }}
+          {{- end }}
+      volumes:
+        - name: {{ $key }}-vol
+          persistentVolumeClaim:
+            claimName: {{ $.Release.Name }}-cvmfs-pvc-{{ $key }}
+        - name: cvmfs-config
+          configMap:
+            name: cvmfs-configmap
+        {{- if $prerepo.mountCache }}
+        {{- if $.Values.cache.alienCache.enabled }}
+        - name: cvmfs-alien-cache
+          persistentVolumeClaim:
+            claimName: {{ $.Release.Name }}-cvmfs-alien-cache-pvc
+        - name: cvmfs-local-cache
+          emptyDir: {}
+        {{- else }}
+        {{- if $.Values.cache.localCache.enabled }}
+        - name: cvmfs-local-cache
+          persistentVolumeClaim:
+            claimName: {{ $.Release.Name }}-cvmfs-local-cache-pvc
+        {{- else }}
+        - name: {{ $.Release.Name }}-cvmfs-local-cache-pvc
+          emptyDir: {}
+        {{- end }}
+        {{- end }}
+        {{- end }}
+{{- end }}
+{{- end }}
+---
+{{- end }}
+{{- end }}
