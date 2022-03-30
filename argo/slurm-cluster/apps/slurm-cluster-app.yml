@@ -132,6 +132,7 @@ spec:
             type: LoadBalancer
 
         login:
+          enabled: true
           image: 'ghcr.io/squarefactory/slurm:0.1.1-login-reindeer'
           replicas: 1
 
@@ -139,6 +140,9 @@ spec:
 
           imagePullSecrets:
             - name: ghcr-marc-secret
+
+          sshd:
+            secretName: login-sshd-secret
 
           # Extra volume mounts
           volumeMounts:

@@ -220,6 +220,13 @@ login:
   nodeSelector: {}
   tolerations: []
 
+  # secret containing SSH host keys
+  #
+  # Snippet to regenerate keys:
+  #
+  #   yes 'y' | ssh-keygen -N '' -f ./ssh_host_rsa_key -t rsa -C headnode
+  #   yes 'y' | ssh-keygen -N '' -f ./ssh_host_ecdsa_key -t ecdsa -C headnode
+  #   yes 'y' | ssh-keygen -N '' -f ./ssh_host_ed25519_key -t ed25519 -C headnod
   sshd:
     secretName:
 

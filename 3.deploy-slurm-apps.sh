@@ -26,6 +26,9 @@ kubectl apply -f ./argo/${PROJECT}/volumes
 section "Deploy initial secrets"
 kubectl apply -f ./argo/${PROJECT}/secrets
 
+section "Deploy initial configs"
+kubectl apply -f ./argo/${PROJECT}/configs
+
 section "Deploy ${PROJECT} project"
 kubectl apply -f ./argo/${PROJECT}/app-project.yml
 

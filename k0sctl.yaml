@@ -14,7 +14,7 @@ spec:
         - --debug
 
   k0s:
-    version: 1.23.3+k0s.1
+    version: 1.23.5+k0s.0
     dynamicConfig: false
     config:
       apiVersion: k0s.k0sproject.io/v1beta1
@@ -199,6 +199,7 @@ spec:
                     software-sion-csquare-run: software.sion.csquare.run
                     unpacked-sion-csquare-run: unpacked.sion.csquare.run
                     stdenv-sion-csquare-run: stdenv.sion.csquare.run.pub
+
                   configs:
                     software-sion-csquare-run-keys:
                       mountPath: keys/software.sion.csquare.run.pub
@@ -251,3 +252,22 @@ spec:
                       contents: |
                         CVMFS_HTTP_PROXY="${CVMFS_HTTP_PROXY:=DIRECT}"
                         CVMFS_SERVER_URL=http://cvmfs.ch1.csquare.run/cvmfs/stdenv.sion.csquare.run
+
+                  cache:
+                    alienCache:
+                      enabled: false
+                    localCache:
+                      enabled: false
+
+                  csiPlugin:
+                    pluginDirectory: /var/lib/k0s/kubelet/plugins/csi-cvmfsplugin
+                  csiAttacher:
+                    image: quay.io/k8scsi/csi-attacher:v3.1.0
+                    args:
+                      - '--csi-address=$(ADDRESS)'
+                      - '--v=5'
+                  csiProvisioner:
+                    image: quay.io/k8scsi/csi-provisioner:v2.1.2
+                    args:
+                      - "--v=5"
+                      - "--csi-address=$(ADDRESS)

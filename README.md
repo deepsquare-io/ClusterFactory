@@ -48,6 +48,33 @@ Use the `kubeseal-every-local-files.sh` file to convert each `-secret.yml.local`
 
 Once all the configurations are done (values, secrets, volumes), you should be able to run the `3.deploy*.sh` scripts. We recommend that you do not use these scripts as they may be taylored for our cluster and that you should deploy the applications yourself.
 
+## About deleting a k0s helm extension
+
+First, remove the extension in the k0sctl.yaml.
+
+Then, try to remove the resource:
+
+```sh
+# List with kubectl get Chart -n kube-system
+kubectl delete Chart <k0s-addon-chart> -n kube-system
+```
+
+If it gets stuck (because you have already `helm uninstall`), remove the `finalizers`.
+
+```sh
+kubectl patch Chart <k0s-addon-chart> -n kube-system \
+  --type json \
+  --patch='[{"op": "remove", "path": "/metadata/finalizers"}]'
+```
+
+Finally, on the controller node, make sure that the `/var/lib/k0s/manifests/helm/<addon_crd_manifest>` doesn't exists.
+
+Apply k0s one last time and you are done !
+
+Note: If you need to reinstall the chart via `k0sctl.yaml`, you will have to apply manually `/var/lib/k0s/manifests/helm/<addon_crd_manifest>` after applying `k0sctl.yaml`.
+
+Issue related: https://github.com/k0sproject/k0s/issues/1456
+
 ## Documentations to help you deploy
 
 To be able to configure this stack you should be proficient in:

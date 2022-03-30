@@ -24,7 +24,6 @@ nodeAffinity: {}
 updateStrategy: RollingUpdate
 
 podSecurityContext:
-  fsGroup: 0
   runAsUser: 0
 
 securityContext:
