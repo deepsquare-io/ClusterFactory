@@ -133,7 +133,7 @@ spec:
 
         login:
           enabled: true
-          image: 'ghcr.io/squarefactory/slurm:0.1.1-login-reindeer'
+          image: 'ghcr.io/squarefactory/slurm-docker:0.1.1-login-reindeer'
           replicas: 1
 
           command: ['sh', '-c', 'update-ca-trust && /init']
