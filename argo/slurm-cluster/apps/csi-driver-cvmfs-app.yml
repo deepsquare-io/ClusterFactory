@@ -60,17 +60,17 @@ spec:
           software-sion-csquare-run-config:
             mountPath: config.d/software.sion.csquare.run.conf
             contents: |
-              CVMFS_HTTP_PROXY="${CVMFS_HTTP_PROXY:=DIRECT}"
+              CVMFS_HTTP_PROXY="DIRECT"
               CVMFS_SERVER_URL=http://cvmfs.ch1.csquare.run/cvmfs/software.sion.csquare.run
           unpacked-sion-csquare-run-config:
             mountPath: config.d/unpacked.sion.csquare.run.conf
             contents: |
-              CVMFS_HTTP_PROXY="${CVMFS_HTTP_PROXY:=DIRECT}"
+              CVMFS_HTTP_PROXY="DIRECT"
               CVMFS_SERVER_URL=http://cvmfs.ch1.csquare.run/cvmfs/unpacked.sion.csquare.run
           stdenv-sion-csquare-run-config:
             mountPath: config.d/stdenv.sion.csquare.run.conf
             contents: |
-              CVMFS_HTTP_PROXY="${CVMFS_HTTP_PROXY:=DIRECT}"
+              CVMFS_HTTP_PROXY="DIRECT"
               CVMFS_SERVER_URL=http://cvmfs.ch1.csquare.run/cvmfs/stdenv.sion.csquare.run
 
         cache:

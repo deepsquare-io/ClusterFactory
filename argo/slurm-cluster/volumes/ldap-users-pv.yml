@@ -19,7 +19,7 @@ spec:
     volumeHandle: 9d596148-ba95-4a16-9da5-004ece8fae3d
     volumeAttributes:
       server: 10.10.2.11
-      share: '/mnt/pool1/compute-nodes/ldap-users'
+      share: '/mnt/pool1/ldap-users'
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain

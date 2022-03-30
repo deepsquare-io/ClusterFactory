@@ -12,7 +12,6 @@ configs:
       CVMFS_CACHE_BASE={{ .Values.cache.localCache.mountPath }}
       CVMFS_USE_GEOAPI=no
       {{- if .Values.cache.alienCache.enabled }}
-      CVMFS_SHARED_CACHE=no
       CVMFS_ALIEN_CACHE={{ .Values.cache.alienCache.mountPath }}
       CVMFS_SHARED_CACHE=no
       {{- end -}}
