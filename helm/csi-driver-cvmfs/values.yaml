@@ -108,7 +108,7 @@ csiPlugin:
     - '--endpoint=$(CSI_ENDPOINT)'
     - '--v=5'
     - '--drivername=csi-cvmfsplugin'
-  pluginDirectory: /var/lib/kubelet/plugins/csi-cvmfsplugin
+  kubeletDir: /var/lib/kubelet
   nodeDriverImage: quay.io/k8scsi/csi-node-driver-registrar:v2.1.0
 csiAttacher:
   image: quay.io/k8scsi/csi-attacher:v3.1.0

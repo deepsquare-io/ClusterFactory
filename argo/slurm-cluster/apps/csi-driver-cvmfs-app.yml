@@ -81,6 +81,7 @@ spec:
 
         csiPlugin:
           image: brinkmanlab/csi-cvmfsplugin:1.2.0
+          kubeletDir: /var/lib/k0s/kubelet
 
   destination:
     server: 'https://kubernetes.default.svc'

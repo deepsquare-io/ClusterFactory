@@ -52,11 +52,11 @@ spec:
                 fieldRef:
                   fieldPath: spec.nodeName
             - name: CSI_ENDPOINT
-              value: unix:/{{ .Values.csiPlugin.pluginDirectory }}/csi.sock
+              value: unix://var/lib/kubelet/plugins/csi-cvmfsplugin/csi.sock
           imagePullPolicy: "Always"
           volumeMounts:
             - name: plugin-dir
-              mountPath: {{ .Values.csiPlugin.pluginDirectory }}
+              mountPath: /var/lib/kubelet/plugins/csi-cvmfsplugin
             - name: pods-mount-dir
               mountPath: /var/lib/kubelet/pods
               mountPropagation: "Bidirectional"
@@ -85,15 +85,15 @@ spec:
       volumes:
         - name: plugin-dir
           hostPath:
-            path: {{ .Values.csiPlugin.pluginDirectory }}
+            path: {{ .Values.csiPlugin.kubeletDir }}/plugins/csi-cvmfsplugin
             type: DirectoryOrCreate
         - name: registration-dir
           hostPath:
-            path: /var/lib/kubelet/plugins_registry/
+            path: {{ .Values.csiPlugin.kubeletDir }}/plugins_registry/
             type: DirectoryOrCreate
         - name: pods-mount-dir
           hostPath:
-            path: /var/lib/kubelet/pods
+            path: {{ .Values.csiPlugin.kubeletDir }}/pods
             type: Directory
         - name: host-sys
           hostPath:
