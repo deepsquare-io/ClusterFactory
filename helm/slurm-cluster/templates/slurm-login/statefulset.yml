@@ -69,7 +69,7 @@ spec:
 {{ toYaml .Values.login.command | indent 12 }}
           ports:
             - containerPort: 22
-              name: ssh
+              name: sshd
           readinessProbe:
             tcpSocket:
               port: 22

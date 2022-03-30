@@ -244,7 +244,7 @@ spec:
                     storage: 1Gi
 
           servicePerReplica:
-            enabled: false
+            enabled: true
             annotations:
               metallb.universe.tf/address-pool: slurm-ips
             loadBalancerSourceRanges: [10.10.2.40/27]
