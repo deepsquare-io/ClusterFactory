@@ -68,7 +68,6 @@ controller:
   updateStrategy: RollingUpdate
 
   podSecurityContext:
-    fsGroup: 0
     runAsUser: 0
 
   # schedulerName:
@@ -195,7 +194,6 @@ login:
   updateStrategy: RollingUpdate
 
   podSecurityContext:
-    fsGroup: 0
     runAsUser: 0
 
   # schedulerName:

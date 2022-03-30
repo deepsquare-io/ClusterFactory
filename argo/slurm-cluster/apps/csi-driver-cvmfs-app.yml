@@ -79,6 +79,9 @@ spec:
           localCache:
             enabled: false
 
+        csiPlugin:
+          image: brinkmanlab/csi-cvmfsplugin:1.2.0
+
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: slurm-cluster

@@ -88,7 +88,7 @@ spec:
                       - name: slurm-ips
                         protocol: layer2
                         addresses:
-                          - 10.10.2.45-10.10.2.50
+                          - 10.10.2.46-10.10.2.50
 
               - name: traefik
                 chartname: traefik/traefik
