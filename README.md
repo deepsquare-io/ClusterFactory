@@ -1,28 +1,70 @@
 # Cluster Factory Community Edition Kubernetes Stack
 
-## Deployment method
+## Deployment process
 
-- Deploy a k0s cluster with helm extensions.
-- Deploy core certs issuers, traefik routes and dashboards.
-- Deploy apps with argocd
+This project will deploy in the following order:
+
+- A k0s cluster with helm extensions (MetalLB, Traefik, Cert-Manager, CSI Drivers). Also with KubeVirt (VM workloads) and Multus (multiple network interfaces).
+- Core certs issuers, traefik routes and dashboards.
+- Apps with argocd
+
+## Preparation
+
+For kubevirt, your hosts must have SELinux permissive and libvirt, qemu and eventually kvm installed.
+
+Since k0s is an "outlier", you should create a symbolic link for `/var/lib/kubelet` to `/var/lib/k0s/kubelet` (`ln -s /var/lib/kubelet /var/lib/k0s/kubelet`) in all of the hosts to avoid incompatibilities with official k8s solutions.
 
 ## Customize for your cluster
 
 You can already edit the values of the helm charts in `k0sctl.yaml` !
 
-Start with `metallb` and make sure that the addresses range correspond to your external network.
+Start with the `hosts` and then verify the solutions used for the cluster in the `k0s` block. Changing these options might be difficult in the future!
 
-Example: `10.10.2.100-10.10.2.105` means that the first Traefik Ingress will be assigned the ip 10.10.2.100 on the external network.
+Edit the parameters of the extension `metallb` and make sure that the addresses range correspond to your external network. These IPs correspond to the entrypoints to youy k8s cluster !
+
+Example: `10.10.2.100-10.10.2.105` means that MetalLB will use these IPs. The first `LoadBalancer` service will be assigned the ip 10.10.2.100 on the external network, but you should use `loadBalancerIP` to allocate the right IP.
 
 You can then edit the `traefik` values and put the right ports for your apps.
 
-Then, add/modify the cluster issuers to have the right TLS config.
+Then, add/modify the cluster issuers to have the right TLS config in the `core/cert-manager` directory. **Search and replace** is your friend.
 
-Finally, edit the different URLs in the routes of the `core` directory.
+Finally check for every `values.yml` in the `core` directory.
 
 You must have a DNS for the best experience. TLS is enabled by default and use a self signed cluster issuer.
 
-The default urls are:
+You can then launch `1.deploy-k0s.sh` and `2.deploy-core-apps.sh`.
 
-- `traefik.ch1.csquare.run`
-- `argo.ch1.csquare.run`
+## Customize the ArgoCD Apps
+
+Before we start, the `helm` directory is just a helm repository for deploying our stack, so you should never edit these files directly.
+
+The exception being `slurm-cluster` as this application has been taylored for our cluster and you may be interested in editing the slurm stack (e.g. changing the default prologs and epilogs).
+
+Otherwise, to edit the argoCD applications, go to the `argo` directory. You need to edit and check all the files in this directory.
+
+You also need to **regenerate all the sealed secrets** as they are for our cluster. There are some examples, but you can also add secrets to pull from git repositories and docker images.
+
+Use the `kubeseal-every-local-files.sh` file to convert each `-secret.yml.local` to `-sealed-secret.yml`.
+
+Once all the configurations are done (values, secrets, volumes), you should be able to run the `3.deploy*.sh` scripts. We recommend that you do not use these scripts as they may be taylored for our cluster and that you should deploy the applications yourself.
+
+## Documentations to help you deploy
+
+To be able to configure this stack you should be proficient in:
+
+- Kubernetes
+- Helm templating
+- CNIs (Multus, Calico and plugins...)
+
+There are other stuffs to learn, but you can learn it during the deployment.
+
+- [Kubernetes Documentation (not going to lie, you're gonna need it)](https://kubernetes.io/docs/concepts/)
+- [Helm Values Files](https://helm.sh/docs/chart_template_guide/values_files/)
+- [K0s Configuration](https://docs.k0sproject.io/v1.23.5+k0s.0/configuration/)
+- [Cert-Manager Issuers Configuration](https://cert-manager.io/docs/configuration/)
+- [Multus CNI Quickstart](https://github.com/k8snetworkplumbingwg/multus-cni/blob/master/docs/quickstart.md)
+- [CNI Plugins Overview](https://www.cni.dev/plugins/current/)
+- [KubeVirt User Guide](https://kubevirt.io/user-guide/)
+- [ArgoCD Application YAML](https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/application.yaml)
+- [Traefik Ingress Routes](https://doc.traefik.io/traefik/routing/providers/kubernetes-crd/)
+- [Traefik Ingress](https://doc.traefik.io/traefik/routing/providers/kubernetes-ingress/)
