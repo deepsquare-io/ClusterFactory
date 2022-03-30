@@ -21,7 +21,7 @@ spec:
           stdenv-sion-csquare-run: stdenv.sion.csquare.run
 
         configs:
-            defaultLocal:
+          defaultLocal:
             mountPath: default.local
             contents: |
               CVMFS_QUOTA_LIMIT=-1
