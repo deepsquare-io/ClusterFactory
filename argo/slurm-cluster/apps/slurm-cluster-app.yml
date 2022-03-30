@@ -44,11 +44,6 @@ spec:
             parameters: enable_configless
             debug: debug5
 
-            # secret containing jwt_hs256.key
-            # Will be mounted in /secrets/slurm
-            jwt:
-              secretName: slurm-secret
-
           nodes: |
             NodeName=cn[1-10]  CPUs=32 Boards=1 SocketsPerBoard=1 CoresPerSocket=16 ThreadsPerCore=2 RealMemory=128473 Gres=gpu:2
             NodeName=cn[11-12] CPUs=32 Boards=1 SocketsPerBoard=1 CoresPerSocket=16 ThreadsPerCore=2 RealMemory=128473 Gres=gpu:2
@@ -77,10 +72,6 @@ spec:
           imagePullSecrets:
             - name: ghcr-marc-secret
 
-          tmp:
-            medium: ''
-            size: 50Gi
-
           persistence:
             storageClassName: ''
             accessModes: ['ReadWriteOnce']
@@ -102,6 +93,14 @@ spec:
                   mountPath: /in-ssh
                 - name: root-ssh-dir
                   mountPath: /out-ssh
+
+          # secret containing jwt_hs256.key
+          # Will be mounted in /secrets/slurm
+          jwt:
+            secretName: slurm-secret
+
+          prologsConfigMap: 'slurmctl-prologs'
+          epilogsConfigMap: 'slurmctl-epilogs'
 
           # Extra volume mounts
           volumeMounts:
@@ -130,6 +129,121 @@ spec:
           service:
             port: 6817
             loadBalancerIP: 10.10.2.152
+            type: LoadBalancer
+
+        login:
+          image: 'ghcr.io/squarefactory/slurm:0.1.1-login-reindeer'
+          replicas: 1
+
+          command: ['sh', '-c', 'update-ca-trust && /init']
+
+          imagePullSecrets:
+            - name: ghcr-marc-secret
+
+          # Extra volume mounts
+          volumeMounts:
+            - name: ca-cert
+              mountPath: /etc/pki/ca-trust/source/anchors/csquare.gcloud.ca.pem
+              subPath: csquare.gcloud.ca.pem
+            - name: slurm-login-profile
+              mountPath: /etc/profile.d/z00_lmod.sh
+              subPath: z00_lmod.sh
+            - name: slurm-login-profile
+              mountPath: /etc/profile.d/z01_lmod.sh
+              subPath: z01_lmod.sh
+            - name: ldap-users-pvc
+              mountPath: /home/ldap-users
+            - name: jobs-logs-pvc
+              mountPath: /opt/jobs-logs
+            - name: images-pvc
+              mountPath: /opt/images
+            - name: experiments-pvc
+              mountPath: /opt/experiments
+            - name: software-sion-csquare-run-pvc
+              mountPath: /opt/software
+            - name: stdenv-sion-csquare-run-pvc
+              mountPath: /opt/stdenv
+            - name: unpacked-sion-csquare-run-pvc
+              mountPath: /opt/unpacked
+
+          # Extra volumes
+          volumes:
+            - name: ca-cert
+              secret:
+                secretName: local-ca-secret
+            - name: slurm-login-profile
+              configMap:
+                name: slurm-login-profile
+                defaultMode: 493
+
+          # Extra volume claims
+          volumeClaimTemplates:
+            - metadata:
+                name: ldap-users-pvc
+              spec:
+                volumeName: ldap-users-pv
+                accessModes: [ReadWriteMany]
+                storageClassName: ''
+                resources:
+                  requests:
+                    storage: 1000Gi
+            - metadata:
+                name: jobs-logs-pvc
+              spec:
+                volumeName: jobs-logs-pv
+                accessModes: [ReadWriteMany]
+                storageClassName: ''
+                resources:
+                  requests:
+                    storage: 1000Gi
+            - metadata:
+                name: images-pvc
+              spec:
+                volumeName: images-pv
+                accessModes: [ReadWriteMany]
+                storageClassName: ''
+                resources:
+                  requests:
+                    storage: 1000Gi
+            - metadata:
+                name: experiments-pvc
+              spec:
+                volumeName: experiments-pv
+                accessModes: [ReadWriteMany]
+                storageClassName: ''
+                resources:
+                  requests:
+                    storage: 1000Gi
+            - metadata:
+                name: software-sion-csquare-run-pvc
+              spec:
+                accessModes: [ReadOnlyMany]
+                storageClassName: 'software-sion-csquare-run'
+                resources:
+                  requests:
+                    storage: 1Gi
+            - metadata:
+                name: unpacked-sion-csquare-run-pvc
+              spec:
+                accessModes: [ReadOnlyMany]
+                storageClassName: 'unpacked-sion-csquare-run'
+                resources:
+                  requests:
+                    storage: 1Gi
+            - metadata:
+                name: stdenv-sion-csquare-run-pvc
+              spec:
+                accessModes: [ReadOnlyMany]
+                storageClassName: 'stdenv-sion-csquare-run'
+                resources:
+                  requests:
+                    storage: 1Gi
+
+          servicePerReplica:
+            enabled: true
+            annotations:
+              metallb.universe.tf/address-pool: slurm-ips
+            loadBalancerSourceRanges: [10.10.2.40/27]
             type: LoadBalancer
 
   destination:

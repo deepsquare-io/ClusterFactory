@@ -47,7 +47,6 @@ spec:
 {{- if .Values.controller.service.additionalPorts }}
 {{ toYaml .Values.controller.service.additionalPorts | indent 4 }}
 {{- end }}
-  publishNotReadyAddresses: {{ .Values.controller.service.publishNotReadyAddresses }}
   selector:
     app.kubernetes.io/name: "{{ template "slurm-cluster.controller.name" . }}"
     app.kubernetes.io/instance: "{{ template "slurm-cluster.controller.name" . }}"

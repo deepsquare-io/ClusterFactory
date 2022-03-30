@@ -28,11 +28,6 @@ slurmConfig:
     parameters: enable_configless
     debug: debug5
 
-    # secret containing jwt_hs256.key
-    # Will be mounted in /secrets/slurm and copied to /var/spool/slurm/jwt_hs256.key
-    jwt:
-      secretName:
-
   nodes: |
     NodeName=cn[1-10] Sockets=8 CoresPerSocket=2 ThreadsPerCore=2 RealMemory=112000 Gres=gpu:2
     NodeName=cn[11-12] Sockets=8 CoresPerSocket=2 ThreadsPerCore=2 RealMemory=112000 Gres=gpu:2
@@ -97,6 +92,11 @@ controller:
 
   nodeSelector: {}
   tolerations: []
+
+  # secret containing jwt_hs256.key
+  # Will be mounted in /secrets/slurm and copied to /var/spool/slurm/jwt_hs256.key
+  jwt:
+    secretName:
 
   tmp:
     medium: ''
@@ -169,3 +169,147 @@ controller:
     ## Service type
     ##
     type: ClusterIP
+
+login:
+  enabled: true
+  replicas: 1
+
+  image: 'ghcr.io/squarefactory/slurm:0.1.0-login'
+  imagePullPolicy: 'IfNotPresent'
+
+  labels: {}
+  annotations: {}
+
+  command: ['/init']
+
+  resources:
+    requests:
+      cpu: '250m'
+      memory: '256Mi'
+    limits:
+      cpu: '1'
+      memory: '1Gi'
+
+  nodeAffinity: {}
+
+  updateStrategy: RollingUpdate
+
+  podSecurityContext:
+    fsGroup: 0
+    runAsUser: 0
+
+  # schedulerName:
+
+  securityContext:
+    capabilities:
+      drop: [ALL]
+  readOnlyRootFilesystem: false
+  runAsNonRoot: false
+  runAsUser: 0
+
+  # How long to wait to stop gracefully
+  terminationGracePeriod: 10
+
+  ## Use an alternate scheduler.
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  schedulerName: ''
+
+  imagePullSecrets: {}
+
+  nodeSelector: {}
+  tolerations: []
+
+  sshd:
+    secretName:
+
+  tmp:
+    medium: ''
+    size: 50Gi
+
+  readinessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    successThreshold: 3
+    timeoutSeconds: 5
+
+  livenessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+
+  initContainers: []
+
+  # Extra volume mounts
+  volumeMounts: []
+
+  # Extra volumes
+  volumes: []
+
+  # Extra volume claims
+  volumeClaimTemplates: []
+
+  # Service is not recommended, prefer servicePerReplicas
+  service:
+    enabled: false
+    annotations: {}
+    labels: {}
+    clusterIP: ''
+
+    ## Port for Slurm Login Service to listen on
+    ##
+    port: 22
+
+    ## Port to expose on each node
+    ## Only used if service.type is 'NodePort'
+    ##
+    nodePort: 30022
+
+    ## Additional ports to open for Slurm Controller service
+    additionalPorts: []
+
+    externalIPs: []
+    loadBalancerIP: ''
+    loadBalancerSourceRanges: []
+
+    ## Denotes if this Service desires to route external traffic to node-local or cluster-wide endpoints
+    ##
+    externalTrafficPolicy: Cluster
+
+    ## Service type
+    ##
+    type: ClusterIP
+
+  servicePerReplica:
+    enabled: true
+    # You may have to add an anotation to indicate the type of load balancer
+    annotations: {}
+    labels: {}
+    clusterIP: ''
+
+    ## Port for Slurm Login Service to listen on
+    ##
+    port: 22
+
+    ## Port to expose on each node
+    ## Only used if service.type is 'NodePort'
+    ##
+    nodePort: 30022
+
+    ## Additional ports to open for Slurm Controller service
+    additionalPorts: []
+
+    externalIPs: []
+    loadBalancerIP: ''
+    # You SHOULD use loadBalancerSourceRanges to avoid uncontrolled IP addresses
+    loadBalancerSourceRanges: []
+
+    ## Denotes if this Service desires to route external traffic to node-local or cluster-wide endpoints
+    ##
+    externalTrafficPolicy: Cluster
+
+    ## Service type
+    ##
+    type: LoadBalancer

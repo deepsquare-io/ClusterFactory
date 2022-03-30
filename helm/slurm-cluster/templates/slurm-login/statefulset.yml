@@ -1,0 +1,141 @@
+{{- if .Values.login.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: "{{ template "slurm-cluster.login.name" . }}"
+  namespace: '{{ .Release.Namespace }}'
+  labels:
+    release: '{{ .Release.Name }}'
+    chart: '{{ .Chart.Name }}'
+    app: "{{ template "slurm-cluster.login.name" . }}"
+spec:
+  serviceName: "{{ template "slurm-cluster.login.name" . }}"
+  selector:
+    matchLabels:
+      app: "{{ template "slurm-cluster.login.name" . }}"
+      app.kubernetes.io/name: "{{ template "slurm-cluster.login.name" . }}"
+      app.kubernetes.io/instance: "{{ template "slurm-cluster.login.name" . }}"
+      app.kubernetes.io/component: login
+  replicas: {{ .Values.replicas }}
+  template:
+    metadata:
+      name: "{{ template "slurm-cluster.login.name" . }}"
+      labels:
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}"
+        app: "{{ template "slurm-cluster.login.name" . }}"
+        app.kubernetes.io/name: "{{ template "slurm-cluster.login.name" . }}"
+        app.kubernetes.io/instance: "{{ template "slurm-cluster.login.name" . }}"
+        app.kubernetes.io/component: login
+{{- if .Values.login.labels }}
+{{ toYaml .Values.login.labels | indent 8 }}
+{{- end }}
+{{- if .Values.login.annotations }}
+      annotations:
+{{ toYaml .Values.login.annotations | indent 8 }}
+{{- end }}
+    spec:
+      {{- if .Values.login.schedulerName }}
+      schedulerName: "{{ .Values.login.schedulerName }}"
+      {{- end }}
+      securityContext:
+{{ toYaml .Values.login.podSecurityContext | indent 8 }}
+      {{- with .Values.login.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.login.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.login.nodeAffinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.login.terminationGracePeriod }}
+      {{- if .Values.login.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.login.imagePullSecrets | indent 8 }}
+      {{- end }}
+      {{- if .Values.login.initContainers }}
+      initContainers:
+{{ toYaml .Values.login.initContainers | indent 8 }}
+      {{- end }}
+      containers:
+        - name: "{{ template "slurm-cluster.login.name" . }}"
+          image: "{{ .Values.login.image }}"
+          imagePullPolicy: "{{ .Values.login.imagePullPolicy }}"
+          command:
+{{ toYaml .Values.login.command | indent 12 }}
+          ports:
+            - containerPort: 22
+              name: ssh
+          readinessProbe:
+            tcpSocket:
+              port: 22
+{{ toYaml .Values.login.readinessProbe | indent 12 }}
+          livenessProbe:
+            tcpSocket:
+              port: 22
+{{ toYaml .Values.login.livenessProbe | indent 12 }}
+          volumeMounts:
+            - name: slurm-conf
+              mountPath: /etc/slurm
+              readOnly: false
+            - name: slurm-spank
+              mountPath: /etc/slurm/plugstack.conf.d
+              readOnly: true
+            - name: sssd
+              mountPath: /secrets/sssd
+              readOnly: true
+            - name: munge
+              mountPath: /secrets/munge
+              readOnly: true
+            - name: sshd-hostkeys
+              mountPath: /secrets/sshd
+              readOnly: true
+            - mountPath: /tmp
+              name: tmp
+              subPath: tmp
+            - mountPath: /run
+              name: tmp
+              subPath: run
+            - mountPath: /var/log
+              name: tmp
+              subPath: log
+            {{- if .Values.login.volumeMounts }}
+{{ toYaml .Values.login.volumeMounts | indent 12 }}
+            {{- end }}
+          resources:
+{{ toYaml .Values.login.resources | indent 12 }}
+      volumes:
+        - name: tmp
+          emptyDir:
+            medium: "{{ .Values.login.tmp.medium }}"
+            sizeLimit: "{{ .Values.login.tmp.size }}"
+        - name: slurm-conf
+          configMap:
+            name: "{{ template "slurm-cluster.name" . }}-slurm-config"
+        - name: slurm-spank
+          configMap:
+            name: "{{ template "slurm-cluster.name" . }}-slurm-spank-config"
+        - name: sssd
+          secret:
+            secretName: "{{ .Values.sssd.secretName }}"
+            defaultMode: 256
+        - name: munge
+          secret:
+            secretName: "{{ .Values.munge.secretName }}"
+            defaultMode: 384
+        - name: sshd-hostkeys
+          secret:
+            secretName: "{{ .Values.login.sshd.secretName }}"
+            defaultMode: 256
+        {{- if .Values.login.volumes }}
+{{ toYaml .Values.login.volumes | indent 8 }}
+        {{- end }}
+    {{- if .Values.login.volumeClaimTemplates }}
+  volumeClaimTemplates:
+{{ toYaml .Values.login.volumeClaimTemplates | indent 4 }}
+    {{- end }}
+{{- end }}

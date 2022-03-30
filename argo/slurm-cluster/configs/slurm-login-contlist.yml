@@ -1,0 +1,9 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: 'slurm-login-contlist'
+  namespace: 'slurm-cluster'
+data:
+  contlist:
+    #!/bin/sh
+    find /opt/unpacked -maxdepth 3 -mindepth 3 -name "*:*" | cut -d "/" -f 4- | grep "$1"

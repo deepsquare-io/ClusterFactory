@@ -1,0 +1,88 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: 'slurm-login-profile'
+  namespace: 'slurm-cluster'
+data:
+  z00_lmod.sh: |
+    #!/bin/sh
+    ########################################################################
+    #  This is the system wide source file for setting up modules
+    ########################################################################
+
+    if [ -z "${LMOD_ALLOW_ROOT_USE+x}" ]; then
+      LMOD_ALLOW_ROOT_USE=yes
+    fi
+
+    ([ -n "${USER_IS_ROOT:-}" ] || ([ "${LMOD_ALLOW_ROOT_USE:-}" != yes ] && [ $(id -u) = 0 ])) && return
+
+    if [ -z "${MODULEPATH_ROOT:-}" ]; then
+      export USER=${USER-${LOGNAME}} # make sure $USER is set
+      export LMOD_sys=$(uname)
+
+      export MODULEPATH_ROOT="/opt/stdenv/2022.1/etc/modulefiles"
+      MODULEPATH_INIT="/opt/stdenv/2022.1/usr/share/Lmod/init/.modulespath"
+      if [ -f ${MODULEPATH_INIT} ]; then
+          for str in $(# Allow end-of-line comments.
+            cat ${MODULEPATH_INIT} | sed 's/#.*$//'
+          ); do
+            for dir in $str; do
+                if [ -d $dir ]; then
+                  export MODULEPATH=$(/opt/stdenv/2022.1/usr/share/Lmod/libexec/addto --append MODULEPATH $dir)
+                fi
+            done
+          done
+      else
+          export MODULEPATH=$(/opt/stdenv/2022.1/usr/share/Lmod/libexec/addto --append MODULEPATH $MODULEPATH_ROOT/$LMOD_sys $MODULEPATH_ROOT/Core)
+          export MODULEPATH=$(/opt/stdenv/2022.1/usr/share/Lmod/libexec/addto --append MODULEPATH /opt/stdenv/2022.1/usr/share/Lmod/modulefiles/Core)
+      fi
+
+      export BASH_ENV=/opt/stdenv/2022.1/usr/share/Lmod/init/bash
+
+      #
+      # If MANPATH is empty, Lmod is adding a trailing ":" so that
+      # the system MANPATH will be found
+      if [ -z "${MANPATH:-}" ]; then
+          export MANPATH=:
+      fi
+      export MANPATH=$(/opt/stdenv/2022.1/usr/share/Lmod/libexec/addto MANPATH /opt/stdenv/2022.1/usr/share/Lmod/share/man)
+    fi
+
+    findExec() {
+      Nm=$1
+      confPath=$2
+      execNm=$3
+      eval $Nm=$confPath
+      if [ ! -x $confPath ]; then
+          if [ -x /bin/$execNm ]; then
+            eval $Nm=/bin/$execNm
+          elif [ -x /usr/bin/$execNm ]; then
+            eval $Nm=/usr/bin/$execNm
+          fi
+      fi
+      unset Nm confPath execNm
+    }
+
+    findExec PS_CMD /opt/stdenv/2022.1/bin/ps ps
+    findExec EXPR_CMD /opt/stdenv/2022.1/usr/bin/expr expr
+    findExec BASENAME_CMD /opt/stdenv/2022.1/usr/bin/basename basename
+
+    unset -f findExec
+
+    my_shell=$($PS_CMD -p $$ -ocomm=)
+    my_shell=$($EXPR_CMD "$my_shell" : '-*\(.*\)')
+    my_shell=$($BASENAME_CMD $my_shell)
+    if [ -f /opt/stdenv/2022.1/usr/share/Lmod/init/$my_shell ]; then
+      . /opt/stdenv/2022.1/usr/share/Lmod/init/$my_shell >/dev/null # Module Support
+    else
+      . /opt/stdenv/2022.1/usr/share/Lmod/init/sh >/dev/null # Module Support
+    fi
+    unset my_shell PS_CMD EXPR_CMD BASENAME_CMD MODULEPATH_INIT LMOD_ALLOW_ROOT_USE
+
+    # Local Variables:
+    # mode: shell-script
+    # indent-tabs-mode: nil
+    # End:
+  z01_lmod_env.sh: |
+    #!/bin/sh
+    export MODULEPATH="/opt/software/2022.1/modules/csquare:$MODULEPATH"

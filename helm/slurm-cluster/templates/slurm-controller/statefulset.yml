@@ -126,29 +126,21 @@ spec:
         - name: slurm-spank
           configMap:
             name: "{{ template "slurm-cluster.name" . }}-slurm-spank-config"
+        {{- if .Values.controller.prologsConfigMap }}
         - name: slurmctl-prologs
-          projected:
+          configMap:
+            name: "{{ .Values.controller.prologsConfigMap }}"
             defaultMode: 493
-            sources:
-              - configMap:
-                  name: "{{ template "slurm-cluster.name" . }}-slurmctl-prologs"
-              {{- if .Values.controller.prologsConfigMap }}
-              - configMap:
-                  name: "{{ .Values.controller.prologsConfigMap }}"
-              {{- end }}
+        {{- end }}
+        {{- if .Values.controller.epilogsConfigMap }}
         - name: slurmctl-epilogs
-          projected:
+          configMap:
+            name: "{{ .Values.controller.epilogsConfigMap }}"
             defaultMode: 493
-            sources:
-              - configMap:
-                  name: "{{ template "slurm-cluster.name" . }}-slurmctl-epilogs"
-              {{- if .Values.controller.epilogsConfigMap }}
-              - configMap:
-                  name: "{{ .Values.controller.epilogsConfigMap }}"
-              {{- end }}
+        {{- end }}
         - name: slurm-jwt
           secret:
-            secretName: "{{ .Values.slurmConfig.controller.jwt.secretName }}"
+            secretName: "{{ .Values.controller.jwt.secretName }}"
             defaultMode: 384
         - name: sssd
           secret:

@@ -69,6 +69,8 @@ spec:
                 url: https://charts.jetstack.io
               - name: csi-driver-nfs
                 url: https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts
+              - name: cloudve
+                url: https://github.com/CloudVE/helm-charts/raw/master
             charts:
               - name: metallb
                 chartname: bitnami/metallb
@@ -82,6 +84,11 @@ spec:
                         addresses:
                           - 10.10.2.100-10.10.2.105
                           - 10.10.2.152/32
+
+                      - name: slurm-ips
+                        protocol: layer2
+                        addresses:
+                          - 10.10.2.45-10.10.2.50
 
               - name: traefik
                 chartname: traefik/traefik
@@ -182,3 +189,65 @@ spec:
                   driver:
                     mountPermissions: 0755
                   kubeletDir: /var/lib/k0s/kubelet
+
+              - name: csi-driver-cvmfs
+                chartname: cloudve/galaxy-cvmfs-csi
+                version: '1.6.0'
+                namespace: csi-driver-cvmfs
+                values: |
+                  repositories:
+                    software-sion-csquare-run: software.sion.csquare.run
+                    unpacked-sion-csquare-run: unpacked.sion.csquare.run
+                    stdenv-sion-csquare-run: stdenv.sion.csquare.run.pub
+                  configs:
+                    software-sion-csquare-run-keys:
+                      mountPath: keys/software.sion.csquare.run.pub
+                      contents: |
+                        -----BEGIN PUBLIC KEY-----
+                        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsZFcmI0L6L1XjmeH7dWn
+                        vBWAk6HTC85pcFYJXg9sQ3lBKj+F/Ir6Gd5CEKb4pZ0E7hOeVyTNFrfMFegjinxW
+                        XFHw3z1IcaJnI8mq3BIzFKFyAVxvaVkemXoQ2g47T78+IZDLLiEjgAbu/wNGfOl8
+                        L7mVxFvsN7iv6FQD5fNS9KoKaBniwF2zwg2IC3CUolraQxOW9GMlkIr0Qh/Fj1cG
+                        znDLEYC0iEdNzHOzWM9E2oNibMlBtd354Ff5hRuag3qQPGGCy3WRmlLMV6hi7fM3
+                        KFxVqH2s16/9i9KLo+hc/n7gDSQzMeRQyfxaTE2rXsP2RrXQBs33e/YIaooGpxVZ
+                        VwIDAQAB
+                        -----END PUBLIC KEY-----
+                    unpacked-sion-csquare-run-keys:
+                      mountPath: keys/unpacked.sion.csquare.run.pub
+                      contents: |
+                        -----BEGIN PUBLIC KEY-----
+                        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzdcgATB2fEESkNoft7HE
+                        Z+7itxvzXOE9Lp9yvXHXpYXDWzRtMCp2Hi71FM1GlM923wSfMlGu1JDYNjtoZube
+                        sF0K4AdHxkTTkgMetKx0VnntP/kXaBW0yYucZFN7nqk9tGO3g9j5a8uSCnizDrOa
+                        h/GzJ+6pwmr5JH86XA/qZMOj79vCkmI/wteCQzTSVvYHRw/udfPLbNcI3AAH2MyA
+                        AMr+ethcrBIQoRj+z/mfeTPJeYjbuDQ1TP4Btf3ft0jtDB4i59/vo6+Aq3XwmhZE
+                        kwmOSP0qqJ+X661ubhgy7SYBC2C6SIV6Ot2RI37/Dc7T2IjXAQ373KXUm/PWU9Zy
+                        gwIDAQAB
+                        -----END PUBLIC KEY-----
+                    stdenv-sion-csquare-run-keys:
+                      mountPath: keys/stdenv.sion.csquare.run.pub
+                      contents: |
+                        -----BEGIN PUBLIC KEY-----
+                        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAx6C5dzgUXJ4qtG92EjpC
+                        baE7u7hleKivcARLvjovgTN8K7Zup7SWuc7XxJCZ7pRCbl7d0R4f4ii5rA99z4uu
+                        cTdoESkXx56c5Q/115WT7YSumab68xfs05PActTKLBUFOph4/aoJFjchtn3pu/qC
+                        y3/ELxGIrAlNJEbuCO1py15l9KoTcxl8LGapsWQR93aoxPU4IxKxzxrj0OwVGodk
+                        dGvVRhHuGFJkHhDu57opfxktwd4pnNPLI8w+CEvm0OVKASaQdjwhAK3655T0Jq6G
+                        qQxvlIo26sOT/R+6WvDNKzjQwRTpP8TXuC00o5exNAdLkKapWfD+lj3K+sLF2ubl
+                        /QIDAQAB
+                        -----END PUBLIC KEY-----
+                    software-sion-csquare-run-config:
+                      mountPath: config.d/software.sion.csquare.run.conf
+                      contents: |
+                        CVMFS_HTTP_PROXY="${CVMFS_HTTP_PROXY:=DIRECT}"
+                        CVMFS_SERVER_URL=http://cvmfs.ch1.csquare.run/cvmfs/software.sion.csquare.run
+                    unpacked-sion-csquare-run-config:
+                      mountPath: config.d/unpacked.sion.csquare.run.conf
+                      contents: |
+                        CVMFS_HTTP_PROXY="${CVMFS_HTTP_PROXY:=DIRECT}"
+                        CVMFS_SERVER_URL=http://cvmfs.ch1.csquare.run/cvmfs/unpacked.sion.csquare.run
+                    stdenv-sion-csquare-run-config:
+                      mountPath: config.d/stdenv.sion.csquare.run.conf
+                      contents: |
+                        CVMFS_HTTP_PROXY="${CVMFS_HTTP_PROXY:=DIRECT}"
+                        CVMFS_SERVER_URL=http://cvmfs.ch1.csquare.run/cvmfs/stdenv.sion.csquare.run
