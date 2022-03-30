@@ -21,7 +21,17 @@ spec:
           stdenv-sion-csquare-run: stdenv.sion.csquare.run
 
         configs:
-          software-sion-csquare-run-keys:
+            defaultLocal:
+            mountPath: default.local
+            contents: |
+              CVMFS_QUOTA_LIMIT=-1
+              CVMFS_CACHE_BASE={{ .Values.cache.localCache.mountPath }}
+              CVMFS_USE_GEOAPI=no
+              CVMFS_HTTP_PROXY="DIRECT"
+              CVMFS_KEYS_DIR="/etc/cvmfs/keys"
+              CVMFS_SERVER_URL="http://cvmfs.ch1.csquare.run/cvmfs/@fqrn@"
+              CVMFS_USER=root
+          software.sion.csquare.run.pub:
             mountPath: keys/software.sion.csquare.run.pub
             contents: |
               -----BEGIN PUBLIC KEY-----
@@ -33,7 +43,7 @@ spec:
               KFxVqH2s16/9i9KLo+hc/n7gDSQzMeRQyfxaTE2rXsP2RrXQBs33e/YIaooGpxVZ
               VwIDAQAB
               -----END PUBLIC KEY-----
-          unpacked-sion-csquare-run-keys:
+          unpacked.sion.csquare.run.pub:
             mountPath: keys/unpacked.sion.csquare.run.pub
             contents: |
               -----BEGIN PUBLIC KEY-----
@@ -45,7 +55,7 @@ spec:
               kwmOSP0qqJ+X661ubhgy7SYBC2C6SIV6Ot2RI37/Dc7T2IjXAQ373KXUm/PWU9Zy
               gwIDAQAB
               -----END PUBLIC KEY-----
-          stdenv-sion-csquare-run-keys:
+          stdenv.sion.csquare.run.pub:
             mountPath: keys/stdenv.sion.csquare.run.pub
             contents: |
               -----BEGIN PUBLIC KEY-----
@@ -57,22 +67,6 @@ spec:
               qQxvlIo26sOT/R+6WvDNKzjQwRTpP8TXuC00o5exNAdLkKapWfD+lj3K+sLF2ubl
               /QIDAQAB
               -----END PUBLIC KEY-----
-          software-sion-csquare-run-config:
-            mountPath: config.d/software.sion.csquare.run.conf
-            contents: |
-              CVMFS_HTTP_PROXY="DIRECT"
-              CVMFS_SERVER_URL=http://cvmfs.ch1.csquare.run/cvmfs/software.sion.csquare.run
-          unpacked-sion-csquare-run-config:
-            mountPath: config.d/unpacked.sion.csquare.run.conf
-            contents: |
-              CVMFS_HTTP_PROXY="DIRECT"
-              CVMFS_SERVER_URL=http://cvmfs.ch1.csquare.run/cvmfs/unpacked.sion.csquare.run
-          stdenv-sion-csquare-run-config:
-            mountPath: config.d/stdenv.sion.csquare.run.conf
-            contents: |
-              CVMFS_HTTP_PROXY="DIRECT"
-              CVMFS_SERVER_URL=http://cvmfs.ch1.csquare.run/cvmfs/stdenv.sion.csquare.run
-
         cache:
           alienCache:
             enabled: false
