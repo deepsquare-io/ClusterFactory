@@ -30,9 +30,9 @@ spec:
 {{- if .Values.login.labels }}
 {{ toYaml .Values.login.labels | indent 8 }}
 {{- end }}
-{{- if .Values.login.annotations }}
       annotations:
         k8s.v1.cni.cncf.io/networks: "{{ .Release.Namespace }}/{{ template "slurm-cluster.login.name" . }}-net"
+{{- if .Values.login.annotations }}
 {{ toYaml .Values.login.annotations | indent 8 }}
 {{- end }}
     spec:
