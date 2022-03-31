@@ -29,14 +29,14 @@ items:
       {{- end }}
     spec:
       {{- if $serviceValues.clusterIP }}
-        clusterIP: {{ $serviceValues.clusterIP }}
+      clusterIP: {{ $serviceValues.clusterIP }}
       {{- end }}
       {{- if $serviceValues.externalIPs }}
-        externalIPs:
+      externalIPs:
       {{ toYaml $serviceValues.externalIPs | indent 4 }}
       {{- end }}
       {{- if $serviceValues.loadBalancerIP }}
-        loadBalancerIP: {{ $serviceValues.loadBalancerIP }}
+      loadBalancerIP: {{ $serviceValues.loadBalancerIP }}
       {{- end }}
       {{- if $serviceValues.loadBalancerSourceRanges }}
       loadBalancerSourceRanges:
