@@ -241,12 +241,6 @@ login:
     successThreshold: 3
     timeoutSeconds: 5
 
-  livenessProbe:
-    failureThreshold: 3
-    initialDelaySeconds: 10
-    periodSeconds: 10
-    timeoutSeconds: 5
-
   initContainers: []
 
   # Extra volume mounts

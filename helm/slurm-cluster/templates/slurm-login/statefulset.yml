@@ -79,10 +79,6 @@ spec:
             tcpSocket:
               port: 22
 {{ toYaml .Values.login.readinessProbe | indent 12 }}
-          livenessProbe:
-            tcpSocket:
-              port: 22
-{{ toYaml .Values.login.livenessProbe | indent 12 }}
           volumeMounts:
             - name: slurm-conf
               mountPath: /etc/slurm
