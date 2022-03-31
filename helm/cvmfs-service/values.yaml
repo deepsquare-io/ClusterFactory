@@ -11,6 +11,7 @@ securityContext:
   capabilities:
     add:
       - CAP_SYS_ADMIN
+  privileged: true
   readOnlyRootFilesystem: false
   runAsNonRoot: false
   runAsUser:
