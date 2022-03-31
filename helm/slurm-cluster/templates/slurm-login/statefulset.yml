@@ -16,7 +16,7 @@ spec:
       app.kubernetes.io/name: "{{ template "slurm-cluster.login.name" . }}"
       app.kubernetes.io/instance: "{{ template "slurm-cluster.login.name" . }}"
       app.kubernetes.io/component: login
-  replicas: {{ .Values.replicas }}
+  replicas: {{ .Values.login.replicas }}
   template:
     metadata:
       name: "{{ template "slurm-cluster.login.name" . }}"

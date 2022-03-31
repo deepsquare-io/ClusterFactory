@@ -135,7 +135,7 @@ spec:
         login:
           enabled: true
           image: 'ghcr.io/squarefactory/slurm-docker:0.1.2-login-reindeer'
-          replicas: 1
+          replicas: 2
 
           command: ['sh', '-c', 'update-ca-trust && /init']
 
@@ -154,8 +154,8 @@ spec:
               mountPath: /etc/profile.d/z00_lmod.sh
               subPath: z00_lmod.sh
             - name: slurm-login-profile
-              mountPath: /etc/profile.d/z01_lmod.sh
-              subPath: z01_lmod.sh
+              mountPath: /etc/profile.d/z01_lmod_env.sh
+              subPath: z01_lmod_env.sh
             - name: ldap-users-pvc
               mountPath: /home/ldap-users
             - name: jobs-logs-pvc
@@ -164,12 +164,12 @@ spec:
               mountPath: /opt/images
             - name: experiments-pvc
               mountPath: /opt/experiments
-            # - name: software-sion-csquare-run-pvc
-            #   mountPath: /opt/software
-            # - name: stdenv-sion-csquare-run-pvc
-            #   mountPath: /opt/stdenv
-            # - name: unpacked-sion-csquare-run-pvc
-            #   mountPath: /opt/unpacked
+            - name: software-sion-csquare-run
+              mountPath: /opt/software
+            - name: stdenv-sion-csquare-run
+              mountPath: /opt/stdenv
+            - name: unpacked-sion-csquare-run
+              mountPath: /opt/unpacked
 
           # Extra volumes
           volumes:
@@ -180,6 +180,19 @@ spec:
               configMap:
                 name: slurm-login-profile
                 defaultMode: 493
+            - name: software-sion-csquare-run
+              hostPath:
+                path: /cvmfs/software.sion.csquare.run
+                type: Directory
+            - name: stdenv-sion-csquare-run
+              hostPath:
+                path: /cvmfs/stdenv.sion.csquare.run
+                type: Directory
+            - name: unpacked-sion-csquare-run
+              hostPath:
+                path: /cvmfs/unpacked.sion.csquare.run
+                type: Directory
+
 
           # Extra volume claims
           volumeClaimTemplates:
@@ -219,30 +232,6 @@ spec:
                 resources:
                   requests:
                     storage: 1000Gi
-            # - metadata:
-            #     name: software-sion-csquare-run-pvc
-            #   spec:
-            #     accessModes: [ReadOnlyMany]
-            #     storageClassName: 'software-sion-csquare-run'
-            #     resources:
-            #       requests:
-            #         storage: 1Gi
-            # - metadata:
-            #     name: unpacked-sion-csquare-run-pvc
-            #   spec:
-            #     accessModes: [ReadOnlyMany]
-            #     storageClassName: 'unpacked-sion-csquare-run'
-            #     resources:
-            #       requests:
-            #         storage: 1Gi
-            # - metadata:
-            #     name: stdenv-sion-csquare-run-pvc
-            #   spec:
-            #     accessModes: [ReadOnlyMany]
-            #     storageClassName: 'stdenv-sion-csquare-run'
-            #     resources:
-            #       requests:
-            #         storage: 1Gi
 
           net:
             # Kubernetes host interface
@@ -255,7 +244,7 @@ spec:
               ranges:
                 - - subnet: 10.10.2.0/24
                     rangeStart: 10.10.2.46
-                    rangeEnd: 10.10.2.50
+                    rangeEnd: 10.10.2.47
                     gateway: 10.10.2.1
               dataDir: "/tmp/slurm-ips-state"
 
