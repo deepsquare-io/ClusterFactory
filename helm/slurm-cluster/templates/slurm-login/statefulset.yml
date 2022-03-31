@@ -71,10 +71,6 @@ spec:
           ports:
             - containerPort: 22
               name: sshd
-          {{- range untilStep (.Values.slurmConfig.compute.srunPortRangeStart|int) (.Values.slurmConfig.compute.srunPortRangeEnd|int) 1 }}
-            - containerPort: {{ . }}
-              name: "srun-{{ . }}"
-          {{- end }}
           volumeMounts:
             - name: slurm-conf
               mountPath: /etc/slurm

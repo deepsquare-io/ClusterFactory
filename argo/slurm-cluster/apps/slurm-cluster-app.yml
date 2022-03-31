@@ -164,12 +164,12 @@ spec:
               mountPath: /opt/images
             - name: experiments-pvc
               mountPath: /opt/experiments
-            # - name: software-sion-csquare-run-pvc
-            #   mountPath: /opt/software
-            # - name: stdenv-sion-csquare-run-pvc
-            #   mountPath: /opt/stdenv
-            # - name: unpacked-sion-csquare-run-pvc
-            #   mountPath: /opt/unpacked
+            - name: software-sion-csquare-run-pvc
+              mountPath: /opt/software
+            - name: stdenv-sion-csquare-run-pvc
+              mountPath: /opt/stdenv
+            - name: unpacked-sion-csquare-run-pvc
+              mountPath: /opt/unpacked
 
           # Extra volumes
           volumes:
@@ -219,30 +219,30 @@ spec:
                 resources:
                   requests:
                     storage: 1000Gi
-            # - metadata:
-            #     name: software-sion-csquare-run-pvc
-            #   spec:
-            #     accessModes: [ReadOnlyMany]
-            #     storageClassName: 'software-sion-csquare-run'
-            #     resources:
-            #       requests:
-            #         storage: 1Gi
-            # - metadata:
-            #     name: unpacked-sion-csquare-run-pvc
-            #   spec:
-            #     accessModes: [ReadOnlyMany]
-            #     storageClassName: 'unpacked-sion-csquare-run'
-            #     resources:
-            #       requests:
-            #         storage: 1Gi
-            # - metadata:
-            #     name: stdenv-sion-csquare-run-pvc
-            #   spec:
-            #     accessModes: [ReadOnlyMany]
-            #     storageClassName: 'stdenv-sion-csquare-run'
-            #     resources:
-            #       requests:
-            #         storage: 1Gi
+            - metadata:
+                name: software-sion-csquare-run-pvc
+              spec:
+                accessModes: [ReadOnlyMany]
+                storageClassName: 'software-sion-csquare-run'
+                resources:
+                  requests:
+                    storage: 1Gi
+            - metadata:
+                name: unpacked-sion-csquare-run-pvc
+              spec:
+                accessModes: [ReadOnlyMany]
+                storageClassName: 'unpacked-sion-csquare-run'
+                resources:
+                  requests:
+                    storage: 1Gi
+            - metadata:
+                name: stdenv-sion-csquare-run-pvc
+              spec:
+                accessModes: [ReadOnlyMany]
+                storageClassName: 'stdenv-sion-csquare-run'
+                resources:
+                  requests:
+                    storage: 1Gi
 
           net:
             # Kubernetes host interface
