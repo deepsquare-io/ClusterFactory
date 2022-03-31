@@ -37,9 +37,6 @@ spec:
           securityContext:
 {{ toYaml .Values.securityContext | indent 12 }}
           volumeMounts:
-            - name: fuse
-              mountPath: /dev/fuse
-              readOnly: true
             - name: cvmfs-cache
               mountPath: /var/lib/cvmfs
             - name: cvmfs
@@ -59,10 +56,6 @@ spec:
               value: DIRECT
       terminationGracePeriodSeconds: 30
       volumes:
-        - name: fuse
-          hostPath:
-            path: /dev/fuse
-            type: File
         - name: cvmfs
           hostPath:
             path: /cvmfs
