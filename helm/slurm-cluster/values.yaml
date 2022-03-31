@@ -141,7 +141,8 @@ controller:
   #epilogsConfigMap: 'epilogs-config-map'
   epilogsConfigMap: ''
 
-  service:
+  servicePerReplica:
+    enabled: true
     annotations: {}
     labels: {}
     clusterIP: ''

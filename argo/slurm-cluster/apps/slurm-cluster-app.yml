@@ -127,7 +127,7 @@ spec:
           # Extra volume claims
           volumeClaimTemplates: []
 
-          service:
+          servicePerReplica:
             port: 6817
             loadBalancerIP: 10.10.2.152
             type: LoadBalancer
