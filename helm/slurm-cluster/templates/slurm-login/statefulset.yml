@@ -32,7 +32,7 @@ spec:
 {{- end }}
 {{- if .Values.login.annotations }}
       annotations:
-        v1.multus-cni.io/default-network: "{{ .Release.Namespace }}/{{ template "xcat.name" . }}-net"
+        k8s.v1.cni.cncf.io/networks: "{{ .Release.Namespace }}/{{ template "slurm-cluster.login.name" . }}-net"
 {{ toYaml .Values.login.annotations | indent 8 }}
 {{- end }}
     spec:
