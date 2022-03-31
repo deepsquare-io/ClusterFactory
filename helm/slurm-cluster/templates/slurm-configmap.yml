@@ -15,7 +15,7 @@ data:
     LaunchParameters=enable_nss_slurm
 
     #-- Slurmctl
-    SlurmctldHost={{ template "slurm-cluster.controller.name" . }}-0({{ .Values.slurmConfig.controller.ip }})
+    SlurmctldHost={{ template "slurm-cluster.controller.name" . }}-0
     SlurmctldDebug={{ .Values.slurmConfig.controller.debug }}
     SlurmctldParameters={{ .Values.slurmConfig.controller.parameters }}
     DebugFlags=Script,Gang,SelectType
