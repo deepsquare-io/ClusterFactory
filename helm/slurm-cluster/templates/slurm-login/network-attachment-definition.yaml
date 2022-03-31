@@ -12,7 +12,7 @@ spec:
     {
       "cniVersion": "0.4.0",
       "type": "macvlan",
-      "master": "{{ .Values.net.masterInterface }}",
-      "mode": "{{ .Values.net.mode }}",
-      "ipam": {{ .Values.net.ipam | toJson }}
+      "master": "{{ .Values.login.net.masterInterface }}",
+      "mode": "{{ .Values.login.net.mode }}",
+      "ipam": {{ .Values.login.net.ipam | toJson }}
     }
