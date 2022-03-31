@@ -192,46 +192,21 @@ spec:
               hostPath:
                 path: /cvmfs/unpacked.sion.csquare.run
                 type: Directory
-
+            - name: ldap-users-pvc
+              persistentVolumeClaim:
+                claimName: ldap-users-pvc
+            - name: experiments-pvc
+              persistentVolumeClaim:
+                claimName: experiments-pvc
+            - name: images-pvc
+              persistentVolumeClaim:
+                claimName: images-pvc
+            - name: jobs-logs-pvc
+              persistentVolumeClaim:
+                claimName: jobs-logs-pvc
 
           # Extra volume claims
-          volumeClaimTemplates:
-            - metadata:
-                name: ldap-users-pvc
-              spec:
-                volumeName: ldap-users-pv
-                accessModes: [ReadWriteMany]
-                storageClassName: ''
-                resources:
-                  requests:
-                    storage: 1000Gi
-            - metadata:
-                name: jobs-logs-pvc
-              spec:
-                volumeName: jobs-logs-pv
-                accessModes: [ReadWriteMany]
-                storageClassName: ''
-                resources:
-                  requests:
-                    storage: 1000Gi
-            - metadata:
-                name: images-pvc
-              spec:
-                volumeName: images-pv
-                accessModes: [ReadWriteMany]
-                storageClassName: ''
-                resources:
-                  requests:
-                    storage: 1000Gi
-            - metadata:
-                name: experiments-pvc
-              spec:
-                volumeName: experiments-pv
-                accessModes: [ReadWriteMany]
-                storageClassName: ''
-                resources:
-                  requests:
-                    storage: 1000Gi
+          volumeClaimTemplates: []
 
           net:
             # Kubernetes host interface
