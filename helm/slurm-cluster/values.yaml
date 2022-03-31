@@ -263,10 +263,13 @@ login:
     masterInterface: eth0
     mode: bridge
 
+    # Default CNI network
+    defaultNetwork: k8s-pod-network
+
     # https://www.cni.dev/plugins/current/ipam/static/
     ipam:
       type: host-local
-      range:
+      ranges:
         - - subnet: 10.10.2.0/24
             rangeStart: 10.10.2.46
             rangeEnd: 10.10.2.50
