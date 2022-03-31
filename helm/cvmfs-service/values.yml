@@ -1,0 +1,41 @@
+image: cvmfs/service:2.9.2-1
+
+resources:
+  limits:
+    memory: 4Gi
+  requests:
+    cpu: 100m
+    memory: 200Mi
+
+securityContext:
+  capabilities:
+    add:
+      - CAP_SYS_ADMIN
+  readOnlyRootFilesystem: false
+  runAsNonRoot: false
+  runAsUser:
+
+repositories:
+  - name: software-sion-csquare-run
+    repository: software.sion.csquare.run
+  - name: unpacked-sion-csquare-run
+    repository: unpacked.sion.csquare.run
+  - name: stdenv-sion-csquare-run
+    repository: stdenv.sion.csquare.run
+
+# This is the node affinity settings as defined in
+# https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#node-affinity-beta-feature
+nodeAffinity: {}
+nodeSelector: {}
+tolerations:
+  - key: node-role.kubernetes.io/master
+    effect: NoSchedule
+
+configs:
+  default.local:
+    mountPath: default.local
+    contents: |
+      CVMFS_QUOTA_LIMIT=-1
+      CVMFS_USE_GEOAPI=no
+      CVMFS_HTTP_PROXY="DIRECT"
+      CVMFS_KEYS_DIR="/etc/cvmfs/keys"

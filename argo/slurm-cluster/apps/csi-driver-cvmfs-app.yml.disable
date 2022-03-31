@@ -12,7 +12,7 @@ spec:
     targetRevision: HEAD
     path: helm/csi-driver-cvmfs
     helm:
-      releaseName: slurm-cluster
+      releaseName: csi-driver-cvmfs
 
       values: |
         repositories:

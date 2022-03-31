@@ -1,0 +1,88 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cvmfs-service-app
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: slurm-cluster
+  source:
+    repoURL: git@github.com:squarefactory/cluster-factory-ce.git
+    targetRevision: HEAD
+    path: helm/cvmfs-service
+    helm:
+      releaseName: cvmfs-service
+
+      values: |
+        repositories:
+          - name: software-sion-csquare-run
+            repository: software.sion.csquare.run
+          - name: unpacked-sion-csquare-run
+            repository: unpacked.sion.csquare.run
+          - name: stdenv-sion-csquare-run
+            repository: stdenv.sion.csquare.run
+
+        configs:
+          default.local:
+            mountPath: default.local
+            contents: |
+              CVMFS_QUOTA_LIMIT=-1
+              CVMFS_USE_GEOAPI=no
+              CVMFS_HTTP_PROXY="DIRECT"
+              CVMFS_KEYS_DIR="/etc/cvmfs/keys"
+              CVMFS_SERVER_URL="http://cvmfs.ch1.csquare.run/cvmfs/@fqrn@"
+              CVMFS_USER=root
+          software.sion.csquare.run.pub:
+            mountPath: keys/software.sion.csquare.run.pub
+            contents: |
+              -----BEGIN PUBLIC KEY-----
+              MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsZFcmI0L6L1XjmeH7dWn
+              vBWAk6HTC85pcFYJXg9sQ3lBKj+F/Ir6Gd5CEKb4pZ0E7hOeVyTNFrfMFegjinxW
+              XFHw3z1IcaJnI8mq3BIzFKFyAVxvaVkemXoQ2g47T78+IZDLLiEjgAbu/wNGfOl8
+              L7mVxFvsN7iv6FQD5fNS9KoKaBniwF2zwg2IC3CUolraQxOW9GMlkIr0Qh/Fj1cG
+              znDLEYC0iEdNzHOzWM9E2oNibMlBtd354Ff5hRuag3qQPGGCy3WRmlLMV6hi7fM3
+              KFxVqH2s16/9i9KLo+hc/n7gDSQzMeRQyfxaTE2rXsP2RrXQBs33e/YIaooGpxVZ
+              VwIDAQAB
+              -----END PUBLIC KEY-----
+          unpacked.sion.csquare.run.pub:
+            mountPath: keys/unpacked.sion.csquare.run.pub
+            contents: |
+              -----BEGIN PUBLIC KEY-----
+              MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzdcgATB2fEESkNoft7HE
+              Z+7itxvzXOE9Lp9yvXHXpYXDWzRtMCp2Hi71FM1GlM923wSfMlGu1JDYNjtoZube
+              sF0K4AdHxkTTkgMetKx0VnntP/kXaBW0yYucZFN7nqk9tGO3g9j5a8uSCnizDrOa
+              h/GzJ+6pwmr5JH86XA/qZMOj79vCkmI/wteCQzTSVvYHRw/udfPLbNcI3AAH2MyA
+              AMr+ethcrBIQoRj+z/mfeTPJeYjbuDQ1TP4Btf3ft0jtDB4i59/vo6+Aq3XwmhZE
+              kwmOSP0qqJ+X661ubhgy7SYBC2C6SIV6Ot2RI37/Dc7T2IjXAQ373KXUm/PWU9Zy
+              gwIDAQAB
+              -----END PUBLIC KEY-----
+          stdenv.sion.csquare.run.pub:
+            mountPath: keys/stdenv.sion.csquare.run.pub
+            contents: |
+              -----BEGIN PUBLIC KEY-----
+              MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAx6C5dzgUXJ4qtG92EjpC
+              baE7u7hleKivcARLvjovgTN8K7Zup7SWuc7XxJCZ7pRCbl7d0R4f4ii5rA99z4uu
+              cTdoESkXx56c5Q/115WT7YSumab68xfs05PActTKLBUFOph4/aoJFjchtn3pu/qC
+              y3/ELxGIrAlNJEbuCO1py15l9KoTcxl8LGapsWQR93aoxPU4IxKxzxrj0OwVGodk
+              dGvVRhHuGFJkHhDu57opfxktwd4pnNPLI8w+CEvm0OVKASaQdjwhAK3655T0Jq6G
+              qQxvlIo26sOT/R+6WvDNKzjQwRTpP8TXuC00o5exNAdLkKapWfD+lj3K+sLF2ubl
+              /QIDAQAB
+              -----END PUBLIC KEY-----
+
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: slurm-cluster
+
+  syncPolicy:
+    automated:
+      prune: false # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+      allowEmpty: false # Allows deleting all application resources during automatic syncing ( false by default ).
+    syncOptions: []
+    retry:
+      limit: 5 # number of failed sync attempt retries; unlimited number of attempts if less than 0
+      backoff:
+        duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
+        factor: 2 # a factor to multiply the base duration after each failed retry
+        maxDuration: 3m # the maximum amount of time allowed for the backoff strategy

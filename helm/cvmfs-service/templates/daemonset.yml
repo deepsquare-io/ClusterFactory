@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: "{{ template "cvmfs-service.name" . }}"
+  namespace: '{{ .Release.Namespace }}'
+  labels:
+    release: '{{ .Release.Name }}'
+    chart: '{{ .Chart.Name }}'
+    app: "{{ template "cvmfs-service.name" . }}"
+spec:
+  selector:
+    matchLabels:
+      app: "{{ template "cvmfs-service.name" . }}"
+  template:
+    metadata:
+      labels:
+        app: "{{ template "cvmfs-service.name" . }}"
+    spec:
+      {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.nodeAffinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      containers:
+        - name: "{{ template "cvmfs-service.name" . }}"
+          image: "{{ .Values.image }}"
+          imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          securityContext:
+{{ toYaml .Values.securityContext | indent 12 }}
+          volumeMounts:
+            - name: fuse
+              mountPath: /dev/fuse
+              readOnly: true
+            - name: cvmfs-cache
+              mountPath: /var/lib/cvmfs
+            - name: cvmfs
+              mountPath: /cvmfs
+              mountPropagation: Bidirectional
+            {{- range $key, $entry := .Values.configs }}
+            - name: cvmfs-config
+              mountPath: /etc/cvmfs/{{ $entry.mountPath }}
+              subPath: {{ $key }}
+            {{- end }}
+          env:
+            - name: CVMFS_CLIENT_PROFILE
+              value: single
+            - name: CVMFS_REPOSITORIES
+              value: "{{ template "cvmfs-service.repositoriesList" . }}"
+            - name: CVMFS_HTTP_PROXY
+              value: DIRECT
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: fuse
+          hostPath:
+            path: /dev/fuse
+            type: File
+        - name: cvmfs
+          hostPath:
+            path: /cvmfs
+            type: DirectoryOrCreate
+        - name: cvmfs-cache
+          emptyDir: {}
+        - name: cvmfs-config
+          configMap:
+            name: "{{ template "cvmfs-service.name" . }}-config"

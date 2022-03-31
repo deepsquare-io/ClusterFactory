@@ -1,0 +1,16 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: "{{ template "cvmfs-service.name" . }}-config"
+  namespace: '{{ .Release.Namespace }}'
+  labels:
+    release: '{{ .Release.Name }}'
+    chart: '{{ .Chart.Name }}'
+    app: "{{ template "cvmfs-service.name" . }}"
+data:
+  {{- range $key, $entry := .Values.configs -}}
+  {{- if $entry.contents -}}
+  {{- $key | nindent 2 }}: |
+    {{- tpl $entry.contents $ | nindent 4 -}}
+    {{- end }}
+  {{- end }}

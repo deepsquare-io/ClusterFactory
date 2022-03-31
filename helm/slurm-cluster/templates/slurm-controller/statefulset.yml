@@ -66,6 +66,8 @@ spec:
           imagePullPolicy: "{{ .Values.controller.imagePullPolicy }}"
           command:
 {{ toYaml .Values.controller.command | indent 12 }}
+          securityContext:
+{{ toYaml .Values.securityContext | indent 12 }}
           ports:
             - containerPort: 6817
               name: slurmctld
