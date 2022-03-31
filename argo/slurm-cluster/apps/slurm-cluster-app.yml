@@ -199,36 +199,32 @@ spec:
             - metadata:
                 name: ldap-users-pvc
               spec:
-                volumeName: ldap-users-pv
                 accessModes: [ReadWriteMany]
-                storageClassName: ''
+                storageClassName: 'ldap-users'
                 resources:
                   requests:
                     storage: 1000Gi
             - metadata:
                 name: jobs-logs-pvc
               spec:
-                volumeName: jobs-logs-pv
                 accessModes: [ReadWriteMany]
-                storageClassName: ''
+                storageClassName: 'jobs-logs'
                 resources:
                   requests:
                     storage: 1000Gi
             - metadata:
                 name: images-pvc
               spec:
-                volumeName: images-pv
                 accessModes: [ReadWriteMany]
-                storageClassName: ''
+                storageClassName: 'images'
                 resources:
                   requests:
                     storage: 1000Gi
             - metadata:
                 name: experiments-pvc
               spec:
-                volumeName: experiments-pv
                 accessModes: [ReadWriteMany]
-                storageClassName: ''
+                storageClassName: 'experiments'
                 resources:
                   requests:
                     storage: 1000Gi

@@ -1,0 +1,18 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ldap-users
+  namespace: slurm-cluster
+  labels:
+    app: slurm-login
+provisioner: nfs.csi.k8s.io
+parameters:
+  server: 10.10.2.11
+  share: /mnt/pool1/ldap-users
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+mountOptions:
+  - hard
+  - nfsvers=4.1
+  - noatime
+  - nodiratime
