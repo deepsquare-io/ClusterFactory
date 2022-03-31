@@ -145,13 +145,6 @@ spec:
           sshd:
             secretName: login-sshd-secret
 
-          readinessProbe:
-            failureThreshold: 30
-            initialDelaySeconds: 60
-            periodSeconds: 10
-            successThreshold: 3
-            timeoutSeconds: 5
-
           # Extra volume mounts
           volumeMounts:
             - name: ca-cert
@@ -264,6 +257,7 @@ spec:
                     rangeStart: 10.10.2.46
                     rangeEnd: 10.10.2.50
                     gateway: 10.10.2.1
+              dataDir: "/tmp/slurm-ips-state"
 
   destination:
     server: 'https://kubernetes.default.svc'

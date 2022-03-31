@@ -234,13 +234,6 @@ login:
     medium: ''
     size: 50Gi
 
-  readinessProbe:
-    failureThreshold: 3
-    initialDelaySeconds: 10
-    periodSeconds: 10
-    successThreshold: 3
-    timeoutSeconds: 5
-
   initContainers: []
 
   # Extra volume mounts
