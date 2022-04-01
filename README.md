@@ -4,9 +4,13 @@
 
 This project will deploy in the following order:
 
-- A k0s cluster with helm extensions (MetalLB, Traefik, Cert-Manager, CSI Drivers). Also with KubeVirt (VM workloads) and Multus (multiple network interfaces).
-- Core certs issuers, traefik routes and dashboards.
-- Apps with argocd
+* A k0s cluster with helm extensions (MetalLB, Traefik, Cert-Manager, CSI Drivers). Also with KubeVirt (VM workloads) and Multus (multiple network interfaces).
+* Core certs issuers, traefik routes and dashboards.
+* Apps with argocd
+  * xCAT (bare-metal provisioning)
+  * Slurm controller and login nodes
+  * CVMFS for cluster applications distribution
+  * Monitoring stack (Grafana, Prometheus with ready-to-use exporters)
 
 ## Preparation
 
