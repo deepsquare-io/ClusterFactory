@@ -11,7 +11,7 @@ This project will deploy in the following order:
   * Slurm controller, database and login nodes
   * CVMFS for cluster software distribution
   * BeeGFS for fast parallel storage
-  * Open Ondemand, as a web-based HPC portal for users
+  * Open Ondemand, a web-based HPC portal for users
   * Monitoring stack (Grafana, Prometheus with ready-to-use exporters)
 
 ## Preparation
