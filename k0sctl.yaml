@@ -182,5 +182,5 @@ spec:
                 namespace: csi-driver-nfs
                 values: |
                   driver:
-                    mountPermissions: 0755
+                    mountPermissions: 0775
                   kubeletDir: /var/lib/k0s/kubelet
