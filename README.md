@@ -8,8 +8,10 @@ This project will deploy in the following order:
 * Core certs issuers, traefik routes and dashboards.
 * Apps with argocd
   * xCAT (bare-metal provisioning)
-  * Slurm controller and login nodes
-  * CVMFS for cluster applications distribution
+  * Slurm controller, database and login nodes
+  * CVMFS for cluster software distribution
+  * BeeGFS for fast parallel storage
+  * Open Ondemand, as a web-based HPC portal for users
   * Monitoring stack (Grafana, Prometheus with ready-to-use exporters)
 
 ## Preparation
