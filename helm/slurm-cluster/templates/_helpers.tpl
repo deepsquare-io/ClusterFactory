@@ -4,7 +4,7 @@ Expand the name of the chart.
 */}}
 {{- define "slurm-cluster.name" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- printf "%s-%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/* Fullname suffixed with controller */}}
