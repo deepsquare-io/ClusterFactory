@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ldap-users-exoscale-vie-pv
+  namespace: slurm-cluster
+  labels:
+    app: slurm-login
+    failure-domain.beta.kubernetes.io/region: at-vie
+    failure-domain.beta.kubernetes.io/zone: at-vie-2
+spec:
+  capacity:
+    storage: 1000Gi
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+    - noatime
+    - nodiratime
+  csi:
+    driver: nfs.csi.k8s.io
+    readOnly: false
+    volumeHandle: cff3c47c-75d8-47b4-8d36-902947b4e655
+    volumeAttributes:
+      server: 172.24.0.3
+      share: '/srv/nfs/ldap-users'
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ldap-users-exoscale-vie-pvc
+  namespace: slurm-cluster
+  labels:
+    app: slurm-login
+    failure-domain.beta.kubernetes.io/region: at-vie
+    failure-domain.beta.kubernetes.io/zone: at-vie-2
+spec:
+  volumeName: ldap-users-exoscale-vie-pv
+  accessModes: [ReadWriteMany]
+  storageClassName: ''
+  resources:
+    requests:
+      storage: 1000Gi

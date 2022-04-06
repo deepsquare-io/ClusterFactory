@@ -16,18 +16,53 @@ slurmConfig:
     srunPortRangeEnd: 63000
     debug: debug5
 
+  controller:
+    # Use DNS to login to the controller (should be {{.Release.Name}}-controller-0)
+    parameters: enable_configless
+    debug: debug5
+
+  auth: |
+    AuthType=auth/munge
+    AuthAltTypes=auth/jwt
+    AuthAltParameters=jwt_key=/var/spool/slurm/jwt_hs256.key
+
   accounting: |
     AccountingStorageType=accounting_storage/slurmdbd
     AccountingStorageExternalHost=slurmdb.example.com:6819
     AccountingStorageHost=slurmdb.example.com
     AccountingStoragePort=6819
     AccountingStorageTRES=gres/gpu
+    AccountingStoreFlags=job_comment,job_env,job_script
+    AccountingStorageEnforce=associations,limits,qos
 
-  controller:
-    # ip: for slurmd to be able to connect to slurmctld (i.e and externalIP ou your load balancer IP)
-    ip: 0.0.0.0
-    parameters: enable_configless
-    debug: debug5
+  defaultResourcesAllocation: |
+    DefCpuPerGPU=4
+    DefMemPerCpu=7000
+
+  scheduling: |
+    SchedulerType=sched/backfill
+    SelectType=select/cons_tres
+    SelectTypeParameters=CR_CPU_Memory
+    SchedulerTimeSlice=60
+    UnkillableStepTimeout=300
+
+  priorities: |
+    PriorityType=priority/multifactor
+    # The larger the job, the greater its job size priority.
+    PriorityFavorSmall=NO
+    # The job's age factor reaches 1.0 after waiting in the
+    # queue for 2 weeks.
+    #PriorityMaxAge=14-0
+    # This next group determines the weighting of each of the
+    # components of the Multi-factor Job Priority Plugin.
+    # The default value for each of the following is 1.
+    PriorityWeightAge=0
+    PriorityWeightFairshare=0
+    PriorityWeightJobSize=0
+    PriorityWeightPartition=0
+    PriorityWeightQOS=100
+    PriorityDecayHalfLife=0
+    PriorityUsageResetPeriod=MONTHLY
 
   nodes: |
     NodeName=cn[1-10] Sockets=8 CoresPerSocket=2 ThreadsPerCore=2 RealMemory=112000 Gres=gpu:2
@@ -42,8 +77,31 @@ slurmConfig:
     NodeName=cn[1-12] File=/dev/nvidia[0-3] AutoDetect=nvml
 
   # Extra slurm.conf configuration
-  # TODO: Move this to argocd
-  extra: ''
+  extra: |
+    LaunchParameters=enable_nss_slurm
+    DebugFlags=Script,Gang,SelectType
+    TCPTimeout=5
+
+    # MPI stacks running over Infiniband or OmniPath require the ability to allocate more
+    # locked memory than the default limit. Unfortunately, user processes on login nodes
+    # may have a small memory limit (check it by ulimit -a) which by default are propagated
+    # into Slurm jobs and hence cause fabric errors for MPI.
+    PropagateResourceLimitsExcept=MEMLOCK
+
+    ProctrackType=proctrack/cgroup
+    TaskPlugin=task/cgroup
+    SwitchType=switch/none
+    MpiDefault=pmix_v2
+    ReturnToService=2 #temp
+    GresTypes=gpu
+    PreemptType=preempt/qos
+    PreemptMode=REQUEUE
+    PreemptExemptTime=-1
+    Prolog=/etc/slurm/prolog.d/*
+    Epilog=/etc/slurm/epilog.d/*
+
+    # Federation
+    FederationParameters=fed_display
 
 controller:
   replicas: 1

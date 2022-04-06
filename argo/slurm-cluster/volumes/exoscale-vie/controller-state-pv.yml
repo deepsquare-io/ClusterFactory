@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: controller-state-exoscale-vie-pv
+  namespace: slurm-cluster
+  labels:
+    app: slurm-controller
+    failure-domain.beta.kubernetes.io/region: at-vie
+    failure-domain.beta.kubernetes.io/zone: at-vie-2
+spec:
+  capacity:
+    storage: 50Gi
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+    - noatime
+    - nodiratime
+  csi:
+    driver: nfs.csi.k8s.io
+    readOnly: false
+    volumeHandle: c31115a9-9249-4b68-b220-78bc27edd09c
+    volumeAttributes:
+      server: 172.24.0.3
+      share: '/srv/nfs/k8s/slurmctl'
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain

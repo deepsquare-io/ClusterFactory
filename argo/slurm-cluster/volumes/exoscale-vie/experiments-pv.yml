@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: experiments-exoscale-vie-pv
+  namespace: slurm-cluster
+  labels:
+    app: slurm-login
+    failure-domain.beta.kubernetes.io/region: at-vie
+    failure-domain.beta.kubernetes.io/zone: at-vie-2
+spec:
+  capacity:
+    storage: 1000Gi
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+    - noatime
+    - nodiratime
+  csi:
+    driver: nfs.csi.k8s.io
+    readOnly: false
+    volumeHandle: a810da47-d8a9-4b8e-aef1-bbe46857403a
+    volumeAttributes:
+      server: 172.24.0.3
+      share: '/srv/nfs/compute-nodes/experiments'
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: experiments-exoscale-vie-pvc
+  namespace: slurm-cluster
+  labels:
+    app: slurm-login
+    failure-domain.beta.kubernetes.io/region: at-vie
+    failure-domain.beta.kubernetes.io/zone: at-vie-2
+spec:
+  volumeName: experiments-exoscale-vie-pv
+  accessModes: [ReadWriteMany]
+  storageClassName: ''
+  resources:
+    requests:
+      storage: 1000Gi

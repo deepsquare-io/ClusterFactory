@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: slurm-cluster-reindeer-app
+  name: slurm-cluster-exoscale-vie-app
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -12,7 +12,7 @@ spec:
     targetRevision: HEAD
     path: helm/slurm-cluster
     helm:
-      releaseName: slurm-cluster-reindeer
+      releaseName: slurm-cluster-exoscale-vie
 
       values: |
         sssd:
@@ -26,7 +26,7 @@ spec:
           secretName: munge-secret
 
         slurmConfig:
-          clusterName: reindeerpizza
+          clusterName: exoscale-vie
 
           compute:
             srunPortRangeStart: 60001
@@ -45,52 +45,52 @@ spec:
             debug: debug5
 
           defaultResourcesAllocation: |
-            DefCpuPerGPU=4
-            DefMemPerCpu=7000
+            DefCpuPerGPU=8
+            DefMemPerCpu=1000
 
           nodes: |
-            NodeName=cn[1-11]  CPUs=32 Boards=1 SocketsPerBoard=1 CoresPerSocket=16 ThreadsPerCore=2 RealMemory=128473 Gres=gpu:4
-            NodeName=cn12 CPUs=32 Boards=1 SocketsPerBoard=1 CoresPerSocket=16 ThreadsPerCore=2 RealMemory=128473 Gres=gpu:4
+            NodeName=cn-xxs-[1-10] Feature=cloud State=CLOUD Sockets=1 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=384
+            NodeName=cn-xs-[1-10] Feature=cloud State=CLOUD Sockets=1 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=768
+            NodeName=cn-s-[1-10] Feature=cloud State=CLOUD Sockets=2 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=1200
+            NodeName=cn-m-[1-10] Feature=cloud State=CLOUD Sockets=2 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=3000
+            NodeName=cn-l-[1-10] Feature=cloud State=CLOUD Sockets=4 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=7000
+            NodeName=cn-xl-[1-10] Feature=cloud State=CLOUD Sockets=4 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=14500
+            NodeName=cn-xxl-[1-10] Feature=cloud State=CLOUD Sockets=8 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=29500
+            NodeName=cn-sgpu2-[1-8] Feature=cloud,cuda State=CLOUD Sockets=12 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=53500 Gres=gpu:1
+            NodeName=cn-mgpu2-[1-4] Feature=cloud,cuda State=CLOUD Sockets=16 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=85500 Gres=gpu:2
+            NodeName=cn-lgpu2-[1-2] Feature=cloud,cuda State=CLOUD Sockets=24 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=115500 Gres=gpu:3
+            NodeName=cn-xlgpu2-1 Feature=cloud,cuda State=CLOUD Sockets=48 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=217500 Gres=gpu:4
 
           partitions: |
-            PartitionName=main Nodes=cn[1-11] Default=YES MaxTime=INFINITE State=UP OverSubscribe=NO TRESBillingWeights="CPU=2.6,Mem=0.25G,GRES/gpu=24.0"
-            PartitionName=main-beeond Nodes=cn[1-11] Default=NO MaxTime=INFINITE State=UP OverSubscribe=EXCLUSIVE TRESBillingWeights="CPU=2.6,Mem=0.25G,GRES/gpu=24.0"
-            PartitionName=private Nodes=cn12 Default=NO MaxTime=INFINITE State=UP OverSubscribe=NO Hidden=YES AllowQos=admin
+            PartitionName=main Nodes=cn-xxs-[1-10],cn-xs-[1-10],cn-s-[1-10],cn-m-[1-10],cn-l-[1-10],cn-xl-[1-10],cn-xxl-[1-10],cn-sgpu2-[1-8],cn-mgpu2-[1-4],cn-lgpu2-[1-2],cn-xlgpu2-1 Default=YES MaxTime=INFINITE State=UP OverSubscribe=NO
+            PartitionName=xxs Nodes=cn-xxs-[1-10] Default=NO MaxTime=INFINITE State=UP OverSubscribe=NO
+            PartitionName=xs Nodes=cn-xs-[1-10] Default=NO MaxTime=INFINITE State=UP OverSubscribe=NO
+            PartitionName=s Nodes=cn-s-[1-10] Default=NO MaxTime=INFINITE State=UP OverSubscribe=NO
+            PartitionName=m Nodes=cn-m-[1-10] Default=NO MaxTime=INFINITE State=UP OverSubscribe=NO
+            PartitionName=l Nodes=cn-l-[1-10] Default=NO MaxTime=INFINITE State=UP OverSubscribe=NO
+            PartitionName=xl Nodes=cn-xl-[1-10] Default=NO MaxTime=INFINITE State=UP OverSubscribe=NO
+            PartitionName=xxl Nodes=cn-xxl-[1-10] Default=NO MaxTime=INFINITE State=UP OverSubscribe=NO
+            PartitionName=sgpu2 Nodes=cn-sgpu2-[1-8] Default=NO MaxTime=INFINITE State=UP OverSubscribe=NO
+            PartitionName=mgpu2 Nodes=cn-mgpu2-[1-4] Default=NO MaxTime=INFINITE State=UP OverSubscribe=NO
+            PartitionName=lgpu2 Nodes=cn-lgpu2-[1-2] Default=NO MaxTime=INFINITE State=UP OverSubscribe=NO
+            PartitionName=xlgpu2 Nodes=cn-xlgpu2-1 Default=NO MaxTime=INFINITE State=UP OverSubscribe=NO
 
           gres: |
-            NodeName=cn[1-12] File=/dev/nvidia[0-3] AutoDetect=nvml
+            NodeName=cn-sgpu2-[1-8] File=/dev/nvidia0 AutoDetect=nvml
+            NodeName=cn-mgpu2-[1-4] File=/dev/nvidia[0-1] AutoDetect=nvml
+            NodeName=cn-lgpu2-[1-2] File=/dev/nvidia[0-2] AutoDetect=nvml
+            NodeName=cn-xlgpu2-1 File=/dev/nvidia[0-3] AutoDetect=nvml
 
           # Extra slurm.conf configuration
           extra: |
-            LaunchParameters=enable_nss_slurm
-            DebugFlags=Script,Gang,SelectType
-            TCPTimeout=5
-
-            # MPI stacks running over Infiniband or OmniPath require the ability to allocate more
-            # locked memory than the default limit. Unfortunately, user processes on login nodes
-            # may have a small memory limit (check it by ulimit -a) which by default are propagated
-            # into Slurm jobs and hence cause fabric errors for MPI.
-            PropagateResourceLimitsExcept=MEMLOCK
-
-            ProctrackType=proctrack/cgroup
-            TaskPlugin=task/cgroup
-            SwitchType=switch/none
-            MpiDefault=pmix_v2
-            ReturnToService=2 #temp
-            GresTypes=gpu
-            PreemptType=preempt/qos
-            PreemptMode=REQUEUE
-            PreemptExemptTime=-1
-            Prolog=/etc/slurm/prolog.d/*
-            Epilog=/etc/slurm/epilog.d/*
-
-            # Federation
-            FederationParameters=fed_display
-
-            JobCompType=jobcomp/report
-            JobCompLoc=https://slurm:f_4UyDHC7%21w%24Cc2KSHFv@slurm.accounting.csquare.gcloud/report
-            JobAcctGatherType=jobacct_gather/cgroup
+            CommunicationParameters=NoAddrCache
             #MailProg=/usr/bin/fakemail
+            SuspendProgram=/slurm_powersave/suspend.sh
+            ResumeProgram=/slurm_powersave/resume.sh
+            SuspendExcNodes=slurm-headnode
+            SuspendTime=180
+            ResumeTimeout=600
+            MessageTimeout=60
 
         controller:
           image: 'ghcr.io/squarefactory/slurm-docker:0.1.1-slurmctl-reindeer'
