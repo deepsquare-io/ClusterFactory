@@ -1,8 +1,11 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: 'slurm-login-profile'
+  name: 'slurm-login-reindeer-profile'
   namespace: 'slurm-cluster'
+  labels:
+    failure-domain.beta.kubernetes.io/region: ch-sion
+    failure-domain.beta.kubernetes.io/zone: ch-sion-1
 data:
   z00_lmod.sh: |
     #!/bin/sh

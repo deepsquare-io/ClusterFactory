@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: experiments-reindeer-pv
+  namespace: slurm-cluster
+  labels:
+    app: slurm-login
+    failure-domain.beta.kubernetes.io/region: ch-sion
+    failure-domain.beta.kubernetes.io/zone: ch-sion-1
+spec:
+  capacity:
+    storage: 1000Gi
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+    - noatime
+    - nodiratime
+  csi:
+    driver: nfs.csi.k8s.io
+    readOnly: false
+    volumeHandle: 19d01850-e30c-4e77-92b5-f68d48ac0083
+    volumeAttributes:
+      server: 10.10.2.11
+      share: '/mnt/pool1/compute-nodes/experiments'
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: experiments-reindeer-pvc
+  namespace: slurm-cluster
+  labels:
+    app: slurm-login
+    failure-domain.beta.kubernetes.io/region: ch-sion
+    failure-domain.beta.kubernetes.io/zone: ch-sion-1
+spec:
+  volumeName: experiments-reindeer-pv
+  accessModes: [ReadWriteMany]
+  storageClassName: ''
+  resources:
+    requests:
+      storage: 1000Gi

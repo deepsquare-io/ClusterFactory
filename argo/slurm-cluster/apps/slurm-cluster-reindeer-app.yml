@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: slurm-cluster-app
+  name: slurm-cluster-reindeer-app
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -12,7 +12,7 @@ spec:
     targetRevision: HEAD
     path: helm/slurm-cluster
     helm:
-      releaseName: slurm-cluster
+      releaseName: slurm-cluster-reindeer
 
       values: |
         sssd:
@@ -79,6 +79,8 @@ spec:
             size: 50Gi
             selectorLabels:
               app: slurm-controller
+              failure-domain.beta.kubernetes.io/region: ch-sion
+              failure-domain.beta.kubernetes.io/zone: ch-sion-1
 
           initContainers:
             - name: init-perms-ssh
@@ -100,8 +102,11 @@ spec:
           jwt:
             secretName: slurm-secret
 
-          prologsConfigMap: 'slurmctl-prologs'
-          epilogsConfigMap: 'slurmctl-epilogs'
+          prologsConfigMap: 'slurmctl-reindeer-prologs'
+          epilogsConfigMap: 'slurmctl-reindeer-epilogs'
+
+          nodeSelector:
+            failure-domain.beta.kubernetes.io/zone: ch-sion-1
 
           # Extra volume mounts
           volumeMounts:
@@ -145,24 +150,30 @@ spec:
           sshd:
             secretName: login-sshd-secret
 
+          nodeSelector:
+            failure-domain.beta.kubernetes.io/zone: ch-sion-1
+
           # Extra volume mounts
           volumeMounts:
             - name: ca-cert
               mountPath: /etc/pki/ca-trust/source/anchors/csquare.gcloud.ca.pem
               subPath: csquare.gcloud.ca.pem
-            - name: slurm-login-profile
+            - name: slurm-login-reindeer-profile
               mountPath: /etc/profile.d/z00_lmod.sh
               subPath: z00_lmod.sh
-            - name: slurm-login-profile
+            - name: slurm-login-reindeer-profile
               mountPath: /etc/profile.d/z01_lmod_env.sh
               subPath: z01_lmod_env.sh
-            - name: ldap-users-pvc
+            - name: slurm-login-reindeer-contlist
+              mountPath: /usr/local/bin/contlist
+              subPath: contlist
+            - name: ldap-users-reindeer-pvc
               mountPath: /home/ldap-users
-            - name: jobs-logs-pvc
+            - name: jobs-logs-reindeer-pvc
               mountPath: /opt/jobs-logs
-            - name: images-pvc
+            - name: images-reindeer-pvc
               mountPath: /opt/images
-            - name: experiments-pvc
+            - name: experiments-reindeer-pvc
               mountPath: /opt/experiments
             - name: software-sion-csquare-run
               mountPath: /opt/software
@@ -176,9 +187,13 @@ spec:
             - name: ca-cert
               secret:
                 secretName: local-ca-secret
-            - name: slurm-login-profile
+            - name: slurm-login-reindeer-profile
               configMap:
-                name: slurm-login-profile
+                name: slurm-login-reindeer-profile
+                defaultMode: 493
+            - name: slurm-login-reindeer-contlist
+              configMap:
+                name: slurm-login-reindeer-contlist
                 defaultMode: 493
             - name: software-sion-csquare-run
               hostPath:
@@ -192,18 +207,18 @@ spec:
               hostPath:
                 path: /cvmfs/unpacked.sion.csquare.run
                 type: Directory
-            - name: ldap-users-pvc
+            - name: ldap-users-reindeer-pvc
               persistentVolumeClaim:
-                claimName: ldap-users-pvc
-            - name: experiments-pvc
+                claimName: ldap-users-reindeer-pvc
+            - name: experiments-reindeer-pvc
               persistentVolumeClaim:
-                claimName: experiments-pvc
-            - name: images-pvc
+                claimName: experiments-reindeer-pvc
+            - name: images-reindeer-pvc
               persistentVolumeClaim:
-                claimName: images-pvc
-            - name: jobs-logs-pvc
+                claimName: images-reindeer-pvc
+            - name: jobs-logs-reindeer-pvc
               persistentVolumeClaim:
-                claimName: jobs-logs-pvc
+                claimName: jobs-logs-reindeer-pvc
 
           # Extra volume claims
           volumeClaimTemplates: []
