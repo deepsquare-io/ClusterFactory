@@ -60,6 +60,13 @@ spec:
       initContainers:
 {{ toYaml .Values.controller.initContainers | indent 8 }}
       {{- end }}
+      {{- if .Values.controller.dnsPolicy }}
+      dnsPolicy: "{{ .Values.controller.dnsPolicy }}"
+      {{- end }}
+      {{- if .Values.controller.dnsConfig }}
+      dnsConfig:
+{{ toYaml .Values.controller.dnsConfig | indent 8 }}
+      {{- end }}
       containers:
         - name: "{{ template "slurm-cluster.controller.name" . }}"
           image: "{{ .Values.controller.image }}"

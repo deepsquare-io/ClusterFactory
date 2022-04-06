@@ -130,6 +130,8 @@ controller:
     runAsUser: 0
 
   # schedulerName:
+  # dnsPolicy:
+  # dnsConfig:
 
   securityContext:
     capabilities:
@@ -257,6 +259,8 @@ login:
     runAsUser: 0
 
   # schedulerName:
+  # dnsPolicy:
+  # dnsConfig:
 
   securityContext:
     capabilities:

@@ -62,6 +62,13 @@ spec:
       initContainers:
 {{ toYaml .Values.login.initContainers | indent 8 }}
       {{- end }}
+      {{- if .Values.login.dnsPolicy }}
+      dnsPolicy: "{{ .Values.login.dnsPolicy }}"
+      {{- end }}
+      {{- if .Values.login.dnsConfig }}
+      dnsConfig:
+{{ toYaml .Values.login.dnsConfig | indent 8 }}
+      {{- end }}
       containers:
         - name: "{{ template "slurm-cluster.login.name" . }}"
           image: "{{ .Values.login.image }}"
