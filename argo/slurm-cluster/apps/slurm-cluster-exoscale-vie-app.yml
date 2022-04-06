@@ -33,20 +33,41 @@ spec:
             srunPortRangeEnd: 63000
             debug: debug5
 
+          controller:
+            parameters: enable_configless
+            debug: debug5
+
           accounting: |
             AccountingStorageType=accounting_storage/slurmdbd
             AccountingStorageExternalHost=slurmdbd.csquare.gcloud:6819
             AccountingStorageHost=slurmdbd.csquare.gcloud
             AccountingStoragePort=6819
             AccountingStorageTRES=gres/gpu
-
-          controller:
-            parameters: enable_configless
-            debug: debug5
+            AccountingStoreFlags=job_comment,job_env,job_script
+            AccountingStorageEnforce=associations,limits,qos
 
           defaultResourcesAllocation: |
             DefCpuPerGPU=8
             DefMemPerCpu=1000
+
+          scheduling: |
+            SchedulerType=sched/backfill
+            SelectType=select/cons_tres
+            SelectTypeParameters=CR_CPU_Memory
+            SchedulerTimeSlice=60
+            UnkillableStepTimeout=300
+
+          priorities: |
+            PriorityType=priority/multifactor
+            PriorityFavorSmall=NO
+            PriorityWeightAge=1000
+            PriorityWeightFairshare=10000
+            PriorityWeightTRES=CPU=1000,Mem=2000,GRES/gpu=8000
+            PriorityWeightJobSize=1000
+            PriorityWeightPartition=1000
+            PriorityWeightQOS=1000
+            PriorityDecayHalfLife=0
+            PriorityUsageResetPeriod=MONTHLY
 
           nodes: |
             NodeName=cn-xxs-[1-10] Feature=cloud State=CLOUD Sockets=1 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=384
@@ -83,7 +104,32 @@ spec:
 
           # Extra slurm.conf configuration
           extra: |
+            LaunchParameters=enable_nss_slurm
+            DebugFlags=Script,Gang,SelectType
+            TCPTimeout=5
             CommunicationParameters=NoAddrCache
+
+            # MPI stacks running over Infiniband or OmniPath require the ability to allocate more
+            # locked memory than the default limit. Unfortunately, user processes on login nodes
+            # may have a small memory limit (check it by ulimit -a) which by default are propagated
+            # into Slurm jobs and hence cause fabric errors for MPI.
+            PropagateResourceLimitsExcept=MEMLOCK
+
+            ProctrackType=proctrack/cgroup
+            TaskPlugin=task/cgroup
+            SwitchType=switch/none
+            MpiDefault=pmix_v2
+            ReturnToService=2 #temp
+            GresTypes=gpu
+            PreemptType=preempt/qos
+            PreemptMode=REQUEUE
+            PreemptExemptTime=-1
+            Prolog=/etc/slurm/prolog.d/*
+            Epilog=/etc/slurm/epilog.d/*
+
+            # Federation
+            FederationParameters=fed_display
+
             #MailProg=/usr/bin/fakemail
             SuspendProgram=/slurm_powersave/suspend.sh
             ResumeProgram=/slurm_powersave/resume.sh
@@ -107,8 +153,8 @@ spec:
             size: 50Gi
             selectorLabels:
               app: slurm-controller
-              failure-domain.beta.kubernetes.io/region: ch-sion
-              failure-domain.beta.kubernetes.io/zone: ch-sion-1
+              failure-domain.beta.kubernetes.io/region: at-vie
+              failure-domain.beta.kubernetes.io/zone: at-vie-2
 
           initContainers:
             - name: init-perms-ssh
@@ -130,11 +176,12 @@ spec:
           jwt:
             secretName: slurm-secret
 
-          prologsConfigMap: 'slurmctl-reindeer-prologs'
-          epilogsConfigMap: 'slurmctl-reindeer-epilogs'
+          prologsConfigMap:
+          epilogsConfigMap:
 
           nodeSelector:
-            failure-domain.beta.kubernetes.io/zone: ch-sion-1
+            failure-domain.beta.kubernetes.io/region: at-vie
+            failure-domain.beta.kubernetes.io/zone: at-vie-2
 
           # Extra volume mounts
           volumeMounts:
@@ -156,13 +203,14 @@ spec:
             - name: root-ssh-dir
               emptyDir:
                 medium: "Memory"
+              # TODO: Add cloud commands
 
           # Extra volume claims
           volumeClaimTemplates: []
 
           servicePerReplica:
             port: 6817
-            loadBalancerIP: 10.10.2.152
+            loadBalancerIP: 172.24.0.10
             type: LoadBalancer
 
         login:
@@ -179,91 +227,60 @@ spec:
             secretName: login-sshd-secret
 
           nodeSelector:
-            failure-domain.beta.kubernetes.io/zone: ch-sion-1
+            failure-domain.beta.kubernetes.io/region: at-vie
+            failure-domain.beta.kubernetes.io/zone: at-vie-2
 
           # Extra volume mounts
           volumeMounts:
             - name: ca-cert
               mountPath: /etc/pki/ca-trust/source/anchors/csquare.gcloud.ca.pem
               subPath: csquare.gcloud.ca.pem
-            - name: slurm-login-reindeer-profile
-              mountPath: /etc/profile.d/z00_lmod.sh
-              subPath: z00_lmod.sh
-            - name: slurm-login-reindeer-profile
-              mountPath: /etc/profile.d/z01_lmod_env.sh
-              subPath: z01_lmod_env.sh
-            - name: slurm-login-reindeer-contlist
+            - name: slurm-login-exoscale-vie-contlist
               mountPath: /usr/local/bin/contlist
               subPath: contlist
-            - name: ldap-users-reindeer-pvc
+            - name: ldap-users-exoscale-vie-pvc
               mountPath: /home/ldap-users
-            - name: jobs-logs-reindeer-pvc
+            - name: jobs-logs-exoscale-vie-pvc
               mountPath: /opt/jobs-logs
-            - name: images-reindeer-pvc
+            - name: images-exoscale-vie-pvc
               mountPath: /opt/images
-            - name: experiments-reindeer-pvc
+            - name: experiments-exoscale-vie-pvc
               mountPath: /opt/experiments
-            - name: software-sion-csquare-run
-              mountPath: /opt/software
-            - name: stdenv-sion-csquare-run
-              mountPath: /opt/stdenv
-            - name: unpacked-sion-csquare-run
-              mountPath: /opt/unpacked
 
           # Extra volumes
           volumes:
             - name: ca-cert
               secret:
                 secretName: local-ca-secret
-            - name: slurm-login-reindeer-profile
-              configMap:
-                name: slurm-login-reindeer-profile
-                defaultMode: 493
-            - name: slurm-login-reindeer-contlist
-              configMap:
-                name: slurm-login-reindeer-contlist
-                defaultMode: 493
-            - name: software-sion-csquare-run
-              hostPath:
-                path: /cvmfs/software.sion.csquare.run
-                type: Directory
-            - name: stdenv-sion-csquare-run
-              hostPath:
-                path: /cvmfs/stdenv.sion.csquare.run
-                type: Directory
-            - name: unpacked-sion-csquare-run
-              hostPath:
-                path: /cvmfs/unpacked.sion.csquare.run
-                type: Directory
-            - name: ldap-users-reindeer-pvc
+            - name: ldap-users-exoscale-vie-pvc
               persistentVolumeClaim:
-                claimName: ldap-users-reindeer-pvc
-            - name: experiments-reindeer-pvc
+                claimName: ldap-users-exoscale-vie-pvc
+            - name: experiments-exoscale-vie-pvc
               persistentVolumeClaim:
-                claimName: experiments-reindeer-pvc
-            - name: images-reindeer-pvc
+                claimName: experiments-exoscale-vie-pvc
+            - name: images-exoscale-vie-pvc
               persistentVolumeClaim:
-                claimName: images-reindeer-pvc
-            - name: jobs-logs-reindeer-pvc
+                claimName: images-exoscale-vie-pvc
+            - name: jobs-logs-exoscale-vie-pvc
               persistentVolumeClaim:
-                claimName: jobs-logs-reindeer-pvc
+                claimName: jobs-logs-exoscale-vie-pvc
 
           # Extra volume claims
           volumeClaimTemplates: []
 
           net:
             # Kubernetes host interface
-            masterInterface: eno2
+            masterInterface: eth0
             mode: bridge
 
             # https://www.cni.dev/plugins/current/ipam/static/
             ipam:
               type: host-local
               ranges:
-                - - subnet: 10.10.2.0/24
-                    rangeStart: 10.10.2.46
-                    rangeEnd: 10.10.2.47
-                    gateway: 10.10.2.1
+                - - subnet: 172.24.0.0/20
+                    rangeStart: 172.24.0.20
+                    rangeEnd: 172.24.0.22
+                    gateway: 172.24.0.2
               dataDir: "/tmp/slurm-ips-state"
 
   destination:
