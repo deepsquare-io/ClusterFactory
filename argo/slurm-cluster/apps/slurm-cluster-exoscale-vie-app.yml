@@ -190,6 +190,8 @@ spec:
             - name: ca-cert
               mountPath: /etc/pki/ca-trust/source/anchors/csquare.gcloud.ca.pem
               subPath: csquare.gcloud.ca.pem
+            - name: slurmctl-exoscale-vie-powersave
+              mountPath: /slurm_powersave
 
           # Extra volumes
           volumes:
@@ -203,7 +205,10 @@ spec:
             - name: root-ssh-dir
               emptyDir:
                 medium: "Memory"
-              # TODO: Add cloud commands
+            - name: slurmctl-exoscale-vie-powersave
+              configMap:
+                name: slurmctl-exoscale-vie-powersave
+                defaultMode: 493
 
           # Extra volume claims
           volumeClaimTemplates: []
