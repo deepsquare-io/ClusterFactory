@@ -215,6 +215,8 @@ spec:
 
           servicePerReplica:
             port: 6817
+            annotations:
+              metallb.universe.tf/address-pool: at-vie-2-pool
             loadBalancerIP: 172.24.0.10
             type: LoadBalancer
 
@@ -240,9 +242,6 @@ spec:
             - name: ca-cert
               mountPath: /etc/pki/ca-trust/source/anchors/csquare.gcloud.ca.pem
               subPath: csquare.gcloud.ca.pem
-            - name: slurm-login-exoscale-vie-contlist
-              mountPath: /usr/local/bin/contlist
-              subPath: contlist
             - name: ldap-users-exoscale-vie-pvc
               mountPath: /home/ldap-users
             - name: jobs-logs-exoscale-vie-pvc

@@ -134,6 +134,7 @@ spec:
           epilogsConfigMap: 'slurmctl-reindeer-epilogs'
 
           nodeSelector:
+            failure-domain.beta.kubernetes.io/region: ch-sion
             failure-domain.beta.kubernetes.io/zone: ch-sion-1
 
           # Extra volume mounts
@@ -162,6 +163,8 @@ spec:
 
           servicePerReplica:
             port: 6817
+            annotations:
+              metallb.universe.tf/address-pool: generic-cluster-pool
             loadBalancerIP: 10.10.2.152
             type: LoadBalancer
 
@@ -179,6 +182,7 @@ spec:
             secretName: login-sshd-secret
 
           nodeSelector:
+            failure-domain.beta.kubernetes.io/region: ch-sion
             failure-domain.beta.kubernetes.io/zone: ch-sion-1
 
           # Extra volume mounts
