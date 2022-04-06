@@ -150,6 +150,7 @@ spec:
         - name: slurm-conf
           configMap:
             name: "{{ template "slurm-cluster.name" . }}-slurm-config"
+            defaultMode: 493
         - name: slurm-spank
           configMap:
             name: "{{ template "slurm-cluster.name" . }}-slurm-spank-config"
