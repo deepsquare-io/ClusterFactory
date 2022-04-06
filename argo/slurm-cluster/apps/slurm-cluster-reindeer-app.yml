@@ -264,7 +264,6 @@ spec:
                     rangeStart: 10.10.2.46
                     rangeEnd: 10.10.2.47
                     gateway: 10.10.2.1
-              dataDir: "/tmp/slurm-ips-state"
 
   destination:
     server: 'https://kubernetes.default.svc'

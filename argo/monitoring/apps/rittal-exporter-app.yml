@@ -14,6 +14,9 @@ spec:
     helm:
       releaseName: rittal-exporter
 
+      values: |
+        image: ghcr.io/squarefactory/rittal-exporter:0.1.0
+
       valueFiles:
         - values.yml
 

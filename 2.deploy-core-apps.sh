@@ -34,10 +34,10 @@ kubectl apply -k .
 
 cd "$WORKDIR"
 
-echo "Credentials for ArgoCD are admin $(kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 --decode)"
-
 section "Wait for all deployments to be Available"
-kubectl wait deployments --all --all-namespaces --for condition=Available
+kubectl wait deployments --timeout=3600s --all --all-namespaces --for condition=Available
+
+echo "Credentials for ArgoCD are admin $(kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 --decode)"
 
 cat <<EOF
 ---Step 2 finished---

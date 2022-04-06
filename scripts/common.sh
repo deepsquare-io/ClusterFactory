@@ -27,7 +27,7 @@ export KUBESEAL
 
 K0SCTL="$(command -v k0sctl)"
 if ! [ -x "${K0SCTL}" ]; then
-  K0SCTL_VERSION=v0.13.0-rc.1
+  K0SCTL_VERSION=v0.13.0-rc.2
   echo "k0sctl could not be found. Downloading it locally in ./bin"
   rm -f ./bin/k0sctl
   curl -fsSL -o ./bin/k0sctl https://github.com/k0sproject/k0sctl/releases/download/${K0SCTL_VERSION}/k0sctl-linux-x64

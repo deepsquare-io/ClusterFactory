@@ -21,13 +21,15 @@ section "Deploy initial namespace"
 kubectl apply -f ./argo/${PROJECT}/namespace.yml
 
 section "Deploy initial volumes"
-kubectl apply -f ./argo/${PROJECT}/volumes
+kubectl apply -f ./argo/${PROJECT}/volumes/reindeer
+kubectl apply -f ./argo/${PROJECT}/volumes/exoscale-vie
 
 section "Deploy initial secrets"
 kubectl apply -f ./argo/${PROJECT}/secrets
 
 section "Deploy initial configs"
-kubectl apply -f ./argo/${PROJECT}/configs
+kubectl apply -f ./argo/${PROJECT}/configs/reindeer
+kubectl apply -f ./argo/${PROJECT}/configs/exoscale-vie
 
 section "Deploy ${PROJECT} project"
 kubectl apply -f ./argo/${PROJECT}/app-project.yml
@@ -35,4 +37,5 @@ kubectl apply -f ./argo/${PROJECT}/app-project.yml
 kubectl apply -f ./argo/${PROJECT}/apps
 
 section "Wait for all pods to be Ready"
-kubectl wait pods --all -n ${PROJECT} --for condition=Ready
+sleep 10
+kubectl wait pods --timeout=3600s --all -n ${PROJECT} --for condition=Ready

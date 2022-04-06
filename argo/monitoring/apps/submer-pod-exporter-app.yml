@@ -14,6 +14,9 @@ spec:
     helm:
       releaseName: submer-pod-exporter
 
+      values: |
+        image: ghcr.io/squarefactory/submer-pod-exporter:0.1.0
+
       valueFiles:
         - values.yml
 

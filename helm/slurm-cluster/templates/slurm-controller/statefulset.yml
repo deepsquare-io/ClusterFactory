@@ -83,8 +83,29 @@ spec:
             - name: state
               mountPath: /var/spool/slurmctl
             - name: slurm-conf
-              mountPath: /etc/slurm
-              readOnly: false
+              mountPath: /etc/slurm/slurm.conf
+              subPath: slurm.conf
+              readOnly: true
+            - name: slurm-conf
+              mountPath: /etc/slurm/gres.conf
+              subPath: gres.conf
+              readOnly: true
+            - name: slurm-conf
+              mountPath: /etc/slurm/cgroup.conf
+              subPath: cgroup.conf
+              readOnly: true
+            - name: slurm-conf
+              mountPath: /etc/slurm/plugstack.conf
+              subPath: plugstack.conf
+              readOnly: true
+            - name: slurm-conf
+              mountPath: /etc/slurm/epilog-slurmctld
+              subPath: epilog-slurmctld
+              readOnly: true
+            - name: slurm-conf
+              mountPath: /etc/slurm/prolog-slurmctld
+              subPath: prolog-slurmctld
+              readOnly: true
             {{- if .Values.controller.prologsConfigMap }}
             - name: slurmctl-prologs
               mountPath: /etc/slurm/prolog-slurmctld.d

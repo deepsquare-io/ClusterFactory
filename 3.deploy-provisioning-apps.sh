@@ -32,4 +32,5 @@ kubectl apply -f ./argo/${PROJECT}/app-project.yml
 kubectl apply -f ./argo/${PROJECT}/apps
 
 section "Wait for all pods to be Ready"
-kubectl wait pods --all -n ${PROJECT} --for condition=Ready
+sleep 10
+kubectl wait pods --timeout=3600s --all -n ${PROJECT} --for condition=Ready

@@ -17,14 +17,14 @@ export KUBECONFIG="$WORKDIR/kubeconfig"
 
 section "Wait for all node to be ready"
 sleep 30
-kubectl wait nodes --all --for condition=Ready
+kubectl wait nodes --timeout=3600s --all --for condition=Ready
 
 section "Remove Master NoSchedule Taint"
-kubectl taint nodes --kubeconfig kubeconfig --all --force node-role.kubernetes.io/master:NoSchedule-
+kubectl taint nodes --kubeconfig kubeconfig --all node-role.kubernetes.io/master:NoSchedule- || echo "taint removal failed: error ignored"
 
 section "Wait for all deployments to be Available"
 sleep 10
-kubectl wait deployments --all --all-namespaces --for condition=Available
+kubectl wait deployments --timeout=3600s --all --all-namespaces --for condition=Available
 
 section "Deploy kubevirt (virtual machines deployments)"
 # Updating is only supported to n-1 to n. Be warned.
@@ -35,14 +35,14 @@ kubectl apply -k core/kubevirt/overlays/prod
 
 section "Wait for all deployments to be Available"
 sleep 10
-kubectl wait deployments --all --all-namespaces --for condition=Available
+kubectl wait deployments --timeout=3600s --all --all-namespaces --for condition=Available
 
 section "Deploy multus (multiple network interfaces support)"
 kubectl apply -f https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset-thick-plugin.yml
 
 section "Wait for all deployments to be Available"
 sleep 10
-kubectl wait deployments --all --all-namespaces --for condition=Available
+kubectl wait deployments --timeout=3600s --all --all-namespaces --for condition=Available
 
 cat <<EOF
 ---Step 1 finished---

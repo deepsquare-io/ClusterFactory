@@ -12,6 +12,16 @@ spec:
       role: controller+worker
       installFlags:
         - --debug
+        - --labels="failure-domain.beta.kubernetes.io/region=ch-sion,failure-domain.beta.kubernetes.io/zone=ch-sion-1"
+    # - ssh:
+    #     address: 172.24.0.4
+    #     user: root
+    #     port: 22
+    #     keyPath: ~/.ssh/id_ed25519_csquare
+    #   role: worker
+    #   installFlags:
+    #     - --debug
+    #     - --labels="failure-domain.beta.kubernetes.io/region=at-vie,failure-domain.beta.kubernetes.io/zone=at-vie-2"
 
   k0s:
     version: 1.23.5+k0s.0
