@@ -3,8 +3,7 @@
 Expand the name of the chart.
 */}}
 {{- define "slurm-cluster.name" -}}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- default .Release.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/* Fullname suffixed with controller */}}
