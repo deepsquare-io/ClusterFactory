@@ -154,7 +154,7 @@ spec:
             selectorLabels:
               app: slurm-controller
               failure-domain.beta.kubernetes.io/region: at-vie
-              failure-domain.beta.kubernetes.io/zone: at-vie-2
+              failure-domain.beta.kubernetes.io/zone: at-vie-1
 
           initContainers:
             - name: init-perms-ssh
@@ -181,7 +181,15 @@ spec:
 
           nodeSelector:
             failure-domain.beta.kubernetes.io/region: at-vie
-            failure-domain.beta.kubernetes.io/zone: at-vie-2
+            failure-domain.beta.kubernetes.io/zone: at-vie-1
+
+          resources:
+            requests:
+              cpu: '250m'
+              memory: '256Mi'
+            limits:
+              cpu:
+              memory: '1Gi'
 
           # Extra volume mounts
           volumeMounts:
@@ -216,7 +224,7 @@ spec:
           servicePerReplica:
             port: 6817
             annotations:
-              metallb.universe.tf/address-pool: at-vie-2-pool
+              metallb.universe.tf/address-pool: at-vie-1-pool
             loadBalancerIP: 172.24.0.10
             type: LoadBalancer
 
@@ -235,7 +243,15 @@ spec:
 
           nodeSelector:
             failure-domain.beta.kubernetes.io/region: at-vie
-            failure-domain.beta.kubernetes.io/zone: at-vie-2
+            failure-domain.beta.kubernetes.io/zone: at-vie-1
+
+          resources:
+            requests:
+              cpu: '100m'
+              memory: '256Mi'
+            limits:
+              cpu:
+              memory: '1Gi'
 
           # Extra volume mounts
           volumeMounts:

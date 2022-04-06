@@ -6,7 +6,7 @@ metadata:
   labels:
     app: slurm-login
     failure-domain.beta.kubernetes.io/region: at-vie
-    failure-domain.beta.kubernetes.io/zone: at-vie-2
+    failure-domain.beta.kubernetes.io/zone: at-vie-1
 spec:
   capacity:
     storage: 1000Gi
@@ -34,7 +34,7 @@ metadata:
   labels:
     app: slurm-login
     failure-domain.beta.kubernetes.io/region: at-vie
-    failure-domain.beta.kubernetes.io/zone: at-vie-2
+    failure-domain.beta.kubernetes.io/zone: at-vie-1
 spec:
   volumeName: jobs-logs-exoscale-vie-pv
   accessModes: [ReadWriteMany]

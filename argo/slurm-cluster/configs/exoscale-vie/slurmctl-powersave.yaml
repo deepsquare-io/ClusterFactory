@@ -5,7 +5,7 @@ metadata:
   namespace: 'slurm-cluster'
   labels:
     failure-domain.beta.kubernetes.io/region: at-vie
-    failure-domain.beta.kubernetes.io/zone: at-vie-2
+    failure-domain.beta.kubernetes.io/zone: at-vie-1
 data:
   resume.sh: |
     #!/bin/bash -ex
