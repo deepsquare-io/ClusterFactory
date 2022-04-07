@@ -18,8 +18,6 @@ spec:
   replicas: {{ .Values.login.replicas }}
   strategy:
 {{ toYaml .Values.login.strategy | trim | indent 4 }}
-    {{ if eq .Values.login.strategy.type "Recreate" }}rollingUpdate: null{{ end }}
-{{- end }}
   template:
     metadata:
       name: "{{ template "slurm-cluster.login.name" . }}"
@@ -71,7 +69,8 @@ spec:
       {{- if .Values.login.dnsConfig }}
       dnsConfig:
 {{ toYaml .Values.login.dnsConfig | indent 8 }}
-      {{- end }}      containers:
+      {{- end }}
+      containers:
         - name: "{{ template "slurm-cluster.login.name" . }}"
           image: "{{ .Values.login.image }}"
           imagePullPolicy: "{{ .Values.login.imagePullPolicy }}"

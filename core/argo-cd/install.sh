@@ -6,7 +6,7 @@ helm repo update
 helm upgrade --install \
   -n argocd \
   -f values.yml \
-  --version 4.0.0 \
+  --version 4.5.0 \
   argocd \
   argo/argo-cd \
   --create-namespace
