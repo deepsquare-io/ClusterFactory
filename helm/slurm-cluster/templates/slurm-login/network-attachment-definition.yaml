@@ -11,7 +11,7 @@ spec:
   config: |
     {
       "cniVersion": "0.4.0",
-      "type": "macvlan",
+      "type": "{{ .Values.login.net.type }}",
       "master": "{{ .Values.login.net.masterInterface }}",
       "mode": "{{ .Values.login.net.mode }}",
       "ipam": {{ .Values.login.net.ipam | toJson }}

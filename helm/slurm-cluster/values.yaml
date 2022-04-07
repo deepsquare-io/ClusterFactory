@@ -306,6 +306,7 @@ login:
 
   net:
     # Kubernetes host interface
+    type: macvlan
     masterInterface: eth0
     mode: bridge
 
