@@ -18,7 +18,7 @@ spec:
   csi:
     driver: nfs.csi.k8s.io
     readOnly: false
-    volumeHandle: cff3c47c-75d8-47b4-8d36-902947b4e655
+    volumeHandle: 9dfe77a5-92cb-432a-9650-9e1d718e20c6
     volumeAttributes:
       server: 172.24.0.3
       share: '/srv/nfs/ldap-users'

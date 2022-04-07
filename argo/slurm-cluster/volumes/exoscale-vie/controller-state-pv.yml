@@ -18,7 +18,7 @@ spec:
   csi:
     driver: nfs.csi.k8s.io
     readOnly: false
-    volumeHandle: c31115a9-9249-4b68-b220-78bc27edd09c
+    volumeHandle: 18ef5eb0-a68b-41c0-bfd8-0fba69fe8de8
     volumeAttributes:
       server: 172.24.0.3
       share: '/srv/nfs/k8s/slurmctl'

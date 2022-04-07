@@ -18,7 +18,7 @@ spec:
   csi:
     driver: nfs.csi.k8s.io
     readOnly: false
-    volumeHandle: cff3c47c-75d8-47b4-8d36-902947b4e655
+    volumeHandle: 59b2bf6d-d6d1-4436-a56d-f66a117d5f2c
     volumeAttributes:
       server: 172.24.0.3
       share: '/srv/nfs/compute-nodes/jobs-logs'
