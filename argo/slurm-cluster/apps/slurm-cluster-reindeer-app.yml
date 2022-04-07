@@ -251,9 +251,6 @@ spec:
               persistentVolumeClaim:
                 claimName: jobs-logs-reindeer-pvc
 
-          # Extra volume claims
-          volumeClaimTemplates: []
-
           net:
             # Kubernetes host interface
             masterInterface: eno2

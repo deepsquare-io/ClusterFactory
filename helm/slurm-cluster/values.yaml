@@ -252,7 +252,8 @@ login:
 
   nodeAffinity: {}
 
-  updateStrategy: RollingUpdate
+  strategy:
+    type: RollingUpdate
 
   podSecurityContext:
     runAsUser: 0
@@ -302,9 +303,6 @@ login:
 
   # Extra volumes
   volumes: []
-
-  # Extra volume claims
-  volumeClaimTemplates: []
 
   net:
     # Kubernetes host interface

@@ -16,6 +16,8 @@ spec:
       app.kubernetes.io/instance: "{{ template "slurm-cluster.controller.name" . }}"
       app.kubernetes.io/component: controller
   replicas: {{ .Values.controller.replicas }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy }}
   template:
     metadata:
       name: "{{ template "slurm-cluster.controller.name" . }}"

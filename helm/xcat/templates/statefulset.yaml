@@ -11,9 +11,6 @@ spec:
   selector:
     matchLabels:
       app: "{{ template "xcat.name" . }}"
-  selector:
-    matchLabels:
-      app: xcat
   replicas: {{ .Values.replicas }}
   podManagementPolicy: {{ .Values.podManagementPolicy }}
   updateStrategy:

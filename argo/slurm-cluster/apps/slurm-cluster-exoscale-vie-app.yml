@@ -300,9 +300,6 @@ spec:
               persistentVolumeClaim:
                 claimName: jobs-logs-exoscale-vie-pvc
 
-          # Extra volume claims
-          volumeClaimTemplates: []
-
           net:
             # Kubernetes host interface
             masterInterface: eth0

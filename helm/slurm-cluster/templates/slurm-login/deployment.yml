@@ -1,6 +1,6 @@
 {{- if .Values.login.enabled }}
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: "{{ template "slurm-cluster.login.name" . }}"
   namespace: '{{ .Release.Namespace }}'
@@ -9,7 +9,6 @@ metadata:
     chart: '{{ .Chart.Name }}'
     app: "{{ template "slurm-cluster.login.name" . }}"
 spec:
-  serviceName: "{{ template "slurm-cluster.login.name" . }}"
   selector:
     matchLabels:
       app: "{{ template "slurm-cluster.login.name" . }}"
@@ -17,6 +16,10 @@ spec:
       app.kubernetes.io/instance: "{{ template "slurm-cluster.login.name" . }}"
       app.kubernetes.io/component: login
   replicas: {{ .Values.login.replicas }}
+  strategy:
+{{ toYaml .Values.login.strategy | trim | indent 4 }}
+    {{ if eq .Values.login.strategy.type "Recreate" }}rollingUpdate: null{{ end }}
+{{- end }}
   template:
     metadata:
       name: "{{ template "slurm-cluster.login.name" . }}"
@@ -68,8 +71,7 @@ spec:
       {{- if .Values.login.dnsConfig }}
       dnsConfig:
 {{ toYaml .Values.login.dnsConfig | indent 8 }}
-      {{- end }}
-      containers:
+      {{- end }}      containers:
         - name: "{{ template "slurm-cluster.login.name" . }}"
           image: "{{ .Values.login.image }}"
           imagePullPolicy: "{{ .Values.login.imagePullPolicy }}"
@@ -134,8 +136,4 @@ spec:
         {{- if .Values.login.volumes }}
 {{ toYaml .Values.login.volumes | indent 8 }}
         {{- end }}
-    {{- if .Values.login.volumeClaimTemplates }}
-  volumeClaimTemplates:
-{{ toYaml .Values.login.volumeClaimTemplates | indent 4 }}
-    {{- end }}
 {{- end }}
