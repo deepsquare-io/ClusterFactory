@@ -28,7 +28,6 @@ slurmConfig:
 
   accounting: |
     AccountingStorageType=accounting_storage/slurmdbd
-    AccountingStorageExternalHost=slurmdb.example.com:6819
     AccountingStorageHost=slurmdb.example.com
     AccountingStoragePort=6819
     AccountingStorageTRES=gres/gpu

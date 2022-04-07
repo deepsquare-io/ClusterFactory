@@ -35,7 +35,6 @@ spec:
 
           accounting: |
             AccountingStorageType=accounting_storage/slurmdbd
-            AccountingStorageExternalHost=slurmdbd.csquare.gcloud:6819
             AccountingStorageHost=slurmdbd.csquare.gcloud
             AccountingStoragePort=6819
             AccountingStorageTRES=gres/gpu

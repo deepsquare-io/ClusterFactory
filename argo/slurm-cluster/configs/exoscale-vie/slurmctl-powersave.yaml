@@ -10,23 +10,23 @@ data:
   resume.sh: |
     #!/bin/bash -ex
 
-    echo "Resume script called with the parameters: $@" >> /var/log/slurm/powersave.log
+    echo "Resume script called with the parameters: $@" >> /var/log/powersave.log
 
     hosts=$(scontrol show hostnames $1)
     for host in $hosts
     do
-      ssh -o StrictHostKeyChecking=no slurmctl@172.20.0.10 "sudo /slurm_powersave/resume.sh '$host'" >> /var/log/slurm/resume.log &
+      ssh -i /slurm-ssh-dir/id_rsa -o StrictHostKeyChecking=no slurmctl@172.20.0.10 "sudo /slurm_powersave/resume.sh '$host'" >> /var/log/resume.log &
     done
 
-    echo "Resume script finished with the parameters: $@" >> /var/log/slurm/powersave.log
+    echo "Resume script finished with the parameters: $@" >> /var/log/powersave.log
   suspend.sh: |
     #!/bin/bash -e
 
-    echo "Suspend script called with the parameters: $@" >> /var/log/slurm/powersave.log
+    echo "Suspend script called with the parameters: $@" >> /var/log/powersave.log
 
     hosts=$(scontrol show hostnames $1)
     for host in $hosts
     do
-      ssh -o StrictHostKeyChecking=no slurmctl@172.20.0.10 "sudo /slurm_powersave/suspend.sh $host" >> /var/log/slurm/suspend.log &
+      ssh -i /slurm-ssh-dir/id_rsa -o StrictHostKeyChecking=no slurmctl@172.20.0.10 "sudo /slurm_powersave/suspend.sh '$host'" >> /var/log/suspend.log &
     done
-    echo "Suspend script finished with the parameters: $@" >> /var/log/slurm/powersave.log
+    echo "Suspend script finished with the parameters: $@" >> /var/log/powersave.log

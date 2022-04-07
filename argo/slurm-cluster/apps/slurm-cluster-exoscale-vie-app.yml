@@ -39,16 +39,15 @@ spec:
 
           accounting: |
             AccountingStorageType=accounting_storage/slurmdbd
-            AccountingStorageExternalHost=slurmdbd.csquare.gcloud:6819
             AccountingStorageHost=slurmdbd.csquare.gcloud
             AccountingStoragePort=6819
             AccountingStorageTRES=gres/gpu
             AccountingStoreFlags=job_comment,job_env,job_script
-            AccountingStorageEnforce=associations,limits,qos
+            # AccountingStorageEnforce=associations,limits,qos
 
           defaultResourcesAllocation: |
             DefCpuPerGPU=8
-            DefMemPerCpu=1000
+            DefMemPerCpu=600
 
           scheduling: |
             SchedulerType=sched/backfill
@@ -58,16 +57,16 @@ spec:
             UnkillableStepTimeout=300
 
           priorities: |
-            PriorityType=priority/multifactor
-            PriorityFavorSmall=NO
-            PriorityWeightAge=1000
-            PriorityWeightFairshare=10000
-            PriorityWeightTRES=CPU=1000,Mem=2000,GRES/gpu=8000
-            PriorityWeightJobSize=1000
-            PriorityWeightPartition=1000
-            PriorityWeightQOS=1000
-            PriorityDecayHalfLife=0
-            PriorityUsageResetPeriod=MONTHLY
+            # PriorityType=priority/multifactor
+            # PriorityFavorSmall=NO
+            # PriorityWeightAge=1000
+            # PriorityWeightFairshare=10000
+            # PriorityWeightTRES=CPU=1000,Mem=2000,GRES/gpu=8000
+            # PriorityWeightJobSize=1000
+            # PriorityWeightPartition=1000
+            # PriorityWeightQOS=1000
+            # PriorityDecayHalfLife=0
+            # PriorityUsageResetPeriod=MONTHLY
 
           nodes: |
             NodeName=cn-xxs-[1-10] Feature=cloud State=CLOUD Sockets=1 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=384
@@ -133,7 +132,6 @@ spec:
             #MailProg=/usr/bin/fakemail
             SuspendProgram=/slurm_powersave/suspend.sh
             ResumeProgram=/slurm_powersave/resume.sh
-            SuspendExcNodes=slurm-headnode
             SuspendTime=180
             ResumeTimeout=600
             MessageTimeout=60
@@ -163,13 +161,20 @@ spec:
                 - sh
                 - -c
                 - |-
-                  cp -RLp /in-ssh/* /out-ssh/
-                  chmod -R 0600 /out-ssh/
+                  cp -RLp /in-ssh/* /out-root-ssh/
+                  cp -RLp /in-ssh/* /out-slurm-ssh/
+                  chmod 0700 /out-root-ssh/
+                  chmod 0600 /out-root-ssh/*
+                  chmod 0700 /out-slurm-ssh/
+                  chmod 0600 /out-slurm-ssh/*
+                  chown -R 1501:1501 /out-slurm-ssh/
               volumeMounts:
                 - name: slurmctl-ssh
                   mountPath: /in-ssh
                 - name: root-ssh-dir
-                  mountPath: /out-ssh
+                  mountPath: /out-root-ssh
+                - name: slurm-ssh-dir
+                  mountPath: /out-slurm-ssh
 
           # secret containing jwt_hs256.key
           # Will be mounted in /secrets/slurm
@@ -191,10 +196,17 @@ spec:
               cpu:
               memory: '1Gi'
 
+          dnsPolicy: "None"
+          dnsConfig:
+            nameservers:
+              - 172.20.0.10
+
           # Extra volume mounts
           volumeMounts:
             - name: root-ssh-dir
               mountPath: /root/.ssh
+            - name: slurm-ssh-dir
+              mountPath: /slurm-ssh-dir
             - name: ca-cert
               mountPath: /etc/pki/ca-trust/source/anchors/csquare.gcloud.ca.pem
               subPath: csquare.gcloud.ca.pem
@@ -211,6 +223,9 @@ spec:
               secret:
                 secretName: local-ca-secret
             - name: root-ssh-dir
+              emptyDir:
+                medium: "Memory"
+            - name: slurm-ssh-dir
               emptyDir:
                 medium: "Memory"
             - name: slurmctl-exoscale-vie-powersave

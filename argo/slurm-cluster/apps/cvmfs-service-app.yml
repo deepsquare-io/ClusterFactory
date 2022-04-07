@@ -23,9 +23,6 @@ spec:
           - name: stdenv-sion-csquare-run
             repository: stdenv.sion.csquare.run
 
-        nodeSelector:
-          failure-domain.beta.kubernetes.io/zone: ch-sion-1
-
         configs:
           default.local:
             mountPath: default.local
