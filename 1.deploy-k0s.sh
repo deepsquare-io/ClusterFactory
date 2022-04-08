@@ -39,6 +39,7 @@ kubectl wait deployments --timeout=3600s --all --all-namespaces --for condition=
 
 section "Deploy multus (multiple network interfaces support)"
 kubectl apply -f https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset-thick-plugin.yml
+kubectl apply -f core/cni/calico-network-attachment-definition.yaml
 
 section "Wait for all deployments to be Available"
 sleep 10

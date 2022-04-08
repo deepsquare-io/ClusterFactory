@@ -248,7 +248,17 @@ spec:
           image: 'ghcr.io/squarefactory/slurm-docker:0.1.2-login-reindeer'
           replicas: 2
 
+          strategy:
+            type: RollingUpdate
+            rollingUpdate:
+              maxSurge: 1
+              maxUnavailable: 1
+
           command: ['sh', '-c', 'update-ca-trust && /init']
+
+          annotations:
+            v1.multus-cni.io/default-network: "{{ .Release.Namespace }}/{{ template "slurm-cluster.login.name" . }}-net"
+            k8s.v1.cni.cncf.io/networks: kube-system/calico
 
           imagePullSecrets:
             - name: ghcr-marc-secret
@@ -302,8 +312,9 @@ spec:
 
           net:
             # Kubernetes host interface
-            masterInterface: eth0
-            mode: bridge
+            masterInterface: priv0
+            mode: l2
+            type: ipvlan
 
             # https://www.cni.dev/plugins/current/ipam/static/
             ipam:
@@ -311,8 +322,10 @@ spec:
               ranges:
                 - - subnet: 172.24.0.0/20
                     rangeStart: 172.24.0.20
-                    rangeEnd: 172.24.0.22
+                    rangeEnd: 172.24.0.21
                     gateway: 172.24.0.2
+              routes:
+                - dst: 0.0.0.0/0
 
   destination:
     server: 'https://kubernetes.default.svc'

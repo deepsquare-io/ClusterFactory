@@ -99,10 +99,10 @@ spec:
                           - 10.10.2.100-10.10.2.105
                           - 10.10.2.152/32
 
-                      # - name: at-vie-1-pool
-                      #   protocol: layer2
-                      #   addresses:
-                      #     - 172.24.0.10/32
+                      - name: at-vie-1-pool
+                        protocol: layer2
+                        addresses:
+                          - 172.24.0.10/32
 
               - name: traefik
                 chartname: traefik/traefik

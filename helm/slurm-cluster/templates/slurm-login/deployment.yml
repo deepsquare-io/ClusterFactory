@@ -32,10 +32,7 @@ spec:
 {{ toYaml .Values.login.labels | indent 8 }}
 {{- end }}
       annotations:
-        k8s.v1.cni.cncf.io/networks: "{{ .Release.Namespace }}/{{ template "slurm-cluster.login.name" . }}-net"
-{{- if .Values.login.annotations }}
 {{ toYaml .Values.login.annotations | indent 8 }}
-{{- end }}
     spec:
       {{- if .Values.login.schedulerName }}
       schedulerName: "{{ .Values.login.schedulerName }}"
