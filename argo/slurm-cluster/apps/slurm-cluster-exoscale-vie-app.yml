@@ -269,7 +269,7 @@ spec:
           networks: '[{
             "name": "slurm-cluster-exoscale-vie-login-net",
             "default-route": ["172.24.0.2"]
-          }]'
+            }]'
 
           resources:
             requests:

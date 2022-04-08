@@ -184,6 +184,11 @@ spec:
             failure-domain.beta.kubernetes.io/region: ch-sion
             failure-domain.beta.kubernetes.io/zone: ch-sion-1
 
+          networks: '[{
+            "name": "slurm-cluster-reindeer-login-net",
+            "default-route": ["10.10.2.1"]
+            }]'
+
           # Extra volume mounts
           volumeMounts:
             - name: ca-cert

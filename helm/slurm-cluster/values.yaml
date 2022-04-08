@@ -240,10 +240,7 @@ login:
   labels: {}
   annotations: {}
   # https://github.com/k8snetworkplumbingwg/multus-cni/blob/master/docs/how-to-use.md
-  # Default to default/k8s-pod-network
   networks: ''
-  # Default to ipvlan network (see below)
-  defaultNetwork: ''
 
   command: ['/init']
 
