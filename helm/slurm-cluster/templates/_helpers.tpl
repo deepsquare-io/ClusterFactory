@@ -18,7 +18,7 @@ Expand the name of the chart.
 
 {{/* Networks default value */}}
 {{- define "slurm-cluster.login.networks" -}}
-{{- default "kube-system/calico" .Values.login.networks -}}
+{{- default "kube-system/k8s-pod-network" .Values.login.networks -}}
 {{- end }}
 
 {{/* Default Network default value */}}
