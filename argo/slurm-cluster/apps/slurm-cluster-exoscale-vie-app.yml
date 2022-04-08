@@ -267,8 +267,7 @@ spec:
             failure-domain.beta.kubernetes.io/zone: at-vie-1
 
           networks: '[{
-            "name": "slurm-cluster-exoscale-vie-login-net",
-            "default-route": ["172.24.0.2"]
+            "name": "slurm-cluster-exoscale-vie-login-net"
             }]'
 
           resources:
@@ -325,8 +324,6 @@ spec:
                     rangeStart: 172.24.0.20
                     rangeEnd: 172.24.0.21
                     gateway: 172.24.0.2
-              routes:
-                - dst: 0.0.0.0/0
 
   destination:
     server: 'https://kubernetes.default.svc'

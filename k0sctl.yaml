@@ -92,15 +92,23 @@ spec:
                 namespace: metallb
                 values: |
                   configInline:
+                    peers:
+                      - peer-address: 172.24.0.2
+                        peer-asn: 65007
+                        my-asn: 64500
+                      - peer-address: 10.10.2.1
+                        peer-asn: 65503
+                        my-asn: 64501
+
                     address-pools:
-                      - name: generic-cluster-pool
-                        protocol: layer2
+                      - name: ch-sion-1-pool
+                        protocol: bgp
                         addresses:
-                          - 10.10.2.100-10.10.2.105
-                          - 10.10.2.152/32
+                          - 10.10.4.100/32
+                          - 10.10.4.152/32
 
                       - name: at-vie-1-pool
-                        protocol: layer2
+                        protocol: bgp
                         addresses:
                           - 172.24.0.10/32
 
@@ -116,13 +124,11 @@ spec:
                   service:
                     enabled: true
                     annotations:
-                      metallb.universe.tf/address-pool: generic-cluster-pool
+                      metallb.universe.tf/address-pool: ch-sion-1-pool
                       metallb.universe.tf/allow-shared-ip: traefik-lb-key
                     spec:
                       externalTrafficPolicy: Cluster
-                      loadBalancerIP: 10.10.2.100
-                    loadBalancerSourceRanges:
-                      - 10.10.2.0/24
+                      loadBalancerIP: 10.10.4.100
 
                   providers:
                     kubernetesCRD:

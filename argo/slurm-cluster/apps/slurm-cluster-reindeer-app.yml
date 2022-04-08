@@ -163,8 +163,8 @@ spec:
           servicePerReplica:
             port: 6817
             annotations:
-              metallb.universe.tf/address-pool: generic-cluster-pool
-            loadBalancerIP: 10.10.2.152
+              metallb.universe.tf/address-pool: ch-sion-1-pool
+            loadBalancerIP: 10.10.4.152
             type: LoadBalancer
 
         login:
@@ -186,7 +186,6 @@ spec:
 
           networks: '[{
             "name": "slurm-cluster-reindeer-login-net",
-            "default-route": ["10.10.2.1"]
             }]'
 
           # Extra volume mounts
