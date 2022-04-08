@@ -24,5 +24,5 @@ Expand the name of the chart.
 {{/* Default Network default value */}}
 {{- define "slurm-cluster.login.defaultNetwork" -}}
 {{- $network := printf "%s/%s-net" .Release.Namespace (include "slurm-cluster.login.name" .) -}}
-{{- default $network .Values.login.networks -}}
+{{- default $network .Values.login.defaultNetwork -}}
 {{- end }}
