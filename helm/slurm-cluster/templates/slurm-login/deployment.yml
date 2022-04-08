@@ -33,7 +33,6 @@ spec:
 {{- end }}
       annotations:
         k8s.v1.cni.cncf.io/networks: "{{ template "slurm-cluster.login.networks" . }}"
-        v1.multus-cni.io/default-network: "{{ template "slurm-cluster.login.defaultNetwork" . }}"
 {{- if .Values.login.annotations }}
 {{ toYaml .Values.login.annotations | indent 8 }}
 {{- end }}

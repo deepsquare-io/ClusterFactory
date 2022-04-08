@@ -266,8 +266,6 @@ spec:
             failure-domain.beta.kubernetes.io/region: at-vie
             failure-domain.beta.kubernetes.io/zone: at-vie-1
 
-          networks: default/calico
-
           resources:
             requests:
               cpu: '100m'
