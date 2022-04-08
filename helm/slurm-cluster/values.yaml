@@ -109,8 +109,7 @@ controller:
   imagePullPolicy: 'IfNotPresent'
 
   labels: {}
-  annotations:
-    k8s.v1.cni.cncf.io/networks: "{{ .Release.Namespace }}/{{ template "slurm-cluster.login.name" . }}-net"
+  annotations: {}
 
   command: ['/init']
 
@@ -240,6 +239,11 @@ login:
 
   labels: {}
   annotations: {}
+  # https://github.com/k8snetworkplumbingwg/multus-cni/blob/master/docs/how-to-use.md
+  # Default to kube-system/calico
+  networks: ''
+  # Default to ipvlan network (see below)
+  v1.multus-cni.io/default-network: ''
 
   command: ['/init']
 
