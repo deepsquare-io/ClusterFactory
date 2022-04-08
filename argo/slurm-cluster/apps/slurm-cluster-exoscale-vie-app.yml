@@ -266,6 +266,11 @@ spec:
             failure-domain.beta.kubernetes.io/region: at-vie
             failure-domain.beta.kubernetes.io/zone: at-vie-1
 
+          networks: '[{
+            "name": "slurm-cluster-exoscale-vie-login-net",
+            "default-route": ["172.24.0.2"]
+          }]'
+
           resources:
             requests:
               cpu: '100m'
