@@ -110,7 +110,7 @@ spec:
                       - name: at-vie-1-pool
                         protocol: bgp
                         addresses:
-                          - 172.24.0.10/32
+                          - 172.25.0.10/32
 
               - name: traefik
                 chartname: traefik/traefik

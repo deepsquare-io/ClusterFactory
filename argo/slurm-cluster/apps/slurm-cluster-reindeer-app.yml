@@ -185,7 +185,7 @@ spec:
             failure-domain.beta.kubernetes.io/zone: ch-sion-1
 
           networks: '[{
-            "name": "slurm-cluster-reindeer-login-net",
+            "name": "slurm-cluster-reindeer-login-net"
             }]'
 
           strategy:
@@ -275,6 +275,18 @@ spec:
                     rangeStart: 10.10.2.46
                     rangeEnd: 10.10.2.47
                     gateway: 10.10.2.1
+              routes:
+                - dst: 10.170.0.0/20 # west1
+                - dst: 10.172.0.0/20 # west6
+                - dst: 10.252.0.0/14 # west6
+                - dst: 10.10.64.0/18 # west6
+                - dst: 10.0.0.0/20 # west6
+                - dst: 10.10.2.0/24 # Reindeer
+                - dst: 10.20.0.0/24 # Custom ranges: Services
+                - dst: 10.197.16.0/24 # Custom ranges: Cloud SQL
+                - dst: 10.10.0.0/24 # Gondo
+                - dst: 172.20.0.0/18 # Exoscale CH-GVA-2
+                - dst: 172.24.0.0/20 # Exoscale AT-VIE-1
 
   destination:
     server: 'https://kubernetes.default.svc'
