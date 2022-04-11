@@ -50,6 +50,7 @@ spec:
             DefMemPerCpu=600
 
           scheduling: |
+            SchedulerParameters=salloc_wait_nodes,sbatch_wait_nodes,batch_sched_delay=15
             SchedulerType=sched/backfill
             SelectType=select/cons_tres
             SelectTypeParameters=CR_CPU_Memory
