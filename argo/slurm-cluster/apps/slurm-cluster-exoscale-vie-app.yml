@@ -211,7 +211,11 @@ spec:
               mountPath: /etc/pki/ca-trust/source/anchors/csquare.gcloud.ca.pem
               subPath: csquare.gcloud.ca.pem
             - name: slurmctl-exoscale-vie-powersave
-              mountPath: /slurm_powersave
+              mountPath: /slurm_powersave/resume.sh
+              subPath: resume.sh
+            - name: slurmctl-exoscale-vie-powersave
+              mountPath: /slurm_powersave/suspend.sh
+              subPath: suspend.sh
 
           # Extra volumes
           volumes:
@@ -269,6 +273,14 @@ spec:
           networks: '[{
             "name": "slurm-cluster-exoscale-vie-login-net"
             }]'
+
+          dnsPolicy: "None"
+          dnsConfig:
+            nameservers:
+              - 10.96.0.10
+            searches:
+              - slurm-cluster.svc.cluster.local
+              - at1.csquare.run
 
           resources:
             requests:
