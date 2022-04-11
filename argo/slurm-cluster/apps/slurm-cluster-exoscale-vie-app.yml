@@ -69,17 +69,17 @@ spec:
             # PriorityUsageResetPeriod=MONTHLY
 
           nodes: |
-            NodeName=cn-xxs-[1-10] Feature=cloud State=CLOUD Sockets=1 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=384
-            NodeName=cn-xs-[1-10] Feature=cloud State=CLOUD Sockets=1 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=768
-            NodeName=cn-s-[1-10] Feature=cloud State=CLOUD Sockets=2 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=1200
-            NodeName=cn-m-[1-10] Feature=cloud State=CLOUD Sockets=2 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=3000
-            NodeName=cn-l-[1-10] Feature=cloud State=CLOUD Sockets=4 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=7000
-            NodeName=cn-xl-[1-10] Feature=cloud State=CLOUD Sockets=4 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=14500
-            NodeName=cn-xxl-[1-10] Feature=cloud State=CLOUD Sockets=8 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=29500
-            NodeName=cn-sgpu2-[1-8] Feature=cloud,cuda State=CLOUD Sockets=12 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=53500 Gres=gpu:1
-            NodeName=cn-mgpu2-[1-4] Feature=cloud,cuda State=CLOUD Sockets=16 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=85500 Gres=gpu:2
-            NodeName=cn-lgpu2-[1-2] Feature=cloud,cuda State=CLOUD Sockets=24 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=115500 Gres=gpu:3
-            NodeName=cn-xlgpu2-1 Feature=cloud,cuda State=CLOUD Sockets=48 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=217500 Gres=gpu:4
+            NodeName=cn-xxs-[1-10] Feature=cloud State=CLOUD CPUs=1 Boards=1 Sockets=1 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=465
+            NodeName=cn-xs-[1-10] Feature=cloud State=CLOUD CPUs=1 Boards=1 Sockets=1 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=809
+            NodeName=cn-s-[1-10] Feature=cloud State=CLOUD CPUs=2 Boards=1 Sockets=2 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=1817
+            NodeName=cn-m-[1-10] Feature=cloud State=CLOUD CPUs=2 Boards=1 Sockets=2 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=3736
+            NodeName=cn-l-[1-10] Feature=cloud State=CLOUD CPUs=4 Boards=1 Sockets=1 CoresPerSocket=4 ThreadsPerCore=1 RealMemory=7768
+            NodeName=cn-xl-[1-10] Feature=cloud State=CLOUD CPUs=4 Boards=1 Sockets=1 CoresPerSocket=4 ThreadsPerCore=1 RealMemory=15832
+            NodeName=cn-xxl-[1-10] Feature=cloud State=CLOUD CPUs=8 Boards=1 Sockets=2 CoresPerSocket=4 ThreadsPerCore=1 RealMemory=31959
+            NodeName=cn-sgpu2-[1-8] Feature=cloud,cuda State=CLOUD CPUs=12 Boards=1 Sockets=2 CoresPerSocket=6 ThreadsPerCore=1 RealMemory=56150 Gres=gpu:1
+            NodeName=cn-mgpu2-[1-4] Feature=cloud,cuda State=CLOUD CPUs=16 Boards=1 Sockets=4 CoresPerSocket=4 ThreadsPerCore=1 RealMemory=90357 Gres=gpu:2
+            NodeName=cn-lgpu2-[1-2] Feature=cloud,cuda State=CLOUD CPUs=24 Boards=1 Sockets=4 CoresPerSocket=6 ThreadsPerCore=1 RealMemory=120595 Gres=gpu:3
+            NodeName=cn-xlgpu2-1 Feature=cloud,cuda State=CLOUD CPUs=48 Boards=1 Sockets=8 CoresPerSocket=6 ThreadsPerCore=1 RealMemory=226430 Gres=gpu:4
 
           partitions: |
             PartitionName=main Nodes=cn-xxs-[1-10],cn-xs-[1-10],cn-s-[1-10],cn-m-[1-10],cn-l-[1-10],cn-xl-[1-10],cn-xxl-[1-10],cn-sgpu2-[1-8],cn-mgpu2-[1-4],cn-lgpu2-[1-2],cn-xlgpu2-1 Default=YES MaxTime=INFINITE State=UP OverSubscribe=NO
@@ -129,7 +129,7 @@ spec:
             # Federation
             FederationParameters=fed_display
 
-            #MailProg=/usr/bin/fakemail
+            MailProg=/usr/bin/fakemail
             SuspendProgram=/slurm_powersave/suspend.sh
             ResumeProgram=/slurm_powersave/resume.sh
             SuspendTime=180
@@ -219,6 +219,9 @@ spec:
             - name: slurmctl-exoscale-vie-powersave
               mountPath: /slurm_powersave/suspend.sh
               subPath: suspend.sh
+            - name: fakemail
+              mountPath: /usr/bin/fakemail
+              subPath: fakemail
 
           # Extra volumes
           volumes:
@@ -238,6 +241,10 @@ spec:
             - name: slurmctl-exoscale-vie-powersave
               configMap:
                 name: slurmctl-exoscale-vie-powersave
+                defaultMode: 493
+            - name: fakemail
+              secret:
+                secretName: slurmctl-fakemail-secret
                 defaultMode: 493
 
           # Extra volume claims

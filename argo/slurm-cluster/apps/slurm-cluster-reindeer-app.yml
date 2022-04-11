@@ -89,7 +89,7 @@ spec:
             JobCompType=jobcomp/report
             JobCompLoc=https://slurm:f_4UyDHC7%21w%24Cc2KSHFv@slurm.accounting.csquare.gcloud/report
             JobAcctGatherType=jobacct_gather/cgroup
-            #MailProg=/usr/bin/fakemail
+            MailProg=/usr/bin/fakemail
 
         controller:
           image: 'ghcr.io/squarefactory/slurm-docker:0.1.1-slurmctl-reindeer'
@@ -159,6 +159,9 @@ spec:
             - name: ca-cert
               mountPath: /etc/pki/ca-trust/source/anchors/csquare.gcloud.ca.pem
               subPath: csquare.gcloud.ca.pem
+            - name: fakemail
+              mountPath: /usr/bin/fakemail
+              subPath: fakemail
 
           # Extra volumes
           volumes:
@@ -172,6 +175,10 @@ spec:
             - name: root-ssh-dir
               emptyDir:
                 medium: "Memory"
+            - name: fakemail
+              secret:
+                secretName: slurmctl-fakemail-secret
+                defaultMode: 493
 
           # Extra volume claims
           volumeClaimTemplates: []
