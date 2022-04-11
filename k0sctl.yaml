@@ -169,7 +169,7 @@ spec:
                       exposedPort: 53
                       protocol: TCP
                     dns-udp:
-                      port: 8053
+                      port: 8054
                       expose: true
                       exposedPort: 53
                       protocol: UDP
