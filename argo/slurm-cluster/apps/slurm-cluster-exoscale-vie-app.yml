@@ -199,7 +199,10 @@ spec:
           dnsPolicy: "None"
           dnsConfig:
             nameservers:
-              - 172.20.0.10
+              - 10.96.0.10
+            searches:
+              - slurm-cluster.svc.cluster.local
+              - at1.csquare.run
 
           # Extra volume mounts
           volumeMounts:

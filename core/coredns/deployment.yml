@@ -27,8 +27,8 @@ spec:
             items:
               - key: Corefile
                 path: Corefile
-              - key: at1.csquare.run.db
-                path: at1.csquare.run.db
+              - key: hosts
+                path: hosts
             defaultMode: 420
       containers:
         - name: coredns
@@ -90,7 +90,7 @@ spec:
       terminationGracePeriodSeconds: 30
       dnsPolicy: Default
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
       serviceAccountName: coredns
       serviceAccount: coredns
       securityContext: {}

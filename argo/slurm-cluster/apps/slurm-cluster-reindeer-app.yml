@@ -136,6 +136,22 @@ spec:
             failure-domain.beta.kubernetes.io/region: ch-sion
             failure-domain.beta.kubernetes.io/zone: ch-sion-1
 
+          resources:
+            requests:
+              cpu: '250m'
+              memory: '256Mi'
+            limits:
+              cpu:
+              memory: '1Gi'
+
+          dnsPolicy: "None"
+          dnsConfig:
+            nameservers:
+              - 10.96.0.10
+            searches:
+              - slurm-cluster.svc.cluster.local
+              - ch1.csquare.run
+
           # Extra volume mounts
           volumeMounts:
             - name: root-ssh-dir
@@ -187,6 +203,14 @@ spec:
           networks: '[{
             "name": "slurm-cluster-reindeer-login-net"
             }]'
+
+          dnsPolicy: "None"
+          dnsConfig:
+            nameservers:
+              - 10.96.0.10
+            searches:
+              - slurm-cluster.svc.cluster.local
+              - ch1.csquare.run
 
           strategy:
             type: RollingUpdate
