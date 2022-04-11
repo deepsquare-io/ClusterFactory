@@ -63,7 +63,8 @@ persistence:
 net:
   # Kubernetes host interface
   masterInterface: eth0
-  mode: bridge
+  mode: l2
+  type: ipvlan
 
   # https://www.cni.dev/plugins/current/ipam/static/
   ipam:

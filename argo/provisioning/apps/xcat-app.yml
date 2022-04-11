@@ -26,7 +26,8 @@ spec:
         net:
           # Kubernetes host interface
           masterInterface: eno2
-          mode: bridge
+          mode: l2
+          type: ipvlan
 
           # https://www.cni.dev/plugins/current/ipam/static/
           ipam:

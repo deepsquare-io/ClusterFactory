@@ -10,7 +10,7 @@ spec:
   config: |
     {
       "cniVersion": "0.4.0",
-      "type": "macvlan",
+      "type": "{{ .Values.net.type }}",
       "master": "{{ .Values.net.masterInterface }}",
       "mode": "{{ .Values.net.mode }}",
       "ipam": {{ .Values.net.ipam | toJson }}

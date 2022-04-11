@@ -311,9 +311,9 @@ login:
 
   net:
     # Kubernetes host interface
-    type: macvlan
+    type: ipvlan
     masterInterface: eth0
-    mode: bridge
+    mode: l2
 
     # https://www.cni.dev/plugins/current/ipam/static/
     ipam:
