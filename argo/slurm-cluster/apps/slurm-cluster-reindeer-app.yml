@@ -214,7 +214,7 @@ spec:
           dnsPolicy: "None"
           dnsConfig:
             nameservers:
-              - 10.96.0.10
+              - 10.10.4.100
             searches:
               - slurm-cluster.svc.cluster.local
               - ch1.csquare.run
