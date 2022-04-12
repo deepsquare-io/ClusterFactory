@@ -241,8 +241,7 @@ spec:
             port: 6817
             annotations:
               metallb.universe.tf/address-pool: at-vie-1-pool
-            loadBalancerIP: 172.25.0.10
-            type: LoadBalancer
+            type: ClusterIP
 
         login:
           enabled: true

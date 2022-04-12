@@ -187,8 +187,7 @@ spec:
             port: 6817
             annotations:
               metallb.universe.tf/address-pool: ch-sion-1-pool
-            loadBalancerIP: 10.10.4.152
-            type: LoadBalancer
+            type: ClusterIP
 
         login:
           enabled: true
