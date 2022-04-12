@@ -80,6 +80,7 @@ spec:
           ports:
             - containerPort: 6817
               name: slurmctld
+              hostPort: 6817
           readinessProbe:
             tcpSocket:
               port: 6817

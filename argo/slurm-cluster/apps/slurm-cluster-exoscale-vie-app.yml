@@ -70,37 +70,22 @@ spec:
             # PriorityUsageResetPeriod=MONTHLY
 
           nodes: |
-            NodeName=cn-xxs-[1-10] Feature=cloud State=CLOUD CPUs=1 Boards=1 Sockets=1 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=465
-            NodeName=cn-xs-[1-10] Feature=cloud State=CLOUD CPUs=1 Boards=1 Sockets=1 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=809
-            NodeName=cn-s-[1-10] Feature=cloud State=CLOUD CPUs=2 Boards=1 Sockets=2 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=1817
-            NodeName=cn-m-[1-10] Feature=cloud State=CLOUD CPUs=2 Boards=1 Sockets=2 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=3736
-            NodeName=cn-l-[1-10] Feature=cloud State=CLOUD CPUs=4 Boards=1 Sockets=1 CoresPerSocket=4 ThreadsPerCore=1 RealMemory=7768
-            NodeName=cn-xl-[1-10] Feature=cloud State=CLOUD CPUs=4 Boards=1 Sockets=1 CoresPerSocket=4 ThreadsPerCore=1 RealMemory=15832
-            NodeName=cn-xxl-[1-10] Feature=cloud State=CLOUD CPUs=8 Boards=1 Sockets=2 CoresPerSocket=4 ThreadsPerCore=1 RealMemory=31959
-            NodeName=cn-sgpu2-[1-8] Feature=cloud,cuda State=CLOUD CPUs=12 Boards=1 Sockets=2 CoresPerSocket=6 ThreadsPerCore=1 RealMemory=56150 Gres=gpu:1
-            NodeName=cn-mgpu2-[1-4] Feature=cloud,cuda State=CLOUD CPUs=16 Boards=1 Sockets=4 CoresPerSocket=4 ThreadsPerCore=1 RealMemory=90357 Gres=gpu:2
-            NodeName=cn-lgpu2-[1-2] Feature=cloud,cuda State=CLOUD CPUs=24 Boards=1 Sockets=4 CoresPerSocket=6 ThreadsPerCore=1 RealMemory=120595 Gres=gpu:3
-            NodeName=cn-xlgpu2-1 Feature=cloud,cuda State=CLOUD CPUs=48 Boards=1 Sockets=8 CoresPerSocket=6 ThreadsPerCore=1 RealMemory=226430 Gres=gpu:4
+            NodeName=cn-xxs-[1-10] Feature=cloud State=CLOUD CPUs=1 Boards=1 Sockets=1 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=465 Weight=105
+            NodeName=cn-xs-[1-10] Feature=cloud State=CLOUD CPUs=1 Boards=1 Sockets=1 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=809 Weight=110
+            NodeName=cn-s-[1-10] Feature=cloud State=CLOUD CPUs=2 Boards=1 Sockets=2 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=1817 Weight=220
+            NodeName=cn-m-[1-10] Feature=cloud State=CLOUD CPUs=2 Boards=1 Sockets=2 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=3736 Weight=240
+            NodeName=cn-l-[1-10] Feature=cloud State=CLOUD CPUs=4 Boards=1 Sockets=1 CoresPerSocket=4 ThreadsPerCore=1 RealMemory=7768 Weight=480
+            NodeName=cn-xl-[1-10] Feature=cloud State=CLOUD CPUs=4 Boards=1 Sockets=1 CoresPerSocket=4 ThreadsPerCore=1 RealMemory=15832 Weight=4160
+            NodeName=cn-xxl-[1-10] Feature=cloud State=CLOUD CPUs=8 Boards=1 Sockets=2 CoresPerSocket=4 ThreadsPerCore=1 RealMemory=31959 Weight=8320
+            NodeName=cn-sgpu2-[1-8] Feature=cloud,cuda State=CLOUD CPUs=12 Boards=1 Sockets=2 CoresPerSocket=6 ThreadsPerCore=1 RealMemory=56150 Gres=gpu:1 Weight=112561
+            NodeName=cn-mgpu2-[1-4] Feature=cloud,cuda State=CLOUD CPUs=16 Boards=1 Sockets=4 CoresPerSocket=4 ThreadsPerCore=1 RealMemory=90357 Gres=gpu:2 Weight=216903
 
           partitions: |
-            PartitionName=main Nodes=cn-xxs-[1-10],cn-xs-[1-10],cn-s-[1-10],cn-m-[1-10],cn-l-[1-10],cn-xl-[1-10],cn-xxl-[1-10],cn-sgpu2-[1-8],cn-mgpu2-[1-4],cn-lgpu2-[1-2],cn-xlgpu2-1 Default=YES MaxTime=INFINITE State=UP OverSubscribe=NO
-            PartitionName=xxs Nodes=cn-xxs-[1-10] Default=NO MaxTime=INFINITE State=UP OverSubscribe=NO
-            PartitionName=xs Nodes=cn-xs-[1-10] Default=NO MaxTime=INFINITE State=UP OverSubscribe=NO
-            PartitionName=s Nodes=cn-s-[1-10] Default=NO MaxTime=INFINITE State=UP OverSubscribe=NO
-            PartitionName=m Nodes=cn-m-[1-10] Default=NO MaxTime=INFINITE State=UP OverSubscribe=NO
-            PartitionName=l Nodes=cn-l-[1-10] Default=NO MaxTime=INFINITE State=UP OverSubscribe=NO
-            PartitionName=xl Nodes=cn-xl-[1-10] Default=NO MaxTime=INFINITE State=UP OverSubscribe=NO
-            PartitionName=xxl Nodes=cn-xxl-[1-10] Default=NO MaxTime=INFINITE State=UP OverSubscribe=NO
-            PartitionName=sgpu2 Nodes=cn-sgpu2-[1-8] Default=NO MaxTime=INFINITE State=UP OverSubscribe=NO
-            PartitionName=mgpu2 Nodes=cn-mgpu2-[1-4] Default=NO MaxTime=INFINITE State=UP OverSubscribe=NO
-            PartitionName=lgpu2 Nodes=cn-lgpu2-[1-2] Default=NO MaxTime=INFINITE State=UP OverSubscribe=NO
-            PartitionName=xlgpu2 Nodes=cn-xlgpu2-1 Default=NO MaxTime=INFINITE State=UP OverSubscribe=NO
+            PartitionName=main Nodes=cn-xxs-[1-10],cn-xs-[1-10],cn-s-[1-10],cn-m-[1-10],cn-l-[1-10],cn-xl-[1-10],cn-xxl-[1-10],cn-sgpu2-[1-8],cn-mgpu2-[1-4] Default=YES MaxTime=INFINITE State=UP OverSubscribe=NO
 
           gres: |
             NodeName=cn-sgpu2-[1-8] File=/dev/nvidia0 AutoDetect=nvml
             NodeName=cn-mgpu2-[1-4] File=/dev/nvidia[0-1] AutoDetect=nvml
-            NodeName=cn-lgpu2-[1-2] File=/dev/nvidia[0-2] AutoDetect=nvml
-            NodeName=cn-xlgpu2-1 File=/dev/nvidia[0-3] AutoDetect=nvml
 
           # Extra slurm.conf configuration
           extra: |
@@ -136,6 +121,7 @@ spec:
             SuspendTime=180
             ResumeTimeout=600
             MessageTimeout=60
+            BatchStartTimeout=300
 
         controller:
           image: 'ghcr.io/squarefactory/slurm-docker:0.1.1-slurmctl-reindeer'
