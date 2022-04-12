@@ -51,7 +51,7 @@ data:
     10.10.4.100 prometheus.ch1.csquare.run
     10.10.4.100 grafana.ch1.csquare.run
     10.10.2.5 nvmesh-management.ch1.csquare.run
-    10.10.4.16 slurm-cluster-reindeer-controller-0.ch1.csquare.run
+    10.10.2.16 slurm-cluster-reindeer-controller-0.ch1.csquare.run
     10.10.2.161 xcatmn.ch1.csquare.run
 
     172.24.0.4 slurm-cluster-exoscale-vie-controller-0.at1.csquare.run
