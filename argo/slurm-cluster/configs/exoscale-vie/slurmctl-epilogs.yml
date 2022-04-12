@@ -1,0 +1,21 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: 'slurmctl-exoscale-vie-epilogs'
+  namespace: 'slurm-cluster'
+  labels:
+    failure-domain.beta.kubernetes.io/region: at-vie
+    failure-domain.beta.kubernetes.io/zone: at-vie-1
+data:
+  beeond: |
+    #!/bin/bash
+
+    export PATH="$PATH:/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin"
+
+    nodefile="/tmp/slurm_nodelist.${SLURM_JOB_ID}"
+    #datadir="/mnt/scratch/beeond"
+    #clientdir="/opt/scratch"
+    logfile="/var/log/beeond/beeond.log"
+
+    sudo beeond stop -n "${nodefile}" -d -P -L -c >> $logfile 2>&1 || echo "Beeond failed" >> $logfile
+    rm -f "$nodefile"
