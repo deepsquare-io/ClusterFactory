@@ -8,30 +8,50 @@ metadata:
 data:
   Corefile: |
     .:53 {
-        errors
-        health {
-          lameduck 5s
-        }
-        ready
-        kubernetes cluster.local in-addr.arpa ip6.arpa {
-          pods insecure
-          ttl 30
-          fallthrough in-addr.arpa ip6.arpa
-        }
-        prometheus :9153
-        forward . /etc/resolv.conf {
-          max_concurrent 1000
-          prefer_udp
-        }
-        hosts /etc/coredns/hosts at1.csquare.run ch1.csquare.run {
-          fallthrough
-        }
-        cache 300
-        loop
-        reload
-        loadbalance
+      errors
+      health {
+        lameduck 5s
+      }
+      ready
+      kubernetes cluster.local in-addr.arpa ip6.arpa {
+        pods insecure
+        ttl 30
+        fallthrough in-addr.arpa ip6.arpa
+      }
+      prometheus :9153
+      forward . tls://9.9.9.9
+      reload
     }
-  hosts: |
+    at1.csquare.run:53 {
+      log
+      errors
+      ready
+      hosts /etc/coredns/at1.csquare.run.db
+      reload
+    }
+    ch1.csquare.run:53 {
+      log
+      errors
+      ready
+      hosts /etc/coredns/ch1.csquare.run.db
+      reload
+    }
+    csquare.gcloud:53 {
+      log
+      errors
+      ready
+      forward . 10.172.15.192 {
+        max_concurrent 1000
+        force_tcp
+        expire 3600s
+      }
+      hosts /etc/coredns/csquare.gcloud.db {
+        fallthrough
+      }
+      reload
+    }
+
+  ch1.csquare.run.db: |
     10.10.2.51 cn1.ch1.csquare.run
     10.10.2.52 cn2.ch1.csquare.run
     10.10.2.53 cn3.ch1.csquare.run
@@ -54,6 +74,11 @@ data:
     10.10.2.16 slurm-cluster-reindeer-controller-0.ch1.csquare.run
     10.10.2.161 xcatmn.ch1.csquare.run
 
+  csquare.gcloud.db: |
+    10.172.0.29 ldap.csquare.gcloud
+    10.172.15.237 slurmdbd.csquare.gcloud
+
+  at1.csquare.run.db: |
     172.24.0.4 slurm-cluster-exoscale-vie-controller-0.at1.csquare.run
     172.24.1.1 cn-xxs-1.at1.csquare.run
     172.24.1.2 cn-xxs-2.at1.csquare.run

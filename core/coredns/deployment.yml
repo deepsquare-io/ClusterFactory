@@ -15,7 +15,7 @@ spec:
       maxSurge: 25%
   revisionHistoryLimit: 10
   progressDeadlineSeconds: 600
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       k8s-app: kube-dns
@@ -116,6 +116,10 @@ spec:
             items:
               - key: Corefile
                 path: Corefile
-              - key: hosts
-                path: hosts
+              - key: ch1.csquare.run.db
+                path: ch1.csquare.run.db
+              - key: csquare.gcloud.db
+                path: csquare.gcloud.db
+              - key: at1.csquare.run.db
+                path: at1.csquare.run.db
             defaultMode: 420

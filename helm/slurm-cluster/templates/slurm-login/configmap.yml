@@ -1,0 +1,30 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: "{{ template "slurm-cluster.rest.name" . }}-nginx-config"
+  namespace: '{{ .Release.Namespace }}'
+  labels:
+    release: '{{ .Release.Name }}'
+    chart: '{{ .Chart.Name }}'
+    app: "{{ template "slurm-cluster.login.name" . }}"
+data:
+  nginx.conf: |
+    worker_processes auto;
+
+    events {
+
+    }
+
+    http {
+      server {
+        listen 6822 default_server;
+
+        server_name _;
+
+        keepalive_timeout 70;
+
+        location / {
+          proxy_pass http://127.0.0.1:6820;
+        }
+      }
+    }

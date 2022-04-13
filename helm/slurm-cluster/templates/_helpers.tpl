@@ -15,3 +15,8 @@ Expand the name of the chart.
 {{- define "slurm-cluster.login.name" -}}
 {{- printf "%s-login" (include "slurm-cluster.name" .) -}}
 {{- end }}
+
+{{/* Fullname suffixed with rest */}}
+{{- define "slurm-cluster.rest.name" -}}
+{{- printf "%s-login" (include "slurm-cluster.name" .) -}}
+{{- end }}

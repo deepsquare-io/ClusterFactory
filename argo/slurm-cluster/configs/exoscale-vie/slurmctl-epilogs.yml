@@ -12,10 +12,12 @@ data:
 
     export PATH="$PATH:/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin"
 
-    nodefile="/tmp/slurm_nodelist.${SLURM_JOB_ID}"
-    #datadir="/mnt/scratch/beeond"
-    #clientdir="/opt/scratch"
-    logfile="/var/log/beeond/beeond.log"
+    nodefile="/var/spool/slurmctl/beeond/slurm_nodelist.${SLURM_JOB_ID}"
+    logfile="/var/log/beeond.log"
 
-    sudo beeond stop -n "${nodefile}" -d -P -L -c >> $logfile 2>&1 || echo "Beeond failed" >> $logfile
-    rm -f "$nodefile"
+    if [ -e "$nodefile" ]; then
+      sudo beeond stop -b /usr/bin/pdsh -n "${nodefile}" -d -P -L -c >> $logfile 2>&1
+      rm -f "$nodefile"
+    else
+      echo "warning: no nodefile found for job ${SLURM_JOB_ID}" >> $logfile
+    fi

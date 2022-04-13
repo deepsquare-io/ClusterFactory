@@ -133,7 +133,7 @@ spec:
             BatchStartTimeout=300
 
         controller:
-          image: 'ghcr.io/squarefactory/slurm-docker:0.1.1-slurmctl-reindeer'
+          image: 'ghcr.io/squarefactory/slurm-docker:0.1.3-controller-reindeer'
           replicas: 1
 
           command: ['sh', '-c', 'update-ca-trust && /init']
@@ -177,8 +177,8 @@ spec:
           jwt:
             secretName: slurm-secret
 
-          prologsConfigMap:
-          epilogsConfigMap:
+          prologsConfigMap: slurmctl-exoscale-vie-prologs
+          epilogsConfigMap: slurmctl-exoscale-vie-epilogs
 
           nodeSelector:
             failure-domain.beta.kubernetes.io/region: at-vie
@@ -199,6 +199,9 @@ spec:
             searches:
               - slurm-cluster.svc.cluster.local
               - at1.csquare.run
+            options:
+              - name: ndots
+                value: "0"
 
           # Extra volume mounts
           volumeMounts:
@@ -218,6 +221,9 @@ spec:
             - name: fakemail
               mountPath: /usr/bin/fakemail
               subPath: fakemail
+            - name: slurmctl-exoscale-vie-sbin
+              mountPath: /usr/local/sbin/start-beeond-in-bg
+              subPath: start-beeond-in-bg
 
           # Extra volumes
           volumes:
@@ -241,6 +247,10 @@ spec:
             - name: fakemail
               secret:
                 secretName: slurmctl-fakemail-secret
+                defaultMode: 493
+            - name: slurmctl-exoscale-vie-sbin
+              configMap:
+                name: slurmctl-exoscale-vie-sbin
                 defaultMode: 493
 
           # Extra volume claims
@@ -286,6 +296,9 @@ spec:
             searches:
               - slurm-cluster.svc.cluster.local
               - at1.csquare.run
+            options:
+              - name: ndots
+                value: "0"
 
           resources:
             requests:

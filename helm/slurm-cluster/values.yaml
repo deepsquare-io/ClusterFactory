@@ -323,3 +323,21 @@ login:
             rangeStart: 10.10.2.46
             rangeEnd: 10.10.2.50
             gateway: 10.10.2.1
+
+  # Slurm REST API
+  rest:
+    enabled: true
+    image: 'ghcr.io/squarefactory/slurm:0.1.0-rest'
+    imagePullPolicy: 'IfNotPresent'
+    command: ['/init']
+
+    # Extra volume mounts (use login.volumes to add volumes)
+    volumeMounts: []
+
+    resources:
+      requests:
+        cpu: '250m'
+        memory: '256Mi'
+      limits:
+        cpu: '1'
+        memory: '1Gi'

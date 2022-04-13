@@ -10,16 +10,11 @@ data:
   beeond: |
     #!/bin/bash
 
-    set -ex
-
     export PATH="$PATH:/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin"
 
-    nodefile="/tmp/slurm_nodelist.${SLURM_JOB_ID}"
-    datadir="/mnt/scratch/beeond"
-    clientdir="/opt/scratch"
-    logfile="/var/log/beeond/beeond.log"
-
-    scontrol show hostnames "${SLURM_JOB_NODELIST}" > "${nodefile}"
-
-    scontrol wait_job $SLURM_JOB_ID
-    timeout 60 sudo beeond start -n "${nodefile}" -d "${datadir}" -c "${clientdir}" -P -F >> $logfile 2>&1
+    logfile="/var/log/beeond.log"
+    mkdir -p /var/spool/slurmctl/screen
+    chmod 700 /var/spool/slurmctl/screen
+    export SCREENDIR=/var/spool/slurmctl/screen
+    screen -L -Logfile "${logfile}" -dmS "beeond.${SLURM_JOB_ID}" /usr/local/sbin/start-beeond-in-bg
+    sleep 1

@@ -113,6 +113,60 @@ spec:
             {{- end }}
           resources:
 {{ toYaml .Values.login.resources | indent 12 }}
+        {{- if and .Values.login.enabled .Values.login.rest.enabled }}
+        - name: "{{ template "slurm-cluster.rest.name" . }}"
+          image: "{{ .Values.login.rest.image }}"
+          imagePullPolicy: "{{ .Values.login.rest.imagePullPolicy }}"
+          command:
+{{ toYaml .Values.login.rest.command | indent 12 }}
+          ports:
+            - containerPort: 6820
+              name: slurmrestd
+          volumeMounts:
+            - name: slurm-conf
+              mountPath: /etc/slurm
+              readOnly: false
+            - name: slurm-spank
+              mountPath: /etc/slurm/plugstack.conf.d
+              readOnly: true
+            - name: sssd
+              mountPath: /secrets/sssd
+              readOnly: true
+            - name: munge
+              mountPath: /secrets/munge
+              readOnly: true
+            - mountPath: /tmp
+              name: tmp
+              subPath: tmp
+            - mountPath: /run
+              name: tmp
+              subPath: run
+            - mountPath: /var/log
+              name: tmp
+              subPath: log
+            {{- if .Values.login.rest.volumeMounts }}
+{{ toYaml .Values.login.rest.volumeMounts | indent 12 }}
+            {{- end }}
+          resources:
+{{ toYaml .Values.login.rest.resources | indent 12 }}
+        - name: "{{ template "slurm-cluster.rest.name" . }}-nginx"
+          image: "nginx:alpine"
+          ports:
+            - containerPort: 6822
+              hostPort: 6822
+              name: http
+          volumeMounts:
+            - mountPath: /etc/nginx/nginx.conf
+              name: "{{ template "slurm-cluster.rest.name" . }}-nginx-config"
+              subPath: nginx.conf
+          resources:
+            limits:
+              cpu: 1
+              memory: 1Gi
+            requests:
+              cpu: 200m
+              memory: 256Mi
+        {{- end }}
       volumes:
         - name: tmp
           emptyDir:
@@ -124,6 +178,9 @@ spec:
         - name: slurm-spank
           configMap:
             name: "{{ template "slurm-cluster.name" . }}-slurm-spank-config"
+        - name: nginx-config
+          configMap:
+            name: "{{ template "slurm-cluster.rest.name" . }}-nginx-config"
         - name: sssd
           secret:
             secretName: "{{ .Values.sssd.secretName }}"
