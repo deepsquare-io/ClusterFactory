@@ -326,7 +326,7 @@ login:
 
   # Slurm REST API
   rest:
-    enabled: true
+    enabled: false
     image: 'ghcr.io/squarefactory/slurm:0.1.0-rest'
     imagePullPolicy: 'IfNotPresent'
     command: ['/init']
