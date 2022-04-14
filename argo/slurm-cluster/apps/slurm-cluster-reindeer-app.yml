@@ -106,8 +106,8 @@ spec:
             size: 50Gi
             selectorLabels:
               app: slurm-controller
-              failure-domain.beta.kubernetes.io/region: ch-sion
-              failure-domain.beta.kubernetes.io/zone: ch-sion-1
+              topology.kubernetes.io/region: ch-sion
+              topology.kubernetes.io/zone: ch-sion-1
 
           initContainers:
             - name: init-perms-ssh
@@ -133,8 +133,8 @@ spec:
           epilogsConfigMap: 'slurmctl-reindeer-epilogs'
 
           nodeSelector:
-            failure-domain.beta.kubernetes.io/region: ch-sion
-            failure-domain.beta.kubernetes.io/zone: ch-sion-1
+            topology.kubernetes.io/region: ch-sion
+            topology.kubernetes.io/zone: ch-sion-1
 
           resources:
             requests:
@@ -206,8 +206,8 @@ spec:
             secretName: login-sshd-secret
 
           nodeSelector:
-            failure-domain.beta.kubernetes.io/region: ch-sion
-            failure-domain.beta.kubernetes.io/zone: ch-sion-1
+            topology.kubernetes.io/region: ch-sion
+            topology.kubernetes.io/zone: ch-sion-1
 
           networks: '[{
             "name": "slurm-cluster-reindeer-login-net"

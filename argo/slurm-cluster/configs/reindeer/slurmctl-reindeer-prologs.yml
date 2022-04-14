@@ -4,8 +4,8 @@ metadata:
   name: 'slurmctl-reindeer-prologs'
   namespace: 'slurm-cluster'
   labels:
-    failure-domain.beta.kubernetes.io/region: ch-sion
-    failure-domain.beta.kubernetes.io/zone: ch-sion-1
+    topology.kubernetes.io/region: ch-sion
+    topology.kubernetes.io/zone: ch-sion-1
 data:
   beeond: |
     #!/bin/bash

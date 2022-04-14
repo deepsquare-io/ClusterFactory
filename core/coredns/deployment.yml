@@ -15,7 +15,7 @@ spec:
       maxSurge: 25%
   revisionHistoryLimit: 10
   progressDeadlineSeconds: 600
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       k8s-app: kube-dns
@@ -41,29 +41,27 @@ spec:
           effect: NoSchedule
       nodeSelector:
         kubernetes.io/os: linux
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-                labelSelector:
-                  matchExpressions:
-                    - key: k8s-app
-                      operator: In
-                      values:
-                        - kube-dns
-                topologyKey: kubernetes.io/hostname
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchExpressions:
+              - key: k8s-app
+                operator: In
+                values:
+                  - kube-dns
       containers:
         - name: coredns
           image: docker.io/coredns/coredns:1.9.1
           imagePullPolicy: IfNotPresent
           resources:
             limits:
-              cpu: 1
-              memory: 1Gi
-            requests:
               cpu: 500m
               memory: 500Mi
+            requests:
+              cpu: 250m
+              memory: 250Mi
           args: ['-conf', '/etc/coredns/Corefile']
           volumeMounts:
             - name: config-volume

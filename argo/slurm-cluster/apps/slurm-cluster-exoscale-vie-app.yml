@@ -147,8 +147,8 @@ spec:
             size: 50Gi
             selectorLabels:
               app: slurm-controller
-              failure-domain.beta.kubernetes.io/region: at-vie
-              failure-domain.beta.kubernetes.io/zone: at-vie-1
+              topology.kubernetes.io/region: at-vie
+              topology.kubernetes.io/zone: at-vie-1
 
           initContainers:
             - name: init-perms-ssh
@@ -181,8 +181,8 @@ spec:
           epilogsConfigMap: slurmctl-exoscale-vie-epilogs
 
           nodeSelector:
-            failure-domain.beta.kubernetes.io/region: at-vie
-            failure-domain.beta.kubernetes.io/zone: at-vie-1
+            topology.kubernetes.io/region: at-vie
+            topology.kubernetes.io/zone: at-vie-1
 
           resources:
             requests:
@@ -282,8 +282,8 @@ spec:
             secretName: login-sshd-secret
 
           nodeSelector:
-            failure-domain.beta.kubernetes.io/region: at-vie
-            failure-domain.beta.kubernetes.io/zone: at-vie-1
+            topology.kubernetes.io/region: at-vie
+            topology.kubernetes.io/zone: at-vie-1
 
           networks: '[{
             "name": "slurm-cluster-exoscale-vie-login-net"
