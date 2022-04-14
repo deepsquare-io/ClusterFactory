@@ -221,9 +221,6 @@ spec:
             - name: fakemail
               mountPath: /usr/bin/fakemail
               subPath: fakemail
-            - name: slurmctl-exoscale-vie-sbin
-              mountPath: /usr/local/sbin/start-beeond-in-bg
-              subPath: start-beeond-in-bg
 
           # Extra volumes
           volumes:
@@ -247,10 +244,6 @@ spec:
             - name: fakemail
               secret:
                 secretName: slurmctl-fakemail-secret
-                defaultMode: 493
-            - name: slurmctl-exoscale-vie-sbin
-              configMap:
-                name: slurmctl-exoscale-vie-sbin
                 defaultMode: 493
 
           # Extra volume claims

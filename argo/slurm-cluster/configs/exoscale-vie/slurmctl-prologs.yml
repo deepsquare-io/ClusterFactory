@@ -27,7 +27,7 @@ data:
       echo "Calling $node..."
       while [ $ssh_retval -gt 0 ] && [ $retry_attempts -gt 0 ]; do
         echo "."
-        ssh -a -x -lroot -i /slurm-ssh-dir/id_rsa -o StrictHostKeyChecking=no -oConnectTimeout=5s "$node" true
+        ssh -a -x -lroot -i /slurm-ssh-dir/id_rsa -o GlobalKnownHostsFile=/dev/null -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -oConnectTimeout=5s "$node" true
         ssh_retval=$?
 
         retry_attempts=$((retry_attempts - 1))
@@ -46,6 +46,8 @@ data:
       echo "$node is responding."
     done
 
+    exit 0
+
   01-beeond: |
     #!/bin/bash -x
 
@@ -63,4 +65,6 @@ data:
 
     scontrol show hostnames "${SLURM_JOB_NODELIST}" > "${nodefile}"
     timeout 60 sudo beeond stop -b /usr/bin/pdsh -n "${nodefile}" -d -P -L -c
-    timeout 60 sudo beeond start -b /usr/bin/pdsh -n "${nodefile}" -d "${datadir}" -c "${clientdir}" -P -F
+    timeout 30 sudo beeond start -b /usr/bin/pdsh -n "${nodefile}" -d "${datadir}" -c "${clientdir}" -P -F
+
+    exit 0
