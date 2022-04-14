@@ -367,6 +367,17 @@ spec:
                 - dst: 172.20.0.0/18 # Exoscale CH-GVA-2
                 - dst: 172.24.0.0/20 # Exoscale AT-VIE-1
 
+          rest:
+            enabled: true
+            image: 'ghcr.io/squarefactory/slurm-docker:0.1.2-rest-reindeer'
+            command: ['sh', '-c', 'update-ca-trust && /init']
+
+            # Extra volume mounts
+            volumeMounts:
+              - name: ca-cert
+                mountPath: /etc/pki/ca-trust/source/anchors/csquare.gcloud.ca.pem
+                subPath: csquare.gcloud.ca.pem
+
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: slurm-cluster

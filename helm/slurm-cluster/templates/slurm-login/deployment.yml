@@ -153,12 +153,12 @@ spec:
           image: "nginx:alpine"
           ports:
             - containerPort: 6822
-              hostPort: 6822
               name: http
           volumeMounts:
             - mountPath: /etc/nginx/nginx.conf
               name: nginx-config
               subPath: nginx.conf
+              readOnly: true
           resources:
             limits:
               cpu: 1
