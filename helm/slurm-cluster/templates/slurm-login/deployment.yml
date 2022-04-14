@@ -157,7 +157,7 @@ spec:
               name: http
           volumeMounts:
             - mountPath: /etc/nginx/nginx.conf
-              name: "{{ template "slurm-cluster.rest.name" . }}-nginx-config"
+              name: nginx-config
               subPath: nginx.conf
           resources:
             limits:
