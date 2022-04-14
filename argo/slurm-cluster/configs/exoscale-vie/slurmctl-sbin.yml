@@ -8,9 +8,7 @@ metadata:
     topology.kubernetes.io/zone: at-vie-1
 data:
   start-beeond-in-bg: |
-    #!/bin/bash
-
-    set -ex
+    #!/bin/bash -x
 
     export PATH="$PATH:/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin"
 
@@ -24,7 +22,7 @@ data:
     mkdir -p "$(dirname "$nodefile")"
 
     scontrol show hostnames "${SLURM_JOB_NODELIST}" > "${nodefile}"
-    scontrol wait_job "$SLURM_JOB_ID"
+    timeout 60 sudo beeond stop -b /usr/bin/pdsh -n "${nodefile}" -d -P -L -c || echo "beeond stop failed but we are going to ignore that"
     timeout 60 sudo beeond start -b /usr/bin/pdsh -n "${nodefile}" -d "${datadir}" -c "${clientdir}" -P -F
 
     rm "/run/slurmctl/beeond.${SLURM_JOB_ID}.pid"

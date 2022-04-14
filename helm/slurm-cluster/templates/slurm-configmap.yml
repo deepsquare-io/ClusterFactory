@@ -81,25 +81,23 @@ data:
     include /etc/slurm/plugstack.conf.d/*
 
   epilog-slurmctld: |
-    #!/bin/bash
-    set -ex
+    #!/bin/bash -ex
 
     EPILOG_DIR=/etc/slurm/epilog-slurmctld.d
 
     for script in "${EPILOG_DIR}"/*; do
       if [ -x "${script}" ]; then
-          source "${script}"
+        "${script}"
       fi
     done
 
   prolog-slurmctld: |
-    #!/bin/bash
+    #!/bin/bash -ex
 
-    set -ex
     PROLOG_DIR=/etc/slurm/prolog-slurmctld.d
 
     for script in ${PROLOG_DIR}/*; do
       if [ -x "${script}" ]; then
-      source "${script}"
+        "${script}"
       fi
     done

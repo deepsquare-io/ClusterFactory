@@ -7,14 +7,60 @@ metadata:
     topology.kubernetes.io/region: at-vie
     topology.kubernetes.io/zone: at-vie-1
 data:
-  beeond: |
+  00-wait-for-ssh: |
     #!/bin/bash
 
     export PATH="$PATH:/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin"
 
+    logfile="/var/log/wait-for-ssh.log"
+
+    exec >> "$logfile" 2>&1
+
+    full_node_list=()
+    while IFS='' read -r line; do full_node_list+=("$line"); done < <(scontrol show hostnames "${SLURM_JOB_NODELIST}")
+
+    echo "Requesting ${SLURM_JOB_NODELIST}"
+
+    for node in "${full_node_list[@]}"; do
+      ssh_retval=255
+      retry_attempts=600
+      echo "Calling $node..."
+      while [ $ssh_retval -gt 0 ] && [ $retry_attempts -gt 0 ]; do
+        echo "."
+        ssh -a -x -lroot -i /slurm-ssh-dir/id_rsa -o StrictHostKeyChecking=no -oConnectTimeout=5s "$node" true
+        ssh_retval=$?
+
+        retry_attempts=$((retry_attempts - 1))
+
+        if [ $ssh_retval -gt 0 ]; then
+          echo "$node is not responding (error $ssh_retval). $retry_attempts attempts left."
+        fi
+      done
+
+      # If we waited the whole time and no nodes are responding, error out
+      if [ $ssh_retval -gt 0 ]; then
+        echo "$node is not responding after $retry_attempts attempts. Exiting..."
+        exit $ssh_retval
+      fi
+
+      echo "$node is responding."
+    done
+
+  01-beeond: |
+    #!/bin/bash -x
+
+    export PATH="$PATH:/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin"
+
     logfile="/var/log/beeond.log"
-    mkdir -p /var/spool/slurmctl/screen
-    chmod 700 /var/spool/slurmctl/screen
-    export SCREENDIR=/var/spool/slurmctl/screen
-    screen -L -Logfile "${logfile}" -dmS "beeond.${SLURM_JOB_ID}" /usr/local/sbin/start-beeond-in-bg
-    sleep 1
+
+    exec >> "$logfile" 2>&1
+
+    nodefile="/var/spool/slurmctl/beeond/slurm_nodelist.${SLURM_JOB_ID}"
+    datadir="/mnt/scratch/beeond"
+    clientdir="/opt/cache/datasets"
+
+    mkdir -p "$(dirname "$nodefile")"
+
+    scontrol show hostnames "${SLURM_JOB_NODELIST}" > "${nodefile}"
+    timeout 60 sudo beeond stop -b /usr/bin/pdsh -n "${nodefile}" -d -P -L -c
+    timeout 60 sudo beeond start -b /usr/bin/pdsh -n "${nodefile}" -d "${datadir}" -c "${clientdir}" -P -F
