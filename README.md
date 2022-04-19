@@ -10,7 +10,6 @@ This project will deploy in the following order:
   * xCAT (bare-metal provisioning)
   * Slurm controller, database and login nodes
   * CVMFS for cluster software distribution
-  * BeeGFS for fast parallel storage
   * Open Ondemand, a web-based HPC portal for users
   * Monitoring stack (Grafana, Prometheus with ready-to-use exporters)
 
