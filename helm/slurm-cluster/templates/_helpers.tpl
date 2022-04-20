@@ -20,3 +20,8 @@ Expand the name of the chart.
 {{- define "slurm-cluster.rest.name" -}}
 {{- printf "%s-rest" (include "slurm-cluster.name" .) -}}
 {{- end }}
+
+{{/* Fullname suffixed with rest */}}
+{{- define "slurm-cluster.ondemand.name" -}}
+{{- printf "%s-ondemand" (include "slurm-cluster.name" .) -}}
+{{- end }}

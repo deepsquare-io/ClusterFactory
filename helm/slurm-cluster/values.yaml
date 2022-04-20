@@ -324,6 +324,10 @@ login:
             rangeEnd: 10.10.2.50
             gateway: 10.10.2.1
 
+  service:
+    enabled: true
+    type: ClusterIP
+
   # Slurm REST API
   rest:
     enabled: false
@@ -341,3 +345,125 @@ login:
       limits:
         cpu: '1'
         memory: '1Gi'
+
+ondemand:
+  enabled: false
+  replicas: 1
+
+  image: 'ghcr.io/squarefactory/open-ondemand:0.1.0'
+  imagePullPolicy: 'IfNotPresent'
+
+  labels: {}
+  annotations: {}
+
+  command: ['/init']
+
+  config:
+    # https://osc.github.io/ood-documentation/master/customization.html#branding
+    nginxStage: {}
+    # https://osc.github.io/ood-documentation/latest/reference/files/ood-portal-yml.html
+    oodPortal: {}
+    # https://osc.github.io/ood-documentation/develop/installation/resource-manager/kubernetes.html#deploy-hooks-to-bootstrap-users-kubernetes-configuration
+    hookEnv: |
+      K8S_USERNAME_PREFIX=""
+      NAMESPACE_PREFIX=""
+      NETWORK_POLICY_ALLOW_CIDR="127.0.0.1/32"
+      IDP_ISSUER_URL="https://idp.example.com/auth/realms/main/protocol/openid-connect/token"
+      CLIENT_ID="changeme"
+      CLIENT_SECRET="changeme"
+      IMAGE_PULL_SECRET=""
+      REGISTRY_DOCKER_CONFIG_JSON="/some/path/to/docker/config.json"
+      USE_POD_SECURITY_POLICY=false
+      USE_JOB_POD_REAPER=false
+    clusters:
+      my-cluster:
+        v2:
+          metadata:
+            title: 'My Cluster'
+          login:
+            host: '10.10.2.41'
+
+  resources:
+    requests:
+      cpu: '250m'
+      memory: '256Mi'
+    limits:
+      cpu: '1'
+      memory: '1Gi'
+
+  nodeAffinity: {}
+
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+
+  podSecurityContext:
+    runAsUser: 0
+
+  securityContext:
+    capabilities:
+      drop: [ALL]
+  readOnlyRootFilesystem: false
+  runAsNonRoot: false
+  runAsUser: 0
+
+  # How long to wait to stop gracefully
+  terminationGracePeriod: 10
+
+  ## Use an alternate scheduler.
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  schedulerName: ''
+
+  imagePullSecrets: {}
+
+  nodeSelector: {}
+  tolerations: []
+
+  tmp:
+    medium: ''
+    size: 50Gi
+
+  persistence:
+    storageClassName: ''
+    accessModes: ['ReadWriteOnce']
+    size: 50Gi
+    selectorLabels:
+      app: open-ondemand
+
+  initContainers: []
+
+  # Extra volume mounts
+  volumeMounts: []
+
+  # Extra volumes
+  volumes: []
+
+  # Extra volume claims
+  volumeClaimTemplates: []
+
+  service:
+    enabled: true
+    type: ClusterIP
+
+  httpIngress:
+    enabled: false
+    annotations: {}
+    ingressClass: ''
+
+    hosts: []
+    # - www.example.com
+
+    tls: {}
+
+  oidcIngress:
+    enabled: false
+    annotations: {}
+    ingressClass: ''
+
+    hosts: []
+    # - www.example.com
+
+    tls: {}

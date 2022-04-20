@@ -1,0 +1,172 @@
+{{- if .Values.ondemand.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: "{{ template "slurm-cluster.ondemand.name" . }}"
+  namespace: '{{ .Release.Namespace }}'
+  labels:
+    release: '{{ .Release.Name }}'
+    chart: '{{ .Chart.Name }}'
+    app: "{{ template "slurm-cluster.ondemand.name" . }}"
+spec:
+  serviceName: "{{ template "slurm-cluster.ondemand.name" . }}"
+  selector:
+    matchLabels:
+      app: "{{ template "slurm-cluster.ondemand.name" . }}"
+      app.kubernetes.io/name: "{{ template "slurm-cluster.ondemand.name" . }}"
+      app.kubernetes.io/instance: "{{ template "slurm-cluster.ondemand.name" . }}"
+      app.kubernetes.io/component: ondemand
+  replicas: {{ .Values.ondemand.replicas }}
+  updateStrategy:
+{{ toYaml .Values.ondemand.updateStrategy | trim | indent 4 }}
+  template:
+    metadata:
+      name: "{{ template "slurm-cluster.ondemand.name" . }}"
+      labels:
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}"
+        app: "{{ template "slurm-cluster.ondemand.name" . }}"
+        app.kubernetes.io/name: "{{ template "slurm-cluster.ondemand.name" . }}"
+        app.kubernetes.io/instance: "{{ template "slurm-cluster.ondemand.name" . }}"
+        app.kubernetes.io/component: ondemand
+{{- if .Values.ondemand.labels }}
+{{ toYaml .Values.ondemand.labels | indent 8 }}
+{{- end }}
+{{- if .Values.ondemand.annotations }}
+      annotations:
+{{ toYaml .Values.ondemand.annotations | indent 8 }}
+{{- end }}
+    spec:
+      {{- if .Values.ondemand.schedulerName }}
+      schedulerName: "{{ .Values.ondemand.schedulerName }}"
+      {{- end }}
+      securityContext:
+{{ toYaml .Values.ondemand.podSecurityContext | indent 8 }}
+      {{- with .Values.ondemand.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.ondemand.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.ondemand.nodeAffinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.ondemand.terminationGracePeriod }}
+      {{- if .Values.ondemand.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.ondemand.imagePullSecrets | indent 8 }}
+      {{- end }}
+      {{- if .Values.ondemand.initContainers }}
+      initContainers:
+{{ toYaml .Values.ondemand.initContainers | indent 8 }}
+      {{- end }}
+      {{- if .Values.ondemand.dnsPolicy }}
+      dnsPolicy: "{{ .Values.ondemand.dnsPolicy }}"
+      {{- end }}
+      {{- if .Values.ondemand.dnsConfig }}
+      dnsConfig:
+{{ toYaml .Values.ondemand.dnsConfig | indent 8 }}
+      {{- end }}
+      containers:
+        - name: "{{ template "slurm-cluster.ondemand.name" . }}"
+          image: "{{ .Values.ondemand.image }}"
+          imagePullPolicy: "{{ .Values.ondemand.imagePullPolicy }}"
+          command:
+{{ toYaml .Values.ondemand.command | indent 12 }}
+          ports:
+            - name: http
+              containerPort: 80
+            - name: oidc
+              containerPort: 5556
+          volumeMounts:
+            - name: ood-conf
+              mountPath: /etc/ood/config
+              readOnly: true
+            - name: dex-state
+              mountPath: /etc/ood/dex
+              readOnly: true
+            - name: slurm-conf
+              mountPath: /etc/slurm
+              readOnly: false
+            - name: slurm-spank
+              mountPath: /etc/slurm/plugstack.conf.d
+              readOnly: true
+            - name: sssd
+              mountPath: /secrets/sssd
+              readOnly: true
+            - name: munge
+              mountPath: /secrets/munge
+              readOnly: true
+            - mountPath: /tmp
+              name: tmp
+              subPath: tmp
+            - mountPath: /run
+              name: tmp
+              subPath: run
+            - mountPath: /var/log
+              name: tmp
+              subPath: log
+            {{- if .Values.ondemand.volumeMounts }}
+{{ toYaml .Values.ondemand.volumeMounts | indent 12 }}
+            {{- end }}
+          resources:
+{{ toYaml .Values.ondemand.resources | indent 12 }}
+      volumes:
+        - name: tmp
+          emptyDir:
+            medium: "{{ .Values.ondemand.tmp.medium }}"
+            sizeLimit: "{{ .Values.ondemand.tmp.size }}"
+        - name: slurm-conf
+          configMap:
+            name: "{{ template "slurm-cluster.name" . }}-slurm-config"
+        - name: slurm-spank
+          configMap:
+            name: "{{ template "slurm-cluster.name" . }}-slurm-spank-config"
+        - name: sssd
+          secret:
+            secretName: "{{ .Values.sssd.secretName }}"
+            defaultMode: 256
+        - name: munge
+          secret:
+            secretName: "{{ .Values.munge.secretName }}"
+            defaultMode: 384
+        - name: slurm-conf
+          configMap:
+            name: "{{ template "slurm-cluster.ondemand.name" . }}-config"
+            items:
+              - key: nginx_stage.yml
+                path: nginx_stage.yml
+              - key: ood_portal.yml
+                path: ood_portal.yml
+              - key: hook.env
+                path: hook.env
+              - key: missing_home_directory.html
+                path: pun/html/missing_home_directory.html
+              {{- range $key, $val := .Values.ondemand.config.clusters }}
+              - key: "{{ $key }}.yml"
+                path: "clusters.d/{{ $key }}.yml"
+              {{- end }}
+        {{- if .Values.ondemand.volumes }}
+{{ toYaml .Values.ondemand.volumes | indent 8 }}
+        {{- end }}
+  volumeClaimTemplates:
+    - metadata:
+        name: dex-state
+      spec:
+        accessModes: {{ .Values.ondemand.persistence.accessModes }}
+        storageClassName: "{{ .Values.ondemand.persistence.storageClassName }}"
+        resources:
+          requests:
+            storage: {{ .Values.ondemand.persistence.size }}
+        {{- with .Values.ondemand.persistence.selectorLabels }}
+        selector:
+          matchLabels:
+{{ toYaml . | indent 12 }}
+        {{- end }}
+    {{- if .Values.ondemand.volumeClaimTemplates }}
+{{ toYaml .Values.ondemand.volumeClaimTemplates | indent 4 }}
+    {{- end }}
+{{- end }}
