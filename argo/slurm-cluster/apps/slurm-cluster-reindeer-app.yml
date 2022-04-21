@@ -344,6 +344,11 @@ spec:
 
           oodPortalSecretName: 'openondemand-portal-secret'
 
+          hostAliases:
+            - ip: '127.0.0.1'
+              hostnames:
+                - 'ondemand.sion.csquare.run'
+
           dnsPolicy: "None"
           dnsConfig:
             nameservers:

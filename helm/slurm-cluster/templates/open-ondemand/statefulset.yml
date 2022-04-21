@@ -131,9 +131,6 @@ spec:
             - mountPath: /var/log
               name: tmp
               subPath: log
-            - mountPath: /etc/httpd/logs
-              name: tmp
-              subPath: httpd/log
             {{- if .Values.ondemand.volumeMounts }}
 {{ toYaml .Values.ondemand.volumeMounts | indent 12 }}
             {{- end }}
