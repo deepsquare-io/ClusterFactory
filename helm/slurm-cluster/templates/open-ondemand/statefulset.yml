@@ -50,6 +50,10 @@ spec:
       nodeSelector:
 {{ toYaml . | indent 8 }}
       {{- end }}
+      {{- with .Values.ondemand.hostAliases }}
+      hostAliases:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       {{- with .Values.ondemand.nodeAffinity }}
       affinity:
 {{ toYaml . | indent 8 }}
