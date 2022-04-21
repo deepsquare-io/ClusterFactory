@@ -85,10 +85,14 @@ spec:
               containerPort: 80
             - name: oidc
               containerPort: 5556
+          {{- if .Values.ondemand.livenessProbe }}
           livenessProbe:
 {{ toYaml .Values.ondemand.livenessProbe | indent 12 }}
+          {{- end }}
+          {{- if .Values.ondemand.readinessProbe }}
           readinessProbe:
 {{ toYaml .Values.ondemand.readinessProbe | indent 12 }}
+          {{- end }}
           volumeMounts:
             - name: ood-portal-conf
               mountPath: /etc/ood/config/ood_portal.yml

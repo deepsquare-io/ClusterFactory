@@ -338,7 +338,7 @@ spec:
 
         ondemand:
           enabled: true
-          image: ghcr.io/squarefactory/open-ondemand:0.1.2
+          image: ghcr.io/squarefactory/open-ondemand:0.1.3
 
           command: ['sh', '-c', 'update-ca-trust && /init']
 
@@ -361,6 +361,9 @@ spec:
                 value: "0"
               - name: use-vc
               - name: edns0
+
+          livenessProbe: null
+          readinessProbe: null
 
           config:
             nginxStage:
