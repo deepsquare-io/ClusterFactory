@@ -1,0 +1,26 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: dex-state-reindeer
+  namespace: slurm-cluster
+  labels:
+    app: open-ondemand
+    topology.kubernetes.io/region: ch-sion
+    topology.kubernetes.io/zone: ch-sion-1
+provisioner: nfs.csi.k8s.io
+parameters:
+  server: 10.10.2.11
+  share: /mnt/pool1/k8s/dex
+  readOnly: 'false'
+mountOptions:
+  - hard
+  - nfsvers=4.1
+  - noatime
+  - nodiratime
+volumeBindingMode: Immediate
+reclaimPolicy: Retain
+allowedTopologies:
+  - matchLabelExpressions:
+      - key: topology.kubernetes.io/zone
+        values:
+          - ch-sion

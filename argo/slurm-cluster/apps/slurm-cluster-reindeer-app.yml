@@ -349,6 +349,12 @@ spec:
             topology.kubernetes.io/region: ch-sion
             topology.kubernetes.io/zone: ch-sion-1
 
+          persistence:
+            storageClassName: 'dex-state-reindeer'
+            accessModes: ['ReadWriteMany']
+            size: 50Gi
+            selectorLabels: {}
+
           # Extra volume mounts
           volumeMounts:
             - name: ca-cert

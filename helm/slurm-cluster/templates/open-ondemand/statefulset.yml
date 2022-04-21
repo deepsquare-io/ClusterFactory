@@ -133,7 +133,7 @@ spec:
           secret:
             secretName: "{{ .Values.munge.secretName }}"
             defaultMode: 384
-        - name: slurm-conf
+        - name: ood-conf
           configMap:
             name: "{{ template "slurm-cluster.ondemand.name" . }}-config"
             items:
