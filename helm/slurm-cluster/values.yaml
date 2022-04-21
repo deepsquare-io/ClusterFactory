@@ -382,12 +382,13 @@ ondemand:
       USE_POD_SECURITY_POLICY=false
       USE_JOB_POD_REAPER=false
     clusters:
-      my-cluster:
-        v2:
-          metadata:
-            title: 'My Cluster'
-          login:
-            host: '10.10.2.41'
+      {}
+      # my-cluster:
+      #   v2:
+      #     metadata:
+      #       title: 'My Cluster'
+      #     login:
+      #       host: '10.10.2.41'
 
   resources:
     requests:
