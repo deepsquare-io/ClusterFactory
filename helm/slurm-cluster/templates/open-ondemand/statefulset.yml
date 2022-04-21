@@ -86,9 +86,23 @@ spec:
           readinessProbe:
 {{ toYaml .Values.ondemand.readinessProbe | indent 12 }}
           volumeMounts:
+            - name: ood-portal-conf
+              mountPath: /etc/ood/config/ood_portal.yml
+              subPath: ood_portal.yml
             - name: ood-conf
-              mountPath: /etc/ood/config
-              readOnly: false
+              mountPath: /etc/ood/config/nginx_stage.yml
+              subPath: nginx_stage.yml
+            - name: ood-conf
+              mountPath: /etc/ood/config/hook.env
+              subPath: hook.env
+            - name: ood-conf
+              mountPath: /etc/ood/config/pun/html/missing_home_directory.html
+              subPath: missing_home_directory.html
+            {{- range $key, $val := .Values.ondemand.config.clusters }}
+            - name: ood-conf
+              mountPath: "/etc/ood/config/clusters.d/{{ $key }}.yml"
+              subPath: "{{ $key }}.yml"
+            {{- end }}
             - name: dex-state
               mountPath: /etc/ood/dex
               readOnly: false
@@ -147,17 +161,6 @@ spec:
         - name: ood-conf
           configMap:
             name: "{{ template "slurm-cluster.ondemand.name" . }}-config"
-            items:
-              - key: nginx_stage.yml
-                path: nginx_stage.yml
-              - key: hook.env
-                path: hook.env
-              - key: missing_home_directory.html
-                path: pun/html/missing_home_directory.html
-              {{- range $key, $val := .Values.ondemand.config.clusters }}
-              - key: "{{ $key }}.yml"
-                path: "clusters.d/{{ $key }}.yml"
-              {{- end }}
         {{- if .Values.ondemand.volumes }}
 {{ toYaml .Values.ondemand.volumes | indent 8 }}
         {{- end }}
