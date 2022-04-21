@@ -88,10 +88,10 @@ spec:
           volumeMounts:
             - name: ood-conf
               mountPath: /etc/ood/config
-              readOnly: true
+              readOnly: false
             - name: dex-state
               mountPath: /etc/ood/dex
-              readOnly: true
+              readOnly: false
             - name: slurm-conf
               mountPath: /etc/slurm
               readOnly: false
