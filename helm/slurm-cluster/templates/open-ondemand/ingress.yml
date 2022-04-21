@@ -8,10 +8,10 @@ metadata:
     release: '{{ .Release.Name }}'
     chart: '{{ .Chart.Name }}'
     app: "{{ template "slurm-cluster.ondemand.name" . }}"
+{{- if .Values.ondemand.httpIngress.annotations }}
   annotations:
-    {{- range $key, $value := .Values.ondemand.httpIngress.annotations }}
-      {{ $key }}: {{ $value | quote }}
-    {{- end }}
+{{ toYaml .Values.ondemand.httpIngress.annotations | indent 4 }}
+{{- end }}
 spec:
   ingressClassName: "{{ .Values.ondemand.httpIngress.ingressClass }}"
   rules:
@@ -20,17 +20,18 @@ spec:
       http:
         paths:
           - path: /
+            pathType: Prefix
             backend:
               service:
-                name: "{{ template "slurm-cluster.ondemand.name" . }}"
+                name: "{{ template "slurm-cluster.ondemand.name" $ }}"
                 port:
                   name: http
-    {{- end -}}
+    {{- end }}
   {{- if .Values.ondemand.httpIngress.tls }}
   tls:
 {{ toYaml .Values.ondemand.httpIngress.tls | indent 4 }}
-  {{- end -}}
-{{- end -}}
+  {{- end }}
+{{- end }}
 ---
 {{- if and .Values.ondemand.enabled .Values.ondemand.oidcIngress.enabled -}}
 apiVersion: extensions/v1beta1
@@ -42,10 +43,10 @@ metadata:
     release: '{{ .Release.Name }}'
     chart: '{{ .Chart.Name }}'
     app: "{{ template "slurm-cluster.ondemand.name" . }}"
+{{- if .Values.ondemand.oidcIngress.annotations }}
   annotations:
-    {{- range $key, $value := .Values.ondemand.oidcIngress.annotations }}
-      {{ $key }}: {{ $value | quote }}
-    {{- end }}
+{{ toYaml .Values.ondemand.oidcIngress.annotations | indent 4 }}
+{{- end }}
 spec:
   ingressClassName: "{{ .Values.ondemand.oidcIngress.ingressClass }}"
   rules:
@@ -57,12 +58,12 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: "{{ template "slurm-cluster.ondemand.name" . }}"
+                name: "{{ template "slurm-cluster.ondemand.name" $ }}"
                 port:
                   name: oidc
     {{- end -}}
   {{- if .Values.ondemand.oidcIngress.tls }}
   tls:
 {{ toYaml .Values.ondemand.oidcIngress.tls | indent 4 }}
-  {{- end -}}
-{{- end -}}
+  {{- end }}
+{{- end }}
