@@ -342,6 +342,53 @@ spec:
 
           command: ['sh', '-c', 'update-ca-trust && /init']
 
+          oodPortalSecretName: 'openondemand-portal-secret'
+
+          config:
+            nginxStage:
+              pun_custom_env:
+                OOD_DASHBOARD_TITLE: "DeepSquare for Education"
+                OOD_BRAND_BG_COLOR: "#120641"
+                OOD_BRAND_LINK_ACTIVE_BG_COLOR: "#6753ff"
+                OOD_DASHBOARD_LOGO: "/public/logo.png"
+            clusters:
+              reindeerpizza:
+                v2:
+                  metadata:
+                    title: "Reindeer Pizza Cluster"
+                  login:
+                    host: "10.10.2.41"
+                  job:
+                    adapter: "slurm"
+                    cluster: "ReindeerPizza"
+                    bin: "/usr/bin"
+                    conf: "/etc/slurm/slurm.conf"
+                    bin_overrides:
+                      sbatch: "/usr/bin/sbatch"
+                      squeue: "/usr/bin/squeue"
+                      scontrol: "/usr/bin/scontrol"
+                      scancel: "/usr/bin/scancel"
+                  acls:
+                  - adapter: "group"
+                    groups:
+                      - "cluster-users"
+                      # - "other_users_of_the_cluster"
+                    type: "whitelist"
+                  batch_connect:
+                      basic:
+                        script_wrapper: |
+                          %s
+                      vnc:
+                        script_wrapper: |
+                          . $LMOD_PKG/init/sh
+                          export WEBSOCKIFY_CMD="python3 -m websockify"
+                          export PATH="/opt/TurboVNC/bin:${PATH}"
+                          id="$(nvidia-smi --query-gpu=gpu_bus_id --format=csv,noheader)"
+                          id="${id:4:12}"
+                          card="$(basename $(ls "/sys/bus/pci/devices/${id}/drm/" | grep card))"
+                          export VGL_DISPLAY="/dev/dri/${card}"
+                          %s
+
           imagePullSecrets:
             - name: ghcr-marc-secret
 
@@ -421,6 +468,28 @@ spec:
             - name: jobs-logs-reindeer-pvc
               persistentVolumeClaim:
                 claimName: jobs-logs-reindeer-pvc
+
+          httpIngress:
+            enabled: true
+            annotations:
+              traefik.ingress.kubernetes.io/router.entrypoints: web
+            ingressClass: 'traefik'
+
+            hosts:
+              - ondemand.sion.csquare.run
+
+            tls: {}
+
+          oidcIngress:
+            enabled: true
+            annotations:
+              traefik.ingress.kubernetes.io/router.entrypoints: oidc
+            ingressClass: 'traefik'
+
+            hosts:
+              - ondemand.sion.csquare.run
+
+            tls: {}
 
   destination:
     server: 'https://kubernetes.default.svc'

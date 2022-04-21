@@ -11,8 +11,6 @@ metadata:
 data:
   nginx_stage.yml: |
 {{ toYaml .Values.ondemand.config.nginxStage | indent 4 }}
-  ood_portal.yml: |
-{{ toYaml .Values.ondemand.config.oodPortal | indent 4 }}
   hook.env: |
 {{ .Values.ondemand.config.hookEnv | indent 4 }}
   missing_home_directory.html: |

@@ -81,6 +81,10 @@ spec:
               containerPort: 80
             - name: oidc
               containerPort: 5556
+          livenessProbe:
+{{ toYaml .Values.ondemand.livenessProbe | indent 12 }}
+          readinessProbe:
+{{ toYaml .Values.ondemand.readinessProbe | indent 12 }}
           volumeMounts:
             - name: ood-conf
               mountPath: /etc/ood/config
@@ -133,14 +137,19 @@ spec:
           secret:
             secretName: "{{ .Values.munge.secretName }}"
             defaultMode: 384
+        - name: ood-portal-conf
+          secret:
+            secretName: "{{ .Values.ondemand.oodPortalSecretName }}"
+            defaultMode: 256
+            items:
+              - key: ood_portal.yml
+                path: ood_portal.yml
         - name: ood-conf
           configMap:
             name: "{{ template "slurm-cluster.ondemand.name" . }}-config"
             items:
               - key: nginx_stage.yml
                 path: nginx_stage.yml
-              - key: ood_portal.yml
-                path: ood_portal.yml
               - key: hook.env
                 path: hook.env
               - key: missing_home_directory.html

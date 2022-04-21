@@ -358,11 +358,12 @@ ondemand:
 
   command: ['/init']
 
+  # https://osc.github.io/ood-documentation/latest/reference/files/ood-portal-yml.html
+  oodPortalSecretName: ''
+
   config:
     # https://osc.github.io/ood-documentation/master/customization.html#branding
     nginxStage: {}
-    # https://osc.github.io/ood-documentation/latest/reference/files/ood-portal-yml.html
-    oodPortal: {}
     # https://osc.github.io/ood-documentation/develop/installation/resource-manager/kubernetes.html#deploy-hooks-to-bootstrap-users-kubernetes-configuration
     hookEnv: |
       K8S_USERNAME_PREFIX=""
@@ -395,6 +396,26 @@ ondemand:
 
   updateStrategy:
     type: RollingUpdate
+
+  livenessProbe:
+    httpGet:
+      path: /
+      port: 80
+      scheme: HTTP
+    initialDelaySeconds: 60
+    timeoutSeconds: 1
+    periodSeconds: 10
+    successThreshold: 1
+    failureThreshold: 3
+  readinessProbe:
+    httpGet:
+      path: /
+      port: 80
+      scheme: HTTP
+    timeoutSeconds: 1
+    periodSeconds: 2
+    successThreshold: 1
+    failureThreshold: 3
 
   podSecurityContext:
     runAsUser: 0
