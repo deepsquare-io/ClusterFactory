@@ -291,9 +291,9 @@ login:
   #
   # Snippet to regenerate keys:
   #
-  #   yes 'y' | ssh-keygen -N '' -f ./ssh_host_rsa_key -t rsa -C headnode
-  #   yes 'y' | ssh-keygen -N '' -f ./ssh_host_ecdsa_key -t ecdsa -C headnode
-  #   yes 'y' | ssh-keygen -N '' -f ./ssh_host_ed25519_key -t ed25519 -C headnod
+  #   yes 'y' | ssh-keygen -N '' -f ./ssh_host_rsa_key -t rsa -C ondemand
+  #   yes 'y' | ssh-keygen -N '' -f ./ssh_host_ecdsa_key -t ecdsa -C ondemand
+  #   yes 'y' | ssh-keygen -N '' -f ./ssh_host_ed25519_key -t ed25519 -C ondemand
   sshd:
     secretName:
 
@@ -362,6 +362,16 @@ ondemand:
     - ip: '127.0.0.1'
       hostnames:
         - 'ondemand.example.com'
+
+  # secret containing SSH host keys
+  #
+  # Snippet to regenerate keys:
+  #
+  #   yes 'y' | ssh-keygen -N '' -f ./ssh_host_rsa_key -t rsa -C headnode
+  #   yes 'y' | ssh-keygen -N '' -f ./ssh_host_ecdsa_key -t ecdsa -C headnode
+  #   yes 'y' | ssh-keygen -N '' -f ./ssh_host_ed25519_key -t ed25519 -C headnod
+  sshd:
+    secretName:
 
   # https://osc.github.io/ood-documentation/latest/reference/files/ood-portal-yml.html
   oodPortalSecretName: ''

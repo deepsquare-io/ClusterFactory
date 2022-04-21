@@ -338,7 +338,7 @@ spec:
 
         ondemand:
           enabled: true
-          image: ghcr.io/squarefactory/open-ondemand:0.1.3
+          image: ghcr.io/squarefactory/open-ondemand:0.2.0
 
           command: ['sh', '-c', 'update-ca-trust && /init']
 
@@ -362,9 +362,6 @@ spec:
               - name: use-vc
               - name: edns0
 
-          livenessProbe: null
-          readinessProbe: null
-
           config:
             nginxStage:
               pun_custom_env:
@@ -378,7 +375,7 @@ spec:
                   metadata:
                     title: "Reindeer Pizza Cluster"
                   login:
-                    host: "10.10.2.41"
+                    host: "127.0.0.1"
                   job:
                     adapter: "slurm"
                     cluster: "ReindeerPizza"
@@ -451,6 +448,9 @@ spec:
               mountPath: /opt/stdenv
             - name: unpacked-sion-csquare-run
               mountPath: /opt/unpacked
+            - name: ondemand-logo
+              mountPath: /var/www/ood/public/logo.png
+              subPath: logo.png
 
           # Extra volumes
           volumes:
@@ -465,6 +465,9 @@ spec:
               configMap:
                 name: slurm-login-reindeer-contlist
                 defaultMode: 493
+            - name: ondemand-logo
+              configMap:
+                name: ondemand-logo
             - name: software-sion-csquare-run
               hostPath:
                 path: /cvmfs/software.sion.csquare.run

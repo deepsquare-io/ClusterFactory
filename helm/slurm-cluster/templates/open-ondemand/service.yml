@@ -39,6 +39,10 @@ spec:
       targetPort: oidc
       protocol: TCP
       name: oidc
+    - port: 22
+      name: ssh
+      targetPort: ssh
+      protocol: TCP
   selector:
     app: "{{ template "slurm-cluster.ondemand.name" $ }}"
     app.kubernetes.io/name: "{{ template "slurm-cluster.ondemand.name" $ }}"

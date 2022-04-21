@@ -85,6 +85,8 @@ spec:
               containerPort: 80
             - name: oidc
               containerPort: 5556
+            - name: ssh
+              containerPort: 22
           {{- if .Values.ondemand.livenessProbe }}
           livenessProbe:
 {{ toYaml .Values.ondemand.livenessProbe | indent 12 }}
@@ -125,6 +127,9 @@ spec:
               readOnly: true
             - name: munge
               mountPath: /secrets/munge
+              readOnly: true
+            - name: sshd-hostkeys
+              mountPath: /secrets/sshd
               readOnly: true
             - mountPath: /tmp
               name: tmp
@@ -169,6 +174,10 @@ spec:
         - name: ood-conf
           configMap:
             name: "{{ template "slurm-cluster.ondemand.name" . }}-config"
+        - name: sshd-hostkeys
+          secret:
+            secretName: "{{ .Values.ondemand.sshd.secretName }}"
+            defaultMode: 256
         {{- if .Values.ondemand.volumes }}
 {{ toYaml .Values.ondemand.volumes | indent 8 }}
         {{- end }}
