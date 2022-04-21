@@ -165,8 +165,8 @@ controller:
     storageClassName: ''
     accessModes: ['ReadWriteOnce']
     size: 50Gi
-    selectorLabels:
-      app: slurm-controller
+    selectorLabels: {}
+  #    app: slurm-controller
 
   readinessProbe:
     failureThreshold: 3
@@ -427,8 +427,8 @@ ondemand:
     storageClassName: ''
     accessModes: ['ReadWriteOnce']
     size: 50Gi
-    selectorLabels:
-      app: open-ondemand
+    selectorLabels: {}
+  #    app: open-ondemand
 
   initContainers: []
 
