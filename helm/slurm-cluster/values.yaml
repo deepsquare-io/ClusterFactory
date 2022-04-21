@@ -347,7 +347,7 @@ login:
         memory: '1Gi'
 
 ondemand:
-  enabled: true
+  enabled: false
   replicas: 1
 
   image: 'ghcr.io/squarefactory/open-ondemand:0.1.0'

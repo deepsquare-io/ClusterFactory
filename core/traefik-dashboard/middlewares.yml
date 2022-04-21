@@ -8,3 +8,13 @@ spec:
     regex: (^.*/dashboard$)
     replacement: $1/
     permanent: false
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: redirect-https
+spec:
+  redirectScheme:
+    scheme: https
+    port: '443'
+    permanent: true

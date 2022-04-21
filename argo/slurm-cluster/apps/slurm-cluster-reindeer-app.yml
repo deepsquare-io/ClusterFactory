@@ -491,7 +491,7 @@ spec:
                 claimName: jobs-logs-reindeer-pvc
 
           httpIngress:
-            enabled: false
+            enabled: true
             annotations:
               traefik.ingress.kubernetes.io/router.entrypoints: web
             ingressClass: 'traefik'
@@ -502,7 +502,7 @@ spec:
             tls: {}
 
           oidcIngress:
-            enabled: false
+            enabled: true
             annotations:
               traefik.ingress.kubernetes.io/router.entrypoints: oidc
             ingressClass: 'traefik'

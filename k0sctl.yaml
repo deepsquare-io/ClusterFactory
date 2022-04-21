@@ -151,7 +151,6 @@ spec:
                   additionalArguments:
                     - '--entryPoints.websecure.proxyProtocol.insecure'
                     - '--entryPoints.websecure.forwardedHeaders.insecure'
-                    - '--entrypoints.web.http.redirections.entryPoint.to=websecure'
 
                   ingressRoute:
                     dashboard:

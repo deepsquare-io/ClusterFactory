@@ -18,3 +18,22 @@ spec:
           kind: TraefikService
   tls:
     secretName: traefik.ch1.csquare.run-secret
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-dashboard-http
+  labels:
+    app.kubernetes.io/name: traefik-dashboard-http
+    app.kubernetes.io/component: ingress-route
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: 'Host(`traefik.ch1.csquare.run`)'
+      kind: Rule
+      middlewares:
+        - name: redirect-https
+      services:
+        - name: noop@internal
+          kind: TraefikService
