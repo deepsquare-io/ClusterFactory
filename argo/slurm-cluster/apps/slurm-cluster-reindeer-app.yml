@@ -336,6 +336,86 @@ spec:
                 mountPath: /etc/pki/ca-trust/source/anchors/csquare.gcloud.ca.pem
                 subPath: csquare.gcloud.ca.pem
 
+        ondemand:
+          enabled: true
+          image: ghcr.io/squarefactory/open-ondemand:0.1.0
+
+          command: ['sh', '-c', 'update-ca-trust && /init']
+
+          imagePullSecrets:
+            - name: ghcr-marc-secret
+
+          nodeSelector:
+            topology.kubernetes.io/region: ch-sion
+            topology.kubernetes.io/zone: ch-sion-1
+
+          # Extra volume mounts
+          volumeMounts:
+            - name: ca-cert
+              mountPath: /etc/pki/ca-trust/source/anchors/csquare.gcloud.ca.pem
+              subPath: csquare.gcloud.ca.pem
+            - name: slurm-login-reindeer-profile
+              mountPath: /etc/profile.d/z00_lmod.sh
+              subPath: z00_lmod.sh
+            - name: slurm-login-reindeer-profile
+              mountPath: /etc/profile.d/z01_lmod_env.sh
+              subPath: z01_lmod_env.sh
+            - name: slurm-login-reindeer-contlist
+              mountPath: /usr/local/bin/contlist
+              subPath: contlist
+            - name: ldap-users-reindeer-pvc
+              mountPath: /home/ldap-users
+            - name: jobs-logs-reindeer-pvc
+              mountPath: /opt/jobs-logs
+            - name: images-reindeer-pvc
+              mountPath: /opt/images
+            - name: experiments-reindeer-pvc
+              mountPath: /opt/experiments
+            - name: software-sion-csquare-run
+              mountPath: /opt/software
+            - name: stdenv-sion-csquare-run
+              mountPath: /opt/stdenv
+            - name: unpacked-sion-csquare-run
+              mountPath: /opt/unpacked
+
+          # Extra volumes
+          volumes:
+            - name: ca-cert
+              secret:
+                secretName: local-ca-secret
+            - name: slurm-login-reindeer-profile
+              configMap:
+                name: slurm-login-reindeer-profile
+                defaultMode: 493
+            - name: slurm-login-reindeer-contlist
+              configMap:
+                name: slurm-login-reindeer-contlist
+                defaultMode: 493
+            - name: software-sion-csquare-run
+              hostPath:
+                path: /cvmfs/software.sion.csquare.run
+                type: Directory
+            - name: stdenv-sion-csquare-run
+              hostPath:
+                path: /cvmfs/stdenv.sion.csquare.run
+                type: Directory
+            - name: unpacked-sion-csquare-run
+              hostPath:
+                path: /cvmfs/unpacked.sion.csquare.run
+                type: Directory
+            - name: ldap-users-reindeer-pvc
+              persistentVolumeClaim:
+                claimName: ldap-users-reindeer-pvc
+            - name: experiments-reindeer-pvc
+              persistentVolumeClaim:
+                claimName: experiments-reindeer-pvc
+            - name: images-reindeer-pvc
+              persistentVolumeClaim:
+                claimName: images-reindeer-pvc
+            - name: jobs-logs-reindeer-pvc
+              persistentVolumeClaim:
+                claimName: jobs-logs-reindeer-pvc
+
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: slurm-cluster
