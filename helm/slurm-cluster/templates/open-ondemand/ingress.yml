@@ -1,5 +1,5 @@
 {{- if and .Values.ondemand.enabled .Values.ondemand.httpIngress.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: "{{ template "slurm-cluster.ondemand.name" . }}-http"
@@ -34,7 +34,7 @@ spec:
 {{- end }}
 ---
 {{- if and .Values.ondemand.enabled .Values.ondemand.oidcIngress.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: "{{ template "slurm-cluster.ondemand.name" . }}-oidc"
