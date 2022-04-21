@@ -1,0 +1,26 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: ondemand-extra-configs
+  namespace: slurm-cluster
+data:
+  bc_desktop_reindeerpizza.yml: |
+    title: "Sion Desktop"
+    cluster: "reindeerpizza"
+    attributes:
+      desktop: "xfce"
+      bc_account: null
+  dashboard_env: |
+    MOTD_PATH="/etc/motd" # this supports both file and RSS feed URIs
+    MOTD_FORMAT="txt_erb" # markdown, txt, rss, markdown_erb, txt_erb
+    # don't show ssh link in batch connect card
+    OOD_BC_SSH_TO_COMPUTE_NODE=off
+  shell_env: |
+    OOD_SHELL_ORIGIN_CHECK='off'
+    OOD_SSH_WRAPPER='/usr/local/sbin/ssh_insecure'
+  motd: |
+    Welcome to DeepSquare for education!
+  ssh_insecure: |
+    #!/bin/sh
+
+    exec /usr/bin/ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$@"

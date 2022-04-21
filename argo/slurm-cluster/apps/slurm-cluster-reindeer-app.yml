@@ -349,6 +349,9 @@ spec:
               hostnames:
                 - 'ondemand.sion.csquare.run'
 
+          sshd:
+            secretName: login-sshd-secret
+
           dnsPolicy: "None"
           dnsConfig:
             nameservers:
@@ -451,6 +454,22 @@ spec:
             - name: ondemand-logo
               mountPath: /var/www/ood/public/logo.png
               subPath: logo.png
+            - name: ondemand-extra-configs
+              mountPath: /etc/ood/config/apps/bc_desktop/reindeerpizza.yml
+              subPath: bc_desktop_reindeerpizza.yml
+            - name: ondemand-extra-configs
+              mountPath: /etc/ood/config/apps/dashboard/env
+              subPath: dashboard_env
+            - name: ondemand-extra-configs
+              mountPath: /etc/ood/config/apps/shell/env
+              subPath: shell_env
+            - name: ondemand-extra-configs
+              mountPath: /etc/motd
+              subPath: motd
+            - name: ondemand-extra-configs
+              mountPath: /usr/local/sbin/ssh_insecure
+              subPath: ssh_insecure
+
 
           # Extra volumes
           volumes:
@@ -468,6 +487,10 @@ spec:
             - name: ondemand-logo
               configMap:
                 name: ondemand-logo
+            - name: ondemand-extra-configs
+              configMap:
+                name: ondemand-extra-configs
+                defaultMode: 493
             - name: software-sion-csquare-run
               hostPath:
                 path: /cvmfs/software.sion.csquare.run
