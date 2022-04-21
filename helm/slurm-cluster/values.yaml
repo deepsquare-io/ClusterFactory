@@ -404,20 +404,16 @@ ondemand:
     type: RollingUpdate
 
   livenessProbe:
-    httpGet:
-      path: /
+    tcpSocket:
       port: 80
-      scheme: HTTP
     initialDelaySeconds: 60
     timeoutSeconds: 1
     periodSeconds: 10
     successThreshold: 1
     failureThreshold: 3
   readinessProbe:
-    httpGet:
-      path: /
+    tcpSocket:
       port: 80
-      scheme: HTTP
     timeoutSeconds: 1
     periodSeconds: 2
     successThreshold: 1
