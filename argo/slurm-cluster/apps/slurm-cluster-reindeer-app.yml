@@ -372,6 +372,12 @@ spec:
                 OOD_BRAND_BG_COLOR: "#120641"
                 OOD_BRAND_LINK_ACTIVE_BG_COLOR: "#6753ff"
                 OOD_DASHBOARD_LOGO: "/public/logo.png"
+            apps: {}
+            dev:
+              marc:
+                gateway: /home/ldap-users/marc/ondemand/dev
+              lillo:
+                gateway: /home/ldap-users/lillo/ondemand/dev
             clusters:
               reindeerpizza:
                 v2:

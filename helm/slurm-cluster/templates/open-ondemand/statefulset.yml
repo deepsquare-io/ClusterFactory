@@ -70,6 +70,7 @@ spec:
             - sh
             - -c
             - |-
+              echo Creating dev symlinks
             {{- range $key, $value := .Values.ondemand.config.dev }}
               mkdir -p "/dev/{{ $key }}"
               cd "/dev/{{ $key }}"
