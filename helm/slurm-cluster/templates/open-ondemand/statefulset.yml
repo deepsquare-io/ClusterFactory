@@ -113,6 +113,7 @@ spec:
           volumeMounts:
             - name: "git-sync-volume"
               mountPath: "/out/{{ $key }}"
+              subPath: "{{ $key }}"
               readOnly: false
           args:
             - "--root=/out/{{ $key }}"
