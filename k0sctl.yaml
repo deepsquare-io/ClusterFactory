@@ -96,21 +96,24 @@ spec:
                       - peer-address: 172.24.0.2
                         peer-asn: 65007
                         my-asn: 64500
+                        source-address: 172.24.0.4
+                        node-selectors:
+                          - match-labels:
+                              kubernetes.io/hostname: k0s-exoscale-at-vie-1
+
                       - peer-address: 10.10.2.1
                         peer-asn: 65503
                         my-asn: 64501
+                        source-address: 10.10.2.16
+                        node-selectors:
+                          - match-labels:
+                              kubernetes.io/hostname: mn1.ch1.csquare.run
 
                     address-pools:
-                      - name: ch-sion-1-pool
+                      - name: main-pool
                         protocol: bgp
                         addresses:
                           - 10.10.4.100/32
-                          - 10.10.4.152/32
-
-                      - name: at-vie-1-pool
-                        protocol: bgp
-                        addresses:
-                          - 172.25.0.10/32
 
               - name: traefik
                 chartname: traefik/traefik
@@ -124,7 +127,7 @@ spec:
                   service:
                     enabled: true
                     annotations:
-                      metallb.universe.tf/address-pool: ch-sion-1-pool
+                      metallb.universe.tf/address-pool: main-pool
                       metallb.universe.tf/allow-shared-ip: traefik-lb-key
                     spec:
                       externalTrafficPolicy: Cluster

@@ -250,8 +250,6 @@ spec:
 
           servicePerReplica:
             port: 6817
-            annotations:
-              metallb.universe.tf/address-pool: at-vie-1-pool
             type: ClusterIP
 
         login:

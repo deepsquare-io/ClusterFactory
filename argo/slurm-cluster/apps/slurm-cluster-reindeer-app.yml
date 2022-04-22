@@ -187,8 +187,6 @@ spec:
 
           servicePerReplica:
             port: 6817
-            annotations:
-              metallb.universe.tf/address-pool: ch-sion-1-pool
             type: ClusterIP
 
         login:
