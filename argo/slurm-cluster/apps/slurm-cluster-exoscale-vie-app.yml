@@ -157,13 +157,13 @@ spec:
                 - sh
                 - -c
                 - |-
-                  cp -RLp /in-ssh/* /out-root-ssh/
-                  cp -RLp /in-ssh/* /out-slurm-ssh/
-                  chmod 0700 /out-root-ssh/
-                  chmod 0600 /out-root-ssh/*
-                  chmod 0700 /out-slurm-ssh/
-                  chmod 0600 /out-slurm-ssh/*
-                  chown -R 1501:1501 /out-slurm-ssh/
+                  cp -RLp /in-ssh/* /out-root-ssh/;
+                  cp -RLp /in-ssh/* /out-slurm-ssh/;
+                  chmod 0700 /out-root-ssh/;
+                  chmod 0600 /out-root-ssh/*;
+                  chmod 0700 /out-slurm-ssh/;
+                  chmod 0600 /out-slurm-ssh/*;
+                  chown -R 1501:1501 /out-slurm-ssh/;
               volumeMounts:
                 - name: slurmctl-ssh
                   mountPath: /in-ssh
