@@ -98,11 +98,11 @@ spec:
                 name: "{{ $value.gitSyncSecret }}"
           volumeMounts:
             - name: "git-sync-volume"
-              mountPath: "/out"
+              mountPath: "/out/{{ $key }}"
+              subPath: "{{ $key }}"
               readOnly: false
           args:
-            - "--root=/out"
-            - "--dest={{ $key }}"
+            - "--root=/out/{{ $key }}"
             - "--depth=1"
             - "--submodules=off"
             - "--wait=60"
