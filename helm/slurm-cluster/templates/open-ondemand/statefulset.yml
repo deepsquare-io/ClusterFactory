@@ -64,7 +64,7 @@ spec:
 {{ toYaml .Values.ondemand.imagePullSecrets | indent 8 }}
       {{- end }}
       initContainers:
-        - name: init-create-dev-symlinks
+        - name: create-dev-apps-symlinks
           image: busybox:1.34.1
           command: ["sh", "-c"]
           args:
@@ -77,6 +77,20 @@ spec:
             {{- end }}
           volumeMounts:
             - name: dev-apps
+              mountPath: /out
+        - name: prepare-sys-apps
+          image: "{{ .Values.ondemand.image }}"
+          imagePullPolicy: "{{ .Values.ondemand.imagePullPolicy }}"
+          command: ["sh", "-c"]
+          args:
+            - |-
+              rsync -avzP /var/www/ood/apps/sys/ /out/;
+              cd out;
+            {{- range $key, $value := .Values.ondemand.config.apps }}
+              ln -s "/k8s/apps/sys/{{ $key }}/current" {{ $key }};
+            {{- end }}
+          volumeMounts:
+            - name: sys-apps
               mountPath: /out
       {{- if .Values.ondemand.initContainers }}
 {{ toYaml .Values.ondemand.initContainers | indent 8 }}
@@ -99,10 +113,10 @@ spec:
           volumeMounts:
             - name: "git-sync-volume"
               mountPath: "/out/{{ $key }}"
-              subPath: "{{ $key }}"
               readOnly: false
           args:
             - "--root=/out/{{ $key }}"
+            - "--dest=current"
             - "--depth=1"
             - "--submodules=off"
             - "--wait=60"
@@ -148,13 +162,13 @@ spec:
               mountPath: "/etc/ood/config/clusters.d/{{ $key }}.yml"
               subPath: "{{ $key }}.yml"
             {{- end }}
-            {{- range $key, $value := .Values.ondemand.config.apps }}
             - name: "git-sync-volume"
-              mountPath: "/var/www/ood/apps/sys/{{ $key }}"
-              subPath: "{{ $key }}"
-            {{- end }}
+              mountPath: "/k8s/apps/sys/"
+              readOnly: true
             - name: dev-apps
               mountPath: "/var/www/ood/apps/dev/"
+            - name: sys-apps
+              mountPath: "/var/www/ood/apps/sys/"
             - name: dex-state
               mountPath: /etc/ood/dex
               readOnly: false
@@ -223,6 +237,8 @@ spec:
         - name: "git-sync-volume"
           emptyDir: {}
         - name: "dev-apps"
+          emptyDir: {}
+        - name: "sys-apps"
           emptyDir: {}
         {{- if .Values.ondemand.volumes }}
 {{ toYaml .Values.ondemand.volumes | indent 8 }}
