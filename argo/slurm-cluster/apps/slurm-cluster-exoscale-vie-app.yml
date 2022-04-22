@@ -153,9 +153,8 @@ spec:
           initContainers:
             - name: init-perms-ssh
               image: busybox:1.34.1
-              command:
-                - sh
-                - -c
+              command: ["sh", "-c"]
+              args:
                 - |-
                   cp -RLp /in-ssh/* /out-root-ssh/;
                   cp -RLp /in-ssh/* /out-slurm-ssh/;

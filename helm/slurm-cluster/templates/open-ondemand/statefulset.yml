@@ -71,13 +71,13 @@ spec:
             - |-
               echo "Creating dev symlinks";
             {{- range $key, $value := .Values.ondemand.config.dev }}
-              mkdir -p "/dev/{{ $key }}";
-              cd "/dev/{{ $key }}";
+              mkdir -p "/out/{{ $key }}";
+              cd "/out/{{ $key }}";
               ln -s "{{ $value.gateway }}" gateway;
             {{- end }}
           volumeMounts:
             - name: dev-apps
-              mountPath: /dev
+              mountPath: /out
       {{- if .Values.ondemand.initContainers }}
 {{ toYaml .Values.ondemand.initContainers | indent 8 }}
       {{- end }}
