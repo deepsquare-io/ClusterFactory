@@ -63,8 +63,22 @@ spec:
       imagePullSecrets:
 {{ toYaml .Values.ondemand.imagePullSecrets | indent 8 }}
       {{- end }}
-      {{- if .Values.ondemand.initContainers }}
       initContainers:
+        - name: init-create-dev-symlinks
+          image: busybox:1.34.1
+          command:
+            - sh
+            - -c
+            - |-
+            {{- range $key, $value := .Values.ondemand.config.dev }}
+              mkdir -p "/dev/{{ $key }}"
+              cd "/dev/{{ $key }}"
+              ln -s "{{ $value.gateway }}" gateway
+            {{- end }}
+          volumeMounts:
+            - name: dev-apps
+              mountPath: /dev
+      {{- if .Values.ondemand.initContainers }}
 {{ toYaml .Values.ondemand.initContainers | indent 8 }}
       {{- end }}
       {{- if .Values.ondemand.dnsPolicy }}
@@ -75,6 +89,24 @@ spec:
 {{ toYaml .Values.ondemand.dnsConfig | indent 8 }}
       {{- end }}
       containers:
+        {{- range $key, $value := .Values.ondemand.config.apps }}
+        - name: "git-sync-{{ $key }}"
+          image: k8s.gcr.io/git-sync:v3.5.0
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: "{{ $value.gitSyncSecret }}"
+          volumeMounts:
+            - name: "git-sync-volume"
+              mountPath: "/out"
+              readOnly: false
+          args:
+            - "--root=/out"
+            - "--dest={{ $key }}"
+            - "--depth=1"
+            - "--submodules=off"
+            - "--wait=60"
+        {{- end }}
         - name: "{{ template "slurm-cluster.ondemand.name" . }}"
           image: "{{ .Values.ondemand.image }}"
           imagePullPolicy: "{{ .Values.ondemand.imagePullPolicy }}"
@@ -113,6 +145,13 @@ spec:
               mountPath: "/etc/ood/config/clusters.d/{{ $key }}.yml"
               subPath: "{{ $key }}.yml"
             {{- end }}
+            {{- range $key, $value := .Values.ondemand.config.apps }}
+            - name: "git-sync-volume"
+              mountPath: "/var/www/ood/apps/sys/{{ $key }}"
+              subPath: "{{ $key }}"
+            {{- end }}
+            - name: dev-apps
+              mountPath: "/var/www/ood/apps/dev/"
             - name: dex-state
               mountPath: /etc/ood/dex
               readOnly: false
@@ -178,6 +217,10 @@ spec:
           secret:
             secretName: "{{ .Values.ondemand.sshd.secretName }}"
             defaultMode: 256
+        - name: "git-sync-volume"
+          emptyDir: {}
+        - name: "dev-apps"
+          emptyDir: {}
         {{- if .Values.ondemand.volumes }}
 {{ toYaml .Values.ondemand.volumes | indent 8 }}
         {{- end }}

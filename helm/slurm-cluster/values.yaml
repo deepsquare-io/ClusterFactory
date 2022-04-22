@@ -393,12 +393,23 @@ ondemand:
       USE_JOB_POD_REAPER=false
     clusters:
       {}
+      # https://osc.github.io/ood-documentation/latest/installation/add-cluster-config.html
       # my-cluster:
       #   v2:
       #     metadata:
       #       title: 'My Cluster'
       #     login:
       #       host: '10.10.2.41'
+    apps:
+      {}
+      # https://github.com/kubernetes/git-sync
+      # my_app:
+      #   gitSyncSecret: ''
+    dev:
+      {}
+      # https://osc.github.io/ood-documentation/latest/app-development/enabling-development-mode.html
+      # john:
+      #   gateway: /home/john/ondemand/dev
 
   resources:
     requests:
