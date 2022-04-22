@@ -91,7 +91,7 @@ spec:
       containers:
         {{- range $key, $value := .Values.ondemand.config.apps }}
         - name: "git-sync-{{ $key }}"
-          image: k8s.gcr.io/git-sync:v3.5.0
+          image: k8s.gcr.io/git-sync/git-sync:v3.5.0
           imagePullPolicy: Always
           envFrom:
             - secretRef:
@@ -106,6 +106,9 @@ spec:
             - "--depth=1"
             - "--submodules=off"
             - "--wait=60"
+          resources:
+            requests:
+              memory: "50Mi"
         {{- end }}
         - name: "{{ template "slurm-cluster.ondemand.name" . }}"
           image: "{{ .Values.ondemand.image }}"

@@ -371,7 +371,29 @@ spec:
                 OOD_BRAND_BG_COLOR: "#120641"
                 OOD_BRAND_LINK_ACTIVE_BG_COLOR: "#6753ff"
                 OOD_DASHBOARD_LOGO: "/public/logo.png"
-            apps: {}
+            apps:
+              bc-ansys-cfx:
+                gitSyncSecret: bc-ansys-cfx-secret
+              bc-ansys-fluent:
+                gitSyncSecret: bc-ansys-fluen-secret
+              bc-ansys-icem:
+                gitSyncSecret: bc-ansys-icem-secret
+              bc-ansys-workbench:
+                gitSyncSecret: bc-ansys-workbench-secret
+              bc-blender-batch-render:
+                gitSyncSecret: bc-blender-batch-render-secret
+              bc-blender-gui:
+                gitSyncSecret: bc-blender-gui-secret
+              bc-jupyter:
+                gitSyncSecret: bc-jupyter-secret
+              bc-matlab:
+                gitSyncSecret: bc-matlab-secret
+              bc-paraview:
+                gitSyncSecret: bc-paraview-secret
+              bc-rstudio:
+                gitSyncSecret: bc-rstudio-secret
+              bc-sabaki:
+                gitSyncSecret: bc-sabaki-secret
             dev:
               marc:
                 gateway: /home/ldap-users/marc/ondemand/dev
