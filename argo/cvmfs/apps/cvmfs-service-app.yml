@@ -1,31 +1,33 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: csi-driver-cvmfs-app
+  name: cvmfs-service-app
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: slurm-cluster
+  project: cvmfs
   source:
     repoURL: git@github.com:squarefactory/cluster-factory-ce.git
     targetRevision: HEAD
-    path: helm/csi-driver-cvmfs
+    path: helm/cvmfs-service
     helm:
-      releaseName: csi-driver-cvmfs
+      releaseName: cvmfs-service
 
       values: |
         repositories:
-          software-sion-csquare-run: software.sion.csquare.run
-          unpacked-sion-csquare-run: unpacked.sion.csquare.run
-          stdenv-sion-csquare-run: stdenv.sion.csquare.run
+          - name: software-sion-csquare-run
+            repository: software.sion.csquare.run
+          - name: unpacked-sion-csquare-run
+            repository: unpacked.sion.csquare.run
+          - name: stdenv-sion-csquare-run
+            repository: stdenv.sion.csquare.run
 
         configs:
-          defaultLocal:
+          default.local:
             mountPath: default.local
             contents: |
               CVMFS_QUOTA_LIMIT=-1
-              CVMFS_CACHE_BASE={{ .Values.cache.localCache.mountPath }}
               CVMFS_USE_GEOAPI=no
               CVMFS_HTTP_PROXY="DIRECT"
               CVMFS_KEYS_DIR="/etc/cvmfs/keys"
@@ -67,19 +69,10 @@ spec:
               qQxvlIo26sOT/R+6WvDNKzjQwRTpP8TXuC00o5exNAdLkKapWfD+lj3K+sLF2ubl
               /QIDAQAB
               -----END PUBLIC KEY-----
-        cache:
-          alienCache:
-            enabled: false
-          localCache:
-            enabled: false
-
-        csiPlugin:
-          image: computecanada/csi-cvmfsplugin:latest
-          kubeletDir: /var/lib/k0s/kubelet
 
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: slurm-cluster
+    namespace: cvmfs
 
   syncPolicy:
     automated:

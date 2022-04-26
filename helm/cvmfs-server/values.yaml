@@ -10,10 +10,11 @@ config:
   server:
     CVMFS_GEO_DB_FILE: NONE
   replicas:
-    - name: my-repo
-      url: http://my-repo/
-      keys: /etc/cvmfs/keys/my-repo
-      options: '-o root'
+    []
+    # - name: my-repo
+    #   url: http://my-repo/
+    #   keys: /etc/cvmfs/keys/my-repo
+    #   options: '-o root'
 
 resources:
   requests:
