@@ -17,6 +17,20 @@ spec:
       values: |
         replicas: 1
 
+        imagePullSecrets:
+          - name: ghcr-marc-secret
+
+        dnsPolicy: "None"
+        dnsConfig:
+          nameservers:
+            - 10.96.0.10
+          searches:
+            - slurm-cluster.svc.cluster.local
+            - ch1.csquare.run
+          options:
+            - name: ndots
+              value: "0"
+
         nodeSelector:
           kubernetes.io/hostname: mn1.ch1.csquare.run
           topology.kubernetes.io/region: ch-sion
@@ -31,7 +45,8 @@ spec:
 
         volumeMounts:
           - name: sion-csquare-run-keys
-            mountPath: /etc/cvmfs/keys/sion.csquare.run
+            mountPath: /etc/cvmfs/keys/sion.csquare.run/stdenv.sion.csquare.run.pub
+            subPath: stdenv.sion.csquare.run.pub
             readOnly: true
 
         volumes:
