@@ -1,0 +1,21 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: "{{ template "cvmfs-server.name" . }}-config"
+  namespace: '{{ .Release.Namespace }}'
+  labels:
+    release: '{{ .Release.Name }}'
+    chart: '{{ .Chart.Name }}'
+    app: "{{ template "cvmfs-server.name" . }}"
+data:
+  server.local: |
+    {{- range $name, $value := .Values.config.server }}
+    {{ $name }}={{ $value | quote }}
+    {{- end }}
+  env: |
+    {{- range $i, $repo := .Values.config.replicas }}
+    CVMFS_REPO{{ $i }}_NAME={{ $repo.name | quote }}
+    CVMFS_REPO{{ $i }}_URL={{ $repo.url | quote }}
+    CVMFS_REPO{{ $i }}_KEYS={{ $repo.keys | quote }}
+    CVMFS_REPO{{ $i }}_OPTIONS={{ $repo.options | quote }}
+    {{- end }}

@@ -1,0 +1,11 @@
+apiVersion: v2
+name: cvmfs-server
+description: 'Serve cvmfs as Stratum 1 replicas'
+type: application
+version: 0.1.0
+appVersion: '0.1.0'
+maintainers:
+  - name: Marc Nguyen
+    email: marc@squarefactory.io
+  - name: Christophe Lillo
+    email: lillo@squarefactory.io

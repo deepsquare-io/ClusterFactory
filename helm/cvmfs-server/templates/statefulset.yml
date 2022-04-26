@@ -1,0 +1,161 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: "{{ template "cvmfs-server.name" . }}"
+  namespace: '{{ .Release.Namespace }}'
+  labels:
+    release: '{{ .Release.Name }}'
+    chart: '{{ .Chart.Name }}'
+    app: "{{ template "cvmfs-server.name" . }}"
+spec:
+  serviceName: "{{ template "cvmfs-server.name" . }}"
+  selector:
+    matchLabels:
+      app: "{{ template "cvmfs-server.name" . }}"
+      app.kubernetes.io/name: "{{ template "cvmfs-server.name" . }}"
+      app.kubernetes.io/instance: "{{ template "cvmfs-server.name" . }}"
+  replicas: {{ .Values.replicas }}
+  updateStrategy:
+{{ toYaml .Values.updateStrategy | trim | indent 4 }}
+  template:
+    metadata:
+      name: "{{ template "cvmfs-server.name" . }}"
+      labels:
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}"
+        app: "{{ template "cvmfs-server.name" . }}"
+        app.kubernetes.io/name: "{{ template "cvmfs-server.name" . }}"
+        app.kubernetes.io/instance: "{{ template "cvmfs-server.name" . }}"
+{{- if .Values.labels }}
+{{ toYaml .Values.labels | indent 8 }}
+{{- end }}
+{{- if .Values.annotations }}
+      annotations:
+{{ toYaml .Values.annotations | indent 8 }}
+{{- end }}
+    spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
+      securityContext:
+{{ toYaml .Values.podSecurityContext | indent 8 }}
+      {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.nodeAffinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriod }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
+      {{- if .Values.initContainers }}
+      initContainers:
+{{ toYaml .Values.initContainers | indent 8 }}
+      {{- end }}
+      {{- if .Values.dnsPolicy }}
+      dnsPolicy: "{{ .Values.dnsPolicy }}"
+      {{- end }}
+      {{- if .Values.dnsConfig }}
+      dnsConfig:
+{{ toYaml .Values.dnsConfig | indent 8 }}
+      {{- end }}
+      containers:
+        - name: "{{ template "cvmfs-server.name" . }}"
+          image: "{{ .Values.image }}"
+          imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+          ports:
+            - name: http
+              containerPort: 80
+          {{- if .Values.livenessProbe }}
+          livenessProbe:
+{{ toYaml .Values.livenessProbe | indent 12 }}
+          {{- end }}
+          {{- if .Values.readinessProbe }}
+          readinessProbe:
+{{ toYaml .Values.readinessProbe | indent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: cvmfs-state
+              mountPath: /var/spool/cvmfs
+              readOnly: false
+            - name: srv-cvmfs
+              mountPath: /srv/cvmfs
+              readOnly: false
+            - name: cgroup
+              mountPath: /sys/fs/cgroup
+              readOnly: true
+            - name: cvmfs-config
+              mountPath: /etc/cvmfs-setup/env
+              subPath: env
+              readOnly: true
+            - name: cvmfs-config
+              mountPath: /etc/cvmfs/server.local
+              subPath: server.local
+              readOnly: true
+            - mountPath: /tmp
+              name: tmp
+              subPath: tmp
+            - mountPath: /run
+              name: tmp
+              subPath: run
+            - mountPath: /run/lock
+              name: tmp
+              subPath: run-lock
+            {{- if .Values.volumeMounts }}
+{{ toYaml .Values.volumeMounts | indent 12 }}
+            {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      volumes:
+        - name: tmp
+          emptyDir:
+            medium: "{{ .Values.tmp.medium }}"
+            sizeLimit: "{{ .Values.tmp.size }}"
+        - name: cgroup
+          hostPath:
+            path: /sys/fs/cgroup
+            type: Directory
+        - name: cvmfs-config
+          configMap:
+            name: "{{ template "cvmfs-server.name" . }}-config"
+        {{- if .Values.volumes }}
+{{ toYaml .Values.volumes | indent 8 }}
+        {{- end }}
+  volumeClaimTemplates:
+    - metadata:
+        name: cvmfs-state
+      spec:
+        accessModes: {{ .Values.state.accessModes }}
+        storageClassName: "{{ .Values.state.storageClassName }}"
+        resources:
+          requests:
+            storage: {{ .Values.state.size }}
+        {{- with .Values.state.selectorLabels }}
+        selector:
+          matchLabels:
+{{ toYaml . | indent 12 }}
+        {{- end }}
+    - metadata:
+        name: srv-cvmfs
+      spec:
+        accessModes: {{ .Values.storage.accessModes }}
+        storageClassName: "{{ .Values.storage.storageClassName }}"
+        resources:
+          requests:
+            storage: {{ .Values.storage.size }}
+        {{- with .Values.storage.selectorLabels }}
+        selector:
+          matchLabels:
+{{ toYaml . | indent 12 }}
+        {{- end }}
+    {{- if .Values.volumeClaimTemplates }}
+{{ toYaml .Values.volumeClaimTemplates | indent 4 }}
+    {{- end }}
