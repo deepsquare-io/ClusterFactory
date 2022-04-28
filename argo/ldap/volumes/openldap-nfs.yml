@@ -11,7 +11,7 @@ provisioner: nfs.csi.k8s.io
 parameters:
   server: 10.10.2.11
   share: /mnt/pool1/k8s/ldap
-  mountPermissions: '0700'
+  mountPermissions: '0755'
 mountOptions:
   - hard
   - nfsvers=4.1

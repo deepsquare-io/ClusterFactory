@@ -71,6 +71,8 @@ spec:
         - name: "{{ template "cvmfs-server.name" . }}"
           image: "{{ .Values.image }}"
           imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+          securityContext:
+{{ toYaml .Values.securityContext | indent 12 }}
           ports:
             - name: http
               containerPort: 80

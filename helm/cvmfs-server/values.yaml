@@ -53,9 +53,9 @@ securityContext:
     add:
       - SYS_ADMIN
     drop: [ALL]
-readOnlyRootFilesystem: false
-runAsNonRoot: false
-runAsUser: 0
+  readOnlyRootFilesystem: false
+  runAsNonRoot: false
+  runAsUser: 0
 
 # How long to wait to stop gracefully
 terminationGracePeriod: 10

@@ -21,6 +21,21 @@ spec:
           topology.kubernetes.io/region: ch-sion
           topology.kubernetes.io/zone: ch-sion-1
 
+        env:
+          BITNAMI_DEBUG: 'true'
+          LDAP_ROOT: 'dc=example,dc=org'
+          LDAP_CONFIG_ADMIN_ENABLED: 'no'
+          LDAP_USER_DC: 'users'
+          LDAP_GROUP: 'readers'
+          LDAP_ADD_SCHEMAS: 'yes'
+          LDAP_EXTRA_SCHEMAS: 'cosine,inetorgperson,nis'
+          LDAP_SKIP_DEFAULT_TREE: 'no'
+          LDAP_CUSTOM_LDIF_DIR: '/ldifs'
+          LDAP_CUSTOM_SCHEMA_FILE: '/schema/custom.ldif'
+          LDAP_ULIMIT_NOFILES: '1024'
+          LDAP_ALLOW_ANON_BINDING: 'yes'
+          LDAP_LOGLEVEL: '256'
+
         persistence:
           storageClassName: 'openldap-nfs'
 
