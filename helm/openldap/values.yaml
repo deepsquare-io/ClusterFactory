@@ -33,14 +33,6 @@ readinessProbe:
   successThreshold: 1
   failureThreshold: 3
 
-podSecurityContext:
-  runAsUser: 0
-
-securityContext:
-  readOnlyRootFilesystem: false
-  runAsNonRoot: false
-  runAsUser: 0
-
 # How long to wait to stop gracefully
 terminationGracePeriod: 10
 
