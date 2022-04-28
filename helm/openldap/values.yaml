@@ -37,7 +37,8 @@ podSecurityContext:
   runAsUser: 0
 
 securityContext:
-  drop: [ALL]
+  capabilities:
+    drop: [ALL]
   readOnlyRootFilesystem: false
   runAsNonRoot: false
   runAsUser: 0

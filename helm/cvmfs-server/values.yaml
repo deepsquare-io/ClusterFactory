@@ -52,6 +52,7 @@ securityContext:
   capabilities:
     add:
       - SYS_ADMIN
+      - NET_BIND_SERVICE
     drop: [ALL]
   readOnlyRootFilesystem: false
   runAsNonRoot: false
