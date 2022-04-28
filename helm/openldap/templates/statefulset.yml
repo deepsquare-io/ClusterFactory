@@ -105,7 +105,7 @@ spec:
               command:
                 - sh
                 - -c
-                - "ldapsearch -H ldap://127.0.0.1:1389 -D cn=admin,${LDAP_ROOT} -b ${LDAP_ROOT} -w ${LDAP_ADMIN_PASSWORD}"
+                - "ldapsearch -H ldap://127.0.0.1:{{ .Values.ldapPort }} -D cn=admin,${LDAP_ROOT} -b ${LDAP_ROOT} -w ${LDAP_ADMIN_PASSWORD}"
 {{ toYaml .Values.livenessProbe | indent 12 }}
           readinessProbe:
             tcpSocket:
