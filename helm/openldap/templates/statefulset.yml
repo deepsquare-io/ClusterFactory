@@ -89,7 +89,7 @@ spec:
             - name: LDAP_PORT_NUMBER
               value: "{{ .Values.ldapPort }}"
             - name: LDAP_ENABLE_TLS
-              value: {{ quote .Values.tls.enabled }}
+              value: "{{ ternary "yes" "no" .Values.tls.enabled }}"
             {{- if .Values.tls.enabled }}
             - name: LDAP_LDAPS_PORT_NUMBER
               value: "{{ .Values.ldapsPort }}"
