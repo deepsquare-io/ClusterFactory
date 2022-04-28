@@ -53,7 +53,6 @@ securityContext:
     add:
       - SYS_ADMIN
       - NET_BIND_SERVICE
-    drop: [ALL]
   readOnlyRootFilesystem: false
   runAsNonRoot: false
   runAsUser: 0
