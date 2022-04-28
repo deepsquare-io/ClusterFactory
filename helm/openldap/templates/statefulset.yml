@@ -114,7 +114,7 @@ spec:
           volumeMounts:
             - name: openldap-data
               mountPath: /bitnami/openldap/
-            {{- if .Values.certs.enabled }}
+            {{- if .Values.tls.enabled }}
             - name: openldap-certs
               mountPath: /opt/bitnami/openldap/certs/
             {{- end }}
