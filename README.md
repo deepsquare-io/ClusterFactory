@@ -9,8 +9,9 @@ This project will deploy in the following order:
 * Apps with argocd
   * xCAT (bare-metal provisioning)
   * Slurm controller, database and login nodes
-  * CVMFS for cluster software distribution
-  * Open Ondemand, a web-based HPC portal for users
+  * LDAP (for global users/groups management)
+  * CVMFS stratum1 mirror of Deepsquare's software library (end user software)
+  * Open Ondemand, a web-based HPC user portal
   * Monitoring stack (Grafana, Prometheus with ready-to-use exporters)
 
 ## Preparation
