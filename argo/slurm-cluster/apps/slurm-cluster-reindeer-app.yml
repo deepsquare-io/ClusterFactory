@@ -335,7 +335,7 @@ spec:
 
         ondemand:
           enabled: true
-          image: ghcr.io/squarefactory/open-ondemand:0.2.0
+          image: ghcr.io/squarefactory/open-ondemand:2.0.23-3
 
           command: ['sh', '-c', 'update-ca-trust && /init']
 
