@@ -1,0 +1,34 @@
+{
+  "variables": {
+    "boot_wait": "3s",
+    "disk_size": "10G",
+    "iso_checksum": "5a0dc65d1308e47b51a49e23f1030b5ee0f0ece3702483a8a6554382e893333c",
+    "iso_url": "https://download.rockylinux.org/pub/rocky/8/isos/x86_64/Rocky-8.5-x86_64-boot.iso",
+    "memsize": "8192",
+    "numvcpus": "4"
+  },
+  "builders": [
+    {
+      "type": "qemu",
+      "accelerator": "kvm",
+      "communicator": "none",
+      "boot_command": [
+        "<up><tab><bs><bs><bs><bs><bs> ",
+        "inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.nothing.cfg ",
+        "inst.cmdline",
+        "<enter><wait>"
+      ],
+      "boot_wait": "{{ user `boot_wait` }}",
+      "disk_size": "{{ user `disk_size` }}",
+      "iso_url": "{{ user `iso_url` }}",
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "headless": true,
+      "cpus": "{{ user `numvcpus` }}",
+      "memory": "{{ user `memsize` }}",
+      "vnc_bind_address": "0.0.0.0",
+      "http_directory": "http",
+      "shutdown_timeout": "1h",
+      "qemuargs": [["-serial", "stdio"]]
+    }
+  ]
+}
