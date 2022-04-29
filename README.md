@@ -8,6 +8,7 @@ This project will deploy in the following order:
 * Core certs issuers, traefik routes and dashboards.
 * Apps with argocd
   * xCAT (bare-metal provisioning)
+  * Packer OS images recipes
   * Slurm controller, database and login nodes
   * LDAP (for global users/groups management)
   * CVMFS stratum1 mirror of Deepsquare's software library (end user software)
