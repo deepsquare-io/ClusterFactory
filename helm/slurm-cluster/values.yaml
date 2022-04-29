@@ -350,7 +350,7 @@ ondemand:
   enabled: false
   replicas: 1
 
-  image: 'ghcr.io/squarefactory/open-ondemand:0.1.0'
+  image: 'ghcr.io/squarefactory/open-ondemand:2.0.23-3'
   imagePullPolicy: 'IfNotPresent'
 
   labels: {}
