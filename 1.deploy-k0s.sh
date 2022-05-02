@@ -1,7 +1,5 @@
 #!/bin/sh
 
-section "Checking prerequisites"
-
 . "./scripts/common.sh"
 
 set -e

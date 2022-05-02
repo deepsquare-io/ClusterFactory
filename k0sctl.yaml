@@ -190,7 +190,7 @@ spec:
                       expose: true
                       exposedPort: 443
                       protocol: TCP
-                      # NOTE from csquare: use cert-manager.
+                      # NOTE: use cert-manager.
                       tls:
                         enabled: false
                     metrics:

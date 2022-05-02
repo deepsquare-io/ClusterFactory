@@ -15,7 +15,7 @@ export PATH
 
 KUBESEAL="$(command -v kubeseal)"
 if ! [ -x "$KUBESEAL" ]; then
-  KUBESEAL_VERSION=0.17.3
+  KUBESEAL_VERSION=0.17.5
   echo "kubeseal could not be found. Downloading it locally in ./bin."
   rm -f ./bin/kubeseal
   curl -fsSL "https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-linux-amd64.tar.gz" | tar -zxvf kubeseal

@@ -1,12 +1,5 @@
 #!/bin/sh
 
-section() {
-  echo
-  echo "---$1---"
-}
-
-section "Checking prerequisites"
-
 . "./scripts/common.sh"
 
 set -e
@@ -21,8 +14,11 @@ cd ./core/sealed-secrets
 
 cd "$WORKDIR"
 
+section "Change CoreDNS configuration"
+kubectl apply -f ./core/coredns/
+
 section "Setup cert-manager issuers"
-kubectl apply -f ./core/cert-manager/selfsigned-cluster-issuer.yml
+kubectl apply -f ./core/cert-manager/
 
 section "Setup Traefik dashboard and routes"
 kubectl apply -k ./core/traefik-dashboard/
