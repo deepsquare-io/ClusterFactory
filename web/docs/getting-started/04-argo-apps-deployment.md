@@ -1,4 +1,4 @@
-# Argo Apps Deployment
+# 4. Argo Apps Deployment
 
 Time to play with ArgoCD!
 
@@ -157,7 +157,11 @@ Since we are doing GitOps, we will be storing a sealed secret in the git reposit
 
 Basically, SealedSecrets encrypt secrets using asymmetric encryption. Right now, a SealedSecrets controller is running on the Kubernetes Cluster with a unique private key. This private key is the master key and should be only stored on the Kubernetes Cluster.
 
-If you wish to backup the key (because you want to do some migration, or to prepare for a disaster), you can follow [this guide](https://github.com/bitnami-labs/sealed-secrets#how-can-i-do-a-backup-of-my-sealedsecrets). You can also backup the whole cluster using [k0sctl](https://docs.k0sproject.io/v1.23.6+k0s.0/backup/). Just make sure the backup is stored very securely.
+If you wish to backup the key (because you want to do some migration, or to prepare for a disaster), you can follow [this guide](https://github.com/bitnami-labs/sealed-secrets#how-can-i-do-a-backup-of-my-sealedsecrets). You can also [backup the whole cluster using k0sctl](https://docs.k0sproject.io/v1.23.6+k0s.0/backup/).
+
+:::warning
+The SealedSecrets keys and backups made by k0s are sensitive data! You should either delete them after a certain period of time or make sure that they are strongly protected.
+:::
 
 Create a secret named `grafana-admin-secret.yaml.local`. It is important to add `.local` at the end so it get filtered by Git.
 
@@ -449,3 +453,7 @@ kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.pas
 ![image-20220503171011051](04-argo-apps-deployment.assets/image-20220503171011051.png)
 
 Pretty cool, huh?
+
+However, ClusterFactory isn't just a Kubernetes Cluster. It contains all the apps necessary to create an HPC cluster.
+
+See the [guides](../guides/) to deploy each application. Otherwise, let's deploy xCAT, our tool to deploy and manage bare metal servers!

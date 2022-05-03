@@ -1,4 +1,4 @@
-# Core Apps Deployment
+# 3. Core Apps Deployment
 
 ## CoreDNS configuration
 
@@ -193,7 +193,7 @@ Run the `2.deploy-core-apps.sh` script to deploy the cluster.
 
 TODO: record deployment
 
-:::info
+:::note
 
 You may notice that the installation of ArgoCD and Sealed Secrets could have been done using `k0sctl.yaml`.
 

@@ -1,4 +1,4 @@
-# K0s Configuration
+# 2. K0s Configuration
 
 ## Specifying the hosts
 
@@ -130,7 +130,7 @@ After setting up k0s, you can change the `extensions` field. This field can be c
 
 Start with `metallb`. MetalLB is a load balancer designed for bare metal Kubernetes clusters. It exposes the kubernetes `Services` to the external network. It uses either L2 or BGP to advertise routes. The network indicated by `metallb` must be outside the network when using BGP. Otherwise, when using L2, the network must be the same as your private network. For multi-zone clusters, you MUST use BGP.
 
-:::info
+:::note
 
 MetalLB 0.13.0 will allow you to create "zoned" L2 announcements, which means you can make ARP calls by zone.
 
