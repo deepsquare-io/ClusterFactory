@@ -16,32 +16,45 @@ Edit the `k0sctl.yaml` file. Start with the `hosts` field :
 apiVersion: k0sctl.k0sproject.io/v1beta1
 kind: Cluster
 metadata:
-  name: k8s.ch1.csquare.run-cluster
+  name: my-home-cluster
 spec:
   hosts:
     - ssh:
         address: 10.10.2.16
         user: root
         port: 22
-        keyPath: ~/.ssh/id_ed25519_csquare
+        keyPath: ~/.ssh/id_ed25519
       role: controller+worker
       privateInterface: eno2
       privateAddress: 10.10.2.16
       installFlags:
         - --debug
-        - --labels="topology.kubernetes.io/region=ch-sion,topology.kubernetes.io/zone=ch-sion-1"
+        - --labels="topology.kubernetes.io/region=my-home,topology.kubernetes.io/zone=my-home-1"
+      hooks:
+        apply:
+          after:
+            - mkdir -p /var/lib/k0s/kubelet
+            - ln -s /var/lib/kubelet /var/lib/k0s/kubelet
+            - sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config
+            - setenforce 0
     - ssh:
         address: 172.24.0.4
         user: root
         port: 22
-        keyPath: ~/.ssh/id_ed25519_csquare
+        keyPath: ~/.ssh/id_ed25519
       role: worker
       privateInterface: priv0
       privateAddress: 172.24.0.4
       installFlags:
         - --debug
         - --labels="topology.kubernetes.io/region=at-vie,topology.kubernetes.io/zone=at-vie-1"
-
+      hooks:
+        apply:
+          after:
+            - mkdir -p /var/lib/k0s/kubelet
+            - ln -s /var/lib/kubelet /var/lib/k0s/kubelet
+            - sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config
+            - setenforce 0
   ...
 ```
 
@@ -65,7 +78,7 @@ k0s:
     apiVersion: k0s.k0sproject.io/v1beta1
     kind: Cluster
     metadata:
-      name: k8s.ch1.csquare.run
+      name: k8s.my.home
     spec:
       api:
         k0sApiPort: 9443
@@ -120,6 +133,8 @@ Start with `metallb`. MetalLB is a load balancer designed for bare metal Kuberne
 :::info
 
 MetalLB 0.13.0 will allow you to create "zoned" L2 announcements, which means you can make ARP calls by zone.
+
+More precisely, this means that you can allow `10.10.2.100` in the network `10.10.2.0/24` in one zone, and `172.24.0.100` in the network `172.24.0.18` in an another zone, which means that you wouldn't need BGP anymore.
 
 However, MetalLB 0.13.0 is not yet available at the time of writing.
 
@@ -275,7 +290,7 @@ After configuring the Load Balancer, you should configure Traefik, the main Ingr
 
 Look for `loadBalancerIP` and use the IPs from the MetalLB.
 
-Add or remove ports. Since traefik will be used as the main Ingress, these ports will be exposed to the external network.
+Add or remove ports. Since Traefik will be used as the main Ingress, these ports will be exposed to the external network.
 
 The IngressClass is `traefik`. If you don't want to use Traefik, feel free to add another extension.
 

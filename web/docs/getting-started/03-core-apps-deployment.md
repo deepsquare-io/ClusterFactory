@@ -10,7 +10,7 @@ If this is an unwanted feature (because you are using an another DNS for example
 
 The files that you should look for are `configmap.yml` and `deployment.yml`.
 
-Inside the configmap, you'll find:
+Inside the ConfigMap, you'll find:
 
 ```yaml title="core/coredns/configmap.yml"
 apiVersion: v1
@@ -71,7 +71,7 @@ data:
     ...
 ```
 
-Change the zones with yours (let's say `my.home`) and change eventually the forward to your favorite DNS.
+Change the zones with yours (let's say `my.home`) and, eventually, change the `forward` field to your favorite DNS.
 
 For example:
 
@@ -97,7 +97,7 @@ data:
         fallthrough in-addr.arpa ip6.arpa
       }
       prometheus :9153
-      forward . tls://9.9.9.9
+      forward . 8.8.8.8
       reload
     }
     my.home:53 {
