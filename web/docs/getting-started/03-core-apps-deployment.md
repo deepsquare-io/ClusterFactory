@@ -151,7 +151,7 @@ Because some files were added and removed, you must change the `deployment.yml`:
 
 Specify new certificates issuers in the `core/cert-manager` directory.
 
-If you wish to a your own private certificate authority, follow the [official guide of cert-manager](https://cert-manager.io/docs/configuration/ca/).
+If you wish to add your own private certificate authority, follow the [official guide of cert-manager](https://cert-manager.io/docs/configuration/ca/).
 
 ```yaml title="private-cluster-issuer.yml"
 apiVersion: cert-manager.io/v1
@@ -164,7 +164,7 @@ spec:
     secretName: ca-key-pair
 ```
 
-If you wish to use ACME HTTP-01, follow [this guide](https://cert-manager.io/docs/configuration/acme/http01/). This will expose an Ingress to Traefik by using the `ingress` field.
+If you wish to use ACME HTTP-01, follow [this guide](https://cert-manager.io/docs/configuration/acme/http01/). This will creates an Ingress by using the `ingress` field.
 
 ```yaml title="public-cluster-issuer.yml"
 apiVersion: cert-manager.io/v1
@@ -199,6 +199,6 @@ You may notice that the installation of ArgoCD and Sealed Secrets could have bee
 
 However, we found that this would cause coupling problems with k0sctl (for example, you would have to redeploy the k0s cluster every time you need to update ArgoCD, which means downtime).
 
-We think that the `extensions` field in `k0sctl.yaml` should only be used for network applications, or should not be used at all.
+We believe that the `extensions` field in `k0sctl.yaml` should only be used for network applications, or should not be used at all.
 
 :::
