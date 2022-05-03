@@ -57,7 +57,7 @@ xCAT will deploy a lot of services including:
 - A RSync Server
 - A DNS Server
 - xCAT Services
-- And [more]https://xcat-docs.readthedocs.io/en/stable/advanced/ports/xcat_ports.html)
+- And [more](https://xcat-docs.readthedocs.io/en/stable/advanced/ports/xcat_ports.html)
 
 That's why we will use the Multus and CNI plugins to solve this particular problem.
 
