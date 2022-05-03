@@ -377,4 +377,4 @@ More details [here](https://xcat-docs.readthedocs.io/en/stable/guides/admin-guid
 rpower cn1 on # or reset
 ```
 
-xCAT is a heavy beast, but a complete bare metal provisioner. We recommend that you familiarize yourself with the software very quickly by reading the [xCAT documentation] (https://xcat-docs.readthedocs.io/en/stable/overview/index.html).
+xCAT is a heavy beast, but a complete bare metal provisioner. We recommend that you familiarize yourself with the software very quickly by reading the [xCAT documentation](https://xcat-docs.readthedocs.io/en/stable/overview/index.html).
