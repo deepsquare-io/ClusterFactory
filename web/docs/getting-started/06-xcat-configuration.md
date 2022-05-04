@@ -374,7 +374,9 @@ More details [here](https://xcat-docs.readthedocs.io/en/stable/guides/admin-guid
 ## Deploy
 
 ```shell ssh root@xcat
-rpower cn1 on # or reset
+rpower cn1 on # or rpower cn1 reset
 ```
 
-xCAT is a heavy beast, but a complete bare metal provisioner. We recommend that you familiarize yourself with the software very quickly by reading the [xCAT documentation](https://xcat-docs.readthedocs.io/en/stable/overview/index.html).
+Congratulations, you've deployed a bare-metal server! xCAT is a heavy beast, but a complete bare metal provisioner. We recommend that you familiarize yourself with the software very quickly by reading the [xCAT documentation](https://xcat-docs.readthedocs.io/en/stable/overview/index.html).
+
+Next steps should be to configure your compute nodes and install a job scheduler like Slurm so you can run parallel jobs!

@@ -187,6 +187,87 @@ spec:
 
 ArgoCD and Traefik have dashboards. To change the addresses and certificates, modify the `ingress-route.yml` file and `certificate.yml` in the directories `core/argo-cd` and `core/traefik`.
 
+Make sure the addresses correspond to the ones defined in the CoreDNS (or in your personal DNS).
+
+```yaml title="Example of Traefik ingress-route.yml"
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-dashboard-https
+  labels:
+    app.kubernetes.io/name: traefik-dashboard-https
+    app.kubernetes.io/component: ingress-route
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: 'Host(`traefik.my-home`)'
+      kind: Rule
+      middlewares:
+        - name: redirect-dashboard
+      services:
+        - name: api@internal
+          kind: TraefikService
+  tls:
+    secretName: traefik.my-home-secret
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-dashboard-http
+  labels:
+    app.kubernetes.io/name: traefik-dashboard-http
+    app.kubernetes.io/component: ingress-route
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: 'Host(`traefik.my-home`)'
+      kind: Rule
+      middlewares:
+        - name: redirect-https
+      services:
+        - name: noop@internal
+          kind: TraefikService
+```
+
+IngressRoute allows us to create complex routing rules than the classic Ingress. However, Ingress is able to automatically generate a TLS certificate by using annotations, without the need to create a Certificate resource.
+
+Example:
+
+```yaml title="ingress.yaml"
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grafana-ingress
+  labels:
+    app.kubernetes.io/name: grafana-ingress
+    app.kubernetes.io/component: ingress
+  annotations:
+    cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: 'true'
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: grafana.my.home
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - grafana.my.home
+      secretName: grafana.my.home-secret
+```
+
+Our recommendation is to use Ingress for simple routes with HTTP. Otherwise, IngressRoute is the best solution for all the cases.
+
 ## Deploying the core apps
 
 Run the `2.deploy-core-apps.sh` script to deploy the cluster.

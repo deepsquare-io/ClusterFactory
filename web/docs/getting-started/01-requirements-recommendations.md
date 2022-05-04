@@ -4,14 +4,14 @@
 
 All nodes should be accessible via SSH.
 
-Any Linux distribution with :
+All nodes should have a Linux distribution with :
 
 - The Linux kernel version higher than 3.10.
 - An init system based on SystemD or OpenRC.
 
 Cluster Factory has been fully tested on Rocky Linux, and is our recommended OS.
 
-## Recommended toolings
+## Recommended tooling
 
 - [VSCode](https://code.visualstudio.com) is our favorite IDE. But just use one with good YAML support.
 - **Use [Lens](https://k8slens.dev) to manage your kubernetes cluster.**

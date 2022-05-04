@@ -8,7 +8,7 @@ However, the order is the same.
 
 ## 1. Namespace and AppProject
 
-```shell
+```shell title="user@local:/cluster-factory-ce"
 kubectl apply -f argo/provisioning
 ```
 
@@ -44,11 +44,15 @@ spec:
   persistentVolumeReclaimPolicy: Retain
 ```
 
-You can use a StorageClass if you want.
+```shell title="user@local:/cluster-factory-ce"
+kubectl apply -f argo/provisioning/volumes/xcat-pv.yml
+```
+
+You can use a StorageClass if you want. We won't be running multiple xCAT replica anyway.
 
 ## 3. Apps
 
-There is a new concept for this application called. xCAT MUST use the host network to be able to provision the bare metal servers.
+Because, xCAT MUST use the host network to be able to provision the bare metal servers, we will use Multus CNI to expose the pod to the external network.
 
 xCAT will deploy a lot of services including:
 
@@ -142,7 +146,7 @@ net:
 
 Let's focus on the `net` field. To expose xCAT to the external network, instead of using `LoadBalancers`, we use [Multus](https://github.com/k8snetworkplumbingwg/multus-cni). Multus is a CNI plugin to attach multiple network interfaces on Pods.
 
-However, we will use Multus to replace the default network interface with a IPVLAN interface.
+However, we will use Multus CNI to replace the default network interface with a IPVLAN interface.
 
 IPVLAN allows us to directly expose the pod to the host network. To do that, you must specify the network interface of the node with the `masterInterface` field. Then, you should allocate an address using the `ipam` field.
 
@@ -150,6 +154,10 @@ More details on IPAM [here](https://www.cni.dev/plugins/current/ipam/static/) an
 
 This way, instead of using a Virtual Machine to deploy xCAT, you can use a container!
 
-Deploy the app with `kubectl apply -f argo/provisioning/apps/xcat-app.yml`
+Deploy the app:
+
+```shell title="user@local:/cluster-factory-ce"
+kubectl apply -f argo/provisioning/apps/xcat-app.yml
+```
 
 Login to xCAT using the indicated IP address `ssh root@10.10.2.160 -p 2200` (the password is `cluster`).

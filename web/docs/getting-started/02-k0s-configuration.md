@@ -66,7 +66,7 @@ Provide each host with a valid IP address that is reachable by k0ctl, and the co
 
 If you wish to use a HA setup, please follow [this guide](https://docs.k0sproject.io/v1.23.6+k0s.0/high-availability/).
 
-## Confguring the k0s architecture
+## Configuring the k0s architecture
 
 After you set the `hosts` field, you must configure the k0s architecture by editing the `k0s` field:
 
@@ -118,7 +118,7 @@ k0s:
         enabled: false
 ```
 
-Check the CIDR and make sure it doesn't conflict any IP range of you network. You may want to change your CNI provider too.
+Check the CIDR and make sure it doesn't conflict with any IP range of your network.
 
 Again, **You should read the specification carefully as the modification of one the k0s field won't be allowed in the future**.
 
@@ -128,7 +128,9 @@ After setting up k0s, you can change the `extensions` field. This field can be c
 
 ## Configuring MetalLB
 
-Start with `metallb`. MetalLB is a load balancer designed for bare metal Kubernetes clusters. It exposes the kubernetes `Services` to the external network. It uses either L2 or BGP to advertise routes. The network indicated by `metallb` must be outside the network when using BGP. Otherwise, when using L2, the network must be the same as your private network. For multi-zone clusters, you MUST use BGP.
+Start with `metallb`. MetalLB is a L2/L3 load balancer designed for bare metal Kubernetes clusters. It exposes the kubernetes `Services` to the external network. It uses either L2 or BGP to advertise routes. The network indicated by `metallb` must be outside the network when using BGP. Otherwise, when using L2, the network must be the same as your private network. For multi-zone clusters, you MUST use BGP.
+
+![k0s_metallb_loadbalancer](02-k0s-configuration.assets/k0s_metallb_loadbalancer.png)
 
 :::note
 
@@ -306,13 +308,17 @@ You can re-run the scripts if you modify the `k0sctl.yaml` file.
 
 Or, you can run `k0sctl` manually:
 
-```shell title=user@local:/cluster-factory-ce
+```shell title="user@local:/cluster-factory-ce"
 PATH="$(pwd)/bin:${PATH}"
 k0sctl apply --config ./k0sctl.yaml
 
 # Fetch the kubeconfig
 k0sctl kubeconfig --config ./k0sctl.yaml >./kubeconfig
 ```
+
+Store the kubeconfig inside `~/.kube/config`, or just `export KUBECONFIG=$(pwd)/kubeconfig`.
+
+Just make sure to verify which config you are using with `kubectl config view`.
 
 Congratulation, you have deployed your kubernetes cluster! However, it's still missing a few core features:
 

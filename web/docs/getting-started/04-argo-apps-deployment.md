@@ -6,7 +6,7 @@ Let's deploy the [Kube-Prometheus-Stack](https://github.com/prometheus-community
 
 A complete example is written in `argo/monitoring/`, but we will start from scratch to learn the process of writing an argo application.
 
-Start by creating the `argo/my-monitoring`, this will be our working directory.
+Start by creating the `argo/my-monitoring` directory, this will be our working directory.
 
 Some object shouldn't be handled by ArgoCD, such as volumes, secrets and namespaces. These object must be created before the deployment of an Argo application.
 
@@ -23,7 +23,11 @@ metadata:
     app.kubernetes.io/name: my-monitoring
 ```
 
-and apply (`kubectl apply -f namespace.yml`).
+and apply:
+
+```shell title="user@local:/cluster-factory-ce"
+kubectl apply -f argo/my-monitoring/namespace.yml
+```
 
 And create an `AppProject`:
 
@@ -55,6 +59,12 @@ spec:
       group: '*'
 ```
 
+and apply:
+
+```shell title="user@local:/cluster-factory-ce"
+kubectl apply -f argo/my-monitoring/app-project.yml
+```
+
 `AppProject` configure the permissions of the `Application`. This is to avoid a supply chain attacks (like for example malicious resources get injected in the git repositories). You can learn more [here](https://argo-cd.readthedocs.io/en/stable/user-guide/projects/).
 
 ## 2. Prepare Volumes, Secrets, ConfigMaps and Ingresses
@@ -74,6 +84,38 @@ Therefore, we need:
 - An Ingress for Prometheus
 
 However, we are lucky that the Helm Chart of Kube-Prometheus-Stack already handles ingresses. So we only need to add two PVs and a secret.
+
+If you are not familiar with Helm, basically, it's a software used for templating, similar to Ansible. Every variables are stored inside a `values.yaml` file. Helm is able to override these values by addind an another values file on top (for example `values-production.yaml`).
+
+If we were to deploy manually, we would call:
+
+```shell title="user@local:/<helm chart directory>"
+helm install \
+  -n <namespace> \
+  -f values.yaml \
+  -f values-production.yaml \
+  <app name> \
+  ./<path to app>
+```
+
+Helm is also a package manager. Like any package manager, you need a repository URL. If we were to install an app coming from a repository, we would call:
+
+```shell title="user@local:/<directory containing values-production.yaml>"
+helm repo add <reponame> <repo_url>
+helm repo update
+
+helm install \
+  -n <namespace> \
+  -f values-production.yaml \
+  <app name> \
+  <reponame>/<app>
+```
+
+We would store these commands in scripts. However, ArgoCD is capable of deploying Helm applications, but also Kustomize and vanilla Kubernetes definition files. ArgoCD is also able to synchronize with the remote repository, which means that it is able to perform rolling updates.
+
+This way, we are able to centralize and every definition, configuration and environments files inside a Git repository, with a common syntax, in YAML.
+
+More details on ArgoCD [here](https://argo-cd.readthedocs.io/en/stable/).
 
 ### 2.1. Volumes
 
@@ -138,26 +180,30 @@ allowedTopologies:
           - my-home
 ```
 
-Apply it: `kubectl apply -f argo/my-monitoring/storageclasses.yaml`
+Apply it:
 
-You could also create a StorageClass mounted on `/srv/nfs/k8s` for all the applications. However, this would mix all the volumes into a single directory and for the sake of the NFS server, we won't do that.
+```shell title="user@local:/cluster-factory-ce"
+kubectl apply -f argo/my-monitoring/storageclasses.yaml
+```
 
-You may notice that we have been using `topology.kubernetes.io/zone` since the beginning of the getting-started.
+You could also create one unique StorageClass mounted on `/srv/nfs/k8s` for all the applications. However, this would mix all the volumes into a single directory and for the sake of the NFS server, we won't do that.
+
+You may notice that we've been using `topology.kubernetes.io/zone` since the beginning of the Getting Started.
 It's a good practice to always annotate your nodes as some resources are not available in other zones.
 
-You can learn more [here](https://kubernetes.io/docs/reference/labels-annotations-taints/#topologykubernetesiozone).
+You can always learn more [here](https://kubernetes.io/docs/reference/labels-annotations-taints/#topologykubernetesiozone).
 
-You could also creates a PersistentVolume and a PersistentVolumeClaim instead of a StorageClass (which is what we've done at SquareFactory).
+You could also creates a PersistentVolume and a PersistentVolumeClaim instead of a StorageClass (which is what we've done at SquareFactory). This is called static provisioning and is an acceptable solution.
 
-The official example of static provisioning is written [here](https://github.com/kubernetes-csi/csi-driver-nfs/tree/master/deploy/example). Both methods are good, but dynamic provisioning is more suitable for StatefulSet since it avoids creating a PV for each replica.
+The official example of static provisioning is written [here](https://github.com/kubernetes-csi/csi-driver-nfs/tree/master/deploy/example). Both methods are good, but dynamic provisioning is more suitable for StatefulSet since it avoids creating a PersistentVolume for each replica.
 
 ### 2.2. Secret
 
-Since we are doing GitOps, we will be storing a sealed secret in the git repository.
+Since we are doing GitOps, we will store a sealed secret in the git repository. Since the secret definition files are in plain text, to keep track of the version of the secrets, we need to push these files into git.
 
-Basically, SealedSecrets encrypt secrets using asymmetric encryption. Right now, a SealedSecrets controller is running on the Kubernetes Cluster with a unique private key. This private key is the master key and should be only stored on the Kubernetes Cluster.
+To avoid storing cleartext secrets in git, SealedSecrets encrypts secrets using asymmetric encryption. Currently, a SealedSecrets controller should run on the Kubernetes cluster with a unique private key. This private key is the master key and should only be stored on the Kubernetes cluster.
 
-If you wish to backup the key (because you want to do some migration, or to prepare for a disaster), you can follow [this guide](https://github.com/bitnami-labs/sealed-secrets#how-can-i-do-a-backup-of-my-sealedsecrets). You can also [backup the whole cluster using k0sctl](https://docs.k0sproject.io/v1.23.6+k0s.0/backup/).
+If you want to backup the key (because you want to do a migration, or to prepare for a disaster), you can follow [this guide](https://github.com/bitnami-labs/sealed-secrets#how-can-i-do-a-backup-of-my-sealedsecrets). You can also [backup the whole cluster using k0sctl](https://docs.k0sproject.io/v1.23.6+k0s.0/backup/).
 
 :::warning
 The SealedSecrets keys and backups made by k0s are sensitive data! You should either delete them after a certain period of time or make sure that they are strongly protected.
@@ -177,11 +223,17 @@ stringData:
 type: Opaque
 ```
 
-DON'T APPLY IT. First, we will encrypt it.
+**DON'T APPLY IT**. First, we will encrypt it.
 
 Just run the `kubeseal-every-local-files.sh`, this script will generate a `grafana-admin-sealed-secret.yaml`. This file can be put inside the git repository.
 
-Apply this file: `kubectl apply -f argo/my-monitoring/grafana-admin-sealed-secret.yaml`.
+Apply this file:
+
+```shell title="user@local:/cluster-factory-ce"
+kubectl apply -f argo/my-monitoring/grafana-admin-sealed-secret.yaml
+```
+
+After applying the file, feel free to delete the `-secret.yaml.local` file. If you wish to retrieve the secret, like any secret, just use `kubectl get secret <secret> -o jsonpath='{.data}'`.
 
 ## 3. Configure the Argo Application
 
@@ -432,7 +484,11 @@ spec:
         ...
 ```
 
-Now, just deploy the argoCD app: `kubectl apply -f argo/my-monitoring/prometheus-app.yml`
+Now, just deploy the argoCD app:
+
+```shell title="user@local:/cluster-factory-ce"
+kubectl apply -f argo/my-monitoring/prometheus-app.yml
+```
 
 Congratulation, you have deployed an ArgoCD app!
 
