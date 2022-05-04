@@ -39,3 +39,7 @@ spec:
 ```
 
 Sealed Secrets allows secrets to be stored inside Git, which means it allows GitOps to be used. Git becomes the source of truth, but only the Kubernetes cluster is able to read the secrets.
+
+Another solution for managing secrets is [Hashicorp Vault](https://www.vaultproject.io). However, the source of truth for secrets is moved to Hashicorp Vault, which is not GitOps friendly.
+
+Depending on the use case, you may prefer Hashicorp Vault for multi-clusters and to support multiple application types.
