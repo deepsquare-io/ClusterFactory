@@ -32,6 +32,10 @@ spec:
         - name: "{{ template "cvmfs-service.name" . }}"
           image: "{{ .Values.image }}"
           imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+          command:
+            - sh
+            - -c
+            - rm -f /etc/cvmfs/config.d/cvmfs-config.cern.ch.conf && /usr/bin/mount_cvmfs.sh
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           securityContext:
