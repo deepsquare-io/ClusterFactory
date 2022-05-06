@@ -13,7 +13,7 @@ spec:
     - '*'
 
   destinations:
-    - namespace: '*'
+    - namespace: 'cvmfs'
       server: https://kubernetes.default.svc
 
   namespaceResourceWhitelist:
