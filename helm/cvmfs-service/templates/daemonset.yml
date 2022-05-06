@@ -28,14 +28,27 @@ spec:
       affinity:
 {{ toYaml . | indent 8 }}
       {{- end }}
+      {{- if .Values.keys.secretName }}
+      initContainers:
+        - name: prepare-keys
+          image: "{{ .Values.image }}"
+          imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+          command: ["sh", "-c"]
+          args:
+            - |-
+              cp -Rp /etc/cvmfs/keys/ /out/;
+              cp -Rp /in/ /out/;
+              chmod -R 600 /out;
+          volumeMounts:
+            - name: cvmfs-keys
+              mountPath: /in
+            - name: all-cvmfs-keys
+              mountPath: /out
+      {{- end }}
       containers:
         - name: "{{ template "cvmfs-service.name" . }}"
           image: "{{ .Values.image }}"
           imagePullPolicy: "{{ .Values.imagePullPolicy }}"
-          command:
-            - sh
-            - -c
-            - rm -f /etc/cvmfs/config.d/cvmfs-config.cern.ch.conf && /usr/bin/mount_cvmfs.sh
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           securityContext:
@@ -52,7 +65,7 @@ spec:
               subPath: {{ $key }}
             {{- end }}
             {{- if .Values.keys.secretName }}
-            - name: cvmfs-keys
+            - name: all-cvmfs-keys
               mountPath: "/etc/cvmfs/keys"
             {{- end }}
           env:
@@ -69,6 +82,8 @@ spec:
             path: /cvmfs
             type: DirectoryOrCreate
         - name: cvmfs-cache
+          emptyDir: {}
+        - name: all-cvmfs-keys
           emptyDir: {}
         - name: cvmfs-config
           configMap:
