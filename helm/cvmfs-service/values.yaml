@@ -10,10 +10,12 @@ resources:
 readinessProbe:
   initialDelaySeconds: 10
   periodSeconds: 5
+  timeoutSeconds: 10
 
 livenessProbe:
   initialDelaySeconds: 60
   periodSeconds: 300
+  timeoutSeconds: 10
 
 securityContext:
   capabilities:

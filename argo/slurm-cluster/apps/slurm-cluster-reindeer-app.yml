@@ -252,10 +252,13 @@ spec:
               mountPath: /opt/experiments
             - name: software-sion-csquare-run
               mountPath: /opt/software
+              readOnly: true
             - name: stdenv-sion-csquare-run
               mountPath: /opt/stdenv
+              readOnly: true
             - name: unpacked-sion-csquare-run
               mountPath: /opt/unpacked
+              readOnly: true
 
           # Extra volumes
           volumes:
@@ -272,15 +275,15 @@ spec:
                 defaultMode: 493
             - name: software-sion-csquare-run
               hostPath:
-                path: /cvmfs/software.sion.csquare.run
+                path: /cvmfs/cvmfs-k8s/mounts/software.sion.csquare.run
                 type: Directory
             - name: stdenv-sion-csquare-run
               hostPath:
-                path: /cvmfs/stdenv.sion.csquare.run
+                path: /cvmfs/cvmfs-k8s/mounts/stdenv.sion.csquare.run
                 type: Directory
             - name: unpacked-sion-csquare-run
               hostPath:
-                path: /cvmfs/unpacked.sion.csquare.run
+                path: /cvmfs/cvmfs-k8s/mounts/unpacked.sion.csquare.run
                 type: Directory
             - name: ldap-users-reindeer-pvc
               persistentVolumeClaim:
@@ -472,10 +475,13 @@ spec:
               mountPath: /opt/experiments
             - name: software-sion-csquare-run
               mountPath: /opt/software
+              readOnly: true
             - name: stdenv-sion-csquare-run
               mountPath: /opt/stdenv
+              readOnly: true
             - name: unpacked-sion-csquare-run
               mountPath: /opt/unpacked
+              readOnly: true
             - name: ondemand-logo
               mountPath: /var/www/ood/public/logo.png
               subPath: logo.png
@@ -518,15 +524,15 @@ spec:
                 defaultMode: 493
             - name: software-sion-csquare-run
               hostPath:
-                path: /cvmfs/software.sion.csquare.run
+                path: /cvmfs/cvmfs-k8s/mounts/software.sion.csquare.run
                 type: Directory
             - name: stdenv-sion-csquare-run
               hostPath:
-                path: /cvmfs/stdenv.sion.csquare.run
+                path: /cvmfs/cvmfs-k8s/mounts/stdenv.sion.csquare.run
                 type: Directory
             - name: unpacked-sion-csquare-run
               hostPath:
-                path: /cvmfs/unpacked.sion.csquare.run
+                path: /cvmfs/cvmfs-k8s/mounts/unpacked.sion.csquare.run
                 type: Directory
             - name: ldap-users-reindeer-pvc
               persistentVolumeClaim:
