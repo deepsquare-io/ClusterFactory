@@ -7,6 +7,14 @@ resources:
     cpu: 100m
     memory: 200Mi
 
+readinessProbe:
+  initialDelaySeconds: 10
+  periodSeconds: 5
+
+livenessProbe:
+  initialDelaySeconds: 60
+  periodSeconds: 300
+
 securityContext:
   capabilities:
     add:
@@ -15,11 +23,6 @@ securityContext:
   readOnlyRootFilesystem: false
   runAsNonRoot: false
 
-repositories:
-  []
-  # - name: software-sion-csquare-run
-  #   repository: software.sion.csquare.run
-
 # This is the node affinity settings as defined in
 # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#node-affinity-beta-feature
 nodeAffinity: {}
@@ -27,6 +30,13 @@ nodeSelector: {}
 tolerations:
   - key: node-role.kubernetes.io/master
     effect: NoSchedule
+
+repositories:
+  []
+  # - name: software-sion-csquare-run
+  #   repository: software.sion.csquare.run
+
+proxy: DIRECT
 
 configs:
   default.local:

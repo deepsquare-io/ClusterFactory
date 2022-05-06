@@ -54,6 +54,8 @@ spec:
           securityContext:
 {{ toYaml .Values.securityContext | indent 12 }}
           volumeMounts:
+            - name: fuse-device
+              mountPath: /dev/fuse
             - name: cvmfs-cache
               mountPath: /var/lib/cvmfs
             - name: cvmfs
@@ -68,19 +70,37 @@ spec:
             - name: all-cvmfs-keys
               mountPath: "/etc/cvmfs/keys"
             {{- end }}
+          readinessProbe:
+            exec:
+              command: ["/usr/bin/check_cvmfs.sh", "readiness"]
+{{ toYaml .Values.readinessProbe | indent 12 }}
+          livenessProbe:
+            exec:
+              command: ["/usr/bin/check_cvmfs.sh", "liveness"]
+{{ toYaml .Values.livenessProbe | indent 12 }}
+          lifecycle:
+            preStop:
+              exec:
+                # Properly unmount the /cvmfs-k8s/mounts area, i.e.
+                # avoid "transport endpoint not connected"
+                command: ["/usr/bin/terminate.sh"]
           env:
             - name: CVMFS_CLIENT_PROFILE
               value: single
             - name: CVMFS_REPOSITORIES
               value: "{{ template "cvmfs-service.repositoriesList" . }}"
             - name: CVMFS_HTTP_PROXY
-              value: DIRECT
+              value: "{{ .Values.proxy }}"
       terminationGracePeriodSeconds: 30
       volumes:
         - name: cvmfs
           hostPath:
             path: /cvmfs
             type: DirectoryOrCreate
+        - name: fuse-device
+          hostPath:
+            path: /dev/fuse
+            type: CharDevice
         - name: cvmfs-cache
           emptyDir: {}
         - name: all-cvmfs-keys
