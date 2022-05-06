@@ -46,6 +46,45 @@ spec:
               mountPath: /out
       {{- end }}
       containers:
+        {{- if .Values.debug }}
+        - name: "{{ template "cvmfs-service.name" . }}"
+          image: "{{ .Values.image }}"
+          imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+          command:
+            - sleep
+            - infinity
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          securityContext:
+{{ toYaml .Values.securityContext | indent 12 }}
+          volumeMounts:
+            - name: fuse-device
+              mountPath: /dev/fuse
+            - name: cvmfs-noderoot
+              mountPath: /var/lib/cvmfs
+              subPath: cvmfs-k8s/cache
+            - name: cvmfs-noderoot
+              mountPath: /cvmfs
+              subPath: cvmfs-k8s/mounts
+              # Make cvmfs fuse mounts visible on the node
+              mountPropagation: Bidirectional
+            {{- range $key, $entry := .Values.configs }}
+            - name: cvmfs-config
+              mountPath: "/etc/cvmfs/{{ $entry.mountPath }}"
+              subPath: {{ $key }}
+            {{- end }}
+            {{- if .Values.keys.secretName }}
+            - name: all-cvmfs-keys
+              mountPath: "/etc/cvmfs/keys"
+            {{- end }}
+          env:
+            - name: CVMFS_CLIENT_PROFILE
+              value: single
+            - name: CVMFS_REPOSITORIES
+              value: "{{ template "cvmfs-service.repositoriesList" . }}"
+            - name: CVMFS_HTTP_PROXY
+              value: "{{ .Values.proxy }}"
+        {{- end }}
         - name: "{{ template "cvmfs-service.name" . }}"
           image: "{{ .Values.image }}"
           imagePullPolicy: "{{ .Values.imagePullPolicy }}"
