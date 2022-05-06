@@ -274,6 +274,8 @@ Run the `2.deploy-core-apps.sh` script to deploy the cluster.
 
 TODO: record deployment
 
+Congratulations! You have successfully deployed a Kubernetes Cluster with the minimum needs. We still recommend to deploy the Monitoring stack to monitor the RAM and CPU usage of the containers. Nevertheless, you can follow the [guides](/docs/guides), learn the [main concepts of Cluster Factory](/docs/main-concepts), or continue the [Getting Started](./argo-apps-deployment).
+
 :::note
 
 You may notice that the installation of ArgoCD and Sealed Secrets could have been done using `k0sctl.yaml`.

@@ -48,6 +48,8 @@ spec:
 kubectl apply -f argo/provisioning/volumes/xcat-pv.yml
 ```
 
+The label `app=xcat` will be used by the PersistentVolumeClaim of the StatefulSet to locate the PersistentVolume.
+
 You can use a StorageClass if you want. We won't be running multiple xCAT replica anyway.
 
 ## 3. Apps
@@ -114,11 +116,18 @@ nodeSelector:
 
 resources:
   requests:
-    cpu: '2'
+    cpu: '250m'
     memory: '8Gi'
   limits:
     cpu: '8'
     memory: '8Gi'
+
+persistence:
+  storageClassName: ''
+  accessModes: ['ReadWriteOnce']
+  size: 50Gi
+  selectorLabels:
+    app: xcat
 
 net:
   # Kubernetes host interface
@@ -143,6 +152,8 @@ net:
 ```
 
 `nodeSelector` is very useful to make sure that xCAT stays in the right zone.
+
+If you are using a StorageClass, remove the `persistence.selectorLabels` field.
 
 Let's focus on the `net` field. To expose xCAT to the external network, instead of using `LoadBalancers`, we use [Multus](https://github.com/k8snetworkplumbingwg/multus-cni). Multus is a CNI plugin to attach multiple network interfaces on Pods.
 

@@ -21,11 +21,18 @@ spec:
 
         resources:
           requests:
-            cpu: '2'
+            cpu: '250m'
             memory: '8Gi'
           limits:
             cpu: '8'
             memory: '8Gi'
+
+        persistence:
+          storageClassName: ''
+          accessModes: ['ReadWriteOnce']
+          size: 50Gi
+          selectorLabels:
+            app: xcat
 
         net:
           # Kubernetes host interface

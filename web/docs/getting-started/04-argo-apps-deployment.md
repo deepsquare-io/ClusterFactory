@@ -512,4 +512,4 @@ Pretty cool, huh?
 
 However, ClusterFactory isn't just a Kubernetes Cluster. It contains all the apps necessary to create an HPC cluster.
 
-See the [guides](../guides/) to deploy each application. Otherwise, let's deploy xCAT, our tool to deploy and manage bare metal servers!
+See the [guides](/docs/guides/) to deploy each application. Otherwise, let's deploy xCAT, our tool to deploy and manage bare metal servers!
