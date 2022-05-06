@@ -11,9 +11,9 @@ spec:
   # Allow manifests to deploy from any Git repos
   sourceRepos:
     - '*'
-  # Only permit applications to deploy to the namespace in the same cluster
+
   destinations:
-    - namespace: cvmfs
+    - namespace: '*'
       server: https://kubernetes.default.svc
 
   namespaceResourceWhitelist:

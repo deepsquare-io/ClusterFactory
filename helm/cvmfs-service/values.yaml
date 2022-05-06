@@ -1,4 +1,4 @@
-image: cvmfs/service:2.9.2-1
+image: docker.io/cvmfs/service:2.9.2-1
 
 resources:
   limits:
@@ -7,22 +7,21 @@ resources:
     cpu: 100m
     memory: 200Mi
 
+readinessProbe:
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  timeoutSeconds: 10
+
+livenessProbe:
+  initialDelaySeconds: 60
+  periodSeconds: 300
+  timeoutSeconds: 10
+
 securityContext:
   capabilities:
     add:
       - SYS_ADMIN
   privileged: true
-  readOnlyRootFilesystem: false
-  runAsNonRoot: false
-  runAsUser:
-
-repositories:
-  - name: software-sion-csquare-run
-    repository: software.sion.csquare.run
-  - name: unpacked-sion-csquare-run
-    repository: unpacked.sion.csquare.run
-  - name: stdenv-sion-csquare-run
-    repository: stdenv.sion.csquare.run
 
 # This is the node affinity settings as defined in
 # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#node-affinity-beta-feature
@@ -32,6 +31,13 @@ tolerations:
   - key: node-role.kubernetes.io/master
     effect: NoSchedule
 
+repositories:
+  []
+  # - name: software-sion-csquare-run
+  #   repository: software.sion.csquare.run
+
+proxy: DIRECT
+
 configs:
   default.local:
     mountPath: default.local
@@ -40,3 +46,12 @@ configs:
       CVMFS_USE_GEOAPI=no
       CVMFS_HTTP_PROXY="DIRECT"
       CVMFS_KEYS_DIR="/etc/cvmfs/keys"
+
+## The secret will be mounted on /etc/cvmfs/keys
+## The items field is optional.
+keys:
+  secretName: ''
+  items:
+    []
+    # - key: software.sion.csquare.run.pub
+    #   path: .
