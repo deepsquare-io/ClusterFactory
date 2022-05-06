@@ -44,8 +44,12 @@ spec:
               mountPropagation: Bidirectional
             {{- range $key, $entry := .Values.configs }}
             - name: cvmfs-config
-              mountPath: /etc/cvmfs/{{ $entry.mountPath }}
+              mountPath: "/etc/cvmfs/{{ $entry.mountPath }}"
               subPath: {{ $key }}
+            {{- end }}
+            {{- if .Values.keys.secretName }}
+            - name: cvmfs-keys
+              mountPath: "/etc/cvmfs/keys"
             {{- end }}
           env:
             - name: CVMFS_CLIENT_PROFILE
@@ -65,3 +69,12 @@ spec:
         - name: cvmfs-config
           configMap:
             name: "{{ template "cvmfs-service.name" . }}-config"
+        {{- if .Values.keys.secretName }}
+        - name: cvmfs-keys
+          secret:
+            secretName: "{{ .Values.keys.secretName }}"
+            {{- with .Values.keys.items | indent 14}}
+            items:
+{{ toYaml . | indent 14}}
+            {{- end }}
+        {{- end }}
