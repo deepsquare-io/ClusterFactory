@@ -56,10 +56,13 @@ spec:
           volumeMounts:
             - name: fuse-device
               mountPath: /dev/fuse
-            - name: cvmfs-cache
+            - name: cvmfs-noderoot
               mountPath: /var/lib/cvmfs
-            - name: cvmfs
+              subPath: cvmfs-k8s/cache
+            - name: cvmfs-noderoot
               mountPath: /cvmfs
+              subPath: cvmfs-k8s/mounts
+              # Make cvmfs fuse mounts visible on the node
               mountPropagation: Bidirectional
             {{- range $key, $entry := .Values.configs }}
             - name: cvmfs-config
@@ -93,10 +96,9 @@ spec:
               value: "{{ .Values.proxy }}"
       terminationGracePeriodSeconds: 30
       volumes:
-        - name: cvmfs
-          hostPath:
-            path: /cvmfs
-            type: DirectoryOrCreate
+        - name: cvmfs-noderoot
+          persistentVolumeClaim:
+            claimName: "{{ template "cvmfs-service.name" . }}-noderoot"
         - name: fuse-device
           hostPath:
             path: /dev/fuse
