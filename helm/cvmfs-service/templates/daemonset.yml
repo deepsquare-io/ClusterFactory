@@ -36,8 +36,8 @@ spec:
           command: ["sh", "-c"]
           args:
             - |-
-              cp -Rp /etc/cvmfs/keys/* /out/;
-              cp -Rp /in/* /out/;
+              cp -LRp /etc/cvmfs/keys/* /out/;
+              cp -LRp /in/* /out/;
               find /out -type f -exec chmod 400 {} \;;
           volumeMounts:
             - name: cvmfs-keys
