@@ -38,7 +38,7 @@ spec:
             - |-
               cp -Rp /etc/cvmfs/keys/ /out/;
               cp -Rp /in/ /out/;
-              chmod -R 600 /out;
+              find /out -type f -exec chmod 400 {} \;;
           volumeMounts:
             - name: cvmfs-keys
               mountPath: /in
