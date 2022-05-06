@@ -73,7 +73,7 @@ spec:
         - name: cvmfs-keys
           secret:
             secretName: "{{ .Values.keys.secretName }}"
-            {{- with .Values.keys.items | indent 14}}
+            {{- with .Values.keys.items }}
             items:
 {{ toYaml . | indent 14}}
             {{- end }}
