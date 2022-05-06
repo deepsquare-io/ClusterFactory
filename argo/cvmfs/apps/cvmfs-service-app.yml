@@ -15,6 +15,16 @@ spec:
       releaseName: cvmfs-service
 
       values: |
+        dnsPolicy: "None"
+        dnsConfig:
+          nameservers:
+            - 10.96.0.10
+          searches:
+            - ch1.csquare.run
+          options:
+            - name: ndots
+              value: "0"
+
         repositories:
           - name: software-sion-csquare-run
             repository: software.sion.csquare.run
