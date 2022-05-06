@@ -320,19 +320,19 @@ This script enables us to use Git as the source of truth instead of xCAT.
 
 To apply the stanza:
 
-```shell ssh root@xcat
+```shell title="ssh root@xcat"
 cat mystanzafile | mkdef -z
 ```
 
 To generate the kernel and initrd for the netboot, call:
 
-```shell ssh root@xcat
+```shell title="ssh root@xcat"
 geninitrd rocky8.4-x86_64-netboot-compute
 ```
 
 To pack the image as squashfs, call:
 
-```shell ssh root@xcat
+```shell title="ssh root@xcat"
 packimage -m squashfs -c pigz rocky8.4-x86_64-netboot-compute
 ```
 
@@ -365,7 +365,7 @@ cn1:
 
 To apply the stanza:
 
-```shell ssh root@xcat
+```shell title="ssh root@xcat"
 cat mystanzafile | mkdef -z
 ```
 
@@ -373,7 +373,7 @@ More details [here](https://xcat-docs.readthedocs.io/en/stable/guides/admin-guid
 
 ## Deploy
 
-```shell ssh root@xcat
+```shell title="ssh root@xcat"
 rpower cn1 on # or rpower cn1 reset
 ```
 
