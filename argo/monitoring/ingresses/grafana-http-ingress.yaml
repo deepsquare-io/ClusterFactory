@@ -1,0 +1,21 @@
+# Additional Ingress for HTTP
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: prometheus-grafana-http
+  namespace: monitoring
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: grafana.sion.csquare.run
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: prometheus-grafana
+                port:
+                  number: 80

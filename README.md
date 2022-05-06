@@ -8,34 +8,43 @@ This project will deploy in the following order:
 * Core certs issuers, traefik routes and dashboards.
 * Apps with argocd
   * xCAT (bare-metal provisioning)
+  * Packer OS images recipes
   * Slurm controller, database and login nodes
-  * CVMFS for cluster software distribution
-  * Open Ondemand, a web-based HPC portal for users
+  * LDAP (for global users/groups management)
+  * CVMFS stratum1 mirror of Deepsquare's software library (end user software)
+  * Open Ondemand, a web-based HPC user portal
   * Monitoring stack (Grafana, Prometheus with ready-to-use exporters)
 
 ## Preparation
 
-For kubevirt, your hosts must have SELinux permissive and libvirt, qemu and eventually kvm installed.
+For kubevirt, you must set the SELinux as permissive.
 
-Since k0s is an "outlier", you should create a symbolic link for `/var/lib/kubelet` to `/var/lib/k0s/kubelet` (`ln -s /var/lib/kubelet /var/lib/k0s/kubelet`) in all of the hosts to avoid incompatibilities with official k8s solutions.
+```sh
+sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config
+setenforce 0
+```
+
+Since k0s is not the official "k8s", you should create a symbolic link for `/var/lib/kubelet` to `/var/lib/k0s/kubelet` (`ln -s /var/lib/kubelet /var/lib/k0s/kubelet`) in all of the hosts to avoid incompatibilities with official k8s solutions (because some application have the kubelet path hard-coded).
 
 ## Customize for your cluster
 
-You can already edit the values of the helm charts in `k0sctl.yaml` !
+You can already edit the values of the helm charts in `k0sctl.yaml`!
 
-Start with the `hosts` and then verify the solutions used for the cluster in the `k0s` block. Changing these options might be difficult in the future!
+Start with the `hosts` and then verify the settings used for the cluster in the `k0s` block. The only way to change these options in the future will be to recreate the whole cluster!
 
-Edit the parameters of the extension `metallb` and make sure that the addresses range correspond to your external network. These IPs correspond to the entrypoints to youy k8s cluster !
+Edit the parameters of the extension `metallb`. These IPs correspond to the entry-points to your k8s cluster !
 
-Example: `10.10.2.100-10.10.2.105` means that MetalLB will use these IPs. The first `LoadBalancer` service will be assigned the ip 10.10.2.100 on the external network, but you should use `loadBalancerIP` to allocate the right IP.
+Example: `10.10.2.100-10.10.2.105` means that MetalLB will use these IPs. The first `LoadBalancer` service will be assigned the IP 10.10.2.100 on the external network, but you should use `loadBalancerIP` field of the service to allocate the right IP.
 
-You can then edit the `traefik` values and put the right ports for your apps.
+After settings up `metallb`, you can edit the `traefik` values and put the right ports for your apps.
 
 Then, add/modify the cluster issuers to have the right TLS config in the `core/cert-manager` directory. **Search and replace** is your friend.
 
-Finally check for every `values.yml` in the `core` directory.
+Finally check for every `.yml` in the `core` directory:
 
-You must have a DNS for the best experience. TLS is enabled by default and use a self signed cluster issuer.
+- For `argo-cd`, edit the `certificate.yml` and `ingress-route.yml`.
+- For `coredns`, edit the `configmap.yml`, `deployment.yml` (volume mounts) and the `ingress-route.yml`. CoreDNS will be exposed to the network.
+- For `kubevirt`, edit the `kubevirt-cr.yaml` if you wish to select the nodes 
 
 You can then launch `1.deploy-k0s.sh` and `2.deploy-core-apps.sh`.
 
@@ -51,7 +60,11 @@ You also need to **regenerate all the sealed secrets** as they are for our clust
 
 Use the `kubeseal-every-local-files.sh` file to convert each `-secret.yml.local` to `-sealed-secret.yml`.
 
-Once all the configurations are done (values, secrets, volumes), you should be able to run the `3.deploy*.sh` scripts. We recommend that you do not use these scripts as they may be taylored for our cluster and that you should deploy the applications yourself.
+Once all the configurations are done (values, secrets, volumes), you should be able to run the `3.deploy*.sh` scripts. We recommend that you do not use these scripts as they may be taylored for our cluster and that you should deploy the applications yourself. E.g.:
+
+```sh
+kubectl -f argo/<project>/apps/<app>.yml
+```
 
 ## About deleting a k0s helm extension
 
