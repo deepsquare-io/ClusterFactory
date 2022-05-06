@@ -47,7 +47,7 @@ spec:
       {{- end }}
       containers:
         {{- if .Values.debug }}
-        - name: "{{ template "cvmfs-service.name" . }}"
+        - name: "{{ template "cvmfs-service.name" . }}-debug"
           image: "{{ .Values.image }}"
           imagePullPolicy: "{{ .Values.imagePullPolicy }}"
           command:
