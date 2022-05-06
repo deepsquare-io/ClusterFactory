@@ -29,6 +29,13 @@ spec:
 {{ toYaml . | indent 8 }}
       {{- end }}
       {{- if .Values.keys.secretName }}
+      {{- if .Values.dnsPolicy }}
+      dnsPolicy: "{{ .Values.dnsPolicy }}"
+      {{- end }}
+      {{- if .Values.dnsConfig }}
+      dnsConfig:
+{{ toYaml .Values.dnsConfig | indent 8 }}
+      {{- end }}
       initContainers:
         - name: prepare-keys
           image: "{{ .Values.image }}"
