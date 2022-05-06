@@ -55,3 +55,6 @@ keys:
     []
     # - key: software.sion.csquare.run.pub
     #   path: .
+
+persistence:
+  hostPath: /cvmfs

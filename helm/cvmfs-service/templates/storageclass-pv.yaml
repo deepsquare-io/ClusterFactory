@@ -33,7 +33,7 @@ spec:
   # and the cache will be on /cvmfs-k8s/cache.  Both directories are created
   # by the daemonset init script.
   local:
-    path: /cvmfs
+    path: "{{ $.Values.persistence.hostPath }}"
   nodeAffinity:
     required:
       nodeSelectorTerms:
