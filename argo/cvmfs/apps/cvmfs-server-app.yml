@@ -17,9 +17,6 @@ spec:
       values: |
         replicas: 1
 
-        imagePullSecrets:
-          - name: ghcr-marc-secret
-
         dnsPolicy: "None"
         dnsConfig:
           nameservers:

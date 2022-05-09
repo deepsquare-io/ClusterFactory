@@ -48,7 +48,7 @@ spec:
 kubectl apply -f argo/provisioning/volumes/xcat-pv.yml
 ```
 
-The label `app=xcat` will be used by the PersistentVolumeClaim of the StatefulSet to locate the PersistentVolume.
+The label `app=xcat` will be used by the `PersistentVolumeClaim` of the `StatefulSet` to locate the `PersistentVolume`.
 
 You can use a StorageClass if you want. We won't be running multiple xCAT replica anyway.
 

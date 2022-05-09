@@ -1,5 +1,7 @@
 # Mount CVMFS repositories on Kubernetes
 
+![image-20220509154116581](01-mount-cvmfs.assets/image-20220509154116581.png)
+
 :::warning
 
 The CVMFS CSI Plugin isn't stable yet, so we have to do the old way: using `hostPath`.

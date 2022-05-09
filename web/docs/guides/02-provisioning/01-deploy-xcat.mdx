@@ -23,9 +23,9 @@ docker pull ghcr.io/squarefactory/xcat-rocky:latest
 kubectl apply -f argo/provisioning/
 ```
 
-## 2. Persistent Volume and PVC
+## 2. Persistent Volumes and PVC
 
-### 2.a. Creating a StorageClass or PersistentVolume
+### 2.a. Creating a `StorageClass` or `PersistentVolume`
 
 We will use NFS. Feel free to use another type of storage. We recommend at least 100 GB since the storage is used to store the root file system of the operating system images.
 
