@@ -1,5 +1,7 @@
 # Deploy the Kube Prometheus Stack
 
+![image-20220510142533326](01-deploy.assets/image-20220510142533326.png)
+
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
@@ -545,6 +547,25 @@ More about Traefik with Kubernetes Ingresses in [their documentation](https://do
 Use the annotation `cert-manager.io/cluster-issuer` to indicates the certificate issuer and specify the generated certificates secret name in the `tls[].secretName` field. `cert-manager` will automatically search or generate the TLS certificates.
 
 More about `cert-manager` in [their documentation](https://cert-manager.io/docs/usage/ingress/).
+
+:::info
+
+Notice that `initChownData` is not enabled. This is because our NFS server does not allow `chown` (change the owner of a directory) from a client.
+
+This means that, for security reasons, our NFS server manages the permissions itself, i.e. :
+
+```shell root@nfs
+chown 472:472 /srv/nfs/k8s/grafana
+chown 1000:2000 /srv/nfs/k8s/prometheus
+```
+
+:::
+
+### 3.c. Verify the default values.
+
+Verify the default value inside the [the Prometheus Community Git Repository](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml).
+
+And edit the values based on you use-cases.
 
 ## 4. Deploy the app
 
