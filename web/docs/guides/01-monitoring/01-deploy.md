@@ -218,6 +218,8 @@ kubectl apply -f argo/monitoring/secrets/grafana-admin-sealed-secret.yaml
 
 ## 3. Editing the `prometheus-app.yml` values
 
+### 3.a. Add the values to the ArgoCD application
+
 <Tabs groupId="volume">
   <TabItem value="storage-class" label="StorageClass (dynamic)" default>
 
@@ -561,7 +563,7 @@ chown 1000:2000 /srv/nfs/k8s/prometheus
 
 :::
 
-### 3.c. Verify the default values.
+### 3.b. Verify the default values.
 
 Verify the default value inside the [the Prometheus Community Git Repository](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml).
 
