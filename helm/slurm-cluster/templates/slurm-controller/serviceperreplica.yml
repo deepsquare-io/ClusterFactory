@@ -62,4 +62,3 @@ items:
       type: "{{ $serviceValues.type }}"
 {{- end }}
 {{- end }}
-{{- end }}
