@@ -1,4 +1,4 @@
-{{- if .Values.controller.servicePerReplica.enabled }}
+{{- if and .Values.controller.enabled .Values.controller.servicePerReplica.enabled }}
 {{- $count := .Values.controller.replicas | int -}}
 {{- $serviceValues := .Values.controller.servicePerReplica -}}
 apiVersion: v1
@@ -60,5 +60,6 @@ items:
         app.kubernetes.io/component: controller
         statefulset.kubernetes.io/pod-name: "{{ template "slurm-cluster.controller.name" $ }}-{{ $i }}"
       type: "{{ $serviceValues.type }}"
+{{- end }}
 {{- end }}
 {{- end }}

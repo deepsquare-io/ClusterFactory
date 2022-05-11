@@ -1,3 +1,4 @@
+{{- if .Values.login.enabled }}
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -28,3 +29,4 @@ data:
         }
       }
     }
+{{- end }}

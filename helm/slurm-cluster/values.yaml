@@ -103,9 +103,10 @@ slurmConfig:
     FederationParameters=fed_display
 
 controller:
+  enabled: true
   replicas: 1
 
-  image: 'ghcr.io/squarefactory/slurm:0.1.0-controller'
+  image: 'ghcr.io/squarefactory/slurm:21.08.8-2-1-controller'
   imagePullPolicy: 'IfNotPresent'
 
   labels: {}
@@ -231,10 +232,10 @@ controller:
     type: ClusterIP
 
 login:
-  enabled: true
+  enabled: false
   replicas: 1
 
-  image: 'ghcr.io/squarefactory/slurm:0.1.0-login'
+  image: 'ghcr.io/squarefactory/slurm:21.08.8-2-1-login'
   imagePullPolicy: 'IfNotPresent'
 
   labels: {}
@@ -331,7 +332,7 @@ login:
   # Slurm REST API
   rest:
     enabled: false
-    image: 'ghcr.io/squarefactory/slurm:0.1.0-rest'
+    image: 'ghcr.io/squarefactory/slurm:21.08.8-2-1-rest'
     imagePullPolicy: 'IfNotPresent'
     command: ['/init']
 
@@ -508,3 +509,105 @@ ondemand:
     # - www.example.com
 
     tls: {}
+
+db:
+  enabled: false
+  replicas: 1
+
+  image: 'ghcr.io/squarefactory/slurm:21.08.8-2-1-db'
+  imagePullPolicy: 'IfNotPresent'
+
+  labels: {}
+  annotations: {}
+
+  # https://github.com/k8snetworkplumbingwg/multus-cni/blob/master/docs/how-to-use.md
+  networks: ''
+
+  command: ['/init']
+
+  ## Pass secret containing slurmdbd.conf
+  ## The secret will be mounted on the /etc/slurm directory, chmod 1501 (slurm user)
+  ## Modify the path using `items`. If `items` is empty, all the file defined in
+  ## the secret will be mounted.
+  config:
+    secretName: ''
+    items: []
+    # - key: file
+    #   path: sub/file-renamed
+
+  resources:
+    requests:
+      cpu: '250m'
+      memory: '256Mi'
+    limits:
+      cpu: '1'
+      memory: '1Gi'
+
+  nodeAffinity: {}
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+
+  podSecurityContext:
+    runAsUser: 0
+
+  # schedulerName:
+  # dnsPolicy:
+  # dnsConfig:
+
+  securityContext:
+    capabilities:
+      drop: [ALL]
+  readOnlyRootFilesystem: false
+  runAsNonRoot: false
+  runAsUser: 0
+
+  # How long to wait to stop gracefully
+  terminationGracePeriod: 10
+
+  ## Use an alternate scheduler.
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  schedulerName: ''
+
+  imagePullSecrets: {}
+
+  nodeSelector: {}
+  tolerations: []
+
+  tmp:
+    medium: ''
+    size: 50Gi
+
+  initContainers: []
+
+  # Extra volume mounts
+  volumeMounts: []
+
+  # Extra volumes
+  volumes: []
+
+  # Use IPVLAN Network
+  # If disabled, uses pod network.
+  net:
+    enabled: false
+    # Kubernetes host interface
+    type: ipvlan
+    masterInterface: eth0
+    mode: l2
+
+    # https://www.cni.dev/plugins/current/ipam/static/
+    ipam:
+      type: host-local
+      ranges:
+        - - subnet: 10.10.2.0/24
+            rangeStart: 10.10.2.46
+            rangeEnd: 10.10.2.50
+            gateway: 10.10.2.1
+
+  service:
+    enabled: true
+    type: ClusterIP

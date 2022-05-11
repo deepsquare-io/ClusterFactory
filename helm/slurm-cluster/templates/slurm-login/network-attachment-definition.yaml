@@ -1,3 +1,4 @@
+{{- if .Values.login.enabled }}
 apiVersion: 'k8s.cni.cncf.io/v1'
 kind: NetworkAttachmentDefinition
 metadata:
@@ -16,3 +17,4 @@ spec:
       "mode": "{{ .Values.login.net.mode }}",
       "ipam": {{ .Values.login.net.ipam | toJson }}
     }
+{{- end }}
