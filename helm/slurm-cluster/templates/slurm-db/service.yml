@@ -1,17 +1,17 @@
-{{- if and .Values.login.enabled .Values.login.service.enabled }}
-{{- $serviceValues := .Values.login.service -}}
+{{- if and .Values.db.enabled .Values.db.service.enabled }}
+{{- $serviceValues := .Values.db.service -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{ template "slurm-cluster.login.name" $ }}"
+  name: "{{ template "slurm-cluster.db.name" $ }}"
   namespace: '{{ $.Release.Namespace }}'
   labels:
     release: {{ $.Release.Name | quote }}
     chart: "{{ $.Chart.Name }}"
-    app: "{{ template "slurm-cluster.login.name" $ }}"
-    app.kubernetes.io/name: "{{ template "slurm-cluster.login.name" $ }}"
-    app.kubernetes.io/instance: "{{ template "slurm-cluster.login.name" $ }}"
-    app.kubernetes.io/component: login
+    app: "{{ template "slurm-cluster.db.name" $ }}"
+    app.kubernetes.io/name: "{{ template "slurm-cluster.db.name" $ }}"
+    app.kubernetes.io/instance: "{{ template "slurm-cluster.db.name" $ }}"
+    app.kubernetes.io/component: db
     {{- if $serviceValues.labels }}
     {{ toYaml $serviceValues.labels | indent 4 }}
     {{- end }}
@@ -40,17 +40,12 @@ spec:
   externalTrafficPolicy: {{ $serviceValues.externalTrafficPolicy }}
   {{- end }}
   ports:
-    - name: sshd
-      port: 22
-      targetPort: sshd
-    {{- if .Values.login.rest.enabled }}
-    - name: slurmrestd
-      port: 6820
-      targetPort: slurmrestd
-    {{- end }}
+    - name: slurmdbd
+      port: 6819
+      targetPort: slurmdbd
   selector:
-    app.kubernetes.io/name: "{{ template "slurm-cluster.login.name" $ }}"
-    app.kubernetes.io/instance: "{{ template "slurm-cluster.login.name" $ }}"
-    app.kubernetes.io/component: login
+    app.kubernetes.io/name: "{{ template "slurm-cluster.db.name" $ }}"
+    app.kubernetes.io/instance: "{{ template "slurm-cluster.db.name" $ }}"
+    app.kubernetes.io/component: db
   type: "{{ $serviceValues.type }}"
 {{- end }}

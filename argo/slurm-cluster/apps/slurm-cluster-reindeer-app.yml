@@ -92,7 +92,7 @@ spec:
             MailProg=/usr/bin/fakemail
 
         controller:
-          image: 'ghcr.io/squarefactory/slurm-docker:0.1.4-controller-reindeer'
+          enabled: true
           replicas: 1
 
           command: ['sh', '-c', 'update-ca-trust && /init']
@@ -191,7 +191,6 @@ spec:
 
         login:
           enabled: true
-          image: 'ghcr.io/squarefactory/slurm-docker:0.1.2-login-reindeer'
           replicas: 2
 
           command: ['sh', '-c', 'update-ca-trust && /init']
@@ -327,7 +326,6 @@ spec:
 
           rest:
             enabled: true
-            image: 'ghcr.io/squarefactory/slurm-docker:0.1.2-rest-reindeer'
             command: ['sh', '-c', 'update-ca-trust && /init']
 
             # Extra volume mounts

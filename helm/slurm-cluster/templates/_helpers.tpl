@@ -25,3 +25,8 @@ Expand the name of the chart.
 {{- define "slurm-cluster.ondemand.name" -}}
 {{- printf "%s-ondemand" (include "slurm-cluster.name" .) -}}
 {{- end }}
+
+{{/* Fullname suffixed with db */}}
+{{- define "slurm-cluster.db.name" -}}
+{{- printf "%s-db" (include "slurm-cluster.name" .) -}}
+{{- end }}

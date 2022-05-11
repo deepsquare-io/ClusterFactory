@@ -1,4 +1,4 @@
-{{- if .Values.controller.servicePerReplica.enabled }}
+{{- if and .Values.controller.enabled .Values.controller.servicePerReplica.enabled }}
 {{- $count := .Values.controller.replicas | int -}}
 {{- $serviceValues := .Values.controller.servicePerReplica -}}
 apiVersion: v1
