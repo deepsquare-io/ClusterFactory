@@ -610,7 +610,8 @@ kubectl apply -f argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml
 
 :::note
 
-The SLURM controller is in host mode using `hostPort` so it can communicate with the bare-metal hosts. There is also a SLURM controller service running for the internal communication (with Slurm DB and SLurm Login).
+The SLURM controller is in host mode using `hostPort` so it can communicate with the bare-metal hosts. There
+is also a SLURM controller `Service` running for the internal communication (with Slurm DB and Slurm Login).
 
 :::
 
