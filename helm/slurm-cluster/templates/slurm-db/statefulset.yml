@@ -1,6 +1,6 @@
 {{- if .Values.db.enabled }}
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: "{{ template "slurm-cluster.db.name" . }}"
   namespace: '{{ .Release.Namespace }}'
@@ -9,6 +9,7 @@ metadata:
     chart: '{{ .Chart.Name }}'
     app: "{{ template "slurm-cluster.db.name" . }}"
 spec:
+  serviceName: "{{ template "slurm-cluster.db.name" . }}"
   selector:
     matchLabels:
       app: "{{ template "slurm-cluster.db.name" . }}"
@@ -16,8 +17,8 @@ spec:
       app.kubernetes.io/instance: "{{ template "slurm-cluster.db.name" . }}"
       app.kubernetes.io/component: db
   replicas: {{ .Values.db.replicas }}
-  strategy:
-{{ toYaml .Values.db.strategy | trim | indent 4 }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy }}
   template:
     metadata:
       name: "{{ template "slurm-cluster.db.name" . }}"

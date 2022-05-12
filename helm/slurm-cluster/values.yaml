@@ -545,11 +545,7 @@ db:
 
   nodeAffinity: {}
 
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
+  updateStrategy: RollingUpdate
 
   podSecurityContext:
     runAsUser: 0
