@@ -154,7 +154,7 @@ spec:
             defaultMode: 384
         - name: slurm-jwt
           secret:
-            secretName: "{{ .Values.controller.jwt.secretName }}"
+            secretName: "{{ .Values.jwt.secretName }}"
             defaultMode: 384
         {{- if .Values.db.volumes }}
 {{ toYaml .Values.db.volumes | indent 8 }}

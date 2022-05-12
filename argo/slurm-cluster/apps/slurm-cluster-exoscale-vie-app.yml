@@ -25,6 +25,11 @@ spec:
           # Will be mounted in /secrets/munge
           secretName: munge-secret
 
+        # secret containing jwt_hs256.key
+        # Will be mounted in /secrets/slurm
+        jwt:
+          secretName: slurm-secret
+
         slurmConfig:
           clusterName: exoscale-vie
 
@@ -170,11 +175,6 @@ spec:
                   mountPath: /out-root-ssh
                 - name: slurm-ssh-dir
                   mountPath: /out-slurm-ssh
-
-          # secret containing jwt_hs256.key
-          # Will be mounted in /secrets/slurm
-          jwt:
-            secretName: slurm-secret
 
           prologsConfigMap: slurmctl-exoscale-vie-prologs
           epilogsConfigMap: slurmctl-exoscale-vie-epilogs
