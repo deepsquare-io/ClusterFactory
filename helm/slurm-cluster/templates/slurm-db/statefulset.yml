@@ -1,6 +1,6 @@
 {{- if .Values.db.enabled }}
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: "{{ template "slurm-cluster.db.name" . }}"
   namespace: '{{ .Release.Namespace }}'
@@ -9,6 +9,7 @@ metadata:
     chart: '{{ .Chart.Name }}'
     app: "{{ template "slurm-cluster.db.name" . }}"
 spec:
+  serviceName: "{{ template "slurm-cluster.db.name" . }}"
   selector:
     matchLabels:
       app: "{{ template "slurm-cluster.db.name" . }}"
@@ -16,8 +17,8 @@ spec:
       app.kubernetes.io/instance: "{{ template "slurm-cluster.db.name" . }}"
       app.kubernetes.io/component: db
   replicas: {{ .Values.db.replicas }}
-  strategy:
-{{ toYaml .Values.db.strategy | trim | indent 4 }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy }}
   template:
     metadata:
       name: "{{ template "slurm-cluster.db.name" . }}"
@@ -68,7 +69,7 @@ spec:
 {{ toYaml .Values.db.imagePullSecrets | indent 8 }}
       {{- end }}
       initContainers:
-        - name: "{{ template "slurm-cluster.db.name" . }}"
+        - name: "init-slurmdbd-perms"
           image: "{{ .Values.db.image }}"
           imagePullPolicy: "{{ .Values.db.imagePullPolicy }}"
           command: ["sh", "-c"]
@@ -121,6 +122,9 @@ spec:
             - mountPath: /var/log
               name: tmp
               subPath: log
+            - name: slurm-jwt
+              mountPath: /secrets/slurm
+              readOnly: true
             {{- if .Values.db.volumeMounts }}
 {{ toYaml .Values.db.volumeMounts | indent 12 }}
             {{- end }}
@@ -135,8 +139,8 @@ spec:
           emptyDir: {}
         - name: slurmdbd-conf
           secret:
-            name: "{{ .Values.db.config.secretName }}"
-            {{- with .Values.keys.items }}
+            secretName: "{{ .Values.db.config.secretName }}"
+            {{- with .Values.db.config.items }}
             items:
 {{ toYaml . | indent 14}}
             {{- end }}
@@ -147,6 +151,10 @@ spec:
         - name: munge
           secret:
             secretName: "{{ .Values.munge.secretName }}"
+            defaultMode: 384
+        - name: slurm-jwt
+          secret:
+            secretName: "{{ .Values.controller.jwt.secretName }}"
             defaultMode: 384
         {{- if .Values.db.volumes }}
 {{ toYaml .Values.db.volumes | indent 8 }}
