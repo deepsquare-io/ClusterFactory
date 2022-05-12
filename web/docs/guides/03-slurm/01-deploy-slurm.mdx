@@ -563,6 +563,7 @@ controller:
       topology.kubernetes.io/zone: <FILL ME> # <country code>-<city>-<index>
 
   nodeSelector:
+    kubernetes.io/hostname: <FILL ME>
     topology.kubernetes.io/region: <FILL ME> # <country code>-<city>
     topology.kubernetes.io/zone: <FILL ME> # <country code>-<city>-<index>
 
@@ -577,6 +578,10 @@ controller:
 
   </TabItem>
 </Tabs>
+
+Notice that `kubernetes.io/hostname` is used, this is because the slurm controller will be using the host network and we don't want to make the slurm controller move around.
+
+We might develop a HA setup in the future version of Cluster Factory.
 
 If you are using LDAPS and the CA is private, append these values:
 
@@ -886,6 +891,8 @@ packer build compute.my-cluster.json
 
 And send the os image to xcat. [Follow the guide "Build an OS Image with Packer" for more details](/docs/guides/provisioning/packer-build).
 
+### 5.b. xCAT Postbootscripts
+
 Next, you have to configure a service by using a xCAT postscript. Our recommendation is to use a xCAT postscript to pull a Git repository, and based on the content of the repository, copy the files and executes the postscripts in that Git repository.
 
 This way, the GitOps practice is always followed and permits to adapt for the future version of Cluster Factory.
@@ -913,3 +920,58 @@ LimitSTACK=infinity
 [Install]
 WantedBy=multi-user.target
 ```
+
+A simple postbootscript:
+
+```shell title="sample-configure-slurm.sh
+#!/bin/sh -ex
+cat <<\END | base64 -d >/etc/munge/munge.key
+...
+END
+
+chmod 600 /etc/munge/munge.key
+
+cat <<\END >/etc/sssd/sssd.conf
+...
+END
+
+chmod 600 /etc/sssd/sssd.conf
+
+cat <<\END >/etc/systemd/system/slurmd.service
+[Unit]
+Description=Slurm node daemon
+After=network.target munge.service
+[Service]
+Type=forking
+EnvironmentFile=-/etc/default/slurmd
+ExecStartPre=/usr/bin/id slurm
+Restart=always
+RestartSec=3
+ExecStart=/usr/sbin/slurmd -d /usr/sbin/slurmstepd --conf-server slurmctl.example.com
+ExecReload=/bin/kill -HUP $MAINPID
+PIDFile=/var/run/slurmd.pid
+KillMode=process
+LimitNOFILE=51200
+LimitMEMLOCK=infinity
+LimitSTACK=infinity
+[Install]
+WantedBy=multi-user.target
+END
+
+#-- Wait for LDAP
+update-ca-trust
+systemctl restart sssd
+while ! id slurm
+do
+  sleep 1
+done
+
+systemctl daemon-reload
+systemctl restart munge
+systemctl enable slurmd
+systemctl start --no-block slurmd
+```
+
+### 5.c. Reboot the nodes
+
+If the controller is running, the nodes should automatically receive the `slurm.conf` inside `/run/slurm/conf`.
