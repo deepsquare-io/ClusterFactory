@@ -269,6 +269,9 @@ values: |
   munge:
     secretName: munge-secret
 
+  jwt:
+    secretName: slurm-secret
+
   slurmConfig:
     clusterName: <FILL ME: cluster-name>
 
@@ -334,7 +337,7 @@ values: |
 
 ## 3. Slurm DB Deployment
 
-### 1. Secrets
+### 3.a. Secrets
 
 Assuming you have deployed LDAP and MySQL, we will store the `slurmdbd.conf` inside a secret:
 
@@ -386,7 +389,7 @@ Choose a `Helm Release Name`. We recommend `slurm-cluster-<cluster name>`.
 kubectl apply -f argo/slurm-cluster/secrets/slurmdbd-conf-sealed-secret.yml
 ```
 
-### 2. Values: Enable SLURM DB
+### 3.b. Values: Enable SLURM DB
 
 Edit the `slurm-cluster-<cluster name>-app.yml` values
 
@@ -430,4 +433,168 @@ kubectl apply -f argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml
 
 ## 4. Slurm Controller Deployment
 
-### 4.a.
+### 4.a. Volumes
+
+We will use NFS. Feel free to use another type of storage.
+
+<Tabs groupId="volume">
+  <TabItem value="storage-class" label="StorageClass (dynamic)" default>
+
+```yaml title="argo/slurm-cluster/volumes/controller-state-<cluster name>-nfs.yaml"
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: controller-state-<cluster name>-nfs
+  namespace: slurm-cluster
+  labels:
+    app: slurm-controller
+    topology.kubernetes.io/region: <FILL ME> # <country code>-<city>
+    topology.kubernetes.io/zone: <FILL ME> # <country code>-<city>-<index>
+provisioner: nfs.csi.k8s.io
+parameters:
+  server: <FILL ME> # IP or host
+  share: <FILL ME> # /srv/nfs/k8s/slurmctl
+  mountPermissions: '0775'
+mountOptions:
+  - hard
+  - nfsvers=4.1
+  - noatime
+  - nodiratime
+volumeBindingMode: Immediate
+reclaimPolicy: Retain
+allowedTopologies:
+  - matchLabelExpressions:
+      - key: topology.kubernetes.io/zone
+        values:
+          - <FILL ME> # <country code>-<city>-<index>
+```
+
+```shell title="user@local:/cluster-factory-ce"
+kubectl apply -f argo/slurm-cluster/volumes/controller-state-<cluster name>-nfs.yaml.yaml
+```
+
+  </TabItem>
+  <TabItem value="persistent-volume" label="PersistentVolume (static)">
+
+```yaml title="argo/slurm-cluster/volumes/controller-state-<cluster name>-pv.yaml"
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: controller-state-<cluster name>-pv
+  namespace: slurm-cluster
+  labels:
+    app: slurm-controller
+    topology.kubernetes.io/region: <FILL ME> # <country code>-<city>
+    topology.kubernetes.io/zone: <FILL ME> # <country code>-<city>-<index>
+spec:
+  capacity:
+    storage: 10Gi
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+    - noatime
+    - nodiratime
+  csi:
+    driver: nfs.csi.k8s.io
+    readOnly: false
+    volumeHandle: <unique id> # uuidgen
+    volumeAttributes:
+      server: <FILL ME> # IP or host
+      share: <FILL ME> # /srv/nfs/k8s/slurmctl
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+```
+
+```shell title="user@local:/cluster-factory-ce"
+kubectl apply -f argo/slurm-cluster/volumes/controller-state-<cluster name>-pv.yaml
+```
+
+The label `app=slurm-controller` will be used by the PersistentVolumeClaim.
+
+  </TabItem>
+</Tabs>
+
+### 4.b. Values: Enable SLURM Controller
+
+Let's add the values to deploy a SLURM Controller.
+
+<Tabs groupId="volume">
+  <TabItem value="storage-class" label="StorageClass (dynamic)" default>
+
+```yaml title="argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml > spec > source > helm > values"
+controller:
+  enabled: true
+
+  persistence:
+    storageClassName: 'controller-state-<cluster name>-nfs'
+    accessModes: ['ReadWriteOnce']
+    size: 10Gi
+
+  nodeSelector:
+    topology.kubernetes.io/region: <FILL ME> # <country code>-<city>
+    topology.kubernetes.io/zone: <FILL ME> # <country code>-<city>-<index>
+
+  resources:
+    requests:
+      cpu: '250m'
+      memory: '1Gi'
+    limits:
+      cpu:
+      memory: '1Gi'
+```
+
+  </TabItem>
+  <TabItem value="persistent-volume" label="PersistentVolume (static)">
+
+```yaml title="argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml > spec > source > helm > values"
+controller:
+  enabled: true
+
+  persistence:
+    storageClassName: ''
+    accessModes: ['ReadWriteOnce']
+    size: 10Gi
+    selectorLabels:
+      app: slurm-controller
+      topology.kubernetes.io/region: <FILL ME> # <country code>-<city>
+      topology.kubernetes.io/zone: <FILL ME> # <country code>-<city>-<index>
+
+  nodeSelector:
+    topology.kubernetes.io/region: <FILL ME> # <country code>-<city>
+    topology.kubernetes.io/zone: <FILL ME> # <country code>-<city>-<index>
+
+  resources:
+    requests:
+      cpu: '250m'
+      memory: '1Gi'
+    limits:
+      cpu:
+      memory: '1Gi'
+```
+
+  </TabItem>
+</Tabs>
+
+If you are using LDAPS and the CA is private, append these values:
+
+```yaml title="argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml > spec > source > helm > values"
+controller:
+  # ...
+
+  volumeMounts:
+    - name: ca-cert
+      mountPath: /etc/pki/ca-trust/source/anchors/example.com.ca.pem
+      subPath: csquare.gcloud.ca.pem
+
+  volumes:
+    - name: ca-cert
+      secret:
+        secretName: local-ca-secret
+```
+
+You can already deploy it:
+
+```shell title="user@local:/cluster-factory-ce"
+kubectl apply -f argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml
+```
