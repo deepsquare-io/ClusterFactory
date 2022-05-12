@@ -135,7 +135,7 @@ spec:
           emptyDir: {}
         - name: slurmdbd-conf
           secret:
-            name: "{{ .Values.db.config.secretName }}"
+            secretName: "{{ .Values.db.config.secretName }}"
             {{- with .Values.db.config.items }}
             items:
 {{ toYaml . | indent 14}}
