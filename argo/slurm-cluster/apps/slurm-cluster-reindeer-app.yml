@@ -568,7 +568,7 @@ spec:
             tls: {}
 
         db:
-          enabled: true
+          enabled: false
 
           command: ['sh', '-c', 'update-ca-trust && /init']
 
