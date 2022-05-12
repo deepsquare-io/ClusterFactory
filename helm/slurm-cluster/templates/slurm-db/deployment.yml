@@ -136,7 +136,7 @@ spec:
         - name: slurmdbd-conf
           secret:
             name: "{{ .Values.db.config.secretName }}"
-            {{- with .Values.keys.items }}
+            {{- with .Values.db.config.items }}
             items:
 {{ toYaml . | indent 14}}
             {{- end }}

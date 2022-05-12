@@ -567,6 +567,24 @@ spec:
 
             tls: {}
 
+        db:
+          enabled: true
+
+          command: ['sh', '-c', 'update-ca-trust && /init']
+
+          config:
+            secretName: slurmdbd-conf-secret
+
+          volumeMounts:
+            - name: ca-cert
+              mountPath: /etc/pki/ca-trust/source/anchors/csquare.gcloud.ca.pem
+              subPath: csquare.gcloud.ca.pem
+
+          volumes:
+            - name: ca-cert
+              secret:
+                secretName: local-ca-secret
+
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: slurm-cluster
