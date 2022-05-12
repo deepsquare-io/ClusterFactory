@@ -68,7 +68,7 @@ spec:
 {{ toYaml .Values.db.imagePullSecrets | indent 8 }}
       {{- end }}
       initContainers:
-        - name: "{{ template "slurm-cluster.db.name" . }}"
+        - name: "init-slurmdbd-perms"
           image: "{{ .Values.db.image }}"
           imagePullPolicy: "{{ .Values.db.imagePullPolicy }}"
           command: ["sh", "-c"]
