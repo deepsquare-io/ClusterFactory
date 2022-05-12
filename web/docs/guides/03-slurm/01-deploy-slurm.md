@@ -1,0 +1,433 @@
+# Deploying SLURM Cluster
+
+![image-20220512151655613](01-deploy-slurm.assets/image-20220512151655613.png)
+
+:::warning
+
+Deploying the SLURM database isn't stable yet. Please feel free to [create an issue](https://github.com/SquareFactory/cluster-factory-ce/issues/new) so we can improve its stability.
+
+:::
+
+**Compared to the other guides we will start from scratch.**
+
+Delete the `argo/slurm-cluster` directory (or rename it).
+
+## Preparation
+
+Deploying a SLURM cluster isn't easy and you MUST have these components ready:
+
+- A LDAP server and a SSSD configuration, to synchronize the user ID across the cluster
+- A MySQL server for the SLURM DB
+- A JWT private key, for the authentication via REST API
+- A MUNGE key, for the authentication of SLURM daemons
+
+### LDAP deployment
+
+Follow [the guide](/docs/guides/deploy-ldap).
+
+### SSSD configuration
+
+Let's store it in a `Secret`:
+
+1. Create the `argo/slurm-cluster/secrets/` directory and create a `-secret.yml.local` file:
+
+```yaml title="argo/slurm-cluster/secrets/sssd-secret.yaml.local"
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sssd-secret
+  namespace: slurm-cluster
+type: Opaque
+stringData:
+  jwt_hs256.key: |
+  sssd.conf: |
+    # https://sssd.io/docs/users/troubleshooting/how-to-troubleshoot-backend.html
+    [sssd]
+    services = nss,pam,sudo,ssh
+    config_file_version = 2
+    domains = ldap
+
+    [sudo]
+
+    [nss]
+
+    [pam]
+    offline_credentials_expiration = 60
+
+    [domain/ldap]
+    #debug_level = 0x3ff0   <= perfect for debugging
+
+    id_provider = ldap
+    access_provider = ldap
+    cache_credentials = True
+
+    ldap_uri = <LDAP/LDAPS uri>
+    ldap_default_bind_dn = <FILL ME: bind DN>
+    ldap_default_authtok = <FILL ME: bind password>
+    ldap_search_timeout = 50
+    ldap_network_timeout = 60
+
+    ldap_search_base = ou=People,dc=example,dc=com
+    ldap_group_search_base = ou=Group,dc=example,dc=com
+    ldap_sudo_search_base = ou=SUDOers,dc=example,dc=com
+    ldap_user_extra_attrs = publicSSHKey
+    ldap_user_ssh_public_key = publicSSHKey
+
+    ldap_access_order = filter
+    ldap_access_filter = (objectClass=posixAccount)
+
+    ldap_tls_cipher_suite = HIGH
+    # On Ubuntu, the LDAP client is linked to GnuTLS instead of OpenSSL => cipher suite names are different
+    # In fact, it's not even a cipher suite name that goes here, but a so called "priority list" => see $> gnutls-cli --priority-list
+    # See https://backreference.org/2009/11/18/openssl-vs-gnutls-cipher-names/ , gnutls-cli is part of package gnutls-bin
+```
+
+2. Seal the secret:
+
+```shell title="user@local:/cluster-factory-ce"
+./kubeseal-every-local-files.sh
+```
+
+3. Apply the SealedSecret:
+
+```shell title="user@local:/cluster-factory-ce"
+kubectl apply -f argo/slurm-cluster/secrets/sssd-sealed-secret.yaml
+```
+
+### MySQL deployment
+
+You can deploy MySQL using the [Helm Chart of Bitnami](https://bitnami.com/stack/mysql/helm) and develop an [Argo CD app](/docs/guides/develop-apps-for-cluster-factory).
+
+### JWT Key generation
+
+```shell title="user@local"
+ssh-keygen -t rsa -b 4096 -m PEM -f jwtRS256.key
+```
+
+Let's store it in a `Secret`:
+
+1.Create a `-secret.yml.local` file:
+
+```yaml title="argo/slurm-cluster/secrets/slurm-secret.yaml.local"
+apiVersion: v1
+kind: Secret
+metadata:
+  name: slurm-secret
+  namespace: slurm-cluster
+type: Opaque
+stringData:
+  jwt_hs256.key: |
+    -----BEGIN RSA PRIVATE KEY-----
+    ...
+    -----END RSA PRIVATE KEY-----
+```
+
+2. Seal the secret:
+
+```shell title="user@local:/cluster-factory-ce"
+./kubeseal-every-local-files.sh
+```
+
+3. Apply the SealedSecret:
+
+```shell title="user@local:/cluster-factory-ce"
+kubectl apply -f argo/slurm-cluster/secrets/slurm-sealed-secret.yaml
+```
+
+### MUNGE Key generation
+
+```shell title="root@local"
+# As root
+dnf install -y munge
+/usr/sbin/create-munge-key
+cat /etc/munge/munge.key | base64
+```
+
+Let's store it in a `Secret`:
+
+1. Create a `-secret.yml.local` file:
+
+```yaml title="argo/slurm-cluster/secrets/munge-secret.yml.local"
+apiVersion: v1
+kind: Secret
+metadata:
+  name: munge-secret
+  namespace: slurm-cluster
+type: Opaque
+data:
+  munge.key: |
+    <base 64 encoded key>
+```
+
+2. Seal the secret:
+
+```shell title="user@local:/cluster-factory-ce"
+./kubeseal-every-local-files.sh
+```
+
+3. Apply the SealedSecret:
+
+```shell title="user@local:/cluster-factory-ce"
+kubectl apply -f argo/cvmfs/secrets/munge-sealed-secret.yml
+```
+
+## 1. Namespace and AppProject
+
+Create and apply the `Namespace` and `AppProject`:
+
+```yaml title="argo/slurm-cluster/namespace.yml"
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: slurm-cluster
+  labels:
+    app.kubernetes.io/name: slurm-cluster
+```
+
+```yaml title="argo/slurm-cluster/app-project.yml"
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: slurm-cluster
+  namespace: argocd
+  # Finalizer that ensures that project is not deleted until it is not referenced by any application
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Slurm cluster
+  # Allow manifests to deploy from any Git repos
+  sourceRepos:
+    - '*'
+  # Only permit applications to deploy to the namespace in the same cluster
+  destinations:
+    - namespace: slurm-cluster
+      server: https://kubernetes.default.svc
+
+  namespaceResourceWhitelist:
+    - kind: '*'
+      group: '*'
+
+  clusterResourceWhitelist:
+    - kind: '*'
+      group: '*'
+```
+
+```shell title="user@local:/cluster-factory-ce"
+kubectl apply -f argo/slurm-cluster/
+```
+
+## 2. Begin writing the `slurm-cluster-<cluster name>-app.yml`
+
+### 2.a. Argo CD Application configuration
+
+```yaml title="argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml"
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: slurm-cluster-<FILL ME: cluster name>-app
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: slurm-cluster
+  source:
+    repoURL: git@github.com:squarefactory/cluster-factory-ce.git
+    targetRevision: HEAD
+    path: helm/slurm-cluster
+    helm:
+      releaseName: slurm-cluster-<FILL ME: cluster name>
+
+      values: '' # FILL ME
+
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: slurm-cluster
+
+  syncPolicy:
+    automated:
+      prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+      allowEmpty: false # Allows deleting all application resources during automatic syncing ( false by default ).
+    syncOptions: []
+    retry:
+      limit: 5 # number of failed sync attempt retries; unlimited number of attempts if less than 0
+      backoff:
+        duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
+        factor: 2 # a factor to multiply the base duration after each failed retry
+        maxDuration: 3m # the maximum amount of time allowed for the backoff strategy
+```
+
+### 2.b. Values: Configuring the SLURM cluster
+
+Add:
+
+```yaml title="argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml > spec > source > helm > values"
+values: |
+  sssd:
+    secretName: sssd-secret
+
+  munge:
+    secretName: munge-secret
+
+  slurmConfig:
+    clusterName: <FILL ME: cluster-name>
+
+    compute:
+      srunPortRangeStart: 60001
+      srunPortRangeEnd: 63000
+      debug: debug5
+
+    accounting: |
+      AccountingStorageType=accounting_storage/slurmdbd
+      AccountingStorageHost=slurm-cluster-<FILL ME: cluster name>.slurm-cluster.svc.cluster.local
+      AccountingStoragePort=6819
+      AccountingStorageTRES=gres/gpu
+
+    controller:
+      parameters: enable_configless
+      debug: debug5
+
+    defaultResourcesAllocation: |
+      # Change accordingly
+      DefCpuPerGPU=4
+      DefMemPerCpu=7000
+
+    nodes: |
+      # Change accordingly
+      NodeName=cn[1-12]  CPUs=32 Boards=1 SocketsPerBoard=1 CoresPerSocket=16 ThreadsPerCore=2 RealMemory=128473 Gres=gpu:4
+
+    partitions: |
+      # Change accordingly
+      PartitionName=main Nodes=cn[1-12] Default=YES MaxTime=INFINITE State=UP OverSubscribe=NO TRESBillingWeights="CPU=2.6,Mem=0.25G,GRES/gpu=24.0"
+
+    gres: |
+      # Change accordingly
+      NodeName=cn[1-12] File=/dev/nvidia[0-3] AutoDetect=nvml
+
+    # Extra slurm.conf configuration
+    extra: |
+      LaunchParameters=enable_nss_slurm
+      DebugFlags=Script,Gang,SelectType
+      TCPTimeout=5
+
+      # MPI stacks running over Infiniband or OmniPath require the ability to allocate more
+      # locked memory than the default limit. Unfortunately, user processes on login nodes
+      # may have a small memory limit (check it by ulimit -a) which by default are propagated
+      # into Slurm jobs and hence cause fabric errors for MPI.
+      PropagateResourceLimitsExcept=MEMLOCK
+
+      ProctrackType=proctrack/cgroup
+      TaskPlugin=task/cgroup
+      SwitchType=switch/none
+      MpiDefault=pmix_v2
+      ReturnToService=2
+      GresTypes=gpu
+      PreemptType=preempt/qos
+      PreemptMode=REQUEUE
+      PreemptExemptTime=-1
+      Prolog=/etc/slurm/prolog.d/*
+      Epilog=/etc/slurm/epilog.d/*
+
+      # Federation
+      FederationParameters=fed_display
+```
+
+## 3. Slurm DB Deployment
+
+### 1. Secrets
+
+Assuming you have deployed LDAP and MySQL, we will store the `slurmdbd.conf` inside a secret:
+
+1. Create a `-secret.yml.local` file:
+
+```yaml title="argo/slurm-cluster/secrets/slurmdbd-conf-secret.yml.local"
+apiVersion: v1
+kind: Secret
+metadata:
+  name: slurmdbd-conf-secret
+  namespace: slurm-cluster
+type: Opaque
+stringData:
+  slurmdbd.conf: |
+    # See https://slurm.schedmd.com/slurmdbd.conf.html
+    ### Main
+    DbdHost=slurm-cluster-<FILL ME: cluster name>-db-0
+    SlurmUser=slurm
+
+    ### Logging
+    DebugLevel=debug5	# optional, defaults to 'info'. Possible values: fatal, error, info, verbose, debug, debug[2-5]
+    LogFile=/var/log/slurm/slurmdbd.log
+    PidFile=/var/run/slurmdbd.pid
+    LogTimeFormat=thread_id
+
+    AuthAltTypes=auth/jwt
+    AuthAltParameters=jwt_key=/var/spool/slurm/jwt_hs256.key
+
+    ### Database server configuration
+    StorageType=accounting_storage/mysql
+    StorageHost=<FILL ME>
+    StorageUser=<FILL ME>
+    StoragePass=<FILL ME>
+```
+
+Replace the `<FILL ME>` according to your existing configuration.
+
+Choose a `Helm Release Name`. We recommend `slurm-cluster-<cluster name>`.
+
+2. Seal the secret:
+
+```shell title="user@local:/cluster-factory-ce"
+./kubeseal-every-local-files.sh
+```
+
+3. Apply the SealedSecret:
+
+```shell title="user@local:/cluster-factory-ce"
+kubectl apply -f argo/slurm-cluster/secrets/slurmdbd-conf-sealed-secret.yml
+```
+
+### 2. Values: Enable SLURM DB
+
+Edit the `slurm-cluster-<cluster name>-app.yml` values
+
+Let's add the values to deploy a SLURM DB.
+
+```yaml title="argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml > spec > source > helm > values"
+db:
+  enabled: true
+
+  config:
+    secretName: slurmdbd-conf-secret
+```
+
+If you are using LDAPS and the CA is private:
+
+```yaml title="argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml > spec > source > helm > values"
+db:
+  enabled: true
+
+  config:
+    secretName: slurmdbd-conf-secret
+
+  command: ['sh', '-c', 'update-ca-trust && /init']
+
+  volumeMounts:
+    - name: ca-cert
+      mountPath: /etc/pki/ca-trust/source/anchors/example.com.ca.pem
+      subPath: csquare.gcloud.ca.pem
+
+  volumes:
+    - name: ca-cert
+      secret:
+        secretName: local-ca-secret
+```
+
+You can already deploy it:
+
+```shell title="user@local:/cluster-factory-ce"
+kubectl apply -f argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml
+```
+
+## 4. Slurm Controller Deployment
+
+### 4.a.
