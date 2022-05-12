@@ -25,6 +25,11 @@ spec:
           # Will be mounted in /secrets/munge
           secretName: munge-secret
 
+        # secret containing jwt_hs256.key
+        # Will be mounted in /secrets/slurm
+        jwt:
+          secretName: slurm-secret
+
         slurmConfig:
           clusterName: reindeerpizza
 
@@ -122,11 +127,6 @@ spec:
                   mountPath: /in-ssh
                 - name: root-ssh-dir
                   mountPath: /out-ssh
-
-          # secret containing jwt_hs256.key
-          # Will be mounted in /secrets/slurm
-          jwt:
-            secretName: slurm-secret
 
           prologsConfigMap: 'slurmctl-reindeer-prologs'
           epilogsConfigMap: 'slurmctl-reindeer-epilogs'

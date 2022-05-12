@@ -8,6 +8,11 @@ munge:
   # Will be mounted in /secrets/munge
   secretName:
 
+# secret containing jwt_hs256.key
+# Will be mounted in /secrets/slurm and copied to /var/spool/slurm/jwt_hs256.key
+jwt:
+  secretName:
+
 slurmConfig:
   clusterName: my-cluster
 
@@ -152,11 +157,6 @@ controller:
 
   nodeSelector: {}
   tolerations: []
-
-  # secret containing jwt_hs256.key
-  # Will be mounted in /secrets/slurm and copied to /var/spool/slurm/jwt_hs256.key
-  jwt:
-    secretName:
 
   tmp:
     medium: ''
