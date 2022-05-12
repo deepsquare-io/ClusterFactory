@@ -121,6 +121,9 @@ spec:
             - mountPath: /var/log
               name: tmp
               subPath: log
+            - name: slurm-jwt
+              mountPath: /secrets/slurm
+              readOnly: true
             {{- if .Values.db.volumeMounts }}
 {{ toYaml .Values.db.volumeMounts | indent 12 }}
             {{- end }}
@@ -147,6 +150,10 @@ spec:
         - name: munge
           secret:
             secretName: "{{ .Values.munge.secretName }}"
+            defaultMode: 384
+        - name: slurm-jwt
+          secret:
+            secretName: "{{ .Values.controller.jwt.secretName }}"
             defaultMode: 384
         {{- if .Values.db.volumes }}
 {{ toYaml .Values.db.volumes | indent 8 }}
