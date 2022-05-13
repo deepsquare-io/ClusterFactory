@@ -10,7 +10,7 @@ The Helm resources is stored on [Cluster Factory Git Repository](https://github.
 
 The Dockerfile is described in the git repository [SquareFactory/cvmfs-server-docker](https://github.com/SquareFactory/cvmfs-server-docker).
 
-An Docker image can be pulled with:
+A Docker image can be pulled with:
 
 ```sh
 docker pull ghcr.io/squarefactory/cvmfs-server:latest

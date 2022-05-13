@@ -8,11 +8,32 @@ Deploying the SLURM database isn't stable yet. Please feel free to [create an is
 
 :::
 
+## Helm and Docker resources
+
+The Helm resources is stored on [the Cluster Factory CE Git Repository](https://github.com/SquareFactory/cluster-factory-ce/tree/main/helm/slurm-cluster).
+
+The Dockerfile is described in the git repository [SquareFactory/slurm-docker](https://github.com/SquareFactory/slurm-docker).
+
+The Docker images can be pulled with:
+
+```sh
+docker pull ghcr.io/squarefactory/slurm:latest-controller
+docker pull ghcr.io/squarefactory/slurm:latest-login
+docker pull ghcr.io/squarefactory/slurm:latest-db
+docker pull ghcr.io/squarefactory/slurm:latest-rest
+```
+
+:::note
+
+You should always verify the default Helm [values](https://github.com/SquareFactory/cluster-factory-ce/blob/main/helm/slurm-cluster/values.yaml) before editing the `values` field of an Argo CD `Application`.
+
+:::
+
+## Preparation
+
 **Compared to the other guides we will start from scratch.**
 
 Delete the `argo/slurm-cluster` directory (or rename it).
-
-## Preparation
 
 Deploying a SLURM cluster isn't easy and you MUST have these components ready:
 
@@ -375,8 +396,6 @@ stringData:
 
 Replace the `<FILL ME>` according to your existing configuration.
 
-Choose a `Helm Release Name`. We recommend `slurm-cluster-<cluster name>`.
-
 2. Seal the secret:
 
 ```shell title="user@local:/cluster-factory-ce"
@@ -588,6 +607,7 @@ If you are using LDAPS and the CA is private, append these values:
 ```yaml title="argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml > spec > source > helm > values"
 controller:
   # ...
+  command: ['sh', '-c', 'update-ca-trust && /init']
 
   volumeMounts:
     - name: ca-cert
@@ -614,6 +634,18 @@ The SLURM controller is in host mode using `hostPort` so it can communicate with
 is also a SLURM controller `Service` running for the internal communication (with Slurm DB and Slurm Login).
 
 :::
+
+### 4.c Testing: `sinfo` from the controller node
+
+You should be able to run a `kubectl exec` session on the controller node and execute `sinfo`:
+
+```shell title="user@local"
+[user@local /]> kubectl exec -it -n slurm-cluster slurm-cluster-<cluster-name>-controller-0 -c slurm-cluster-<cluster-name>-controller -- bash
+
+[root@slurm-cluster-reindeer-controller-0 /]> sinfo
+PARTITION   AVAIL  TIMELIMIT  NODES  STATE NODELIST
+main*          up   infinite     12  down* cn[1-12]
+```
 
 ## 5. Slurm Compute Bare-Metal Deployment
 
@@ -973,6 +1005,248 @@ systemctl enable slurmd
 systemctl start --no-block slurmd
 ```
 
+After setup SLURM, you should also:
+
+- Mount the home diretory of the LDAP users (probably like `/home/ldap-users`)
+- Use a postscript to configure SSSD
+- Use a postscript to import the `munge.key`
+
 ### 5.c. Reboot the nodes
 
 If the controller is running, the nodes should automatically receive the `slurm.conf` inside `/run/slurm/conf`.
+
+## 6. Slurm Login Deployment
+
+### 6.a. Secrets and Volumes
+
+#### SSH Server configuration
+
+The login nodes is exposed to the external network using Multus CNI and the IPVLAN plugin. This is to expose the `srunPortRange` and because the login nodes.
+The users can login to the nodes using SSH via LDAP.
+
+We have to generate the SSH host keys:
+
+```shell title="user@local"
+yes 'y' | ssh-keygen -N '' -f ./ssh_host_rsa_key -t rsa -C login-node
+yes 'y' | ssh-keygen -N '' -f ./ssh_host_ecdsa_key -t ecdsa -C login-node
+yes 'y' | ssh-keygen -N '' -f ./ssh_host_ed25519_key -t ed25519 -C login-node
+```
+
+6 files will be generated. We will also add our `sshd_config`.
+
+1. Create a `-secret.yml.local` file:
+
+```yaml title="argo/slurm-cluster/secrets/login-sshd-secret.yml.local"
+apiVersion: v1
+kind: Secret
+metadata:
+  name: login-sshd-secret
+  namespace: slurm-cluster
+type: Opaque
+stringData:
+  ssh_host_ecdsa_key: |
+    -----BEGIN OPENSSH PRIVATE KEY-----
+    <FILL ME>
+    -----END OPENSSH PRIVATE KEY-----
+  ssh_host_ecdsa_key.pub: |
+    ecdsa-sha2-nistp256 <FILL ME>
+  ssh_host_ed25519_key: |
+    -----BEGIN OPENSSH PRIVATE KEY-----
+    <FILL ME>
+    -----END OPENSSH PRIVATE KEY-----
+  ssh_host_ed25519_key.pub: |
+    ssh-ed25519 <FILL ME>
+  ssh_host_rsa_key: |
+    -----BEGIN OPENSSH PRIVATE KEY-----
+    <FILL ME>
+    -----END OPENSSH PRIVATE KEY-----
+  ssh_host_rsa_key.pub: |
+    ssh-rsa <FILL ME>
+  sshd_config: |
+    Port 22
+    AddressFamily any
+    ListenAddress 0.0.0.0
+    ListenAddress ::
+
+    HostKey /etc/ssh/ssh_host_rsa_key
+    HostKey /etc/ssh/ssh_host_ecdsa_key
+    HostKey /etc/ssh/ssh_host_ed25519_key
+
+    PermitRootLogin prohibit-password
+    PasswordAuthentication yes
+
+    # Change to yes to enable challenge-response passwords (beware issues with
+    # some PAM modules and threads)
+    ChallengeResponseAuthentication no
+
+    UsePAM yes
+
+    X11Forwarding yes
+    PrintMotd no
+    AcceptEnv LANG LC_*
+
+    # override default of no subsystems
+    Subsystem sftp	/usr/lib/openssh/sftp-server
+
+    AuthorizedKeysCommand /usr/bin/sss_ssh_authorizedkeys
+    AuthorizedKeysCommandUser root
+```
+
+Replace the `<FILL ME>` with the values based on the generated files.
+
+2. Seal the secret:
+
+```shell title="user@local:/cluster-factory-ce"
+./kubeseal-every-local-files.sh
+```
+
+3. Apply the SealedSecret:
+
+```shell title="user@local:/cluster-factory-ce"
+kubectl apply -f argo/slurm-cluster/secrets/login-sshd-sealed-secret.yml
+```
+
+#### Home directory for the LDAP users
+
+If you have configured your LDAP server, you might have change the `homeDirectory` to something like `/home/ldap-users`.
+
+You must mount the home directory of the LDAP users using NFS.
+
+DO NOT use `StorageClass` since the provisioning is static. We don't want to create a volume per replica. There is only one and common volume.
+
+```yaml title="argo/slurm-cluster/volumes/ldap-users-<cluster name>-pv.yml"
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ldap-users-<cluster name>-pv
+  namespace: slurm-cluster
+  labels:
+    app: slurm-login
+    topology.kubernetes.io/region: <FILL ME> # <country code>-<city>
+    topology.kubernetes.io/zone: <FILL ME> # <country code>-<city>-<index>
+spec:
+  capacity:
+    storage: 1000Gi
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+    - noatime
+    - nodiratime
+  csi:
+    driver: nfs.csi.k8s.io
+    readOnly: false
+    volumeHandle: <unique id> # uuidgen
+    volumeAttributes:
+      server: <FILL ME> # IP or host
+      share: <FILL ME> # /srv/nfs/k8s/ldap-users
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ldap-users-<cluster name>-pvc
+  namespace: slurm-cluster
+  labels:
+    app: slurm-login
+    topology.kubernetes.io/region: <FILL ME> # <country code>-<city>
+    topology.kubernetes.io/zone: <FILL ME> # <country code>-<city>-<index>
+spec:
+  volumeName: ldap-users-<cluster name>-pv
+  accessModes: [ReadWriteMany]
+  storageClassName: ''
+  resources:
+    requests:
+      storage: 1000Gi
+```
+
+Apply the PV and PVC:
+
+```shell title="user@local:/cluster-factory-ce"
+kubectl apply -f argo/slurm-cluster/volumes/ldap-users-<cluster name>-pv.yml
+```
+
+### 6.b. Values: Enable SLURM Login
+
+```yaml title="argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml > spec > source > helm > values"
+login:
+  enabled: true
+  replicas: 1
+
+  sshd:
+    secretName: login-sshd-secret
+
+  nodeSelector:
+    topology.kubernetes.io/region: <FILL ME> # <country code>-<city>
+    topology.kubernetes.io/zone: <FILL ME> # <country code>-<city>-<index>
+
+  # Extra volume mounts
+  volumeMounts:
+    - name: ldap-users-pvc
+      mountPath: /home/ldap-users
+
+  # Extra volumes
+  volumes:
+    - name: ldap-users-pvc
+      persistentVolumeClaim:
+        claimName: ldap-users-<cluster name>-pvc
+
+  net:
+    # Kubernetes host interface
+    masterInterface: eth0
+    mode: l2
+    type: ipvlan
+
+    # https://www.cni.dev/plugins/current/ipam/static/
+    ipam:
+      type: host-local
+      ranges:
+        - - subnet: 10.10.2.0/24
+            rangeStart: 10.10.2.46
+            rangeEnd: 10.10.2.47
+            gateway: 10.10.2.1
+```
+
+Edit the values accordingly.
+
+If you are using LDAPS and the CA is private, add these values:
+
+```yaml title="argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml > spec > source > helm > values"
+login:
+  # ...
+  command: ['sh', '-c', 'update-ca-trust && /init']
+
+  volumeMounts:
+    - name: ldap-users-pvc
+      mountPath: /home/ldap-users
+    - name: ca-cert
+      mountPath: /etc/pki/ca-trust/source/anchors/example.com.ca.pem
+      subPath: example.com.ca.pem
+
+  volumes:
+    - name: ldap-users-pvc
+      persistentVolumeClaim:
+        claimName: ldap-users-<cluster name>-pvc
+    - name: ca-cert
+      secret:
+        secretName: local-ca-secret
+```
+
+`local-ca-secret` is a Secret containing `example.com.ca.pem`.
+
+You can deploy it:
+
+```shell title="user@local:/cluster-factory-ce"
+kubectl apply -f argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml
+```
+
+### 6.c Testing: Access to a SLURM Login node
+
+Because the container is exposed to the external network, you should be able to ssh directly to the login node.
+
+```shell title="user@local"
+ssh user@login-node
+```
+
+If the LDAP User `user` exists, the login node should be asking for a password.
