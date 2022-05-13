@@ -491,7 +491,7 @@ allowedTopologies:
 ```
 
 ```shell title="user@local:/cluster-factory-ce"
-kubectl apply -f argo/slurm-cluster/volumes/controller-state-<cluster name>-nfs.yaml.yaml
+kubectl apply -f argo/slurm-cluster/volumes/controller-state-<cluster name>-nfs.yaml
 ```
 
   </TabItem>
@@ -522,6 +522,7 @@ spec:
     volumeAttributes:
       server: <FILL ME> # IP or host
       share: <FILL ME> # /srv/nfs/k8s/slurmctl
+      mountPermissions: '0775'
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
