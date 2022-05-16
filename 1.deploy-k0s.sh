@@ -27,8 +27,8 @@ kubectl wait deployments --timeout=3600s --all --all-namespaces --for condition=
 section "Deploy kubevirt (virtual machines deployments)"
 # Updating is only supported to n-1 to n. Be warned.
 # https://kubevirt.io/user-guide/operations/updating_and_deletion/
-RELEASE=v0.51.0
-kubectl apply -f https://github.com/kubevirt/kubevirt/releases/download/${RELEASE}/kubevirt-operator.yaml
+RELEASE=v0.53.0
+kubectl apply -f "https://github.com/kubevirt/kubevirt/releases/download/${RELEASE}/kubevirt-operator.yaml"
 kubectl apply -k core/kubevirt/overlays/prod
 
 section "Wait for all deployments to be Available"
