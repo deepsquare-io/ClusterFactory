@@ -247,7 +247,7 @@ Some field are auto-generated. So let's just configure the network, the OS Image
 
 To apply the stanza:
 
-```shell ssh root@xcat
+```shell title="ssh root@xcat"
 cat mystanzafile | mkdef -z
 ```
 
@@ -257,9 +257,9 @@ For Infiniband, follow [this guide](https://xcat-docs.readthedocs.io/en/stable/a
 
 ## OS Image configuration
 
-Use use Packer to build OS images and integrate to our CI/CD.
+Use Packer to build OS images.
 
-You can build the SquareFactory image using the recipes stored in `packer-recipes`. Basically, it runs RedHat Kickstart and install all the stuff.
+You can build the SquareFactory OS image using the recipes stored in `packer-recipes`. Basically, it runs RedHat Kickstart and install all the stuff.
 
 The rootfs is then copied to xCAT using rsync.
 
