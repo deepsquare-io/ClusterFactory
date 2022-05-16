@@ -1,5 +1,8 @@
 # Deploy Open OnDemand
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 Open OnDemand, a dashboard for SLURM, can be deployed along with the SLURM controller.
 
 ## Helm and Docker resources

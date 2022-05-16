@@ -1,5 +1,8 @@
 # Deploy a LDAP server
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 ## Helm and Docker resources
 
 The Helm resources is stored on [Cluster Factory Git Repository](https://github.com/SquareFactory/cluster-factory-ce/tree/main/helm/openldap).
