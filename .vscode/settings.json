@@ -6,5 +6,8 @@
     "latex",
     "plaintext",
     "markdown"
-  ]
+  ],
+  "yaml.schemas": {
+    "https://json.schemastore.org/github-workflow.json": "file:///home/marc/Projets/k0s/cluster/.github/workflows/deploy.yml"
+  }
 }

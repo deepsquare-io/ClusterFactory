@@ -1,4 +1,8 @@
-# How to contribute to Cluster Factory
+---
+sidebar_position: 6
+---
+
+# Contributing
 
 You can read the contributing guide in the [official GitHub repository](https://github.com/SquareFactory/cluster-factory-ce/blob/main/CONTRIBUTING.md).
 

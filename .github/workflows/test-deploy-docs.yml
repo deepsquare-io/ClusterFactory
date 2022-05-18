@@ -1,0 +1,34 @@
+name: Test Docs deployment
+
+defaults:
+  run:
+    working-directory: web
+
+on:
+  pull_request:
+    branches:
+      - main
+      - feat/docs
+    # Review gh actions docs if you want to further define triggers, paths, etc
+    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
+
+jobs:
+  test-deploy:
+    name: Test deployment
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2.2.1
+        with:
+          version: ^8.2.0
+
+      - name: Use Node.js 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+      - name: Test build website
+        run: pnpm run build

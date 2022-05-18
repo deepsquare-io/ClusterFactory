@@ -7,14 +7,15 @@ const darkCodeTheme = require('prism-react-renderer/themes/palenight');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Cluster Factory CE',
-  tagline: 'Dinosaurs are cool', // TODO
-  url: 'https://your-docusaurus-test-site.com', // TODO
-  baseUrl: '/', // TODO
+  tagline: 'A k8s-based infrastructure orchestration tool',
+  url: 'https://docs.clusterfactory.io',
+  baseUrl: '/',
   onBrokenLinks: 'ignore',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/favicon.ico', // TODO
+  favicon: 'img/favicon.ico',
   organizationName: 'SquareFactory',
-  projectName: 'Cluster Factory CE Docs',
+  projectName: 'cluster-factory-ce',
+  trailingSlash: false,
 
   presets: [
     [
@@ -56,13 +57,6 @@ const config = {
         },
         items: [
           {
-            type: 'doc',
-            docId: 'intro',
-            position: 'left',
-            label: 'Docs',
-          },
-          { to: '/blog', label: 'Blog', position: 'left' },
-          {
             href: 'https://github.com/facebook/docusaurus',
             label: 'GitHub',
             position: 'right',
@@ -78,6 +72,14 @@ const config = {
               {
                 label: 'Intro',
                 to: '/docs/intro',
+              },
+              {
+                label: 'Contributing',
+                to: '/docs/contributing',
+              },
+              {
+                label: 'Frequently Asked Questions',
+                to: '/docs/faq',
               },
             ],
           },
@@ -101,10 +103,6 @@ const config = {
           {
             title: 'More',
             items: [
-              {
-                label: 'Blog',
-                to: '/blog',
-              },
               {
                 label: 'GitHub',
                 href: 'https://github.com/facebook/docusaurus',
