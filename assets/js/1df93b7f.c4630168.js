@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkcluster_factory_ce_docs=self.webpackChunkcluster_factory_ce_docs||[]).push([[237],{7847:function(c,e,t){t.r(e),t.d(e,{default:function(){return u}});var r=t(9496),n=t(9512);function u(){return r.createElement(n.l_,{to:"/docs/intro"})}}}]);
