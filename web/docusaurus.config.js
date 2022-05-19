@@ -25,14 +25,12 @@ const config = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/', // TODO
+          editUrl: 'https://github.com/SquareFactory/cluster-factory-ce/tree/feat/docs/web/',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/', // TODO
+          editUrl: 'https://github.com/SquareFactory/cluster-factory-ce/tree/feat/docs/web/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -57,7 +55,7 @@ const config = {
         },
         items: [
           {
-            href: 'https://github.com/facebook/docusaurus',
+            href: 'https://github.com/SquareFactory/cluster-factory-ce',
             label: 'GitHub',
             position: 'right',
           },
@@ -70,8 +68,12 @@ const config = {
             title: 'Docs',
             items: [
               {
-                label: 'Intro',
-                to: '/docs/intro',
+                label: 'Overview',
+                to: '/docs/overview/intro',
+              },
+              {
+                label: 'Getting Started',
+                to: '/docs/getting-started/requirements-recommendations',
               },
               {
                 label: 'Contributing',
@@ -87,16 +89,16 @@ const config = {
             title: 'Community',
             items: [
               {
-                label: 'Stack Overflow',
-                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-              },
-              {
                 label: 'Discord',
                 href: 'https://discordapp.com/invite/docusaurus',
               },
               {
                 label: 'Twitter',
-                href: 'https://twitter.com/docusaurus',
+                href: 'https://mobile.twitter.com/squarefactoryai',
+              },
+              {
+                label: 'LinkedIn',
+                href: 'https://www.linkedin.com/company/squarefactory',
               },
             ],
           },
@@ -105,7 +107,7 @@ const config = {
             items: [
               {
                 label: 'GitHub',
-                href: 'https://github.com/facebook/docusaurus',
+                href: 'https://github.com/SquareFactory/cluster-factory-ce',
               },
             ],
           },

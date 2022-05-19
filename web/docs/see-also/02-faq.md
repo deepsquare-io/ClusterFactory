@@ -1,7 +1,3 @@
----
-sidebar_position: 7
----
-
 # Frequently Asked Questions
 
 ## Kubernetes is quite complex compared to Virtual Machines. How do I learn about Kubernetes ? about Cluster Factory ?
