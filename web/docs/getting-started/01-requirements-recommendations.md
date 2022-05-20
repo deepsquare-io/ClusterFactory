@@ -27,7 +27,7 @@ Just run:
 . ./scripts/common.sh
 ```
 
-The binaries is stored inside the `bin` directory and the `PATH` is automatically set.
+The binaries are stored inside the `bin` directory and the `PATH` is automatically set.
 
 ## Recommended tooling
 
