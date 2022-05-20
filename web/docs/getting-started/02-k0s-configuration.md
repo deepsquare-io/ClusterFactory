@@ -301,7 +301,7 @@ We use Traefik because it can do a lot of complex route operations while still b
 
 ## Initial Deployment
 
-Run the `1.deploy-k0s.sh` script to deploy the cluster.
+Run the `1.deploy-k0s.sh` script to deploy the cluster. This script will also download the utilities `k0sctl`, `kubectl` and `kubeseal` if not found in `PATH`.
 
 You can re-run the scripts if you modify the `k0sctl.yaml` file.
 
