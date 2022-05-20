@@ -272,13 +272,13 @@ Our recommendation is to use Ingress for simple routes with HTTP. Otherwise, Ing
 
 Run the `2.deploy-core-apps.sh` script to deploy the cluster.
 
-Congratulations! You have successfully deployed a Kubernetes Cluster with the minimum needs. We still recommend to deploy the Monitoring stack to monitor the RAM and CPU usage of the containers. Nevertheless, you can follow the [guides](/docs/guides), learn the [main concepts of Cluster Factory](/docs/main-concepts), or continue the [Getting Started](./argo-apps-deployment).
+Congratulations! You have successfully deployed a Kubernetes Cluster with the minimum needs. We still recommend to deploy the Monitoring stack to monitor the RAM and CPU usage of the containers. Nevertheless, you can follow the [guides](/docs/guides), learn the [main concepts of Cluster Factory](/docs/main-concepts/k0s), or continue the [Getting Started](./argo-apps-deployment).
 
 :::note
 
 You may notice that the installation of Argo CD and Sealed Secrets could have been done using `k0sctl.yaml`.
 
-However, we found that this would cause coupling problems with k0sctl (for example, you would have to redeploy the k0s cluster every time you need to update Argo CD, which means downtime).
+However, we found that this would cause coupling problems with `k0sctl` (for example, you would have to redeploy the k0s cluster every time you need to update Argo CD, which means downtime).
 
 We believe that the `extensions` field in `k0sctl.yaml` should only be used for network applications, or should not be used at all.
 

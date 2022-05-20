@@ -2,7 +2,7 @@
 
 Time to play with Argo CD!
 
-Let's deploy the [Kube-Prometheus-Stack](https://github.com/prometheus-community/helm-charts/blob/c16dc809e4f8fce9eee4e5093c59a08008c9dcb3/charts/kube-prometheus-stack/values.yaml) since we will need it to monitor the nodes.
+Let's deploy the [Kube-Prometheus-Stack](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml) since we will need it to monitor the nodes.
 
 A complete example is written in `argo/monitoring/`, but we will start from scratch to learn the process of writing an Argo CD application.
 
@@ -71,7 +71,7 @@ kubectl apply -f argo/my-monitoring/app-project.yml
 
 It is best to know the configuration you need before deploying.
 
-You can read the `values.yaml` file inside the [git repository of kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/blob/c16dc809e4f8fce9eee4e5093c59a08008c9dcb3/charts/kube-prometheus-stack/values.yaml).
+You can read the `values.yaml` file inside the [git repository of kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml).
 
 We won't be deploying AlertManager, but we will deploy Grafana, Prometheus and the Prometheus Operator.
 
@@ -282,7 +282,7 @@ spec:
 
 More details [here](https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/application.yaml).
 
-Since [Kube-Prometheus-Stack](https://github.com/prometheus-community/helm-charts/blob/c16dc809e4f8fce9eee4e5093c59a08008c9dcb3/charts/kube-prometheus-stack/values.yaml) is a Helm application, we are going to override some values in the `values` field.
+Since [Kube-Prometheus-Stack](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml) is a Helm application, we are going to override some values in the `values` field.
 
 We are also going to configure the Ingresses here.
 
@@ -514,4 +514,4 @@ Pretty cool, huh?
 
 However, ClusterFactory isn't just a Kubernetes Cluster. It contains all the apps necessary to create an HPC cluster.
 
-See the [guides](/docs/guides/) to deploy each application. Otherwise, let's deploy xCAT, our tool to deploy and manage bare metal servers!
+See the [guides](/docs/guides/monitoring/deploy) to deploy each application. Otherwise, let's deploy xCAT, our tool to deploy and manage bare metal servers!
