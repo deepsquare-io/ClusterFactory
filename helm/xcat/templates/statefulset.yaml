@@ -168,7 +168,7 @@ spec:
           emptyDir: {}
         - name: cgroup
           hostPath:
-            path : /sys/fs/cgroup
+            path: /sys/fs/cgroup
             type: Directory
         - name: tmp
           emptyDir:

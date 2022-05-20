@@ -34,7 +34,7 @@ spec:
         apply:
           after:
             - mkdir -p /var/lib/k0s/kubelet
-            - ln -s /var/lib/kubelet /var/lib/k0s/kubelet
+            - ln -s /var/lib/k0s/kubelet /var/lib/kubelet
             - sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config
             - setenforce 0
     - ssh:
