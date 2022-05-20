@@ -6,7 +6,7 @@ The initial configuration of CoreDNS given by k0s is not satisfying our needs. T
 
 CoreDNS is exposed to the external network thanks to the `IngressRoute` objects in the `core/coredns/ingress-route.yml`.
 
-If this is an unwanted feature (because you are using an another DNS for example), feel free to remove the routes and close the ports in the Traefik extension specification inside `k0sctl.yaml`.
+If this is an unwanted feature (because you are using an other DNS for example), feel free to remove the routes and close the ports in the Traefik extension specification inside `k0sctl.yaml`.
 
 The files that you should look for are `configmap.yml` and `deployment.yml`.
 
@@ -149,9 +149,9 @@ Because some files were added and removed, you must change the `deployment.yml`:
 
 ### Configure the issuers
 
-Specify new certificates issuers in the `core/cert-manager` directory.
+Specify new certificate issuers in the `core/cert-manager` directory.
 
-If you wish to add your own private certificate authority, follow the [official guide of cert-manager](https://cert-manager.io/docs/configuration/ca/).
+If you wish to add your private certificate authority, follow the [official guide of cert-manager](https://cert-manager.io/docs/configuration/ca/).
 
 ```yaml title="private-cluster-issuer.yml"
 apiVersion: cert-manager.io/v1
@@ -164,7 +164,7 @@ spec:
     secretName: ca-key-pair
 ```
 
-If you wish to use ACME HTTP-01, follow [this guide](https://cert-manager.io/docs/configuration/acme/http01/). This will creates an Ingress by using the `ingress` field.
+If you wish to use ACME HTTP-01, follow [this guide](https://cert-manager.io/docs/configuration/acme/http01/). This will create an Ingress by using the `ingress` field.
 
 ```yaml title="public-cluster-issuer.yml"
 apiVersion: cert-manager.io/v1
@@ -185,9 +185,9 @@ spec:
 
 ## Configure the routes and certificates for the dashboards
 
-ArgoCD and Traefik have dashboards. To change the addresses and certificates, modify the `ingress-route.yml` file and `certificate.yml` in the directories `core/argo-cd` and `core/traefik`.
+Argo CD and Traefik have dashboards. To change the addresses and certificates, modify the `ingress-route.yml` file and `certificate.yml` in the directories `core/argo-cd` and `core/traefik`.
 
-Make sure the addresses correspond to the ones defined in the CoreDNS (or in your personal DNS).
+Make sure the addresses correspond to the ones defined in the CoreDNS (or in your private DNS).
 
 ```yaml title="Example of Traefik ingress-route.yml"
 apiVersion: traefik.containo.us/v1alpha1
@@ -231,7 +231,7 @@ spec:
           kind: TraefikService
 ```
 
-IngressRoute allows us to create complex routing rules than the classic Ingress. However, Ingress is able to automatically generate a TLS certificate by using annotations, without the need to create a Certificate resource.
+IngressRoute allows us to create more complex routing rules than the classic Ingress. However, Ingress can automatically generate a TLS certificate by using annotations, without the need to create a Certificate resource.
 
 Example:
 
@@ -272,15 +272,13 @@ Our recommendation is to use Ingress for simple routes with HTTP. Otherwise, Ing
 
 Run the `2.deploy-core-apps.sh` script to deploy the cluster.
 
-TODO: record deployment
-
 Congratulations! You have successfully deployed a Kubernetes Cluster with the minimum needs. We still recommend to deploy the Monitoring stack to monitor the RAM and CPU usage of the containers. Nevertheless, you can follow the [guides](/docs/guides), learn the [main concepts of Cluster Factory](/docs/main-concepts), or continue the [Getting Started](./argo-apps-deployment).
 
 :::note
 
-You may notice that the installation of ArgoCD and Sealed Secrets could have been done using `k0sctl.yaml`.
+You may notice that the installation of Argo CD and Sealed Secrets could have been done using `k0sctl.yaml`.
 
-However, we found that this would cause coupling problems with k0sctl (for example, you would have to redeploy the k0s cluster every time you need to update ArgoCD, which means downtime).
+However, we found that this would cause coupling problems with k0sctl (for example, you would have to redeploy the k0s cluster every time you need to update Argo CD, which means downtime).
 
 We believe that the `extensions` field in `k0sctl.yaml` should only be used for network applications, or should not be used at all.
 

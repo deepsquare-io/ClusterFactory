@@ -7,7 +7,7 @@ Open OnDemand, a dashboard for SLURM, can be deployed along with the SLURM contr
 
 ## Helm and Docker resources
 
-The Helm resources is stored on [the Cluster Factory CE Git Repository](https://github.com/SquareFactory/cluster-factory-ce/tree/main/helm/slurm-cluster).
+The Helm resources are stored on [the Cluster Factory CE Git Repository](https://github.com/SquareFactory/cluster-factory-ce/tree/main/helm/slurm-cluster).
 
 The Dockerfile is described in the git repository [SquareFactory/open-ondemand-docker](https://github.com/SquareFactory/open-ondemand-docker).
 
@@ -769,7 +769,7 @@ ondemand:
     tls: {}
 ```
 
-The entrypoint `oidc` (`5556/tcp`) must be opened on Traefik. If you are using `tls`, you should open the post `oidcs` (`5554/tcp`) and apply this Ingress instead:
+The entry point `oidc` (`5556/tcp`) must be opened on Traefik. If you are using `tls`, you should open the post `oidcs` (`5554/tcp`) and apply this Ingress instead:
 
 ```yaml title="argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml > spec > source > helm > values"
 ondemand:
@@ -807,7 +807,7 @@ ondemand:
           - ondemand.example.com
 ```
 
-You should also handle the redirection from `oidc` to `oidcs` and `http` to `https`, by using either a [middleware](https://doc.traefik.io/traefik/middlewares/http/redirectscheme/), or using an [entrypoint redirection](https://doc.traefik.io/traefik/routing/entrypoints/#redirection) (use the CLI configuration).
+You should also handle the redirection from `oidc` to `oidcs` and `http` to `https`, by using either a [middleware](https://doc.traefik.io/traefik/middlewares/http/redirectscheme/), or using an [entry point redirection](https://doc.traefik.io/traefik/routing/entrypoints/#redirection) (use the CLI configuration).
 
 Apply the application:
 

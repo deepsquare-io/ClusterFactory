@@ -18,11 +18,11 @@ If you want to help us triage, you are very welcome to do so!
 
 ## Quality Assurance
 
-One of the most useful tasks, closely related to triage, is finding and filing bugs. Testing beta releases, looking for regressions, creating test cases, adding to our test suites, and other work along these lines can really drive the quality of the product up. Creating tests that increase our test coverage, writing tests for issues others have filed, all these tasks are really valuable contributions to open source projects.
+One of the most useful tasks, closely related to triage, is finding and filing bugs. Testing beta releases, looking for regressions, creating test cases, adding to our test suites, and other work along these lines can drive the quality of the product up. Creating tests that increase our test coverage, writing tests for issues others have filed, all these tasks are really valuable contributions to open source projects.
 
 ## Documentation
 
-Another great area to contribute in is sample code and API documentation. Most
+Another great area to contribute is sample code and API documentation. Most
 of the documentation is written inside the `web` directory. Feel free to add diagrams and sample code to our documentation!
 
 The `argo` directory is also an `example` directory. Feel free to add new applications or modify ours!

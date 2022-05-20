@@ -4,7 +4,7 @@
 
 ### Configuring and Launching Packer
 
-The [`packer-recipes` directory inside the git repository](https://github.com/SquareFactory/cluster-factory-ce/tree/main/packer-recipes) contains examples of Packer configuration file.
+The [`packer-recipes` directory inside the git repository](https://github.com/SquareFactory/cluster-factory-ce/tree/main/packer-recipes) contains examples of Packer configuration files.
 
 ```json title="rocky.nothing.json"
 {
@@ -45,11 +45,11 @@ The [`packer-recipes` directory inside the git repository](https://github.com/Sq
 
 When running Packer, the process is the following:
 
-- Launch a HTTP server which serves the `http` directory.
+- Launch a HTTP server that serves the `http` directory.
 - Launch a VM and a VNC session.
 - Boot on the ISO and enter the `boot_command` to load the RedHat Kickstart file from HTTP.
 - Run the Kickstart RedHat file. This file automates the installation process of the OS.
-- Shutdown the VM.
+- Shut down the VM.
 
 Configure the installation process by editing the `http/ks.nothing.cfg`:
 
@@ -199,7 +199,7 @@ rsync -avzP "$TMP_DIR/" "root@<xcat server>:/<path to os image>/rootimg/"
 # Example: rsync -avzP "$TMP_DIR/" "root@10.10.2.2:/install/netboot/rocky8.4/x86_64/compute/rootimg/"
 ```
 
-And unmount and teardown:
+And unmount and tear down:
 
 ```shell title="root@local:/cluster-factory-ce/packer-recipes/rocky"
 umount -f "$TMP_DIR"
@@ -241,7 +241,7 @@ Generate the kernel and initrd for the netboot:
 geninitrd rocky8.4-x86_64-netboot-compute
 ```
 
-To pack the image as squashfs, call:
+To pack the image as SquashFS, call:
 
 ```shell title="ssh root@xcat"
 packimage -m squashfs -c pigz rocky8.4-x86_64-netboot-compute

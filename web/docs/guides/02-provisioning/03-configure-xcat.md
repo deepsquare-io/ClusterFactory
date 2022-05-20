@@ -12,7 +12,7 @@ This means that the stanza file for the definition of the cluster can be written
 
 The name of the object is precise. You can SSH to xCAT and type
 `lsdef -t network` to look for the name of the network. Otherwise, the name of
-the network look like this `10_10_2_0-255_255_255_0`, which is the one configured with Multus CNI.
+the network looks like this `10_10_2_0-255_255_255_0`, which is the one configured with Multus CNI.
 
 ```shell title="network.stanza"
 10_10_2_0-255_255_255_0:
@@ -51,7 +51,7 @@ Use Packer to build OS images.
 
 You can build the SquareFactory OS image using the recipes stored in `packer-recipes`. Basically, it runs RedHat Kickstart and install all the software needed at SquareFactory.
 
-After building the image, you should copy the root file-system via `rsync` or `scp`. Follow [this guide for more information](/docs/guides/provisioning/packer-build).
+After building the image, you should copy the root filesystem via `rsync` or `scp`. Follow [this guide for more information](/docs/guides/provisioning/packer-build).
 
 Create the stanza:
 
@@ -123,7 +123,7 @@ Generate the kernel and initrd for the netboot:
 geninitrd rocky8.4-x86_64-netboot-compute
 ```
 
-To pack the image as squashfs, call:
+To pack the image as SquashFS, call:
 
 ```shell title="ssh root@xcat"
 packimage -m squashfs -c pigz rocky8.4-x86_64-netboot-compute

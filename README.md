@@ -4,16 +4,16 @@
 
 This project will deploy in the following order:
 
-* A k0s cluster with helm extensions (MetalLB, Traefik, Cert-Manager, CSI Drivers). Also with KubeVirt (VM workloads) and Multus (multiple network interfaces).
-* Core certs issuers, traefik routes and dashboards.
-* Apps with argocd
-  * xCAT (bare-metal provisioning)
-  * Packer OS images recipes
-  * Slurm controller, database and login nodes
-  * LDAP (for global users/groups management)
-  * CVMFS stratum1 mirror of Deepsquare's software library (end user software)
-  * Open Ondemand, a web-based HPC user portal
-  * Monitoring stack (Grafana, Prometheus with ready-to-use exporters)
+- A k0s cluster with helm extensions (MetalLB, Traefik, Cert-Manager, CSI Drivers). Also with KubeVirt (VM workloads) and Multus (multiple network interfaces).
+- Core certs issuers, traefik routes and dashboards.
+- Apps with Argo CD
+  - xCAT (bare-metal provisioning)
+  - Packer OS images recipes
+  - Slurm controller, database and login nodes
+  - LDAP (for global users/groups management)
+  - CVMFS stratum1 mirror of Deepsquare's software library (end user software)
+  - Open Ondemand, a web-based HPC user portal
+  - Monitoring stack (Grafana, Prometheus with ready-to-use exporters)
 
 ## Preparation
 
@@ -44,17 +44,17 @@ Finally check for every `.yml` in the `core` directory:
 
 - For `argo-cd`, edit the `certificate.yml` and `ingress-route.yml`.
 - For `coredns`, edit the `configmap.yml`, `deployment.yml` (volume mounts) and the `ingress-route.yml`. CoreDNS will be exposed to the network.
-- For `kubevirt`, edit the `kubevirt-cr.yaml` if you wish to select the nodes 
+- For `kubevirt`, edit the `kubevirt-cr.yaml` if you wish to select the nodes
 
 You can then launch `1.deploy-k0s.sh` and `2.deploy-core-apps.sh`.
 
-## Customize the ArgoCD Apps
+## Customize the Argo CD Apps
 
 Before we start, the `helm` directory is just a helm repository for deploying our stack, so you should never edit these files directly.
 
 The exception being `slurm-cluster` as this application has been taylored for our cluster and you may be interested in editing the slurm stack (e.g. changing the default prologs and epilogs).
 
-Otherwise, to edit the argoCD applications, go to the `argo` directory. You need to edit and check all the files in this directory.
+Otherwise, to edit the Argo CD applications, go to the `argo` directory. You need to edit and check all the files in this directory.
 
 You also need to **regenerate all the sealed secrets** as they are for our cluster. There are some examples, but you can also add secrets to pull from git repositories and docker images.
 
@@ -110,6 +110,6 @@ There are other stuffs to learn, but you can learn it during the deployment.
 - [Multus CNI Quickstart](https://github.com/k8snetworkplumbingwg/multus-cni/blob/master/docs/quickstart.md)
 - [CNI Plugins Overview](https://www.cni.dev/plugins/current/)
 - [KubeVirt User Guide](https://kubevirt.io/user-guide/)
-- [ArgoCD Application YAML](https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/application.yaml)
+- [Argo CD Application YAML](https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/application.yaml)
 - [Traefik Ingress Routes](https://doc.traefik.io/traefik/routing/providers/kubernetes-crd/)
 - [Traefik Ingress](https://doc.traefik.io/traefik/routing/providers/kubernetes-ingress/)

@@ -1,9 +1,9 @@
-# Develop Applications to integrate to Cluster Factory
+# Develop Applications to integrate into Cluster Factory
 
-This guide cover the general process to develop an application for Cluster
+This guide covers the general process to develop an application for Cluster
 Factory and might help you to integrate your applications.
 
-Let's take the example of xCAT, which is a complex bare metal provisioning tool.
+Let's take the example of xCAT, which is a complex bare-metal provisioning tool.
 
 ## 1. Dockerize/Containerize the application
 
@@ -18,17 +18,17 @@ You should check for:
   - Runtime dependencies (Ex: Perl, Apache, xCAT, ...)
   - Runtime setup (the entry-point script)
   - Init system (SystemD)
-  - And eventually host dependencies
+  - And eventually, host dependencies
 - Interfaces:
   - Network:
     - All the TCP and UDP ports (Ex: DHCP, SSH, ...)
     - Host network (Ex: The DHCP server needs the host network to receive broadcast DHCP requests.)
   - Volumes:
     - Persistent Volumes (Ex: The xCAT databases.)
-    - Is it possible to set a read-only filesystem ?
+    - Is it possible to set a read-only filesystem?
 - Privileges
-  - Is it possible to run rootless ?
-  - Is there any capabilities ? (Ex: `NET_BIND_SERVICE`, ...)
+  - Is it possible to run rootless?
+  - Is there any capabilities? (Ex: `NET_BIND_SERVICE`, ...)
 
 Knowing these details will make it easier to write a Dockerfile and test it.
 
@@ -135,7 +135,7 @@ The `VOLUME` declares which volumes need to be persistent.
 Other volumes can be mounted as read-only configurations. For example, since
 we are running `systemd`, we need to mount the `/sys/fs/cgroup` directory.
 
-The entrypoint:
+The entry point:
 
 ```shell title="statup.sh"
 #!/bin/bash
@@ -224,11 +224,11 @@ rm -f /etc/nologin /var/run/nologin
 
 ## 2. Testing the application with Podman
 
-Podman is an alternative to Docker. The main difference is that Podman is daemonless.
+Podman is an alternative to Docker. The main difference is that Podman is daemon-less.
 
 We will focus on one specific feature which is `podman-play-kube`.
 
-While you might test the container with Docker with `docker-compose` or with `Minikube`, Podman offer the almost same experience of a Kubernetes Cluster without being overkill.
+While you might test the container with Docker with `docker-compose` or with `Minikube`, Podman offers the almost same experience as a Kubernetes Cluster without being overkill.
 
 `podman-play-kube` only supports `Pod`, `Deployment`, `PersistentVolumeClaim` and `ConfigMap`, but that's enough since it bridges the gap between `docker-compose` and the Kubernetes syntax.
 
@@ -381,13 +381,13 @@ One main disadvantage is that `podman-play-kube` doesn't support the use of `net
 
 ## 3. Writing a Helm application
 
-Although it is not really necessary to write a Helm application, some values may be redundant or must be abstracted.
+Although it is not necessary to write a Helm application, some values may be redundant or must be abstracted.
 
 That's why we prefer to write Helm Charts instead of Kustomize. If the application is light enough, we can use Kustomize instead.
 
-To write an Helm application, we need to generalize the values (by using
+To write a Helm application, we need to generalize the values (by using
 `example.com` as domain for example). The "overlay" values will be stored
-either inside the Helm application, or inside a Git repository.
+either inside the Helm application or inside a Git repository.
 
 At SquareFactory, we've been storing the values inside the Argo CD `Application` files. If we need to track these values inside Git, we can use the `App of Apps` pattern.
 

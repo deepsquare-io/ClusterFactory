@@ -30,7 +30,7 @@ cat mydbstanzafile | mkdef -z
 
 ## Creating and using a postbootscript/cloud-init file to allow GitOps
 
-A postbootscript/cloud-init file is executed after the boot of the OS, thanks to SystemD.
+A post-boot script/cloud-init file is executed after the boot of the OS, thanks to SystemD.
 
 The strategy is the following:
 
@@ -38,7 +38,7 @@ The strategy is the following:
 2. The secret key will decrypt the SSH deploy key, which is stored inside the script.
 3. With the SSH deploy key, the script will `git clone` the Git repository containing the configuration files
 4. If the script `post.sh` exists in the repository, then we execute this file.
-5. This file will copy files and executes other postbootscripts.
+5. This file will copy files and executes other post-boot scripts.
 
 ### Step 1: Setup the Git repository
 
@@ -111,7 +111,7 @@ RUN slurm
 RUN set-motd
 ```
 
-The copied files are stored in side a `files/` directory and other scripts are stored inside a `postscripts/` directory.
+The copied files are stored inside a `files/` directory and other scripts are stored inside a `postscripts/` directory.
 
 Like this:
 
@@ -165,7 +165,7 @@ git push -u origin main
 ssh-keygen -t ed25519 -f key
 ```
 
-Put the `key.pub` on [Github as a deploy key](https://docs.github.com/en/developers/overview/managing-deploy-keys#setup-2):
+Put the `key.pub` on [GitHub as a deploy key](https://docs.github.com/en/developers/overview/managing-deploy-keys#setup-2):
 
 ![Deploy Key page](04-gitops-with-xcat.assets/deploy-key.png)
 
@@ -177,7 +177,7 @@ openssl enc -aes-256-cbc -a -salt -pbkdf2 -in key -out key.enc
 
 Save the password for the next step.
 
-### Step 4: Creating the postbootscript/cloud-init file
+### Step 4: Creating the post-boot script/cloud-init file
 
 <Tabs groupId="provisioning">
   <TabItem value="xcat" label="xCAT" default>
@@ -209,7 +209,7 @@ rm -f /key /key.env
 chmod -R g-rwx,o-rwx .
 ```
 
-On xCAT, you should add the postbootscript inside an `osimage` stanza:
+On xCAT, you should add the post-boot script inside an `osimage` stanza:
 
 ```shell title="stanzafile"
 rocky8.4-x86_64-netboot-compute:

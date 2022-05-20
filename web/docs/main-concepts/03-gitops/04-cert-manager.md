@@ -1,6 +1,6 @@
 # cert-manager
 
-Like the name indicates, cert-manager adds certificates and certificate issuers as custom resource for Kubernetes.
+Like the name indicates, cert-manager adds certificates and certificate issuers as custom resources for Kubernetes.
 
 ![High level overview diagram explaining cert-manager architecture](04-cert-manager.assets/high-level-overview.svg)
 

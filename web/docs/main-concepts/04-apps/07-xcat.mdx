@@ -1,6 +1,7 @@
 # xCAT, the Bare-Metal Provisioner
 
-[xCAT](https://xcat.org) is complete solution for bare metal provisioning for High Performance Computing clusters.
+[xCAT](https://xcat.org) is complete solution for bare metal provisioning for
+High-Performance Computing clusters.
 
 ## Architecture
 
@@ -24,11 +25,11 @@ Our main criteria for choosing a bare metal provisioning solution is:
 
 - Operating system image management: provisioning methods, supported operating systems, ease of use.
 - BMC configuration (IPMI, HMC, FSP, OpenBMC)
-- Configuration management (Declarative, postboot scripts, backups, ...)
+- Configuration management (Declarative, post-boot scripts, backups, ...)
 
-While a lot of solutions exists for bare-metal provisioning like [OpenStack Ironic](https://wiki.openstack.org/wiki/Ironic) or [MAAS](https://maas.io/), only a few are able to do **diskless provisioning**.
+While a lot of solutions exist for bare-metal provisioning like [OpenStack Ironic](https://wiki.openstack.org/wiki/Ironic) or [MAAS](https://maas.io/), only a few are able to do **disk-less provisioning**.
 
-Diskless (or Stateless) provisioning is based on an OverlayFS root, with the OS being loaded from a SquashFS image. The OverlayFS is mounted as a `tmpfs`, that is, in the RAM.
+Disk-less (or Stateless) provisioning is based on an OverlayFS root, with the OS being loaded from a SquashFS image. The OverlayFS is mounted as a `tmpfs`, that is, in the RAM.
 
 ![upper-lower](07-xcat.assets/6ecbb344ae8145db8deedaeecd0f49betplv-k3u1fbpfcp-zoom-1.png)
 
@@ -47,6 +48,6 @@ export const xCatAge = new Date(1999, 10, 31).getTime();
   maintained by iBM and has every functionality for bare metal provisioning.
 </span>
 
-While xCAT is not really friendly to GitOps or Kubernetes, we plan to develop a way to configure xCAT declaratively from Kubernetes (probably by developing a [Kubernetes Operator](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/), or by applying the [stanza file](https://xcat-docs.readthedocs.io/en/stable/guides/admin-guides/references/man5/xcatstanzafile.5.html) at the boot of container).
+While xCAT is not friendly to GitOps or Kubernetes, we plan to develop a way to configure xCAT declaratively from Kubernetes (probably by developing a [Kubernetes Operator](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/), or by applying the [stanza file](https://xcat-docs.readthedocs.io/en/stable/guides/admin-guides/references/man5/xcatstanzafile.5.html) at the boot of container).
 
 For now, the only way to use xCAT is to connect via SSH to your server.

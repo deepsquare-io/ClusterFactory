@@ -6,7 +6,7 @@ Let's assume we plan to replicate `http://cvmfs.example.com/cvmfs/repo.example.c
 
 ## Helm and Docker resources
 
-The Helm resources is stored on [Cluster Factory Git Repository](https://github.com/SquareFactory/cluster-factory-ce/tree/main/helm/cvmfs-server).
+The Helm resources are stored on [Cluster Factory Git Repository](https://github.com/SquareFactory/cluster-factory-ce/tree/main/helm/cvmfs-server).
 
 The Dockerfile is described in the git repository [SquareFactory/cvmfs-server-docker](https://github.com/SquareFactory/cvmfs-server-docker).
 
@@ -151,7 +151,7 @@ The `k0sctl.yaml` indicates that the entrypoints `websecure` is the port 443.
 
 More about Traefik with Kubernetes Ingresses in [their documentation](https://doc.traefik.io/traefik/routing/providers/kubernetes-ingress/).
 
-Use the annotation `cert-manager.io/cluster-issuer` to indicates the certificate issuer and specify the generated certificates secret name in the `tls[].secretName` field. `cert-manager` will automatically search or generate the TLS certificates.
+Use the annotation `cert-manager.io/cluster-issuer` to indicates the certificate issuer and specify the generated certificate secret name in the `tls[].secretName` field. `cert-manager` will automatically search or generate the TLS certificates.
 
 More about `cert-manager` in [their documentation](https://cert-manager.io/docs/usage/ingress/).
 
@@ -165,4 +165,4 @@ Verify the default value inside the [git repository](https://github.com/SquareFa
 kubectl apply -f argo/cvmfs/apps/cvmfs-server-app.yml
 ```
 
-If the Ingress is enabled and configured, the CVMFS server should be available on the IP specified by MetalLB. Configure you DNS so it redirect to this IP.
+If the Ingress is enabled and configured, the CVMFS server should be available on the IP specified by MetalLB. Configure your DNS so it redirects to this IP.

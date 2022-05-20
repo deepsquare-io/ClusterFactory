@@ -13,7 +13,7 @@ Deploying the SLURM database isn't stable yet. Please feel free to [create an is
 
 ## Helm and Docker resources
 
-The Helm resources is stored on [the Cluster Factory CE Git Repository](https://github.com/SquareFactory/cluster-factory-ce/tree/main/helm/slurm-cluster).
+The Helm resources are stored on [the Cluster Factory CE Git Repository](https://github.com/SquareFactory/cluster-factory-ce/tree/main/helm/slurm-cluster).
 
 The Dockerfile is described in the git repository [SquareFactory/slurm-docker](https://github.com/SquareFactory/slurm-docker).
 
@@ -130,7 +130,7 @@ ssh-keygen -t rsa -b 4096 -m PEM -f jwtRS256.key
 
 Let's store it in a `Secret`:
 
-1.Create a `-secret.yml.local` file:
+1. Create a `-secret.yml.local` file:
 
 ```yaml title="argo/slurm-cluster/secrets/slurm-secret.yaml.local"
 apiVersion: v1
@@ -655,7 +655,7 @@ main*          up   infinite     12  down* cn[1-12]
 
 ### 5.a. Build an OS Image with Slurm
 
-We have enabled `configless` in the `slurm.conf`.
+We have enabled `config-less` in the `slurm.conf`.
 
 We need to build an OS Image with Slurm Daemon installed.
 
@@ -930,7 +930,7 @@ And send the os image to xcat. [Follow the guide "Build an OS Image with Packer"
 
 ### 5.b. xCAT Postbootscripts
 
-Next, you have to configure a service by using a xCAT postscript. Our recommendation is to use a xCAT postscript to pull a Git repository, and based on the content of the repository, copy the files and executes the postscripts in that Git repository.
+Next, you have to configure a service by using a xCAT postscript. Our recommendation is to use a xCAT postscript to pull a Git repository which, based on the content of the repository, copies the files and executes the postscripts in that Git repository.
 
 This way, the GitOps practice is always followed and permits to adapt for the future version of Cluster Factory.
 
@@ -1011,7 +1011,7 @@ systemctl start --no-block slurmd
 
 After setup SLURM, you should also:
 
-- Mount the home diretory of the LDAP users (probably like `/home/ldap-users`)
+- Mount the home directory of the LDAP users (probably like `/home/ldap-users`)
 - Use a postscript to configure SSSD
 - Use a postscript to import the `munge.key`
 
@@ -1025,8 +1025,8 @@ If the controller is running, the nodes should automatically receive the `slurm.
 
 #### SSH Server configuration
 
-The login nodes is exposed to the external network using Multus CNI and the IPVLAN plugin. This is to expose the `srunPortRange` and because the login nodes.
-The users can login to the nodes using SSH via LDAP.
+The login nodes are exposed to the external network using Multus CNI and the IPVLAN plugin. This is to expose the `srunPortRange` and the SSH port.
+Thanks to SSSD, the users can log in to the nodes using SSH using the passwords stored in LDAP.
 
 We have to generate the SSH host keys:
 
@@ -1112,11 +1112,11 @@ kubectl apply -f argo/slurm-cluster/secrets/login-sshd-sealed-secret.yml
 
 #### Home directory for the LDAP users
 
-If you have configured your LDAP server, you might have change the `homeDirectory` to something like `/home/ldap-users`.
+If you have configured your LDAP server, you might have to change the `homeDirectory` to something like `/home/ldap-users`.
 
 You must mount the home directory of the LDAP users using NFS.
 
-DO NOT use `StorageClass` since the provisioning is static. We don't want to create a volume per replica. There is only one and common volume.
+DO NOT use `StorageClass` since the provisioning is static. We don't want to create a volume per replica. There is only one common volume.
 
 ```yaml title="argo/slurm-cluster/volumes/ldap-users-<cluster name>-pv.yml"
 apiVersion: v1

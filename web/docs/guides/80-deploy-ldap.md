@@ -5,7 +5,7 @@ import TabItem from '@theme/TabItem';
 
 ## Helm and Docker resources
 
-The Helm resources is stored on [Cluster Factory Git Repository](https://github.com/SquareFactory/cluster-factory-ce/tree/main/helm/openldap).
+The Helm resources are stored on [Cluster Factory Git Repository](https://github.com/SquareFactory/cluster-factory-ce/tree/main/helm/openldap).
 
 The Dockerfile is described in the git repository [bitnami/bitnami-docker-openldap](https://github.com/bitnami/bitnami-docker-openldap).
 
@@ -105,7 +105,7 @@ The label `app=ldap` will be used by the PersistentVolumeClaim.
   </TabItem>
 </Tabs>
 
-## 2.b Editing the environment variables with secrets
+## 2.b. Editing the environment variables with secrets
 
 Take a look at the git repository of [bitnami-docker-openldap](https://github.com/bitnami/bitnami-docker-openldap#configuration).
 
@@ -187,7 +187,7 @@ spec:
           port: 1636
 ```
 
-You must open the port 636 and 389 on the load balancer of Traefik be configuring the `k0sctl.yaml`:
+You must open ports 636 and 389 on the load balancer of Traefik by configuring the `k0sctl.yaml`:
 
 ```yaml title="k0sctl.yaml > spec > k0s > config > spec > extensions > helm > chart[]
 - name: traefik

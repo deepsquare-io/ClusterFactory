@@ -1,19 +1,17 @@
-# How to update the K0s Helm extensions in the `k0sctl.yaml`
+# Updating the K0s Helm extensions
 
 :::warning
 
-Updating `k0sctl.yaml` and apply it will creates downtime!
+Updating and applying `k0sctl.yaml` will create downtime!
 
 :::
 
 There are two ways to update the K0s Helm extensions:
 
-- Updating directly the `k0sctl.yaml` and deploy with `k0sctl`
-- Updating the CRD `helm.k0sproject.io` and deploy with `kubectl`
+- Updating directly the `k0sctl.yaml` and deploying with `k0sctl`
+- Updating the CRD `helm.k0sproject.io` and deploying with `kubectl`
 
-Use the second method to avoid downtime.
-
-We recommend to update the `k0sctl.yaml`, update the CRD and apply the CRD to avoid downtime. For example, if you wish to update Traefik
+We recommend updating the `k0sctl.yaml`, editing and applying the CRD to avoid downtime. For example, if you wish to update Traefik:
 
 1. Update `k0sctl.yaml`
 

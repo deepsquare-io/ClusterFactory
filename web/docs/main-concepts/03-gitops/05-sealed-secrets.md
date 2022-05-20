@@ -16,7 +16,7 @@ stringData:
 
 And you want to store this secret in Git so that it is versioned. Storing a plain-text secret is always bad practice as the git repository can get shared everywhere in the world.
 
-Sealed Secrets encrypt the secret and only the Sealed Secrets controller is able to decrypt the SealedSecret.
+Sealed Secrets encrypt the secret and only the Sealed Secrets controller can decrypt the SealedSecret.
 
 A SealedSecret looks like this:
 
@@ -38,8 +38,13 @@ spec:
       namespace: mynamespace
 ```
 
-Sealed Secrets allows secrets to be stored inside Git, which means it allows GitOps to be used. Git becomes the source of truth, but only the Kubernetes cluster is able to read the secrets.
+Sealed Secrets allows secrets to be stored inside Git, which means it allows
+GitOps to be used. Git becomes the source of truth, but only the Kubernetes
+cluster canread the secrets.
 
-Another solution for managing secrets is [Hashicorp Vault](https://www.vaultproject.io). However, the source of truth for secrets is moved to Hashicorp Vault, which is not GitOps friendly.
+Another solution for managing secrets is [Hashicorp Vault](https://www.vaultproject.io).
+However, the source of truth for secrets is moved to Hashicorp Vault, which is
+not GitOps friendly.
 
-Depending on the use case, you may prefer Hashicorp Vault for multi-clusters and to support multiple application types.
+Depending on the use case, you may prefer Hashicorp Vault for multi-clusters
+and to support multiple application types.

@@ -2,9 +2,9 @@
 
 The reason we are not using NGINX Ingress Controller is quite simple. Thanks to the `IngressRoute` custom resource definition, we can practically do everything, including TCP and UDP routing.
 
-Traefik has also a Dashboard which simply make an experience more friendly.
+Traefik has also a Dashboard which simply makes an experience more friendly.
 
-Traefik is obviously not the stardard solution, so feel free change the main Ingress!
+Traefik is not the standard solution, so feel free to change the main Ingress!
 
 A comparison made by Flant Staff can help you decide:
 

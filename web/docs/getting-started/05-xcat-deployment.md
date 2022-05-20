@@ -1,6 +1,6 @@
 # 5. xCAT Deployment
 
-The `argo/provisioning` directory deploy the xCAT application.
+The `argo/provisioning` directory deploys the xCAT application.
 
 This time, we won't start from scratch.
 
@@ -14,7 +14,7 @@ kubectl apply -f argo/provisioning
 
 ## 2. Volumes
 
-Start with the xCAT volume. This is where xCAT will be storing sqlite databases, os images and more.
+Start with the xCAT volume. This is where xCAT will be storing SQLite databases, os images and more.
 
 ```yaml title="argo/provisioning/volumes/xcat-pv.yml"
 apiVersion: v1
@@ -50,11 +50,11 @@ kubectl apply -f argo/provisioning/volumes/xcat-pv.yml
 
 The label `app=xcat` will be used by the `PersistentVolumeClaim` of the `StatefulSet` to locate the `PersistentVolume`.
 
-You can use a StorageClass if you want. We won't be running multiple xCAT replica anyway.
+You can use a StorageClass if you want. We won't be running multiple xCAT replicas anyway.
 
 ## 3. Apps
 
-Because, xCAT MUST use the host network to be able to provision the bare metal servers, we will use Multus CNI to expose the pod to the external network.
+Because, xCAT MUST use the host network for provisioning the bare metal servers, we will use Multus CNI to expose the pod to the external network.
 
 xCAT will deploy a lot of services including:
 

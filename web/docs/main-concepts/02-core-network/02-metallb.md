@@ -2,7 +2,7 @@
 
 A good article is written [here](https://kubernetes.github.io/ingress-nginx/deploy/baremetal/).
 
-Kubernetes was primarily designed for the cloud. Most clouds have a [Cloud Load Balancer](https://cloud.google.com/load-balancing). On bare-metal, that load balancer obviously doesn't exist.
+Kubernetes was primarily designed for the cloud. Most clouds have a [Cloud Load Balancer](https://cloud.google.com/load-balancing). On bare-metal, that load balancer doesn't exist.
 
 ![Cloud environment](02-metallb.assets/cloud_overview.jpg)
 
@@ -12,7 +12,7 @@ A proper solution would have been to use a dedicated appliance or software (like
 
 ![User edge](02-metallb.assets/user_edge.jpg)
 
-However, MetalLB is inside in the Kubernetes Cluster and permits the use of [LoadBalancer services](https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer). The experience becomes extremely similar to the cloud and load balancing is resolved using L2 or L3 (BGP) solutions.
+However, MetalLB is inside the Kubernetes Cluster and permits the use of [LoadBalancer services](https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer). The experience becomes extremely similar to the cloud and load balancing is resolved using L2 or L3 (BGP) solutions.
 
 ![MetalLB in L2 mode](02-metallb.assets/metallb.jpg)
 

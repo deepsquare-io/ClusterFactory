@@ -4,15 +4,15 @@
 
 This part of the documentation is mostly a draft.
 
-Best way to get started is to follow [the xCAT official quick start](https://xcat-docs.readthedocs.io/en/stable/guides/get-started/quick_start.html).
+The best way to get started is to follow [the xCAT official quick start](https://xcat-docs.readthedocs.io/en/stable/guides/get-started/quick_start.html).
 
 :::
 
-The configuration of xCAT don't follow the GitOps ways and certainly don't follow the declarative way since we need to SSH to the pod.
+The configuration of xCAT doesn't follow the GitOps ways and certainly doesn't follow the declarative way since we need to SSH to the pod.
 
 In the future, we plan to develop and integrate this feature. For now, let's just SSH to the container.
 
-In this guide we will try to get as close as possible to the "declarative" method. xCAT works with stanza files. The whole xCAT cluster can be configured with one big stanza file.
+In this guide, we will try to get as close as possible to the "declarative" method. xCAT works with stanza files. The whole xCAT cluster can be configured with one big stanza file.
 
 It looks like this:
 
@@ -228,7 +228,7 @@ rocky8.4-x86_64:
     type=Linux
 ```
 
-Some field are auto-generated. So let's just configure the network, the OS Image and the nodes.
+Some fields are auto-generated. So let's just configure the network, the OS Image and the nodes.
 
 ## Network configuration
 
@@ -259,9 +259,9 @@ For Infiniband, follow [this guide](https://xcat-docs.readthedocs.io/en/stable/a
 
 Use Packer to build OS images.
 
-You can build the SquareFactory OS image using the recipes stored in `packer-recipes`. Basically, it runs RedHat Kickstart and install all the stuff.
+You can build the SquareFactory OS image using the recipes stored in `packer-recipes`. It runs RedHat Kickstart and installs all the dependencies.
 
-The rootfs is then copied to xCAT using rsync.
+The root filesystem is then copied to xCAT using rsync.
 
 You can use the xCAT OS image builder, but we highly recommend using Packer to create OS images for cloud and bare metal.
 
@@ -281,9 +281,9 @@ rocky8.4-x86_64-netboot-compute:
     rootimgdir=/install/netboot/rocky8.4/x86_64/compute
 ```
 
-Our rootfs is stored inside `/install/netboot/rocky8.4/x86_64/compute/rootimg`.
+Our root filesystem is stored inside `/install/netboot/rocky8.4/x86_64/compute/rootimg`.
 
-Create one postbootscript inside `/install/postscripts` called `git-configs-execute`, which basically git clone and execute scripts from a git repository.
+Create one post-boot script inside `/install/postscripts` called `git-configs-execute`, which `git clone` and executes scripts from a git repository.
 
 For example:
 
@@ -314,7 +314,7 @@ rm -f /key /key.env
 chmod -R g-rwx,o-rwx .
 ```
 
-This script clone `git@github.com:SquareFactory/compute-configs.git` and executes `post.sh` inside the git repository.
+This script clones `git@github.com:SquareFactory/compute-configs.git` and executes `post.sh` inside the git repository.
 
 This script enables us to use Git as the source of truth instead of xCAT.
 
@@ -330,7 +330,7 @@ To generate the kernel and initrd for the netboot, call:
 geninitrd rocky8.4-x86_64-netboot-compute
 ```
 
-To pack the image as squashfs, call:
+To pack the image as SquashFS, call:
 
 ```shell title="ssh root@xcat"
 packimage -m squashfs -c pigz rocky8.4-x86_64-netboot-compute
@@ -379,4 +379,4 @@ rpower cn1 on # or rpower cn1 reset
 
 Congratulations, you've deployed a bare-metal server! xCAT is a heavy beast, but a complete bare metal provisioner. We recommend that you familiarize yourself with the software very quickly by reading the [xCAT documentation](https://xcat-docs.readthedocs.io/en/stable/overview/index.html).
 
-Next steps should be to configure your compute nodes and install a job scheduler like Slurm so you can run parallel jobs!
+The next steps should be to configure your compute nodes and install a job scheduler like Slurm so you can run parallel jobs!

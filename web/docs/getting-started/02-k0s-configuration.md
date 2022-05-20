@@ -2,7 +2,7 @@
 
 ## Specifying the hosts
 
-You may want to [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the [Cluster Factory CE repository](https://github.com/SquareFactory/cluster-factory-ce), so you could use ArgoCD on your own repository.
+You may want to [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the [Cluster Factory CE repository](https://github.com/SquareFactory/cluster-factory-ce), so you could use Argo CD on your own repository.
 
 For now, let's just clone the repository:
 
@@ -29,14 +29,15 @@ spec:
       privateAddress: 10.10.2.16
       installFlags:
         - --debug
-        - --labels="topology.kubernetes.io/region=my-home,topology.kubernetes.io/zone=my-home-1"
+        - --labels="topology.kubernetes.io/region=<country code>-<city>,topology.kubernetes.io/zone=<country code>-<city>-<index>"
       hooks:
         apply:
           after:
             - mkdir -p /var/lib/k0s/kubelet
-            - ln -s /var/lib/k0s/kubelet /var/lib/kubelet
-            - sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config
-            - setenforce 0
+            - sh -c "if [ -L /var/lib/kubelet ]; then echo symlink already exists; else rm -f /var/lib/kubelet && ln -s /var/lib/k0s/kubelet /var/lib/kubelet; fi"
+            - sh -c 'if [ "$(getenforce)" -nq "Permissive" ]; then sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config; fi'
+            - sh -c 'if [ "$(getenforce)" -nq "Permissive" ]; then setenforce 0; fi'
+
     - ssh:
         address: 172.24.0.4
         user: root
@@ -47,18 +48,18 @@ spec:
       privateAddress: 172.24.0.4
       installFlags:
         - --debug
-        - --labels="topology.kubernetes.io/region=at-vie,topology.kubernetes.io/zone=at-vie-1"
+        - --labels="topology.kubernetes.io/region=<country code>-<city>,topology.kubernetes.io/zone=<country code>-<city>-<index>"
       hooks:
         apply:
           after:
             - mkdir -p /var/lib/k0s/kubelet
-            - ln -s /var/lib/kubelet /var/lib/k0s/kubelet
-            - sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config
-            - setenforce 0
+            - sh -c "if [ -L /var/lib/kubelet ]; then echo symlink already exists; else rm -f /var/lib/kubelet && ln -s /var/lib/k0s/kubelet /var/lib/kubelet; fi"
+            - sh -c 'if [ "$(getenforce)" -nq "Permissive" ]; then sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config; fi'
+            - sh -c 'if [ "$(getenforce)" -nq "Permissive" ]; then setenforce 0; fi'
   ...
 ```
 
-Provide each host with a valid IP address that is reachable by k0ctl, and the connection details for an SSH connection.
+Provide each host with a valid IP address that is reachable by k0ctl, and the connection details for an SSH connection. Edit the labels for multi-zone usage.
 
 [The `k0sctl.yaml` specification is written in the repository of k0sctl](https://github.com/k0sproject/k0sctl#spec-fields).
 
@@ -72,7 +73,7 @@ After you set the `hosts` field, you must configure the k0s architecture by edit
 
 ```yaml title="k0sctl.yaml > spec > k0s"
 k0s:
-  version: 1.23.5+k0s.0
+  version: 1.23.6+k0s.1
   dynamicConfig: false
   config:
     apiVersion: k0s.k0sproject.io/v1beta1
@@ -147,7 +148,7 @@ Your router must be capable of using BGP. If not, you should use an appliance wi
 ```yaml title="k0sctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
 - name: metallb
   chartname: bitnami/metallb
-  version: '2.6.8'
+  version: '3.0.4'
   namespace: metallb
   values: |
 
@@ -180,7 +181,7 @@ Your router must be capable of using BGP. If not, you should use an appliance wi
 ```yaml title="k0sctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
 - name: metallb
   chartname: bitnami/metallb
-  version: '2.6.8'
+  version: '3.0.4'
   namespace: metallb
   values: |
 
@@ -199,7 +200,7 @@ After configuring the Load Balancer, you should configure Traefik, the main Ingr
 ```yaml title="k0sctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
 - name: traefik
   chartname: traefik/traefik
-  version: '10.15.0'
+  version: '10.19.5'
   namespace: traefik
   values: |
 
@@ -296,13 +297,11 @@ Add or remove ports. Since Traefik will be used as the main Ingress, these ports
 
 The IngressClass is `traefik`. If you don't want to use Traefik, feel free to add another extension.
 
-We use Traefik because it is able to do a lot of complex route operations while still being able to do basic HTTP routing.
+We use Traefik because it can do a lot of complex route operations while still being able to do basic HTTP routing.
 
 ## Initial Deployment
 
 Run the `1.deploy-k0s.sh` script to deploy the cluster.
-
-TODO: record deployment
 
 You can re-run the scripts if you modify the `k0sctl.yaml` file.
 
@@ -318,11 +317,11 @@ k0sctl kubeconfig --config ./k0sctl.yaml >./kubeconfig
 
 Store the kubeconfig inside `~/.kube/config`, or just `export KUBECONFIG=$(pwd)/kubeconfig`.
 
-Just make sure to verify which config you are using with `kubectl config view`.
+Just make sure to verify which configuration you are using with `kubectl config view`.
 
-Congratulation, you have deployed your kubernetes cluster! However, it's still missing a few core features:
+Congratulation, you have deployed your Kubernetes cluster! However, it's still missing a few core features:
 
-- Sealed Secrets, a secret management optimized for GitOps
-- Cert-manager issuers, to generate your own SSL certificate and enable, for free, tls configuration.
-- ArgoCD, to enable GitOps.
+- Sealed Secrets, secret management optimized for GitOps
+- Cert-manager issuers, to generate your SSL certificates and enable, for free, TLS configuration.
+- Argo CD, to enable GitOps.
 - CoreDNS configurations

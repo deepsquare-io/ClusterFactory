@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 ## Helm and Docker resources
 
-The Helm resources is stored on [the Prometheus Community Git Repository](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack).
+The Helm resources are stored on [the Prometheus Community Git Repository](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack).
 
 The docker images used are:
 
@@ -189,7 +189,7 @@ kubectl apply -f argo/monitoring/volumes/persistent-volume-claim.yaml
 
 ### 2.b. Add initial Grafana password as Secret
 
-Create a SealedSecret which contains the keys of the initial password for Grafana:
+Create a SealedSecret which contains the initial credentials for Grafana:
 
 1. Create a `-secret.yml.local` file:
 
@@ -218,7 +218,7 @@ kubectl apply -f argo/monitoring/secrets/grafana-admin-sealed-secret.yaml
 
 ## 3. Editing the `prometheus-app.yml` values
 
-### 3.a. Add the values to the ArgoCD application
+### 3.a. Add the values to the Argo CD application
 
 <Tabs groupId="volume">
   <TabItem value="storage-class" label="StorageClass (dynamic)" default>
@@ -540,13 +540,13 @@ prometheus:
   </TabItem>
 </Tabs>
 
-In case you don't know how to use `Ingress` with `cert-manager` and Traefik. Use the annotations `traefik.ingress.kubernetes.io/router.entrypoints` and `traefik.ingress.kubernetes.io/router.tls` to indicates the port used by Traefik.
+In case you don't know how to use `Ingress` with `cert-manager` and Traefik. Use the annotations `traefik.ingress.kubernetes.io/router.entrypoints` and `traefik.ingress.kubernetes.io/router.tls` to indicate the port used by Traefik.
 
-The `k0sctl.yaml` indicates that the entrypoints `websecure` is the port 443.
+The `k0sctl.yaml` indicates that the entry-point `websecure` is port 443.
 
 More about Traefik with Kubernetes Ingresses in [their documentation](https://doc.traefik.io/traefik/routing/providers/kubernetes-ingress/).
 
-Use the annotation `cert-manager.io/cluster-issuer` to indicates the certificate issuer and specify the generated certificates secret name in the `tls[].secretName` field. `cert-manager` will automatically search or generate the TLS certificates.
+Use the annotation `cert-manager.io/cluster-issuer` to indicate the certificate issuer and specify the generated certificate secret name in the `tls[].secretName` field. `cert-manager` will automatically search or generate the TLS certificates.
 
 More about `cert-manager` in [their documentation](https://cert-manager.io/docs/usage/ingress/).
 
@@ -567,7 +567,7 @@ chown 1000:2000 /srv/nfs/k8s/prometheus
 
 Verify the default value inside the [the Prometheus Community Git Repository](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml).
 
-And edit the values based on you use-cases.
+And edit the values based on your use-cases.
 
 ## 4. Deploy the app
 
