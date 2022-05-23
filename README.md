@@ -6,16 +6,16 @@ This repository Cluster Factory CE is where SquareFactory develops the k8s-based
 
 ## Key features
 
-- Production-ready vanilla upstream Kubernetes
-- Easy deploy, backup, restore, and update with k0s
+- Production-ready vanilla upstream [Kubernetes](https://docs.clusterfactory.io/docs/main-concepts/k0s)
+- Easy deploy, backup, restore, and update with [k0s](https://docs.clusterfactory.io/docs/main-concepts/k0s)
 - Scalable from single node to large, high-available clusters
-- GitOps-enabled with ArgoCD
+- GitOps-enabled with [ArgoCD](https://docs.clusterfactory.io/docs/main-concepts/gitops/argocd) and [Sealed Secrets](https://docs.clusterfactory.io/docs/main-concepts/gitops/sealed-secrets)
 - VM workloads with KubeVirt
-- Bare-metal workloads with Slurm
-- Bare-metal provisioning with xCAT
-- Supports CNI plugins with Multus CNI
-- TLS and SSL certificates management with cert-manager
-- Mirror of Deepsquare's software library (end user software) by using CVMFS stratum1
+- Bare-metal workloads with [Slurm](https://docs.clusterfactory.io/docs/main-concepts/apps/slurm)
+- Bare-metal provisioning with [xCAT](https://docs.clusterfactory.io/docs/main-concepts/apps/xcat)
+- Supports CNI plugins with [Multus CNI](https://docs.clusterfactory.io/docs/main-concepts/core-network/multus-cni)
+- TLS/SSL certificates management with [cert-manager](https://docs.clusterfactory.io/docs/main-concepts/gitops/cert-manager)
+- Mirror of Deepsquare's software library (end user software) by using [CVMFS Stratum 1](https://docs.clusterfactory.io/docs/main-concepts/apps/cvmfs)
 - A web-based HPC user portal Open Ondemand
 - Monitoring stack (Grafana, Prometheus with ready-to-use exporters)
 
@@ -29,7 +29,7 @@ If you'd like to try Cluster Factory CE, you should start by reading our [Quick 
 - [Github Issues](https://github.com/SquareFactory/cluster-factory-ce/issues) - Submit your issues and feature requests via Github.
 
 We welcome your help in building Cluster Factory CE! If you are interested, we invite you to check
-out the [Contributing Guide](/docs/see-also/contributing).
+out the [Contributing Guide](./CONTRIBUTING.md).
 
 ## Motivation
 
@@ -47,14 +47,6 @@ This is why we are developing Cluster Factory CE:
 
 ## Documentations to help you deploy
 
-To be able to configure this stack you should be proficient in:
-
-- Kubernetes
-- Helm templating
-- CNIs (Multus, Calico and plugins...)
-
-There are other stuffs to learn, but you can learn it during the deployment.
-
 - [Kubernetes Documentation (not going to lie, you're gonna need it)](https://kubernetes.io/docs/concepts/)
 - [Helm Values Files](https://helm.sh/docs/chart_template_guide/values_files/)
 - [K0s Configuration](https://docs.k0sproject.io/v1.23.5+k0s.0/configuration/)
@@ -65,3 +57,7 @@ There are other stuffs to learn, but you can learn it during the deployment.
 - [Argo CD Application YAML](https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/application.yaml)
 - [Traefik Ingress Routes](https://doc.traefik.io/traefik/routing/providers/kubernetes-crd/)
 - [Traefik Ingress](https://doc.traefik.io/traefik/routing/providers/kubernetes-ingress/)
+
+## LICENSE
+
+See the [LICENSE file](./LICENSE).
