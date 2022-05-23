@@ -4,20 +4,20 @@
 
 This repository Cluster Factory CE is where SquareFactory develops the k8s-based infrastructure orchestration tool together with the community. A tool combines all the standard tools of the last 30 years to be able to manage a HPC cluster in a declarative way in combination with the practice of GitOps.
 
-## Deployment process
+## Key features
 
-This project will deploy in the following order:
-
-- A k0s cluster with helm extensions (MetalLB, Traefik, Cert-Manager, CSI Drivers). Also with KubeVirt (VM workloads) and Multus (multiple network interfaces).
-- Core certs issuers, traefik routes and dashboards.
-- Apps with Argo CD
-  - xCAT (bare-metal provisioning)
-  - Packer OS images recipes
-  - Slurm controller, database and login nodes
-  - LDAP (for global users/groups management)
-  - CVMFS stratum1 mirror of Deepsquare's software library (end user software)
-  - Open Ondemand, a web-based HPC user portal
-  - Monitoring stack (Grafana, Prometheus with ready-to-use exporters)
+- Production-ready vanilla upstream Kubernetes
+- Easy deploy, backup, restore, and update with k0s
+- Scalable from single node to large, high-available clusters
+- GitOps-enabled with ArgoCD
+- VM workloads with KubeVirt
+- Bare-metal workloads with Slurm
+- Bare-metal provisioning with xCAT
+- Supports CNI plugins with Multus CNI
+- TLS and SSL certificates management with cert-manager
+- Mirror of Deepsquare's software library (end user software) by using CVMFS stratum1
+- A web-based HPC user portal Open Ondemand
+- Monitoring stack (Grafana, Prometheus with ready-to-use exporters)
 
 ## Getting started
 
