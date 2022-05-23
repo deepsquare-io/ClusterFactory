@@ -1,4 +1,4 @@
-# Releasing k0s
+# Releasing Cluster Factory CE
 
 ## Creating a release
 
