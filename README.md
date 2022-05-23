@@ -1,5 +1,9 @@
 # Cluster Factory Community Edition Kubernetes Stack
 
+## Overview
+
+This repository Cluster Factory CE is where SquareFactory develops the k8s-based infrastructure orchestration tool together with the community. A tool combines all the standard tools of the last 30 years to be able to manage a HPC cluster in a declarative way in combination with the practice of GitOps.
+
 ## Deployment process
 
 This project will deploy in the following order:
@@ -15,83 +19,31 @@ This project will deploy in the following order:
   - Open Ondemand, a web-based HPC user portal
   - Monitoring stack (Grafana, Prometheus with ready-to-use exporters)
 
-## Preparation
+## Getting started
 
-For kubevirt, you must set the SELinux as permissive.
+If you'd like to try Cluster Factory CE, you should start by reading our [Quick Start Guide](https://docs.clusterfactory.io/docs/getting-started/requirements-recommendations) and our [documentation](https://docs.clusterfactory.io/docs/overview/welcome)!
 
-```sh
-sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config
-setenforce 0
-```
+## Join the Community
 
-Since k0s is not the official "k8s", you should create a symbolic link for `/var/lib/kubelet` to `/var/lib/k0s/kubelet` (`ln -s /var/lib/kubelet /var/lib/k0s/kubelet`) in all of the hosts to avoid incompatibilities with official k8s solutions (because some application have the kubelet path hard-coded).
+- Community Discord - Request for support and helm from the Cluster Factory community.
+- [Github Issues](https://github.com/SquareFactory/cluster-factory-ce/issues) - Submit your issues and feature requests via Github.
 
-## Customize for your cluster
+We welcome your help in building Cluster Factory CE! If you are interested, we invite you to check
+out the [Contributing Guide](/docs/see-also/contributing).
 
-You can already edit the values of the helm charts in `k0sctl.yaml`!
+## Motivation
 
-Start with the `hosts` and then verify the settings used for the cluster in the `k0s` block. The only way to change these options in the future will be to recreate the whole cluster!
+At SquareFactory, we wish to develop applications for the DeepSquare Grid. Because of that, our infrastructure uses a lot of HPC technologies, 
+which makes it difficult to scale. We believe that **flexibity**, **repeatability**, **availability** and **ease of use** should be prioritized
+for managing and scaling HPC clusters.
 
-Edit the parameters of the extension `metallb`. These IPs correspond to the entry-points to your k8s cluster !
+This is why we are developing Cluster Factory CE:
 
-Example: `10.10.2.100-10.10.2.105` means that MetalLB will use these IPs. The first `LoadBalancer` service will be assigned the IP 10.10.2.100 on the external network, but you should use `loadBalancerIP` field of the service to allocate the right IP.
-
-After settings up `metallb`, you can edit the `traefik` values and put the right ports for your apps.
-
-Then, add/modify the cluster issuers to have the right TLS config in the `core/cert-manager` directory. **Search and replace** is your friend.
-
-Finally check for every `.yml` in the `core` directory:
-
-- For `argo-cd`, edit the `certificate.yml` and `ingress-route.yml`.
-- For `coredns`, edit the `configmap.yml`, `deployment.yml` (volume mounts) and the `ingress-route.yml`. CoreDNS will be exposed to the network.
-- For `kubevirt`, edit the `kubevirt-cr.yaml` if you wish to select the nodes
-
-You can then launch `1.deploy-k0s.sh` and `2.deploy-core-apps.sh`.
-
-## Customize the Argo CD Apps
-
-Before we start, the `helm` directory is just a helm repository for deploying our stack, so you should never edit these files directly.
-
-The exception being `slurm-cluster` as this application has been taylored for our cluster and you may be interested in editing the slurm stack (e.g. changing the default prologs and epilogs).
-
-Otherwise, to edit the Argo CD applications, go to the `argo` directory. You need to edit and check all the files in this directory.
-
-You also need to **regenerate all the sealed secrets** as they are for our cluster. There are some examples, but you can also add secrets to pull from git repositories and docker images.
-
-Use the `kubeseal-every-local-files.sh` file to convert each `-secret.yml.local` to `-sealed-secret.yml`.
-
-Once all the configurations are done (values, secrets, volumes), you should be able to run the `3.deploy*.sh` scripts. We recommend that you do not use these scripts as they may be taylored for our cluster and that you should deploy the applications yourself. E.g.:
-
-```sh
-kubectl -f argo/<project>/apps/<app>.yml
-```
-
-## About deleting a k0s helm extension
-
-First, remove the extension in the k0sctl.yaml.
-
-Then, try to remove the resource:
-
-```sh
-# List with kubectl get Chart -n kube-system
-kubectl delete Chart <k0s-addon-chart> -n kube-system
-```
-
-If it gets stuck (because you have already `helm uninstall`), remove the `finalizers`.
-
-```sh
-kubectl patch Chart <k0s-addon-chart> -n kube-system \
-  --type json \
-  --patch='[{"op": "remove", "path": "/metadata/finalizers"}]'
-```
-
-Finally, on the controller node, make sure that the `/var/lib/k0s/manifests/helm/<addon_crd_manifest>` doesn't exists.
-
-Apply k0s one last time and you are done !
-
-Note: If you need to reinstall the chart via `k0sctl.yaml`, you will have to apply manually `/var/lib/k0s/manifests/helm/<addon_crd_manifest>` after applying `k0sctl.yaml`.
-
-Issue related: https://github.com/k0sproject/k0s/issues/1456
+- **Highly configurable**: With Helm, all configuration is done in a single `values.yaml` file.
+- **Repeatable**: With Argo CD following GitOps practices, all states are specified declaratively and saved in a Git repository.
+- **Highly available**: With Kubernetes, container scheduling is automatically ensured and easy to set up.
+- **Simple**: A single descriptive YAML per application, with Argo CD to automatically updates the application.
+- **Long-term maintainability**: Easy to deploy, update, backup and restore with K0s.
 
 ## Documentations to help you deploy
 
