@@ -35,7 +35,7 @@ spec:
 
         config:
           - 'acl local_nodes src YOUR_CLIENT_IPS'
-          - 'acl stratum_ones dst cvmfs.ch1.csquare.run'
+          - 'acl stratum_ones dst cvmfs.ch1.deepsquare.run'
           - 'http_port 3128'
           - 'http_access allow stratum_ones'
           - 'http_access allow local_nodes'

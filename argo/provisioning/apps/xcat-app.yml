@@ -53,7 +53,7 @@ spec:
             nameservers:
               - 127.0.0.1
             searches:
-              - ch1.csquare.run
+              - ch1.deepsquare.run
 
   destination:
     server: 'https://kubernetes.default.svc'

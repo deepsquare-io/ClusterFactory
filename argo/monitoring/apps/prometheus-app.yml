@@ -27,7 +27,7 @@ spec:
               traefik.ingress.kubernetes.io/router.tls: 'true'
 
             hosts:
-              - alertmanager.ch1.csquare.run
+              - alertmanager.ch1.deepsquare.run
 
             paths:
               - /
@@ -35,9 +35,9 @@ spec:
             pathType: Prefix
 
             tls:
-              - secretName: alertmanager.ch1.csquare.run-secret
+              - secretName: alertmanager.ch1.deepsquare.run-secret
                 hosts:
-                  - alertmanager.ch1.csquare.run
+                  - alertmanager.ch1.deepsquare.run
 
           alertmanagerSpec:
             storage:
@@ -88,14 +88,14 @@ spec:
               traefik.ingress.kubernetes.io/router.tls: 'true'
 
             hosts:
-              - grafana.ch1.csquare.run
+              - grafana.ch1.deepsquare.run
 
             path: /
 
             tls:
-              - secretName: grafana.ch1.csquare.run-secret
+              - secretName: grafana.ch1.deepsquare.run-secret
                 hosts:
-                  - grafana.ch1.csquare.run
+                  - grafana.ch1.deepsquare.run
 
         ## Component scraping the kube controller manager
         ##
@@ -180,15 +180,15 @@ spec:
               traefik.ingress.kubernetes.io/router.tls: 'true'
 
             hosts:
-              - prometheus.ch1.csquare.run
+              - prometheus.ch1.deepsquare.run
 
             paths:
               - /
 
             tls:
-              - secretName: prometheus.ch1.csquare.run-secret
+              - secretName: prometheus.ch1.deepsquare.run-secret
                 hosts:
-                  - prometheus.ch1.csquare.run
+                  - prometheus.ch1.deepsquare.run
 
           prometheusSpec:
             ruleSelectorNilUsesHelmValues: false

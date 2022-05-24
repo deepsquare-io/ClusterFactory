@@ -11,17 +11,17 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`argocd.ch1.csquare.run`)
+      match: Host(`argocd.ch1.deepsquare.run`)
       priority: 10
       services:
         - name: argocd-server
           port: 80
     - kind: Rule
-      match: Host(`argocd.ch1.csquare.run`) && HeadersRegexp(`Content-Type`, `^application/grpc.*$`)
+      match: Host(`argocd.ch1.deepsquare.run`) && HeadersRegexp(`Content-Type`, `^application/grpc.*$`)
       priority: 11
       services:
         - name: argocd-server
           port: 80
           scheme: h2c
   tls:
-    secretName: argocd.ch1.csquare.run-secret
+    secretName: argocd.ch1.deepsquare.run-secret

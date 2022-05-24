@@ -1,14 +1,14 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: argocd.ch1.csquare.run-cert
+  name: argocd.ch1.deepsquare.run-cert
   namespace: argocd
 spec:
-  secretName: argocd.ch1.csquare.run-secret
+  secretName: argocd.ch1.deepsquare.run-secret
   issuerRef:
     name: selfsigned-cluster-issuer
     kind: ClusterIssuer
-  commonName: argocd.ch1.csquare.run
+  commonName: argocd.ch1.deepsquare.run
   duration: 43800h
   subject:
     countries: [CH]
@@ -19,7 +19,7 @@ spec:
     provinces: [Laud]
     streetAddresses: [Chemin des Mouettes 1]
   dnsNames:
-    - argocd.ch1.csquare.run
+    - argocd.ch1.deepsquare.run
   emailAddresses:
     - nguyen_marc@live.fr
     - marc@squarefactory.io

@@ -81,7 +81,7 @@ configs:
       CVMFS_USE_GEOAPI=no
       CVMFS_HTTP_PROXY="DIRECT"
       CVMFS_KEYS_DIR="/etc/cvmfs/keys"
-      CVMFS_SERVER_URL="http://cvmfs.ch1.csquare.run/cvmfs/@fqrn@"
+      CVMFS_SERVER_URL="http://cvmfs.ch1.deepsquare.run/cvmfs/@fqrn@"
       CVMFS_USER=root
 ```
 

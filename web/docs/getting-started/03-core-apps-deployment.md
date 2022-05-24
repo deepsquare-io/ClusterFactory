@@ -37,18 +37,18 @@ data:
       forward . tls://9.9.9.9
       reload
     }
-    at1.csquare.run:53 {
+    at1.deepsquare.run:53 {
       log
       errors
       ready
-      hosts /etc/coredns/at1.csquare.run.db
+      hosts /etc/coredns/at1.deepsquare.run.db
       reload
     }
-    ch1.csquare.run:53 {
+    ch1.deepsquare.run:53 {
       log
       errors
       ready
-      hosts /etc/coredns/ch1.csquare.run.db
+      hosts /etc/coredns/ch1.deepsquare.run.db
       reload
     }
     csquare.gcloud:53 {
@@ -65,9 +65,9 @@ data:
       }
       reload
     }
-  ch1.csquare.run.db: |
-    10.10.2.51 cn1.ch1.csquare.run
-    10.10.2.52 cn2.ch1.csquare.run
+  ch1.deepsquare.run.db: |
+    10.10.2.51 cn1.ch1.deepsquare.run
+    10.10.2.52 cn2.ch1.deepsquare.run
     ...
 ```
 
@@ -138,12 +138,12 @@ Because some files were added and removed, you must change the `deployment.yml`:
                   path: Corefile
 +               - key: my.home.db
 +                 path: my.home.db
--               - key: ch1.csquare.run.db
--                 path: ch1.csquare.run.db
+-               - key: ch1.deepsquare.run.db
+-                 path: ch1.deepsquare.run.db
 -               - key: csquare.gcloud.db
 -                 path: csquare.gcloud.db
--               - key: at1.csquare.run.db
--                 path: at1.csquare.run.db
+-               - key: at1.deepsquare.run.db
+-                 path: at1.deepsquare.run.db
               defaultMode: 420
 ```
 

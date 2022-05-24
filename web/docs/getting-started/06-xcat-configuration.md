@@ -47,7 +47,7 @@ montbhandler.pm:
 
 10_10_2_0-255_255_255_0:
     objtype=network
-    domain=ch1.csquare.run
+    domain=ch1.deepsquare.run
     gateway=10.10.2.1
     mask=255.255.255.0
     mgtifname=ens18
@@ -245,10 +245,23 @@ Some fields are auto-generated. So let's just configure the network, the OS Imag
     tftpserver=<xcatmaster>
 ```
 
-To apply the stanza:
+Apply the stanza:
 
 ```shell title="ssh root@xcat"
 cat mystanzafile | mkdef -z
+```
+
+And regenerate the DNS and DHCP configuration:
+
+```shell title="ssh root@xcat"
+echo "reconfiguring hosts..."
+makehosts
+echo "reconfiguring dns..."
+makedns
+echo "reconfiguring dhcpd config..."
+makedhcp -n
+echo "reconfiguring dhcpd leases..."
+makedhcp -a
 ```
 
 More details [here](https://xcat-docs.readthedocs.io/en/latest/guides/admin-guides/references/man5/networks.5.html).
@@ -363,10 +376,23 @@ cn1:
     serialspeed=115200
 ```
 
-To apply the stanza:
+Apply the stanza:
 
 ```shell title="ssh root@xcat"
 cat mystanzafile | mkdef -z
+```
+
+And regenerate the DNS and DHCP configuration:
+
+```shell title="ssh root@xcat"
+echo "reconfiguring hosts..."
+makehosts
+echo "reconfiguring dns..."
+makedns
+echo "reconfiguring dhcpd config..."
+makedhcp -n
+echo "reconfiguring dhcpd leases..."
+makedhcp -a
 ```
 
 More details [here](https://xcat-docs.readthedocs.io/en/stable/guides/admin-guides/references/man7/node.7.html).

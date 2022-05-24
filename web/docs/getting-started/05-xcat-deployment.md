@@ -148,7 +148,7 @@ net:
     nameservers:
       - 127.0.0.1
     searches:
-      - ch1.csquare.run
+      - ch1.deepsquare.run
 ```
 
 `nodeSelector` is very useful to make sure that xCAT stays in the right zone.

@@ -35,10 +35,23 @@ Don't replace `<xcatmaster>`.
 
 Edit the file accordingly.
 
-To apply the stanza:
+Apply the stanza:
 
 ```shell title="ssh root@xcat"
-cat network.stanza | mkdef -z
+cat mystanzafile | mkdef -z
+```
+
+And regenerate the DNS and DHCP configuration:
+
+```shell title="ssh root@xcat"
+echo "reconfiguring hosts..."
+makehosts
+echo "reconfiguring dns..."
+makedns
+echo "reconfiguring dhcpd config..."
+makedhcp -n
+echo "reconfiguring dhcpd leases..."
+makedhcp -a
 ```
 
 More details [here](https://xcat-docs.readthedocs.io/en/latest/guides/admin-guides/references/man5/networks.5.html).
@@ -174,6 +187,19 @@ Edit accordingly and apply the stanza:
 
 ```shell title="ssh root@xcat"
 cat cn1.stanza | mkdef -z
+```
+
+And regenerate the DNS and DHCP configuration:
+
+```shell title="ssh root@xcat"
+echo "reconfiguring hosts..."
+makehosts
+echo "reconfiguring dns..."
+makedns
+echo "reconfiguring dhcpd config..."
+makedhcp -n
+echo "reconfiguring dhcpd leases..."
+makedhcp -a
 ```
 
 More details [here](https://xcat-docs.readthedocs.io/en/stable/guides/admin-guides/references/man7/node.7.html).

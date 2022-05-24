@@ -44,7 +44,7 @@ spec:
 
           accounting: |
             AccountingStorageType=accounting_storage/slurmdbd
-            AccountingStorageHost=slurmdbd.csquare.gcloud
+            AccountingStorageHost=slurmdbd.deepsquare.gcloud
             AccountingStoragePort=6819
             AccountingStorageTRES=gres/gpu
             AccountingStoreFlags=job_comment,job_env,job_script
@@ -197,7 +197,7 @@ spec:
               - 10.96.0.10
             searches:
               - slurm-cluster.svc.cluster.local
-              - at1.csquare.run
+              - at1.deepsquare.run
             options:
               - name: ndots
                 value: "0"
@@ -285,7 +285,7 @@ spec:
               - 10.96.0.10
             searches:
               - slurm-cluster.svc.cluster.local
-              - at1.csquare.run
+              - at1.deepsquare.run
             options:
               - name: ndots
                 value: "0"

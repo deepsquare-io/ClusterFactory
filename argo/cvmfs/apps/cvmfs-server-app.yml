@@ -23,7 +23,7 @@ spec:
             - 10.96.0.10
           searches:
             - slurm-cluster.svc.cluster.local
-            - ch1.csquare.run
+            - ch1.deepsquare.run
           options:
             - name: ndots
               value: "0"
@@ -36,7 +36,7 @@ spec:
         config:
           replicas:
             - name: stdenv.sion.csquare.run
-              url: http://cvmfs.ch1.csquare.run/cvmfs/stdenv.sion.csquare.run
+              url: http://cvmfs.ch1.deepsquare.run/cvmfs/stdenv.sion.csquare.run
               keys: /etc/cvmfs/keys/sion.csquare.run
               options: '-o root'
 
