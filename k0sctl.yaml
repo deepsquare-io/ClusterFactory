@@ -207,6 +207,11 @@ spec:
                       # NOTE: use cert-manager.
                       tls:
                         enabled: false
+                    kubernetes:
+                      port: 6443
+                      expose: true
+                      exposedPort: 6443
+                      protocol: TCP
                     metrics:
                       port: 9100
                       expose: false

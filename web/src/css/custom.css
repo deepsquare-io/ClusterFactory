@@ -27,25 +27,24 @@
   --custom-font-base: 'Avenir', 'Roboto',
     'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Helvetica',
     'Arial', sans-serif;
-  --custom-font-code: 'office code pro', Menlo, monospace;
+  --custom-font-code: Menlo, monospace;
   --custom-font-size-base: 1rem;
   --custom-border-radius: 3px;
   --custom-border-radius-md: 6px;
-  --custom-primary-darkest: #47034b;
-  --custom-primary-darker: #57035b;
-  --custom-primary-dark: #5c0460;
-  --custom-primary: #66046b;
-  --custom-primary-light: #700476;
-  --custom-primary-lighter: #75057b;
-  --custom-primary-lightest: #85058b;
-  --custom-background-color: #050308ff;
+  --custom-primary-darkest: #0f5350;
+  --custom-primary-darker: #136561;
+  --custom-primary-dark: #146b67;
+  --custom-primary: #167772;
+  --custom-primary-light: #18837d;
+  --custom-primary-lighter: #198983;
+  --custom-primary-lightest: #1d9b94;
+  --custom-background-color: #fff;
   --custom-background-color-highlight: #fff;
   --custom-background-color-diff: #f5f6f7;
   --custom-background-color-diff-1: #eee;
   --custom-background-color-diff-2: #ccc;
-  --custom-content-color: #050308ff;
-  --custom-content-color-light: #484848;
-  --custom-content-color-lightest: #333;
+  --custom-content-color-light: #141414;
+  --custom-content-color-lightest: #141414;
   --custom-content-color-emphasis: #000;
   --custom-border-color: #e0e0e0;
   --custom-color-subtle: #ccc;
@@ -145,13 +144,13 @@
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
 :root[data-theme='dark'] {
-  --custom-primary-darkest: #b01176;
-  --custom-primary-darker: #d6158f;
-  --custom-primary-dark: #e21698;
-  --custom-primary: #ea2aa4;
-  --custom-primary-light: #ec43af;
-  --custom-primary-lighter: #ee50b4;
-  --custom-primary-lightest: #f175c4;
+  --custom-primary-darkest: #1a8870;
+  --custom-primary-darker: #1fa588;
+  --custom-primary-dark: #21af90;
+  --custom-primary: #25c2a0;
+  --custom-primary-light: #29d5b0;
+  --custom-primary-lighter: #32d8b4;
+  --custom-primary-lightest: #4fddbf;
 
   --custom-background-color: #050308ff;
   --custom-background-color-highlight: rgb(14, 8, 22);
@@ -206,9 +205,9 @@
 }
 
 /* Background */
-html {
+html[data-theme='dark'] {
   background: rgb(11,41,38);
-  background: linear-gradient(90deg, rgba(11,41,38,1) 0%, rgba(5,3,8,1) 15%, rgba(5,3,8,1) 75%, rgba(40,4,31,1) 100%);
+  background: linear-gradient(90deg, #0b2926 0%, #050308 15%, #050308 75%, #00344B 100%);
 }
 
 /* Sidebar */
@@ -491,7 +490,6 @@ div[class^='sidebar_'] .menu__link.menu__link--active:not(.menu__link--sublist) 
 
 div[class^='codeBlockTitle'],
 div[class*=' codeBlockTitle'] {
-  color: #ccc !important;
   font-size: 0.8rem !important;
   border-color: #444;
 }
@@ -512,4 +510,14 @@ div[class*=' codeBlockTitle'] {
 
 img {
   filter: drop-shadow(0px 0px 5px #fff);
+}
+
+/* Selection */
+
+::selection {
+  background-color: #7DD7CF;
+}
+
+[data-theme='dark'] ::selection {
+  background-color: #1F5263;
 }
