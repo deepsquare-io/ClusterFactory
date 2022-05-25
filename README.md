@@ -25,7 +25,7 @@ If you'd like to try Cluster Factory CE, you should start by reading our [Quick 
 
 ## Join the Community
 
-- Community Discord - Request for support and helm from the Cluster Factory community.
+- [Community Discord](https://discord.gg/zt4GF5HYHX) - Request for support and helm from the Cluster Factory community.
 - [Github Issues](https://github.com/SquareFactory/cluster-factory-ce/issues) - Submit your issues and feature requests via Github.
 
 We welcome your help in building Cluster Factory CE! If you are interested, we invite you to check
@@ -33,7 +33,7 @@ out the [Contributing Guide](./CONTRIBUTING.md).
 
 ## Motivation
 
-At SquareFactory, we wish to develop applications for the DeepSquare Grid. Because of that, our infrastructure uses a lot of HPC technologies, 
+At SquareFactory, we wish to develop applications for the DeepSquare Grid. Because of that, our infrastructure uses a lot of HPC technologies,
 which makes it difficult to scale. We believe that **flexibity**, **repeatability**, **availability** and **ease of use** should be prioritized
 for managing and scaling HPC clusters.
 
