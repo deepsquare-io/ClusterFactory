@@ -51,7 +51,7 @@ const config = {
         title: 'Cluster Factory CE Docs',
         logo: {
           alt: 'Cluster Factory CE Logo',
-          src: 'img/logo.svg', // TODO
+          src: 'img/logo.svg',
         },
         items: [
           {
