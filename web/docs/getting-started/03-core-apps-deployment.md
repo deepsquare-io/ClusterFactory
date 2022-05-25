@@ -4,15 +4,15 @@
 
 The initial configuration of CoreDNS given by k0s is not satisfying our needs. This is why we are applying a new configuration.
 
-CoreDNS is exposed to the external network thanks to the `IngressRoute` objects in the `core/coredns/ingress-route.yml`.
+CoreDNS is exposed to the external network thanks to the `IngressRoute` objects in the [`core/coredns/overlays/prod/ingress-route.yml`](https://github.com/SquareFactory/cluster-factory-ce/blob/main/core/coredns/overlays/prod/ingress-route.yml).
 
 If this is an unwanted feature (because you are using an other DNS for example), feel free to remove the routes and close the ports in the Traefik extension specification inside `k0sctl.yaml`.
 
-The files that you should look for are `configmap.yml` and `deployment.yml`.
+The files that you should look for are `core/coredns/overlays/prod/configmap.yml` and `core/coredns/overlays/prod/deployment.yml`.
 
-Inside the ConfigMap, you'll find:
+Inside the `ConfigMap`, you'll find:
 
-```yaml title="core/coredns/configmap.yml"
+```yaml title="core/coredns/overlays/prod/configmap.yml"
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -37,34 +37,7 @@ data:
       forward . tls://9.9.9.9
       reload
     }
-    at1.deepsquare.run:53 {
-      log
-      errors
-      ready
-      hosts /etc/coredns/at1.deepsquare.run.db
-      reload
-    }
-    ch1.deepsquare.run:53 {
-      log
-      errors
-      ready
-      hosts /etc/coredns/ch1.deepsquare.run.db
-      reload
-    }
-    csquare.gcloud:53 {
-      log
-      errors
-      ready
-      forward . 10.172.15.192 {
-        max_concurrent 1000
-        force_tcp
-        expire 3600s
-      }
-      hosts /etc/coredns/csquare.gcloud.db {
-        fallthrough
-      }
-      reload
-    }
+    ...
   ch1.deepsquare.run.db: |
     10.10.2.51 cn1.ch1.deepsquare.run
     10.10.2.52 cn2.ch1.deepsquare.run
@@ -75,7 +48,7 @@ Change the zones with yours (let's say `my.home`) and, eventually, change the `f
 
 For example:
 
-```yaml title="core/coredns/configmap.yml"
+```yaml title="core/coredns/overlays/prod/configmap.yml"
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -125,10 +98,7 @@ search my.home
 
 Because some files were added and removed, you must change the `deployment.yml`:
 
-```diff title="core/coredns/deployment.yml"
-            terminationMessagePath: /dev/termination-log
-            terminationMessagePolicy: File
-        dnsPolicy: Default
+```diff title="core/coredns/overlays/prod/deployment.yml > spec > template > spec > volumes"
         volumes:
           - name: config-volume
             configMap:
@@ -140,10 +110,7 @@ Because some files were added and removed, you must change the `deployment.yml`:
 +                 path: my.home.db
 -               - key: ch1.deepsquare.run.db
 -                 path: ch1.deepsquare.run.db
--               - key: csquare.gcloud.db
--                 path: csquare.gcloud.db
--               - key: at1.deepsquare.run.db
--                 path: at1.deepsquare.run.db
+-               - ...
               defaultMode: 420
 ```
 

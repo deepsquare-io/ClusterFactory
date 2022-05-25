@@ -14,8 +14,8 @@ cd ./core/sealed-secrets
 
 cd "$WORKDIR"
 
-section "Change CoreDNS configuration"
-kubectl apply -f ./core/coredns/
+section "Change CoreDNS prod configuration"
+kubectl apply -k ./core/coredns/overlays/prod/
 
 section "Setup cert-manager issuers"
 kubectl apply -f ./core/cert-manager/
