@@ -154,7 +154,7 @@
   --custom-primary-lightest: #f175c4;
 
   --custom-background-color: #050308ff;
-  --custom-background-color-highlight: rgb(21, 12, 34);
+  --custom-background-color-highlight: rgb(14, 8, 22);
   --custom-background-color-diff: #1f1f1f;
   --custom-background-color-diff-1: #202020;
   --custom-background-color-diff-2: rgb(51, 51, 51);
@@ -190,6 +190,8 @@
 
   /* Card */
   --ifm-card-background-color: var(--custom-background-color-highlight);
+
+  --ifm-footer-background-color: rgba(255, 255, 255, 0);
 }
 
 .docusaurus-highlight-code-line {
@@ -201,6 +203,12 @@
 
 [data-theme='dark'] .docusaurus-highlight-code-line {
   background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Background */
+html {
+  background: rgb(11,41,38);
+  background: linear-gradient(90deg, rgba(11,41,38,1) 0%, rgba(5,3,8,1) 20%, rgba(40,4,31,1) 100%);
 }
 
 /* Sidebar */

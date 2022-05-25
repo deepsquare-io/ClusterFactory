@@ -62,56 +62,6 @@ const config = {
         ],
       },
       footer: {
-        style: 'dark',
-        links: [
-          {
-            title: 'Docs',
-            items: [
-              {
-                label: 'Overview',
-                to: '/docs/overview/welcome',
-              },
-              {
-                label: 'Getting Started',
-                to: '/docs/getting-started/requirements-recommendations',
-              },
-              {
-                label: 'Contributing',
-                to: '/docs/contributing',
-              },
-              {
-                label: 'Frequently Asked Questions',
-                to: '/docs/faq',
-              },
-            ],
-          },
-          {
-            title: 'Community',
-            items: [
-              {
-                label: 'Discord',
-                href: 'https://discordapp.com/invite/docusaurus',
-              },
-              {
-                label: 'Twitter',
-                href: 'https://mobile.twitter.com/squarefactoryai',
-              },
-              {
-                label: 'LinkedIn',
-                href: 'https://www.linkedin.com/company/squarefactory',
-              },
-            ],
-          },
-          {
-            title: 'More',
-            items: [
-              {
-                label: 'GitHub',
-                href: 'https://github.com/SquareFactory/cluster-factory-ce',
-              },
-            ],
-          },
-        ],
         copyright: `Copyright © ${new Date().getFullYear()} Cluster Factory CE Docs, SquareFactory. Built with Docusaurus.`,
       },
       prism: {
