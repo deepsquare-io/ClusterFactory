@@ -78,3 +78,18 @@ fi
 echo "Found kubectl: $(kubeseal --version)"
 echo
 export KUBESEAL
+
+HELM="$(command -v helm)"
+if ! [ -x "$HELM" ]; then
+  HELM_VERSION=3.9.0
+  echo "helm could not be found. Downloading it locally in ./bin."
+  rm -f ./bin/helm
+  curl -fsSL "https://get.helm.sh/helm-v${HELM_VERSION}-${os}-${architecture}.tar.gz" | tar -zxvf - "${os}-${architecture}/helm"
+  mv "${os}-${architecture}/helm" ./bin/helm
+  rmdir "${os}-${architecture}"
+  chmod +x ./bin/helm
+  HELM="$(command -v helm)"
+fi
+echo "Found helm: $(helm version)"
+echo
+export HELM
