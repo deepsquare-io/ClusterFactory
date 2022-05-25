@@ -25,7 +25,7 @@ const config = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl: 'https://github.com/SquareFactory/cluster-factory-ce/tree/feat/docs/web/',
+          editUrl: 'https://github.com/SquareFactory/cluster-factory-ce/tree/main/web/',
         },
         blog: {
           showReadingTime: true,
