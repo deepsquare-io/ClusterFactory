@@ -134,6 +134,9 @@ spec:
                 version: '10.19.5'
                 namespace: traefik
                 values: |
+                  deployment:
+                    kind: DaemonSet
+
                   ingressClass:
                     enabled: true
                     isDefaultClass: true
