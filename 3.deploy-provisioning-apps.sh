@@ -1,13 +1,6 @@
 #!/bin/sh
 
-section() {
-  echo
-  echo "---$1---"
-}
-
 PROJECT=provisioning
-
-section "Checking prerequisites"
 
 . "./scripts/common.sh"
 

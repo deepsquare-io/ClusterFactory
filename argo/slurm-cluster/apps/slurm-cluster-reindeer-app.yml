@@ -40,7 +40,7 @@ spec:
 
           accounting: |
             AccountingStorageType=accounting_storage/slurmdbd
-            AccountingStorageHost=slurmdbd.csquare.gcloud
+            AccountingStorageHost=slurmdbd.deepsquare.gcloud
             AccountingStoragePort=6819
             AccountingStorageTRES=gres/gpu
 
@@ -92,7 +92,7 @@ spec:
             FederationParameters=fed_display
 
             JobCompType=jobcomp/report
-            JobCompLoc=https://slurm:f_4UyDHC7%21w%24Cc2KSHFv@slurm.accounting.csquare.gcloud/report
+            JobCompLoc=https://slurm:f_4UyDHC7%21w%24Cc2KSHFv@slurm.accounting.deepsquare.gcloud/report
             JobAcctGatherType=jobacct_gather/cgroup
             MailProg=/usr/bin/fakemail
 
@@ -149,7 +149,7 @@ spec:
               - 10.96.0.10
             searches:
               - slurm-cluster.svc.cluster.local
-              - ch1.csquare.run
+              - ch1.deepsquare.run
             options:
               - name: ndots
                 value: "0"
@@ -215,7 +215,7 @@ spec:
               - 10.96.0.10
             searches:
               - slurm-cluster.svc.cluster.local
-              - ch1.csquare.run
+              - ch1.deepsquare.run
             options:
               - name: ndots
                 value: "0"
@@ -345,7 +345,7 @@ spec:
           hostAliases:
             - ip: '127.0.0.1'
               hostnames:
-                - 'ondemand.sion.csquare.run'
+                - 'ondemand.sion.deepsquare.run'
 
           sshd:
             secretName: login-sshd-secret
@@ -356,7 +356,7 @@ spec:
               - 10.96.0.10
             searches:
               - slurm-cluster.svc.cluster.local
-              - ch1.csquare.run
+              - ch1.deepsquare.run
             options:
               - name: ndots
                 value: "0"
@@ -552,7 +552,7 @@ spec:
             ingressClass: 'traefik'
 
             hosts:
-              - ondemand.sion.csquare.run
+              - ondemand.sion.deepsquare.run
 
             tls: {}
 
@@ -563,7 +563,7 @@ spec:
             ingressClass: 'traefik'
 
             hosts:
-              - ondemand.sion.csquare.run
+              - ondemand.sion.deepsquare.run
 
             tls: {}
 

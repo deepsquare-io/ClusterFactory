@@ -1,5 +1,0 @@
-- TODO: Kubernetize Packer
-- TODO: Set SELinux to permissive
-- TODO: Set qemu on nodes ?
-- TODO: Symbolic link `ln -s /var/lib/kubelet /var/lib/k0s/kubelet`
-- TODO: Be able to macvlan for a VM

@@ -15,6 +15,13 @@ spec:
       installFlags:
         - --debug
         - --labels="topology.kubernetes.io/region=ch-sion,topology.kubernetes.io/zone=ch-sion-1"
+      hooks:
+        apply:
+          after:
+            - mkdir -p /var/lib/k0s/kubelet
+            - sh -c "if [ -L /var/lib/kubelet ]; then echo symlink already exists; else rm -f /var/lib/kubelet && ln -s /var/lib/k0s/kubelet /var/lib/kubelet; fi"
+            - sh -c 'if [ "$(getenforce)" -nq "Permissive" ]; then sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config; fi'
+            - sh -c 'if [ "$(getenforce)" -nq "Permissive" ]; then setenforce 0; fi'
     - ssh:
         address: 172.24.0.4
         user: root
@@ -26,9 +33,16 @@ spec:
       installFlags:
         - --debug
         - --labels="topology.kubernetes.io/region=at-vie,topology.kubernetes.io/zone=at-vie-1"
+      hooks:
+        apply:
+          after:
+            - mkdir -p /var/lib/k0s/kubelet
+            - sh -c "if [ -L /var/lib/kubelet ]; then echo symlink already exists; else rm -f /var/lib/kubelet && ln -s /var/lib/k0s/kubelet /var/lib/kubelet; fi"
+            - sh -c 'if [ "$(getenforce)" -nq "Permissive" ]; then sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config; fi'
+            - sh -c 'if [ "$(getenforce)" -nq "Permissive" ]; then setenforce 0; fi'
 
   k0s:
-    version: 1.23.5+k0s.0
+    version: 1.23.6+k0s.1
     dynamicConfig: false
     config:
       apiVersion: k0s.k0sproject.io/v1beta1
@@ -88,7 +102,7 @@ spec:
             charts:
               - name: metallb
                 chartname: bitnami/metallb
-                version: '2.6.8'
+                version: '3.0.4'
                 namespace: metallb
                 values: |
                   configInline:
@@ -117,7 +131,7 @@ spec:
 
               - name: traefik
                 chartname: traefik/traefik
-                version: '10.15.0'
+                version: '10.19.5'
                 namespace: traefik
                 values: |
                   ingressClass:
@@ -190,7 +204,7 @@ spec:
                       expose: true
                       exposedPort: 443
                       protocol: TCP
-                      # NOTE from csquare: use cert-manager.
+                      # NOTE: use cert-manager.
                       tls:
                         enabled: false
                     metrics:
@@ -213,14 +227,14 @@ spec:
 
               - name: cert-manager
                 chartname: jetstack/cert-manager
-                version: v1.7.1
+                version: v1.8.0
                 namespace: cert-manager
                 values: |
                   installCRDs: true
 
               - name: csi-driver-nfs
                 chartname: csi-driver-nfs/csi-driver-nfs
-                version: 'v3.2.0'
+                version: 'v4.0.0'
                 namespace: csi-driver-nfs
                 values: |
                   driver:

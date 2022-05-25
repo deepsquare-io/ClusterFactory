@@ -114,10 +114,12 @@ spec:
             items:
               - key: Corefile
                 path: Corefile
-              - key: ch1.csquare.run.db
-                path: ch1.csquare.run.db
+              - key: ch1.deepsquare.run.db
+                path: ch1.deepsquare.run.db
               - key: csquare.gcloud.db
                 path: csquare.gcloud.db
-              - key: at1.csquare.run.db
-                path: at1.csquare.run.db
+              - key: at1.deepsquare.run.db
+                path: at1.deepsquare.run.db
+              - key: deepsquare.gcloud.db
+                path: deepsquare.gcloud.db
             defaultMode: 420

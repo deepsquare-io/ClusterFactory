@@ -20,7 +20,7 @@ spec:
           nameservers:
             - 10.96.0.10
           searches:
-            - ch1.csquare.run
+            - ch1.deepsquare.run
           options:
             - name: ndots
               value: "0"
@@ -41,7 +41,7 @@ spec:
               CVMFS_USE_GEOAPI=no
               CVMFS_HTTP_PROXY="DIRECT"
               CVMFS_KEYS_DIR="/etc/cvmfs/keys"
-              CVMFS_SERVER_URL="http://cvmfs.ch1.csquare.run/cvmfs/@fqrn@"
+              CVMFS_SERVER_URL="http://cvmfs.ch1.deepsquare.run/cvmfs/@fqrn@"
               CVMFS_USER=root
 
         keys:

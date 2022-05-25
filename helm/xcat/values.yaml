@@ -58,7 +58,8 @@ persistence:
   accessModes: ['ReadWriteOnce']
   size: 50Gi
   selectorLabels:
-    app: xcat
+    {}
+    # app: xcat
 
 net:
   # Kubernetes host interface
@@ -80,6 +81,4 @@ net:
   # https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config
   dns:
     nameservers:
-      - 1.1.1.1
-    searches:
-      - example.com
+      - 127.0.0.1

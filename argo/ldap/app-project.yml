@@ -7,7 +7,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  description: Slurm cluster
+  description: LDAP stack
   # Allow manifests to deploy from any Git repos
   sourceRepos:
     - '*'

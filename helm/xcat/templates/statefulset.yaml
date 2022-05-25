@@ -49,6 +49,10 @@ spec:
       nodeSelector:
 {{ toYaml . | indent 8 }}
       {{- end }}
+      {{- with .Values.hostAliases }}
+      hostAliases:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       {{- with .Values.nodeAffinity }}
       affinity:
 {{ toYaml . | indent 8 }}
@@ -164,7 +168,7 @@ spec:
           emptyDir: {}
         - name: cgroup
           hostPath:
-            path : /sys/fs/cgroup
+            path: /sys/fs/cgroup
             type: Directory
         - name: tmp
           emptyDir:

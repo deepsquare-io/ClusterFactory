@@ -9,7 +9,7 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    - host: grafana.sion.csquare.run
+    - host: grafana.sion.deepsquare.run
       http:
         paths:
           - path: /

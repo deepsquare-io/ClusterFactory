@@ -15,13 +15,24 @@ spec:
       releaseName: xcat
 
       values: |
+        nodeSelector:
+          topology.kubernetes.io/region: ch-sion
+          topology.kubernetes.io/zone: ch-sion-1
+
         resources:
           requests:
-            cpu: '2'
+            cpu: '250m'
             memory: '8Gi'
           limits:
             cpu: '8'
             memory: '8Gi'
+
+        persistence:
+          storageClassName: ''
+          accessModes: ['ReadWriteOnce']
+          size: 50Gi
+          selectorLabels:
+            app: xcat
 
         net:
           # Kubernetes host interface
@@ -40,10 +51,9 @@ spec:
 
           dns:
             nameservers:
-              - 10.10.2.10
-              - 8.8.8.8
+              - 127.0.0.1
             searches:
-              - ch1.csquare.run
+              - ch1.deepsquare.run
 
   destination:
     server: 'https://kubernetes.default.svc'

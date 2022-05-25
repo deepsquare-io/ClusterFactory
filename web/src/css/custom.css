@@ -1,0 +1,515 @@
+/* Fonts */
+@font-face {
+  font-family: 'Avenir';
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url(/fonts/Avenir-Regular.woff2) format('woff2');
+}
+
+@font-face {
+  font-family: 'Avenir';
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+  src: url(/fonts/Avenir-Black.woff2) format('woff2');
+}
+
+/* You can override the default Infima variables here. */
+:root,
+:root[data-theme=''],
+:root[data-theme='dark'] {
+  /* See theme-specific "--custom" vars below  */
+
+  /*
+    Customisation here for both Light and Dark themes
+  */
+  --custom-font-base: 'Avenir', 'Roboto',
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Helvetica',
+    'Arial', sans-serif;
+  --custom-font-code: 'office code pro', Menlo, monospace;
+  --custom-font-size-base: 1rem;
+  --custom-border-radius: 3px;
+  --custom-border-radius-md: 6px;
+  --custom-primary-darkest: #47034b;
+  --custom-primary-darker: #57035b;
+  --custom-primary-dark: #5c0460;
+  --custom-primary: #66046b;
+  --custom-primary-light: #700476;
+  --custom-primary-lighter: #75057b;
+  --custom-primary-lightest: #85058b;
+  --custom-background-color: #050308ff;
+  --custom-background-color-highlight: #fff;
+  --custom-background-color-diff: #f5f6f7;
+  --custom-background-color-diff-1: #eee;
+  --custom-background-color-diff-2: #ccc;
+  --custom-content-color: #050308ff;
+  --custom-content-color-light: #484848;
+  --custom-content-color-lightest: #333;
+  --custom-content-color-emphasis: #000;
+  --custom-border-color: #e0e0e0;
+  --custom-color-subtle: #ccc;
+  --custom-shadow-lw: 0 3px 5px 0px rgba(0, 0, 0, 0.1);
+  --custom-shadow-md: 0 3px 5px 0px rgba(0, 0, 0, 0.1);
+  --custom-shadow-tl: 0 12px 28px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+  --custom-shadow-xl: 0 30px 60px 0 rgba(0, 0, 0, 0.1);
+
+  /*
+    Infirma overrides with customisation
+  */
+  /* Colors */
+  --ifm-color-content: var(--custom-content-color);
+  --ifm-heading-color: var(--custom-content-color);
+  --ifm-background-color: var(--custom-background-color);
+  --ifm-sidebar-background: var(--custom-background-color);
+  --ifm-color-content-secondary: var(--custom-content-color-light);
+  --ifm-code-background: var(--custom-background-color-diff);
+  --ifm-code-background-dark: #2a2a2a;
+  --ifm-code-color: var(--custom-content-color);
+  --ifm-color-warning: var(--custom-color-orange-600);
+  --ifm-color-info-contrast-background: var(--custom-background-color-diff);
+
+  /* Primary */
+  --ifm-color-primary-darkest: var(--custom-primary-darkest);
+  --ifm-color-primary-darker: var(--custom-primary-darker);
+  --ifm-color-primary-dark: var(--custom-primary-dark);
+  --ifm-color-primary: var(--custom-primary);
+  --ifm-color-primary-light: var(--custom-primary-light);
+  --ifm-color-primary-lighter: var(--custom-primary-lighter);
+  --ifm-color-primary-lightest: var(--custom-primary-lightest);
+
+  /* Info */
+  --ifm-color-info-darker: var(--custom-background-color-diff-2);
+  --ifm-color-info-dark: var(--custom-background-color-diff-1);
+  --ifm-color-info: var(--custom-background-color-diff);
+
+  /* Fonts */
+  --ifm-font-color-base: var(--custom-content-color);
+  --ifm-font-family-base: var(--custom-font-base);
+  --ifm-font-family-monospace: var(--custom-font-code);
+  --ifm-heading-font-family: var(--custom-font-base);
+  --ifm-font-size-base: var(--custom-font-size-base);
+  --ifm-heading-font-weight: 400;
+  --ifm-font-weight-bold: 500;
+
+  /* Globals */
+  --ifm-global-shadow-lw: var(--custom-shadow-lw);
+  --ifm-global-shadow-md: var(--custom-shadow-md);
+  --ifm-global-shadow-tl: var(--custom-shadow-tl);
+  --ifm-contents-border-color: var(--custom-border-color);
+  --ifm-hr-border-color: var(--custom-border-color);
+  --ifm-code-border-radius: var(--custom-border-radius);
+  --ifm-button-border-radius: var(--custom-border-radius);
+  --ifm-col-spacing-vertical: 0.5rem;
+  --ifm-link-hover-decoration: none;
+
+  /* Buttons */
+  --ifm-button-background-color: var(--custom-background-color);
+  /* --ifm-button-color: var(--custom-content-color); Not great - changes the green buttons to have black text */
+
+  /* Navbar */
+  --ifm-navbar-background-color: var(--custom-background-color);
+
+  /* Footer */
+  --ifm-footer-background-color: var(--custom-background-color);
+
+  /* Hero */
+  --ifm-hero-background-color: var(--custom-background-color);
+  --ifm-hero-text-color: var(--custom-content-color);
+
+  /* Sidebar */
+  --ifm-sidebar-border-color: var(--custom-border-color);
+  --ifm-menu-color-active: var(--custom-primary);
+
+  /* Panel */
+  --ifm-panel-border-color: var(--custom-border-color);
+  --ifm-panel-border-color-active: var(--custom-primary);
+  --ifm-panel-background-solid: var(--custom-background-color);
+
+  /* Card */
+  --ifm-card-background-color: var(--custom-background-color);
+  --ifm-card-border-radius: var(--custom-border-radius-md);
+
+  /* Tables */
+  --ifm-table-border-color: var(--custom-border-color);
+  --ifm-table-stripe-background: var(--custom-background-color-diff);
+
+  /* Alerts */
+  --ifm-alert-color: var(--custom-color-orange-600);
+  --ifm-alert-background-color-highlight: var(--custom-background-color);
+  --ifm-alert-background-color: var(--custom-background-color);
+
+  /* Breadcrumbs */
+  --ifm-breadcrumb-border-radius: 0.3rem;
+}
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+:root[data-theme='dark'] {
+  --custom-primary-darkest: #b01176;
+  --custom-primary-darker: #d6158f;
+  --custom-primary-dark: #e21698;
+  --custom-primary: #ea2aa4;
+  --custom-primary-light: #ec43af;
+  --custom-primary-lighter: #ee50b4;
+  --custom-primary-lightest: #f175c4;
+
+  --custom-background-color: #050308ff;
+  --custom-background-color-highlight: rgb(14, 8, 22);
+  --custom-background-color-diff: #1f1f1f;
+  --custom-background-color-diff-1: #202020;
+  --custom-background-color-diff-2: rgb(51, 51, 51);
+  --custom-content-color: #ddd;
+  --custom-content-color-light: #aaa;
+  --custom-content-color-lightest: #fefefe;
+  --custom-content-color-emphasis: #fff;
+  --custom-border-color: #333333;
+  --custom-shadow-lw: 0 0 3px 3px rgba(0, 0, 0, 0.2);
+  --custom-shadow-md: 0 0 5px 5px rgba(0, 0, 0, 0.3);
+  --custom-shadow-tl: 0 12px 28px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+  --custom-shadow-xl: 0 30px 60px 0 rgba(0, 0, 0, 0.5);
+
+  --ifm-color-gray-100: rgba(224, 235, 247, 0.9);
+  --ifm-color-gray-150: rgba(224, 235, 247, 0.85);
+  --ifm-color-gray-200: rgba(224, 235, 247, 0.8);
+  --ifm-color-gray-300: rgba(224, 235, 247, 0.75);
+  --ifm-color-gray-400: rgba(224, 235, 247, 0.7);
+  --ifm-color-gray-500: rgba(224, 235, 247, 0.65);
+  --ifm-color-gray-600: rgba(224, 235, 247, 0.6);
+  --ifm-color-gray-700: rgba(224, 235, 247, 0.55);
+  --ifm-color-gray-800: rgba(224, 235, 247, 0.5);
+  --ifm-color-gray-900: rgba(224, 235, 247, 0.45);
+  --ifm-color-secondary-darker: #1d987e;
+  --ifm-color-secondary-dark: #1fa185;
+  --ifm-color-secondary: #22b394;
+  --ifm-color-secondary-light: #25c5a3;
+  --ifm-color-secondary-lighter: #27ceaa;
+  --ifm-color-secondary-lightest: #3bdab8;
+
+  /* Button */
+  --ifm-button-background-color: var(--custom-background-color-highlight);
+
+  /* Card */
+  --ifm-card-background-color: var(--custom-background-color-highlight);
+
+  --ifm-footer-background-color: rgba(255, 255, 255, 0);
+}
+
+.docusaurus-highlight-code-line {
+  background-color: rgba(0, 0, 0, 0.1);
+  display: block;
+  margin: 0 calc(-1 * var(--ifm-pre-padding));
+  padding: 0 var(--ifm-pre-padding);
+}
+
+[data-theme='dark'] .docusaurus-highlight-code-line {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Background */
+html {
+  background: rgb(11,41,38);
+  background: linear-gradient(90deg, rgba(11,41,38,1) 0%, rgba(5,3,8,1) 15%, rgba(5,3,8,1) 75%, rgba(40,4,31,1) 100%);
+}
+
+/* Sidebar */
+
+.navbar__logo {
+  max-width: 200px;
+}
+
+@media (max-width: 750px) {
+  .navbar__logo {
+    max-width: 150px;
+  }
+}
+
+nav.menu {
+  border-right: 1px solid var(--custom-border-color);
+  padding: 0;
+  margin: 0;
+}
+
+.navbar__toggle svg {
+  width: 21px;
+}
+
+.navbar-sidebar__brand .navbar__brand {
+  flex: 1 0;
+}
+.navbar-sidebar__brand .react-toggle {
+  flex: 0;
+  text-align: right;
+}
+.navbar-sidebar__items .menu .menu__link {
+  color: var(--ifm-color-content);
+  display: block;
+}
+.navbar-sidebar__items .menu .menu__link .badge {
+  border-color: var(--ifm-background-color);
+  border-radius: 1em;
+  font-size: 0.6em;
+  margin-top: -1em;
+  margin-left: 0.25em;
+}
+.menu__list-item svg,
+.navbar__link svg {
+  display: none;
+}
+
+@media screen and (max-width: 996px) {
+  .navbar-sidebar__items .menu .menu__link.menu__link--sublist {
+    display: flex;
+  }
+  .row .col {
+    padding-top: var(--ifm-col-spacing-vertical);
+    padding-bottom: var(--ifm-col-spacing-vertical);
+  }
+}
+a.card {
+  text-decoration: none !important;
+  color: var(--ifm-color-content);
+  box-shadow: none;
+  border: 1px solid #333;
+  display: flex;
+  /* background-color: var(--ifm-background-color); */
+}
+a.card .card__body {
+  flex: 1;
+  flex-grow: 1;
+}
+a.card:hover {
+  transition: all 0.2s ease;
+  border: 1px solid var(--custom-primary);
+  box-shadow: var(--custom-shadow-xl), 0 0 0 1px var(--custom-primary) !important;
+}
+
+/*
+ * Docs
+ */
+
+ .menu.menu--responsive {
+  padding: 0;
+}
+@media screen and (max-width: 996px) {
+  .menu.menu--responsive {
+    padding-left: 24px;
+  }
+}
+.menu > ul.menu__list li {
+  padding: 0 var(--ifm-col-spacing-vertical);
+}
+.menu > ul.menu__list li > a {
+  padding-left: 0;
+  padding-right: 0;
+  /* color: var(--custom-content-color); */
+}
+.menu .menu__list-item-hidden {
+  display: none;
+}
+
+/* Category headers */
+
+/* First sidebar nav section  */
+.menu > .menu__list > .menu__list-item:first-child {
+  margin-top: 16px;
+}
+
+/* First sidebar nav section  */
+.menu > .menu__list > .menu__list-item > .menu__link::after {
+  display: none;
+}
+
+/* All sidebar nav sections  */
+.menu > .menu__list > .menu__list-item {
+  margin-bottom: 16px;
+}
+
+/* Sidebar nav header  */
+.menu > .menu__list > .menu__list-item > .menu__list-item-collapsible {
+  margin-bottom: 4px;
+  color: gray;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.menu > .menu__list > .menu__list-item > .menu__list-item-collapsible a {
+  padding-left: var(--ifm-col-spacing-vertical);
+}
+
+/* Disable click events for large screens  */
+@media (min-width: 997px) {
+  .menu > .menu__list > .menu__list-item > .menu__link {
+    pointer-events: none;
+  }
+}
+
+.menu > ul.menu__list > li.menu__list-item:first-child div.title {
+  margin-top: 0;
+}
+.menu > ul.menu__list ul.menu__list {
+  border-left: 1px solid var(--custom-border-color);
+  margin-left: 0;
+  padding-left: var(--ifm-menu-link-padding-horizontal);
+}
+.menu > ul.menu__list ul.menu__list .menu__link {
+  border-radius: 0;
+  font-size: 0.85rem;
+  /* margin-left: calc(var(--ifm-menu-link-padding-horizontal) * -1);
+  padding-left: var(--ifm-menu-link-padding-horizontal); */
+}
+.menu > ul.menu__list > li > ul.menu__list {
+  border-left: 0px none;
+  padding-left: 0;
+}
+.menu .menu__link,
+.menu .menu__link:hover,
+.menu .menu__link.menu__link--active:not(.menu__link--sublist) {
+  background: none;
+  line-height: calc(var(--ifm-spacing-vertical) * 1);
+}
+
+.menu__link--sublist {
+  margin-bottom: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+.menu__list-item .menu__list .menu__list-item .menu__list-item-collapsible:hover {
+  background: transparent !important;
+}
+.menu__list-item
+  .menu__list
+  .menu__list-item
+  .menu__list-item-collapsible
+  .menu__link--sublist.menu__link--sublist-caret::after {
+  margin-right: -10px;
+}
+
+/*
+  Link chevrons
+*/
+.menu .menu__link.menu__link--sublist::after {
+  background-image: url('data:image/svg+xml;utf8,<svg alt="Arrow" xmlns="http://www.w3.org/2000/svg"  viewBox="-6 -6 38 38"><path fill="inherit" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path></svg>');
+  mask-image: url('data:image/svg+xml;utf8,<svg alt="Arrow" xmlns="http://www.w3.org/2000/svg"  viewBox="-6 -6 38 38"><path fill="inherit" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path></svg>');
+  -webkit-mask-size: cover;
+  width: 16px;
+  height: 16px;
+  mask-size: cover;
+  background: var(--ifm-color-gray-700);
+  -webkit-transform: rotate(180deg);
+  transform: rotate(180deg);
+  transition: var(--ifm-transition-fast) ease;
+  transform-origin: center;
+  filter: none;
+}
+.menu .menu__link.menu__link--sublist:hover::after,
+.menu .menu__link.menu__link--sublist.menu__link--active::after {
+  background-image: url('data:image/svg+xml;utf8,<svg alt="Arrow" xmlns="http://www.w3.org/2000/svg"  viewBox="-6 -6 38 38"><path fill="inherit" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path></svg>');
+  mask-image: url('data:image/svg+xml;utf8,<svg alt="Arrow" xmlns="http://www.w3.org/2000/svg"  viewBox="-6 -6 38 38"><path fill="inherit" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path></svg>');
+  -webkit-mask-size: cover;
+  width: 16px;
+  height: 16px;
+  mask-size: cover;
+  background: var(--ifm-color-gray-700);
+}
+
+.menu .menu__list-item.menu__list-item--collapsed .menu__link--sublist::after {
+  -webkit-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+.menu .menu__link:hover {
+  color: var(--ifm-menu-color-active);
+}
+.menu .menu__link .badges {
+  vertical-align: top;
+  margin-top: -1px;
+}
+.menu .menu__link .badge {
+  background-clip: padding-box;
+  border: 1px solid var(--custom-content-color-light);
+  border-radius: 0.25em;
+  display: inline-block;
+  font-family: monospace;
+  font-size: 0.5rem;
+  font-weight: bold;
+  height: 1rem;
+  line-height: 1rem;
+  margin-right: 2px;
+  padding: 0 0.25rem;
+  vertical-align: middle;
+}
+
+/* Make the Docs page take up full height to fix the left sidebar */
+div.container.padding-vert--lg .row {
+  min-height: 100vh;
+}
+/* Disable full height for child rows */
+div.container.padding-vert--lg .row .row {
+  min-height: auto;
+}
+div[class^='docItemContainer_'] {
+  max-width: none;
+}
+@media (min-width: 997px) {
+  div[class^='docItemContainer_'] {
+    max-width: none;
+    padding: 0 calc(var(--ifm-spacing-horizontal) * 2);
+  }
+}
+
+div[class^='docSidebarContainer_'] {
+  border-right-color: var(--ifm-sidebar-border-color);
+}
+
+div[class^='sidebar_'] .menu .menu__link {
+  /* padding-right: var(--ifm-menu-link-padding-horizontal); */
+  color: var(--custom-color-content);
+}
+div[class^='sidebar_'] .menu__link.menu__link--active:not(.menu__link--sublist) {
+  border-radius: 0;
+  color: var(--ifm-color-primary);
+}
+div[class^='sidebar_'] .menu__link.menu__link--active:not(.menu__link--sublist) .badge {
+  background: var(--ifm-color-primary);
+  border: 1px solid var(--ifm-color-primary);
+  color: white;
+}
+
+.DummyData {
+  overflow-x: auto;
+}
+.DummyData div {
+  padding-right: 30px;
+}
+.Collapsable summary {
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+.Collapsable summary:hover {
+  cursor: pointer;
+}
+
+div[class^='codeBlockTitle'],
+div[class*=' codeBlockTitle'] {
+  color: #ccc !important;
+  font-size: 0.8rem !important;
+  border-color: #444;
+}
+.repsonse-header {
+  border-radius: 0 0 4px 4px;
+}
+
+/* Code */
+
+.code-block {
+  border-radius: 3px;
+  font-family: 'office code pro';
+  border: 1px solid var(--custom-border-color);
+  padding: 2px 6px;
+}
+
+/* Images */
+
+img {
+  filter: drop-shadow(0px 0px 5px #fff);
+}

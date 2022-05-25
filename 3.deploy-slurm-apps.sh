@@ -1,13 +1,6 @@
 #!/bin/sh
 
-section() {
-  echo
-  echo "---$1---"
-}
-
 PROJECT=slurm-cluster
-
-section "Checking prerequisites"
 
 . "$(pwd)/scripts/common.sh"
 

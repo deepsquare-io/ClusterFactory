@@ -9,7 +9,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: 'Host(`traefik.ch1.csquare.run`)'
+    - match: 'Host(`traefik.ch1.deepsquare.run`)'
       kind: Rule
       middlewares:
         - name: redirect-dashboard
@@ -17,7 +17,7 @@ spec:
         - name: api@internal
           kind: TraefikService
   tls:
-    secretName: traefik.ch1.csquare.run-secret
+    secretName: traefik.ch1.deepsquare.run-secret
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
@@ -30,7 +30,7 @@ spec:
   entryPoints:
     - web
   routes:
-    - match: 'Host(`traefik.ch1.csquare.run`)'
+    - match: 'Host(`traefik.ch1.deepsquare.run`)'
       kind: Rule
       middlewares:
         - name: redirect-https

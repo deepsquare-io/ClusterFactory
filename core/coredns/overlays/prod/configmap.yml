@@ -1,0 +1,320 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns
+  namespace: kube-system
+  labels:
+    k0s.k0sproject.io/stack: coredns
+data:
+  Corefile: |
+    .:53 {
+      errors
+      health {
+        lameduck 5s
+      }
+      ready
+      kubernetes cluster.local in-addr.arpa ip6.arpa {
+        pods insecure
+        ttl 30
+        fallthrough in-addr.arpa ip6.arpa
+      }
+      prometheus :9153
+      forward . tls://9.9.9.9
+      reload
+    }
+    at1.deepsquare.run:53 {
+      log
+      errors
+      ready
+      hosts /etc/coredns/at1.deepsquare.run.db
+      reload
+    }
+    ch1.deepsquare.run:53 {
+      log
+      errors
+      ready
+      hosts /etc/coredns/ch1.deepsquare.run.db
+      reload
+    }
+    deepsquare.gcloud:53 {
+      log
+      errors
+      ready
+      forward . 10.172.15.192 {
+        max_concurrent 1000
+        force_tcp
+        expire 3600s
+      }
+      hosts /etc/coredns/deepsquare.gcloud.db {
+        fallthrough
+      }
+      reload
+    }
+    csquare.gcloud:53 {
+      log
+      errors
+      ready
+      forward . 10.172.15.192 {
+        max_concurrent 1000
+        force_tcp
+        expire 3600s
+      }
+      hosts /etc/coredns/csquare.gcloud.db {
+        fallthrough
+      }
+      reload
+    }
+
+  ch1.deepsquare.run.db: |
+    10.10.2.51 cn1.ch1.deepsquare.run
+    10.10.2.52 cn2.ch1.deepsquare.run
+    10.10.2.53 cn3.ch1.deepsquare.run
+    10.10.2.54 cn4.ch1.deepsquare.run
+    10.10.2.55 cn5.ch1.deepsquare.run
+    10.10.2.56 cn6.ch1.deepsquare.run
+    10.10.2.57 cn7.ch1.deepsquare.run
+    10.10.2.58 cn8.ch1.deepsquare.run
+    10.10.2.59 cn9.ch1.deepsquare.run
+    10.10.2.60 cn10.ch1.deepsquare.run
+    10.10.2.61 cn11.ch1.deepsquare.run
+    10.10.2.62 cn12.ch1.deepsquare.run
+    10.10.2.20 cvmfs.ch1.deepsquare.run
+    10.10.4.100 metallb-0.ch1.deepsquare.run
+    10.10.4.100 argocd.ch1.deepsquare.run
+    10.10.4.100 traefik.ch1.deepsquare.run
+    10.10.4.100 prometheus.ch1.deepsquare.run
+    10.10.4.100 grafana.ch1.deepsquare.run
+    10.10.2.5 nvmesh-management.ch1.deepsquare.run
+    10.10.2.16 slurm-cluster-reindeer-controller-0.ch1.deepsquare.run
+    10.10.2.161 xcatmn.ch1.deepsquare.run
+
+  csquare.gcloud.db: |
+    10.172.0.29 ldap.csquare.gcloud
+    10.172.15.237 slurmdbd.csquare.gcloud
+
+  deepsquare.gcloud.db: |
+    10.172.0.29 slurm.accounting.deepsquare.gcloud
+    10.172.15.237 slurmdbd.deepsquare.gcloud
+
+  at1.deepsquare.run.db: |
+    172.24.0.4 slurm-cluster-exoscale-vie-controller-0.at1.deepsquare.run
+    172.24.1.1 cn-xxs-1.at1.deepsquare.run
+    172.24.1.2 cn-xxs-2.at1.deepsquare.run
+    172.24.1.3 cn-xxs-3.at1.deepsquare.run
+    172.24.1.4 cn-xxs-4.at1.deepsquare.run
+    172.24.1.5 cn-xxs-5.at1.deepsquare.run
+    172.24.1.6 cn-xxs-6.at1.deepsquare.run
+    172.24.1.7 cn-xxs-7.at1.deepsquare.run
+    172.24.1.8 cn-xxs-8.at1.deepsquare.run
+    172.24.1.9 cn-xxs-9.at1.deepsquare.run
+    172.24.1.10 cn-xxs-10.at1.deepsquare.run
+    172.24.1.11 cn-xxs-11.at1.deepsquare.run
+    172.24.1.12 cn-xxs-12.at1.deepsquare.run
+    172.24.1.13 cn-xxs-13.at1.deepsquare.run
+    172.24.1.14 cn-xxs-14.at1.deepsquare.run
+    172.24.1.15 cn-xxs-15.at1.deepsquare.run
+    172.24.1.16 cn-xxs-16.at1.deepsquare.run
+    172.24.1.17 cn-xxs-17.at1.deepsquare.run
+    172.24.1.18 cn-xxs-18.at1.deepsquare.run
+    172.24.1.19 cn-xxs-19.at1.deepsquare.run
+    172.24.1.20 cn-xxs-20.at1.deepsquare.run
+    172.24.1.21 cn-xs-1.at1.deepsquare.run
+    172.24.1.22 cn-xs-2.at1.deepsquare.run
+    172.24.1.23 cn-xs-3.at1.deepsquare.run
+    172.24.1.24 cn-xs-4.at1.deepsquare.run
+    172.24.1.25 cn-xs-5.at1.deepsquare.run
+    172.24.1.26 cn-xs-6.at1.deepsquare.run
+    172.24.1.27 cn-xs-7.at1.deepsquare.run
+    172.24.1.28 cn-xs-8.at1.deepsquare.run
+    172.24.1.29 cn-xs-9.at1.deepsquare.run
+    172.24.1.30 cn-xs-10.at1.deepsquare.run
+    172.24.1.31 cn-xs-11.at1.deepsquare.run
+    172.24.1.32 cn-xs-12.at1.deepsquare.run
+    172.24.1.33 cn-xs-13.at1.deepsquare.run
+    172.24.1.34 cn-xs-14.at1.deepsquare.run
+    172.24.1.35 cn-xs-15.at1.deepsquare.run
+    172.24.1.36 cn-xs-16.at1.deepsquare.run
+    172.24.1.37 cn-xs-17.at1.deepsquare.run
+    172.24.1.38 cn-xs-18.at1.deepsquare.run
+    172.24.1.39 cn-xs-19.at1.deepsquare.run
+    172.24.1.40 cn-xs-20.at1.deepsquare.run
+    172.24.1.41 cn-s-1.at1.deepsquare.run
+    172.24.1.42 cn-s-2.at1.deepsquare.run
+    172.24.1.43 cn-s-3.at1.deepsquare.run
+    172.24.1.44 cn-s-4.at1.deepsquare.run
+    172.24.1.45 cn-s-5.at1.deepsquare.run
+    172.24.1.46 cn-s-6.at1.deepsquare.run
+    172.24.1.47 cn-s-7.at1.deepsquare.run
+    172.24.1.48 cn-s-8.at1.deepsquare.run
+    172.24.1.49 cn-s-9.at1.deepsquare.run
+    172.24.1.50 cn-s-10.at1.deepsquare.run
+    172.24.1.51 cn-s-11.at1.deepsquare.run
+    172.24.1.52 cn-s-12.at1.deepsquare.run
+    172.24.1.53 cn-s-13.at1.deepsquare.run
+    172.24.1.54 cn-s-14.at1.deepsquare.run
+    172.24.1.55 cn-s-15.at1.deepsquare.run
+    172.24.1.56 cn-s-16.at1.deepsquare.run
+    172.24.1.57 cn-s-17.at1.deepsquare.run
+    172.24.1.58 cn-s-18.at1.deepsquare.run
+    172.24.1.59 cn-s-19.at1.deepsquare.run
+    172.24.1.60 cn-s-20.at1.deepsquare.run
+    172.24.1.61 cn-m-1.at1.deepsquare.run
+    172.24.1.62 cn-m-2.at1.deepsquare.run
+    172.24.1.63 cn-m-3.at1.deepsquare.run
+    172.24.1.64 cn-m-4.at1.deepsquare.run
+    172.24.1.65 cn-m-5.at1.deepsquare.run
+    172.24.1.66 cn-m-6.at1.deepsquare.run
+    172.24.1.67 cn-m-7.at1.deepsquare.run
+    172.24.1.68 cn-m-8.at1.deepsquare.run
+    172.24.1.69 cn-m-9.at1.deepsquare.run
+    172.24.1.70 cn-m-10.at1.deepsquare.run
+    172.24.1.71 cn-m-11.at1.deepsquare.run
+    172.24.1.72 cn-m-12.at1.deepsquare.run
+    172.24.1.73 cn-m-13.at1.deepsquare.run
+    172.24.1.74 cn-m-14.at1.deepsquare.run
+    172.24.1.75 cn-m-15.at1.deepsquare.run
+    172.24.1.76 cn-m-16.at1.deepsquare.run
+    172.24.1.77 cn-m-17.at1.deepsquare.run
+    172.24.1.78 cn-m-18.at1.deepsquare.run
+    172.24.1.79 cn-m-19.at1.deepsquare.run
+    172.24.1.80 cn-m-20.at1.deepsquare.run
+    172.24.1.81 cn-l-1.at1.deepsquare.run
+    172.24.1.82 cn-l-2.at1.deepsquare.run
+    172.24.1.83 cn-l-3.at1.deepsquare.run
+    172.24.1.84 cn-l-4.at1.deepsquare.run
+    172.24.1.85 cn-l-5.at1.deepsquare.run
+    172.24.1.86 cn-l-6.at1.deepsquare.run
+    172.24.1.87 cn-l-7.at1.deepsquare.run
+    172.24.1.88 cn-l-8.at1.deepsquare.run
+    172.24.1.89 cn-l-9.at1.deepsquare.run
+    172.24.1.90 cn-l-10.at1.deepsquare.run
+    172.24.1.91 cn-l-11.at1.deepsquare.run
+    172.24.1.92 cn-l-12.at1.deepsquare.run
+    172.24.1.93 cn-l-13.at1.deepsquare.run
+    172.24.1.94 cn-l-14.at1.deepsquare.run
+    172.24.1.95 cn-l-15.at1.deepsquare.run
+    172.24.1.96 cn-l-16.at1.deepsquare.run
+    172.24.1.97 cn-l-17.at1.deepsquare.run
+    172.24.1.98 cn-l-18.at1.deepsquare.run
+    172.24.1.99 cn-l-19.at1.deepsquare.run
+    172.24.1.100 cn-l-20.at1.deepsquare.run
+    172.24.1.101 cn-xl-1.at1.deepsquare.run
+    172.24.1.102 cn-xl-2.at1.deepsquare.run
+    172.24.1.103 cn-xl-3.at1.deepsquare.run
+    172.24.1.104 cn-xl-4.at1.deepsquare.run
+    172.24.1.105 cn-xl-5.at1.deepsquare.run
+    172.24.1.106 cn-xl-6.at1.deepsquare.run
+    172.24.1.107 cn-xl-7.at1.deepsquare.run
+    172.24.1.108 cn-xl-8.at1.deepsquare.run
+    172.24.1.109 cn-xl-9.at1.deepsquare.run
+    172.24.1.110 cn-xl-10.at1.deepsquare.run
+    172.24.1.111 cn-xl-11.at1.deepsquare.run
+    172.24.1.112 cn-xl-12.at1.deepsquare.run
+    172.24.1.113 cn-xl-13.at1.deepsquare.run
+    172.24.1.114 cn-xl-14.at1.deepsquare.run
+    172.24.1.115 cn-xl-15.at1.deepsquare.run
+    172.24.1.116 cn-xl-16.at1.deepsquare.run
+    172.24.1.117 cn-xl-17.at1.deepsquare.run
+    172.24.1.118 cn-xl-18.at1.deepsquare.run
+    172.24.1.119 cn-xl-19.at1.deepsquare.run
+    172.24.1.120 cn-xl-20.at1.deepsquare.run
+    172.24.1.121 cn-xxl-1.at1.deepsquare.run
+    172.24.1.122 cn-xxl-2.at1.deepsquare.run
+    172.24.1.123 cn-xxl-3.at1.deepsquare.run
+    172.24.1.124 cn-xxl-4.at1.deepsquare.run
+    172.24.1.125 cn-xxl-5.at1.deepsquare.run
+    172.24.1.126 cn-xxl-6.at1.deepsquare.run
+    172.24.1.127 cn-xxl-7.at1.deepsquare.run
+    172.24.1.128 cn-xxl-8.at1.deepsquare.run
+    172.24.1.129 cn-xxl-9.at1.deepsquare.run
+    172.24.1.130 cn-xxl-10.at1.deepsquare.run
+    172.24.1.131 cn-xxl-11.at1.deepsquare.run
+    172.24.1.132 cn-xxl-12.at1.deepsquare.run
+    172.24.1.133 cn-xxl-13.at1.deepsquare.run
+    172.24.1.134 cn-xxl-14.at1.deepsquare.run
+    172.24.1.135 cn-xxl-15.at1.deepsquare.run
+    172.24.1.136 cn-xxl-16.at1.deepsquare.run
+    172.24.1.137 cn-xxl-17.at1.deepsquare.run
+    172.24.1.138 cn-xxl-18.at1.deepsquare.run
+    172.24.1.139 cn-xxl-19.at1.deepsquare.run
+    172.24.1.140 cn-xxl-20.at1.deepsquare.run
+    172.24.1.141 cn-sgpu2-1.at1.deepsquare.run
+    172.24.1.142 cn-sgpu2-2.at1.deepsquare.run
+    172.24.1.143 cn-sgpu2-3.at1.deepsquare.run
+    172.24.1.144 cn-sgpu2-4.at1.deepsquare.run
+    172.24.1.145 cn-sgpu2-5.at1.deepsquare.run
+    172.24.1.146 cn-sgpu2-6.at1.deepsquare.run
+    172.24.1.147 cn-sgpu2-7.at1.deepsquare.run
+    172.24.1.148 cn-sgpu2-8.at1.deepsquare.run
+    172.24.1.149 cn-sgpu2-9.at1.deepsquare.run
+    172.24.1.150 cn-sgpu2-10.at1.deepsquare.run
+    172.24.1.151 cn-sgpu2-11.at1.deepsquare.run
+    172.24.1.152 cn-sgpu2-12.at1.deepsquare.run
+    172.24.1.153 cn-sgpu2-13.at1.deepsquare.run
+    172.24.1.154 cn-sgpu2-14.at1.deepsquare.run
+    172.24.1.155 cn-sgpu2-15.at1.deepsquare.run
+    172.24.1.156 cn-sgpu2-16.at1.deepsquare.run
+    172.24.1.157 cn-sgpu2-17.at1.deepsquare.run
+    172.24.1.158 cn-sgpu2-18.at1.deepsquare.run
+    172.24.1.159 cn-sgpu2-19.at1.deepsquare.run
+    172.24.1.160 cn-sgpu2-20.at1.deepsquare.run
+    172.24.1.161 cn-mgpu2-1.at1.deepsquare.run
+    172.24.1.162 cn-mgpu2-2.at1.deepsquare.run
+    172.24.1.163 cn-mgpu2-3.at1.deepsquare.run
+    172.24.1.164 cn-mgpu2-4.at1.deepsquare.run
+    172.24.1.165 cn-mgpu2-5.at1.deepsquare.run
+    172.24.1.166 cn-mgpu2-6.at1.deepsquare.run
+    172.24.1.167 cn-mgpu2-7.at1.deepsquare.run
+    172.24.1.168 cn-mgpu2-8.at1.deepsquare.run
+    172.24.1.169 cn-mgpu2-9.at1.deepsquare.run
+    172.24.1.170 cn-mgpu2-10.at1.deepsquare.run
+    172.24.1.171 cn-mgpu2-11.at1.deepsquare.run
+    172.24.1.172 cn-mgpu2-12.at1.deepsquare.run
+    172.24.1.173 cn-mgpu2-13.at1.deepsquare.run
+    172.24.1.174 cn-mgpu2-14.at1.deepsquare.run
+    172.24.1.175 cn-mgpu2-15.at1.deepsquare.run
+    172.24.1.176 cn-mgpu2-16.at1.deepsquare.run
+    172.24.1.177 cn-mgpu2-17.at1.deepsquare.run
+    172.24.1.178 cn-mgpu2-18.at1.deepsquare.run
+    172.24.1.179 cn-mgpu2-19.at1.deepsquare.run
+    172.24.1.180 cn-mgpu2-20.at1.deepsquare.run
+    172.24.1.181 cn-lgpu2-1.at1.deepsquare.run
+    172.24.1.182 cn-lgpu2-2.at1.deepsquare.run
+    172.24.1.183 cn-lgpu2-3.at1.deepsquare.run
+    172.24.1.184 cn-lgpu2-4.at1.deepsquare.run
+    172.24.1.185 cn-lgpu2-5.at1.deepsquare.run
+    172.24.1.186 cn-lgpu2-6.at1.deepsquare.run
+    172.24.1.187 cn-lgpu2-7.at1.deepsquare.run
+    172.24.1.188 cn-lgpu2-8.at1.deepsquare.run
+    172.24.1.189 cn-lgpu2-9.at1.deepsquare.run
+    172.24.1.190 cn-lgpu2-10.at1.deepsquare.run
+    172.24.1.191 cn-lgpu2-11.at1.deepsquare.run
+    172.24.1.192 cn-lgpu2-12.at1.deepsquare.run
+    172.24.1.193 cn-lgpu2-13.at1.deepsquare.run
+    172.24.1.194 cn-lgpu2-14.at1.deepsquare.run
+    172.24.1.195 cn-lgpu2-15.at1.deepsquare.run
+    172.24.1.196 cn-lgpu2-16.at1.deepsquare.run
+    172.24.1.197 cn-lgpu2-17.at1.deepsquare.run
+    172.24.1.198 cn-lgpu2-18.at1.deepsquare.run
+    172.24.1.199 cn-lgpu2-19.at1.deepsquare.run
+    172.24.1.200 cn-lgpu2-20.at1.deepsquare.run
+    172.24.1.201 cn-xlgpu2-1.at1.deepsquare.run
+    172.24.1.202 cn-xlgpu2-2.at1.deepsquare.run
+    172.24.1.203 cn-xlgpu2-3.at1.deepsquare.run
+    172.24.1.204 cn-xlgpu2-4.at1.deepsquare.run
+    172.24.1.205 cn-xlgpu2-5.at1.deepsquare.run
+    172.24.1.206 cn-xlgpu2-6.at1.deepsquare.run
+    172.24.1.207 cn-xlgpu2-7.at1.deepsquare.run
+    172.24.1.208 cn-xlgpu2-8.at1.deepsquare.run
+    172.24.1.209 cn-xlgpu2-9.at1.deepsquare.run
+    172.24.1.210 cn-xlgpu2-10.at1.deepsquare.run
+    172.24.1.211 cn-xlgpu2-11.at1.deepsquare.run
+    172.24.1.212 cn-xlgpu2-12.at1.deepsquare.run
+    172.24.1.213 cn-xlgpu2-13.at1.deepsquare.run
+    172.24.1.214 cn-xlgpu2-14.at1.deepsquare.run
+    172.24.1.215 cn-xlgpu2-15.at1.deepsquare.run
+    172.24.1.216 cn-xlgpu2-16.at1.deepsquare.run
+    172.24.1.217 cn-xlgpu2-17.at1.deepsquare.run
+    172.24.1.218 cn-xlgpu2-18.at1.deepsquare.run
+    172.24.1.219 cn-xlgpu2-19.at1.deepsquare.run
+    172.24.1.220 cn-xlgpu2-20.at1.deepsquare.run
