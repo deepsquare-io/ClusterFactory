@@ -15,6 +15,8 @@
   src: url(/fonts/Avenir-Black.woff2) format('woff2');
 }
 
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono,wght@1,500&display=swap');
+
 /* You can override the default Infima variables here. */
 :root,
 :root[data-theme=''],
@@ -27,7 +29,7 @@
   --custom-font-base: 'Avenir', 'Roboto',
     'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Helvetica',
     'Arial', sans-serif;
-  --custom-font-code: Menlo, monospace;
+  --custom-font-code: 'JetBrains Mono', Menlo, monospace;
   --custom-font-size-base: 1rem;
   --custom-border-radius: 3px;
   --custom-border-radius-md: 6px;
