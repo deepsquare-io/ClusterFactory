@@ -53,6 +53,10 @@ spec:
         api:
           k0sApiPort: 9443
           port: 6443
+          externalAddress: 172.24.0.10
+          sans:
+            - 172.24.0.10
+            - 10.10.2.16
         installConfig:
           users:
             etcdUser: etcd
