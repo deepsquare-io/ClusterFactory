@@ -389,7 +389,7 @@ To write a Helm application, we need to generalize the values (by using
 `example.com` as domain for example). The "overlay" values will be stored
 either inside the Helm application or inside a Git repository.
 
-At SquareFactory, we've been storing the values inside the Argo CD `Application` files. If we need to track these values inside Git, we can use the `App of Apps` pattern.
+At [SquareFactory](https://www.squarefactory.io), we've been storing the values inside the Argo CD `Application` files. If we need to track these values inside Git, we can use the `App of Apps` pattern.
 
 The Helm application must be available on a publicly accessible Git or Helm repository.
 

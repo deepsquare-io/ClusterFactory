@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository Cluster Factory CE is where SquareFactory develops the k8s-based infrastructure orchestration tool together with the community. A tool combines all the standard tools of the last 30 years to be able to manage a HPC cluster in a declarative way in combination with the practice of GitOps.
+This repository Cluster Factory CE is where [SquareFactory](https://www.squarefactory.io) develops the k8s-based infrastructure orchestration tool together with the community. A tool combines all the standard tools of the last 30 years to be able to manage a HPC cluster in a declarative way in combination with the practice of GitOps.
 
 ## Key features
 
@@ -33,7 +33,7 @@ out the [Contributing Guide](./CONTRIBUTING.md).
 
 ## Motivation
 
-At SquareFactory, we wish to develop applications for the DeepSquare Grid. Because of that, our infrastructure uses a lot of HPC technologies,
+At [SquareFactory](https://www.squarefactory.io), we wish to develop applications for the DeepSquare Grid. Because of that, our infrastructure uses a lot of HPC technologies,
 which makes it difficult to scale. We believe that **flexibity**, **repeatability**, **availability** and **ease of use** should be prioritized
 for managing and scaling HPC clusters.
 
