@@ -111,9 +111,9 @@ helm install \
   <reponame>/<app>
 ```
 
-We would store these commands in scripts. However, Argo CD is capable of deploying Helm applications, but also Kustomize and vanilla Kubernetes definition files. Argo CD is also able to synchronize with the remote repository, which means that it is able to perform rolling updates.
+We would store these commands in scripts. However, Argo CD is capable of deploying Helm applications, but also Kustomize and vanilla Kubernetes definition files. Argo CD is also able to synchronize with the remote repository, which means that it can perform rolling updates.
 
-This way, we are able to centralize and every definition, configuration and environments files inside a Git repository, with a common syntax, in YAML.
+This way, we can centralize every definition, configuration and environments files inside a Git repository, with a common syntax, in YAML.
 
 More details on Argo CD [here](https://argo-cd.readthedocs.io/en/stable/).
 
@@ -207,7 +207,7 @@ If you want to backup the key (because you want to do a migration, or to prepare
 
 :::warning
 
-The SealedSecrets keys and backups made by k0s are sensitive data! You should either delete them after a certain period of time or make sure that they are strongly protected.
+The SealedSecrets keys and backups made by k0s are sensitive data! You should either delete them after a certain time or make sure that they are strongly protected.
 
 :::
 
