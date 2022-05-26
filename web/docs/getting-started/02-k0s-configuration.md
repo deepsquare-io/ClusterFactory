@@ -133,7 +133,7 @@ Start with `metallb`. MetalLB is a L2/L3 load balancer designed for bare metal K
 
 <div style={{textAlign: 'center'}}>
 
-![k0s_metallb_loadbalancer](02-k0s-configuration.assets/k0s_metallb_loadbalancer.png)
+![k0s_metallb_loadbalancer](02-k0s-configuration.assets/k0s_metallb_loadbalancer.png#invert-on-dark)
 
 </div>
 

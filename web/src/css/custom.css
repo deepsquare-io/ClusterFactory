@@ -544,6 +544,10 @@ img {
   filter: drop-shadow(0px 0px 5px #fff);
 }
 
+[data-theme='dark'] img[src$='#invert-on-dark'] {
+  filter: invert(1);
+}
+
 /* Selection */
 
 ::selection {

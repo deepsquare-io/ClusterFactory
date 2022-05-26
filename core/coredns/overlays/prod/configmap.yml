@@ -97,6 +97,8 @@ data:
     10.172.15.237 slurmdbd.deepsquare.gcloud
 
   at1.deepsquare.run.db: |
+    172.24.0.2 strongswan.at1.deepsquare.run
+    172.24.0.3 nfs-server.at1.deepsquare.run
     172.24.0.4 slurm-cluster-exoscale-vie-controller-0.at1.deepsquare.run
     172.24.1.1 cn-xxs-1.at1.deepsquare.run
     172.24.1.2 cn-xxs-2.at1.deepsquare.run
