@@ -144,7 +144,7 @@ packimage -m squashfs -c pigz rocky8.4-x86_64-netboot-compute
 
 :::warning
 
-Even if no logs are shown, the process is running. You should until the end of the command.
+Even if no logs are shown, the process is running. You should wait until the end of the command.
 
 You must allocate enough `tmp` for the process to work. Inside the xCAT Helm `values`, you can use:
 
