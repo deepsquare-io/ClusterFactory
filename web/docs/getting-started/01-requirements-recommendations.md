@@ -15,9 +15,10 @@ Cluster Factory has been fully tested on Rocky Linux, and is our recommended OS.
 
 ### Required utilities
 
-- [`k0sctl`](https://github.com/k0sproject/k0sctl/releases), so you can deploy, backup, and upgrade the Kubernetes cluster.
-- [`kubectl`](https://kubernetes.io/docs/tasks/tools/#kubectl), so you can manage your Kubernetes cluster.
-- [`kubeseal`](https://github.com/bitnami-labs/sealed-secrets/releases/), so you can seal the secrets.
+- [`k0sctl`](https://github.com/k0sproject/k0sctl/releases), for deployment, backup, and upgrading of the Kubernetes cluster.
+- [`kubectl`](https://kubernetes.io/docs/tasks/tools/#kubectl), for managing your Kubernetes cluster.
+- [`kubeseal`](https://github.com/bitnami-labs/sealed-secrets/releases/), for encrypting the secrets.
+- [`helm`](https://github.com/helm/helm/releases/), for Helm chart template.
 
 We have a script inside the [`scripts`](https://github.com/SquareFactory/cluster-factory-ce/tree/main/scripts) directory to install and set up a working environment.
 
