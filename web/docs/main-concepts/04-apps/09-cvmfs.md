@@ -11,7 +11,7 @@ The architecture is very similar to a database where the changes are done using 
 
 Each site is also equipped with a squid proxy, which is a full-featured caching proxy.
 
-![Concept overview of the CernVM-FS Content Delivery Network](09-cvmfs.assets/stratum1.png)
+![Concept overview of the CernVM-FS Content Delivery Network](09-cvmfs.assets/stratum1.png#white-bg)
 
 An equivalent software could be S3 Fuse.
 
