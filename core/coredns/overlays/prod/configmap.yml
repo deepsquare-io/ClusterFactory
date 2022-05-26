@@ -100,6 +100,7 @@ data:
     172.24.0.2 strongswan.at1.deepsquare.run
     172.24.0.3 nfs-server.at1.deepsquare.run
     172.24.0.4 slurm-cluster-exoscale-vie-controller-0.at1.deepsquare.run
+    172.24.0.10 haproxy.at1.deepsquare.run
     172.24.1.1 cn-xxs-1.at1.deepsquare.run
     172.24.1.2 cn-xxs-2.at1.deepsquare.run
     172.24.1.3 cn-xxs-3.at1.deepsquare.run
