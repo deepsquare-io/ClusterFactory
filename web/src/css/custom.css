@@ -548,6 +548,10 @@ img {
   filter: invert(1);
 }
 
+[data-theme='dark'] img[src$='#white-bg'] {
+  background-color: #fff;
+}
+
 /* Selection */
 
 ::selection {

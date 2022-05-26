@@ -2,7 +2,7 @@
 
 Multus CNI allows us to attach multiple network interfaces to pods, similarly to Docker and Virtual Machines.
 
-![multus-pod-image](06-multus-cni.assets/multus-pod-image.svg)
+![multus-pod-image](06-multus-cni.assets/multus-pod-image.svg#white-bg)
 
 The first reason we use Multus is so that KubeVirt supports multiple network interfaces.
 
@@ -15,4 +15,3 @@ While Multus solves a lot of problems, it also creates some issues related to ro
 For example, the internal pod network conflicts with other networks since it is impossible to customize Calico's default routes.
 
 The issue is open [here](https://github.com/projectcalico/calico/issues/5199).
-
