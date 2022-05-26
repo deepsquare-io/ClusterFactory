@@ -15,6 +15,9 @@ spec:
       releaseName: snmp-exporter
 
       values: |
+        nodeSelector:
+          topology.kubernetes.io/region: ch-sion
+
         config: |
           # WARNING: This file was auto-generated using snmp_exporter generator, manual changes will be lost.
           rittal:

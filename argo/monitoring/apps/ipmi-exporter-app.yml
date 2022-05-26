@@ -15,6 +15,9 @@ spec:
       releaseName: ipmi-exporter
 
       values: |
+        nodeSelector:
+          topology.kubernetes.io/region: ch-sion
+
         config: |
           modules:
             default:

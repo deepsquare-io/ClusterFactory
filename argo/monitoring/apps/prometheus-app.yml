@@ -10,7 +10,7 @@ spec:
   source:
     chart: kube-prometheus-stack
     repoURL: https://prometheus-community.github.io/helm-charts
-    targetRevision: 34.0.0
+    targetRevision: 35.3.1
     helm:
       releaseName: prometheus
 
@@ -20,45 +20,17 @@ spec:
         alertmanager:
           enabled: false
 
-          ingress:
-            annotations:
-              cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
-              traefik.ingress.kubernetes.io/router.entrypoints: websecure
-              traefik.ingress.kubernetes.io/router.tls: 'true'
-
-            hosts:
-              - alertmanager.ch1.deepsquare.run
-
-            paths:
-              - /
-
-            pathType: Prefix
-
-            tls:
-              - secretName: alertmanager.ch1.deepsquare.run-secret
-                hosts:
-                  - alertmanager.ch1.deepsquare.run
-
-          alertmanagerSpec:
-            storage:
-              volumeClaimTemplate:
-                spec:
-                  volumeName: alertmanager-pv
-                  storageClassName: ''
-                  accessModes:
-                    - ReadWriteOnce
-                  resources:
-                    requests:
-                      storage: 50Gi
-
         ## Using default values from https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
         ##
         grafana:
           enabled: true
 
+          nodeSelector:
+            topology.kubernetes.io/region: ch-sion
+
           image:
             repository: grafana/grafana-oss
-            tag: 8.4.3
+            tag: 8.5.3
 
           persistence:
             type: pvc
@@ -195,6 +167,9 @@ spec:
             serviceMonitorSelectorNilUsesHelmValues: false
             podMonitorSelectorNilUsesHelmValues: false
             probeSelectorNilUsesHelmValues: false
+
+            nodeSelector:
+              topology.kubernetes.io/region: ch-sion
 
             resources:
               limits:
