@@ -62,7 +62,7 @@ For Infiniband, follow [this guide](https://xcat-docs.readthedocs.io/en/stable/a
 
 Use Packer to build OS images.
 
-You can build the SquareFactory OS image using the recipes stored in `packer-recipes`. Basically, it runs RedHat Kickstart and install all the software needed at [SquareFactory](https://www.squarefactory.io).
+You can build the SquareFactory OS image using the recipes stored in `packer-recipes`. Basically, it runs RedHat Kickstart and install all the software needed for [DeepSquare](https://deepsquare.io).
 
 After building the image, you should copy the root filesystem via `rsync` or `scp`. Follow [this guide for more information](/docs/guides/provisioning/packer-build).
 

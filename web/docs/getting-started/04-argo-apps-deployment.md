@@ -193,7 +193,7 @@ It's a good practice to always annotate your nodes as some resources are not ava
 
 You can always learn more [here](https://kubernetes.io/docs/reference/labels-annotations-taints/#topologykubernetesiozone).
 
-You could also create a `PersistentVolume` and a `PersistentVolumeClaim` instead of a `StorageClass` (which is what we've done at [SquareFactory](https://www.squarefactory.io)). This is called static provisioning and is an acceptable solution.
+You could also create a `PersistentVolume` and a `PersistentVolumeClaim` instead of a `StorageClass` (which is what we've done for [DeepSquare](https://deepsquare.io)). This is called static provisioning and is an acceptable solution.
 
 The official example of static provisioning is written [here](https://github.com/kubernetes-csi/csi-driver-nfs/tree/master/deploy/example). Both methods are good, but dynamic provisioning is more suitable for `StatefulSet` since it avoids creating a `PersistentVolume` for each replica.
 

@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository Cluster Factory CE is where [SquareFactory](https://www.squarefactory.io) develops the k8s-based infrastructure orchestration tool together with the community. A tool combines all the standard tools of the last 30 years to be able to manage a HPC cluster in a declarative way in combination with the practice of GitOps.
+This repository Cluster Factory CE is where [SquareFactory](https://www.squarefactory.io) develops the k8s-based infrastructure orchestration tool together with the community. Cluster Factory brings together best-in-class solutions from the HPC, Cloud, and DevOps industries to manage a cluster in a declarative way in combination with the GitOps practice.
 
 ## Key features
 
@@ -15,7 +15,7 @@ This repository Cluster Factory CE is where [SquareFactory](https://www.squarefa
 - Bare-metal provisioning with [xCAT](https://docs.clusterfactory.io/docs/main-concepts/apps/xcat)
 - Supports CNI plugins with [Multus CNI](https://docs.clusterfactory.io/docs/main-concepts/core-network/multus-cni)
 - TLS/SSL certificates management with [cert-manager](https://docs.clusterfactory.io/docs/main-concepts/gitops/cert-manager)
-- Mirror of Deepsquare's software library (end user software) by using [CVMFS Stratum 1](https://docs.clusterfactory.io/docs/main-concepts/apps/cvmfs)
+- Mirror of DeepSquare's software library (end user software) by using [CVMFS Stratum 1](https://docs.clusterfactory.io/docs/main-concepts/apps/cvmfs)
 - A web-based HPC user portal Open Ondemand
 - Monitoring stack (Grafana, Prometheus with ready-to-use exporters)
 
@@ -33,7 +33,7 @@ out the [Contributing Guide](./CONTRIBUTING.md).
 
 ## Motivation
 
-At [SquareFactory](https://www.squarefactory.io), we wish to develop applications for the DeepSquare Grid. Because of that, our infrastructure uses a lot of HPC technologies,
+For [DeepSquare](https://deepsquare.io), we wish to develop applications for the DeepSquare Grid. Because of that, our infrastructure uses a lot of HPC technologies,
 which makes it difficult to scale. We believe that **flexibity**, **repeatability**, **availability** and **ease of use** should be prioritized
 for managing and scaling HPC clusters.
 
@@ -44,6 +44,7 @@ This is why we are developing Cluster Factory CE:
 - **Highly available**: With Kubernetes, container scheduling is automatically ensured and easy to set up.
 - **Simple**: A single descriptive YAML per application, with Argo CD to automatically updates the application.
 - **Long-term maintainability**: Easy to deploy, update, backup and restore with K0s.
+- **Performance-oriented**: Integrates a key-in-hand HPC stack including Slurm, MPI, DFS, etc.
 
 ## Documentations to help you deploy
 

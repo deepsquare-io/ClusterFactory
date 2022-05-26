@@ -62,7 +62,13 @@ const config = {
         ],
       },
       footer: {
-        copyright: `Copyright © ${new Date().getFullYear()} Cluster Factory CE Docs, SquareFactory. Built with Docusaurus.`,
+        logo: {
+          href: 'https://deepsquare.io',
+          alt: 'Empowers DeepSquare',
+          src: 'img/deepsquare-logo-h.svg',
+          srcDark: 'img/deepsquare-logo-h-neg.svg',
+        },
+        copyright: `Copyright © ${new Date().getFullYear()} Cluster Factory CE Docs, <a href="https://squarefactory.io">SquareFactory</a>. Built with Docusaurus.`,
       },
       prism: {
         theme: lightCodeTheme,
