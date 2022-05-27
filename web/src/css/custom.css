@@ -513,8 +513,9 @@ div[class*=' codeBlockTitle'] {
   background: #0c2025;
 }
 
-[data-theme='dark'] code {
-  border: 0.1rem solid rgba(255, 255, 255, 0.1)
+[data-theme='dark'] code:not([class^="codeBlockLines"]) {
+  border: 0.1rem solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--ifm-code-border-radius);
 }
 
 .code-block {
