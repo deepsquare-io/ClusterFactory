@@ -39,12 +39,12 @@ for managing and scaling HPC clusters.
 
 This is why we are developing Cluster Factory CE:
 
+- **Performance-oriented**: Integrates a key-in-hand HPC stack including Slurm, MPI, DFS, etc.
 - **Highly configurable**: With Helm, all configuration is done in a single `values.yaml` file.
 - **Repeatable**: With Argo CD following GitOps practices, all states are specified declaratively and saved in a Git repository.
 - **Highly available**: With Kubernetes, container scheduling is automatically ensured and easy to set up.
 - **Simple**: A single descriptive YAML per application, with Argo CD to automatically updates the application.
 - **Long-term maintainability**: Easy to deploy, update, backup and restore with K0s.
-- **Performance-oriented**: Integrates a key-in-hand HPC stack including Slurm, MPI, DFS, etc.
 
 ## Documentations to help you deploy
 
