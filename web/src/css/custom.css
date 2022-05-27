@@ -1,20 +1,4 @@
 /* Fonts */
-@font-face {
-  font-family: 'Avenir';
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-  src: url(/fonts/Avenir-Regular.woff2) format('woff2');
-}
-
-@font-face {
-  font-family: 'Avenir';
-  font-weight: 900;
-  font-style: normal;
-  font-display: swap;
-  src: url(/fonts/Avenir-Black.woff2) format('woff2');
-}
-
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&family=Mulish:wght@500;800&display=swap');
 
 /* You can override the default Infima variables here. */
@@ -91,7 +75,7 @@
   --ifm-heading-font-family: var(--custom-font-base);
   --ifm-font-size-base: var(--custom-font-size-base);
   --ifm-heading-font-weight: 400;
-  --ifm-font-weight-bold: 500;
+  --ifm-font-weight-bold: 800;
 
   /* Globals */
   --ifm-global-shadow-lw: var(--custom-shadow-lw);
@@ -529,9 +513,12 @@ div[class*=' codeBlockTitle'] {
   background: #0c2025;
 }
 
+[data-theme='dark'] code {
+  border: 0.1rem solid rgba(255, 255, 255, 0.1)
+}
+
 .code-block {
   border-radius: 3px;
-  font-family: 'office code pro';
   border: 1px solid var(--custom-border-color);
   padding: 2px 6px;
 }
