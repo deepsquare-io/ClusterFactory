@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository Cluster Factory CE is where [SquareFactory](https://www.squarefactory.io) develops the k8s-based infrastructure orchestration tool together with the community. Cluster Factory brings together best-in-class solutions from the HPC, Cloud, and DevOps industries to manage a cluster in a declarative way in combination with the GitOps practice.
+This repository is where [SquareFactory](https://www.squarefactory.io) develops Cluster Factory CE, the Kubernetes-based infrastructure orchestration tool together with the community. Cluster Factory brings together best-in-class solutions from the HPC, Cloud, and DevOps industries to manage a cluster in a declarative way in combination with the GitOps practice.
 
 ## Key features
 
