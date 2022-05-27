@@ -1,6 +1,6 @@
 # Updating the K0s Helm extensions
 
-:::warning
+:::caution
 
 Updating and applying `k0sctl.yaml` will create downtime!
 
@@ -147,7 +147,7 @@ Edit the `chart.yaml`. Remove the metadata and update the Traefik version:
 kubectl apply -f chart.yaml -n kube-system
 ```
 
-:::warning
+:::caution
 
 If nothing is happening, delete the chart and reapply it again.
 

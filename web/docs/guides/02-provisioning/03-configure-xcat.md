@@ -27,7 +27,7 @@ the network looks like this `10_10_2_0-255_255_255_0`, which is the one configur
     tftpserver=<xcatmaster>
 ```
 
-:::warning
+:::caution
 
 Don't replace `<xcatmaster>`.
 
@@ -142,7 +142,7 @@ To pack the image as SquashFS, call:
 packimage -m squashfs -c pigz rocky8.4-x86_64-netboot-compute
 ```
 
-:::warning
+:::caution
 
 Even if no logs are shown, the process is running. You should wait until the end of the command.
 

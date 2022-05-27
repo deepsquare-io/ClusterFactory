@@ -39,6 +39,8 @@
   --custom-shadow-tl: 0 12px 28px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1);
   --custom-shadow-xl: 0 30px 60px 0 rgba(0, 0, 0, 0.1);
 
+  --custom-selection: #7DD7CF;
+
   /*
     Infirma overrides with customisation
   */
@@ -51,8 +53,6 @@
   --ifm-code-background: var(--custom-background-color-diff);
   --ifm-code-background-dark: #2a2a2a;
   --ifm-code-color: var(--custom-content-color);
-  --ifm-color-warning: var(--custom-color-orange-600);
-  --ifm-color-info-contrast-background: var(--custom-background-color-diff);
 
   /* Primary */
   --ifm-color-primary-darkest: var(--custom-primary-darkest);
@@ -61,12 +61,7 @@
   --ifm-color-primary: var(--custom-primary);
   --ifm-color-primary-light: var(--custom-primary-light);
   --ifm-color-primary-lighter: var(--custom-primary-lighter);
-  --ifm-color-primary-lightest: var(--custom-primary-lightest);
-
-  /* Info */
-  --ifm-color-info-darker: var(--custom-background-color-diff-2);
-  --ifm-color-info-dark: var(--custom-background-color-diff-1);
-  --ifm-color-info: var(--custom-background-color-diff);
+  --ifm-color-primary-lightest: var(--custom-primary-lightest)
 
   /* Fonts */
   --ifm-font-color-base: var(--custom-content-color);
@@ -156,6 +151,8 @@
   --custom-shadow-tl: 0 12px 28px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1);
   --custom-shadow-xl: 0 30px 60px 0 rgba(0, 0, 0, 0.5);
 
+  --custom-selection: #1F5263;
+
   --ifm-color-gray-100: rgba(224, 235, 247, 0.9);
   --ifm-color-gray-150: rgba(224, 235, 247, 0.85);
   --ifm-color-gray-200: rgba(224, 235, 247, 0.8);
@@ -166,12 +163,6 @@
   --ifm-color-gray-700: rgba(224, 235, 247, 0.55);
   --ifm-color-gray-800: rgba(224, 235, 247, 0.5);
   --ifm-color-gray-900: rgba(224, 235, 247, 0.45);
-  --ifm-color-secondary-darker: #1d987e;
-  --ifm-color-secondary-dark: #1fa185;
-  --ifm-color-secondary: #22b394;
-  --ifm-color-secondary-light: #25c5a3;
-  --ifm-color-secondary-lighter: #27ceaa;
-  --ifm-color-secondary-lightest: #3bdab8;
 
   /* Button */
   --ifm-button-background-color: var(--custom-background-color-highlight);
@@ -548,9 +539,5 @@ div[class*=' codeBlockTitle'] {
 /* Selection */
 
 ::selection {
-  background-color: #7DD7CF;
-}
-
-[data-theme='dark'] ::selection {
-  background-color: #1F5263;
+  background-color: var(--custom-selection);
 }

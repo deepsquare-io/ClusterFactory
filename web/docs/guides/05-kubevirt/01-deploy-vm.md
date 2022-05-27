@@ -1,6 +1,6 @@
 # Deploy a VM with KubeVirt
 
-:::note
+:::info
 
 This guide is still a draft.
 
