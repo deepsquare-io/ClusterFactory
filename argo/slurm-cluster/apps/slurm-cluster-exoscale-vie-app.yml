@@ -44,7 +44,7 @@ spec:
 
           accounting: |
             AccountingStorageType=accounting_storage/slurmdbd
-            AccountingStorageHost=slurm-cluster-exoscale-vie-db-0.slurm-cluster.svc.cluster.local
+            AccountingStorageHost=slurm-cluster-exoscale-vie-db.slurm-cluster.svc.cluster.local
             AccountingStoragePort=6819
             AccountingStorageTRES=gres/gpu
             AccountingStoreFlags=job_comment,job_env,job_script
@@ -363,13 +363,6 @@ spec:
                 memory: '128Mi'
               limits:
                 memory: '256Mi'
-
-          resources:
-            requests:
-              cpu: '100m'
-              memory: '128Mi'
-            limits:
-              memory: '256Mi'
 
             # Extra volume mounts
             volumeMounts:
