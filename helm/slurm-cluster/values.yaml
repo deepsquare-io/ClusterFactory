@@ -122,10 +122,9 @@ controller:
   resources:
     requests:
       cpu: '250m'
-      memory: '1Gi'
+      memory: '256Mi'
     limits:
-      cpu: '1'
-      memory: '4Gi'
+      memory: '1Gi'
 
   nodeAffinity: {}
 
@@ -247,10 +246,9 @@ login:
 
   resources:
     requests:
-      cpu: '250m'
+      cpu: '100m'
       memory: '256Mi'
     limits:
-      cpu: '1'
       memory: '1Gi'
 
   nodeAffinity: {}
@@ -341,11 +339,10 @@ login:
 
     resources:
       requests:
-        cpu: '250m'
-        memory: '256Mi'
+        cpu: '100m'
+        memory: '128Mi'
       limits:
-        cpu: '1'
-        memory: '1Gi'
+        memory: '256Mi'
 
 ondemand:
   enabled: false
@@ -537,11 +534,10 @@ db:
 
   resources:
     requests:
-      cpu: '250m'
-      memory: '256Mi'
+      cpu: '100m'
+      memory: '128Mi'
     limits:
-      cpu: '1'
-      memory: '1Gi'
+      memory: '256Mi'
 
   nodeAffinity: {}
 

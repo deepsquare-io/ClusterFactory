@@ -44,7 +44,7 @@ spec:
 
           accounting: |
             AccountingStorageType=accounting_storage/slurmdbd
-            AccountingStorageHost=slurmdbd.deepsquare.gcloud
+            AccountingStorageHost=slurm-cluster-exoscale-vie-db-0.slurm-cluster.svc.cluster.local
             AccountingStoragePort=6819
             AccountingStorageTRES=gres/gpu
             AccountingStoreFlags=job_comment,job_env,job_script
@@ -187,7 +187,6 @@ spec:
               cpu: '250m'
               memory: '256Mi'
             limits:
-              cpu:
               memory: '1Gi'
 
           dnsPolicy: "None"
@@ -293,7 +292,6 @@ spec:
               cpu: '100m'
               memory: '256Mi'
             limits:
-              cpu:
               memory: '1Gi'
 
           # Extra volume mounts
@@ -359,11 +357,47 @@ spec:
             enabled: true
             command: ['sh', '-c', 'update-ca-trust && /init']
 
+          resources:
+            requests:
+              cpu: '100m'
+              memory: '128Mi'
+            limits:
+              memory: '256Mi'
+
             # Extra volume mounts
             volumeMounts:
               - name: ca-cert
                 mountPath: /etc/pki/ca-trust/source/anchors/csquare.gcloud.ca.pem
                 subPath: csquare.gcloud.ca.pem
+
+        db:
+          enabled: true
+
+          command: ['sh', '-c', 'update-ca-trust && /init']
+
+          config:
+            secretName: 'slurmdbd-exoscale-vie-conf-secret'
+
+          resources:
+            requests:
+              cpu: '100m'
+              memory: '128Mi'
+            limits:
+              memory: '256Mi'
+
+          volumeMounts:
+            - name: ca-cert
+              mountPath: /etc/pki/ca-trust/source/anchors/csquare.gcloud.ca.pem
+              subPath: csquare.gcloud.ca.pem
+
+          volumes:
+            - name: ca-cert
+              secret:
+                secretName: local-ca-secret
+
+          nodeSelector:
+            topology.kubernetes.io/region: at-vie
+            topology.kubernetes.io/zone: at-vie-1
 
   destination:
     server: 'https://kubernetes.default.svc'
