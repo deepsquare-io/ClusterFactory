@@ -11,16 +11,16 @@ All nodes should have a Linux distribution with:
 - The Linux kernel version higher than 3.10.
 - An init system based on SystemD or OpenRC.
 
-Cluster Factory has been fully tested on Rocky Linux, and is our recommended OS.
+Cluster Factory has been fully tested on Rocky Linux and is our recommended OS.
 
 ### Required utilities
 
-- [`k0sctl`](https://github.com/k0sproject/k0sctl/releases), for deployment, backup, and upgrading of the Kubernetes cluster.
+- [`k0sctl`](https://github.com/k0sproject/k0sctl/releases), for deployment, backing up, and upgrading of the Kubernetes cluster.
 - [`kubectl`](https://kubernetes.io/docs/tasks/tools/#kubectl), for managing your Kubernetes cluster.
 - [`kubeseal`](https://github.com/bitnami-labs/sealed-secrets/releases/), for encrypting the secrets.
 - [`helm`](https://github.com/helm/helm/releases/), for Helm chart template.
 
-We have a script inside the [`scripts`](https://github.com/SquareFactory/cluster-factory-ce/tree/main/scripts) directory to install and set up a working environment.
+There is a script inside the [`scripts`](https://github.com/SquareFactory/cluster-factory-ce/tree/main/scripts) directory to install and set up a working environment.
 
 Just run:
 
@@ -30,10 +30,12 @@ Just run:
 
 The binaries are stored inside the `bin` directory and the `PATH` is automatically set.
 
-## Recommended tooling
+## Recommended tools
 
-- [VSCode](https://code.visualstudio.com) is our favorite IDE. But just use one with good YAML support.
-- **Use [Lens](https://k8slens.dev) to manage your Kubernetes cluster.**
+We recommend:
+
+- [VSCode](https://code.visualstudio.com). Any IDE with YAML support is a good alternative.
+- **[Lens](https://k8slens.dev) to manage your Kubernetes cluster.**
 
 ## Recommended documentations
 
