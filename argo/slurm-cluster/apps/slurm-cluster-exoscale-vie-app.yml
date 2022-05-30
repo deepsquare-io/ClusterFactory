@@ -138,7 +138,6 @@ spec:
             BatchStartTimeout=300
 
         controller:
-          image: 'ghcr.io/squarefactory/slurm-docker:0.1.4-controller-reindeer'
           replicas: 1
 
           command: ['sh', '-c', 'update-ca-trust && /init']
@@ -254,7 +253,6 @@ spec:
 
         login:
           enabled: true
-          image: 'ghcr.io/squarefactory/slurm-docker:0.1.2-login-reindeer'
           replicas: 2
 
           strategy:
@@ -359,7 +357,6 @@ spec:
 
           rest:
             enabled: true
-            image: 'ghcr.io/squarefactory/slurm-docker:0.1.2-rest-reindeer'
             command: ['sh', '-c', 'update-ca-trust && /init']
 
             # Extra volume mounts
