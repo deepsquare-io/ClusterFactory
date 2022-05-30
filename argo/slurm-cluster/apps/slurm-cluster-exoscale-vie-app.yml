@@ -184,7 +184,7 @@ spec:
 
           resources:
             requests:
-              cpu: '250m'
+              cpu: '100m'
               memory: '256Mi'
             limits:
               memory: '1Gi'
@@ -356,6 +356,13 @@ spec:
           rest:
             enabled: true
             command: ['sh', '-c', 'update-ca-trust && /init']
+
+            resources:
+              requests:
+                cpu: '100m'
+                memory: '128Mi'
+              limits:
+                memory: '256Mi'
 
           resources:
             requests:

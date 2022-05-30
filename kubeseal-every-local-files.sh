@@ -1,6 +1,8 @@
-#!/bin/sh -ex
+#!/bin/sh
 
 . "./scripts/common.sh"
+
+set -ex
 
 find . -name '*secret.*.local' -exec sh -c "SEALED_FILE=\$(echo \"\$1\" | sed -E 's|(.*)-secret.(.*).local$|\1-sealed-secret.\2|g') \
 && if ! [ -f \$SEALED_FILE ]; then \
