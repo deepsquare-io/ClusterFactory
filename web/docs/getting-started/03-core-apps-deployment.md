@@ -8,7 +8,7 @@ CoreDNS is exposed to the external network thanks to the `IngressRoute` objects 
 
 If this is an unwanted feature (because you are using an other DNS for example), feel free to remove the routes and close the ports in the Traefik extension specification inside `k0sctl.yaml`.
 
-The files that you should look for are `core/coredns/overlays/prod/configmap.yml` and `core/coredns/overlays/prod/deployment.yml`.
+The files that you should look for are [`core/coredns/overlays/prod/configmap.yml`](https://github.com/SquareFactory/cluster-factory-ce/blob/main/core/coredns/overlays/prod/configmap.yml) and [`core/coredns/overlays/prod/deployment.yml`](https://github.com/SquareFactory/cluster-factory-ce/blob/main/core/coredns/overlays/prod/deployment.yml).
 
 Inside the `ConfigMap`, you'll find:
 
