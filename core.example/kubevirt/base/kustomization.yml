@@ -1,2 +1,2 @@
 resources:
-  - https://github.com/kubevirt/kubevirt/releases/download/v0.51.0/kubevirt-cr.yaml
+  - https://github.com/kubevirt/kubevirt/releases/download/v0.53.0/kubevirt-cr.yaml
