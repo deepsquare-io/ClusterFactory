@@ -1,5 +1,14 @@
 # 3. Core Apps Deployment
 
+We will deploy:
+
+- A new CoreDNS configuration
+- Sealed Secrets, secret management optimized for GitOps
+- Cert-manager issuers, to generate your SSL certificates and enable, for free, TLS configuration.
+- Argo CD, to enable GitOps.
+- Multus CNI, to support multiple network interfaces
+- KubeVirt, to deploy VM workloads
+
 ## CoreDNS configuration
 
 The initial configuration of CoreDNS given by k0s is not satisfying our needs. This is why we are applying a new configuration.
@@ -96,7 +105,7 @@ If some files were added and removed, you must change the `deployment.yml`:
 
 :::note
 
-### Configure the issuers
+### Configure the cert-manager issuers
 
 Specify new certificate issuers in the `core/cert-manager` directory.
 
@@ -217,6 +226,26 @@ spec:
 ```
 
 Our recommendation is to use Ingress for simple routes with HTTP. Otherwise, IngressRoute is the best solution for all the cases.
+
+### (optional) Configure KubeVirt
+
+If you do not want to deploy KubeVirt in all zones, you can edit [`core/kubevirt/overlays/prod/kubevirt-cr.yaml`](https://github.dev/SquareFactory/cluster-factory-ce/blob/main/core.example/kubevirt/overlays/prod/kubevirt-cr.yaml).
+
+```yaml title="core/kubevirt/overlays/prod/kubevirt-cr.yaml"
+apiVersion: kubevirt.io/v1
+kind: KubeVirt
+metadata:
+  name: kubevirt
+  namespace: kubevirt
+spec:
+  infra:
+    nodePlacement:
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: '' # Restrict virt-controller and virt-api pods to only run on the control-plane nodes.
+  workloads:
+    nodePlacement:
+      nodeSelector: {} # Allow the virt-handler pods to only on all nodes 
+```
 
 ## Deploying the core apps
 

@@ -322,6 +322,8 @@ Just make sure to verify which configuration you are using with `kubectl config 
 
 Congratulation, you have deployed your Kubernetes cluster! However, it's still missing a few core features:
 
+- KubeVirt, to deploy VM workloads
+- Multus CNI, to support multiple network interfaces
 - Sealed Secrets, secret management optimized for GitOps
 - Cert-manager issuers, to generate your SSL certificates and enable, for free, TLS configuration.
 - Argo CD, to enable GitOps.

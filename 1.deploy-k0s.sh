@@ -24,25 +24,6 @@ section "Wait for all deployments to be Available"
 sleep 10
 kubectl wait deployments --timeout=3600s --all --all-namespaces --for condition=Available
 
-section "Deploy kubevirt (virtual machines deployments)"
-# Updating is only supported to n-1 to n. Be warned.
-# https://kubevirt.io/user-guide/operations/updating_and_deletion/
-RELEASE=v0.53.0
-kubectl apply -f "https://github.com/kubevirt/kubevirt/releases/download/${RELEASE}/kubevirt-operator.yaml"
-kubectl apply -k core/kubevirt/overlays/prod
-
-section "Wait for all deployments to be Available"
-sleep 10
-kubectl wait deployments --timeout=3600s --all --all-namespaces --for condition=Available
-
-section "Deploy multus (multiple network interfaces support)"
-kubectl apply -f https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset-thick-plugin.yml
-kubectl apply -f core/cni/calico-network-attachment-definition.yaml
-
-section "Wait for all deployments to be Available"
-sleep 10
-kubectl wait deployments --timeout=3600s --all --all-namespaces --for condition=Available
-
 cat <<EOF
 ---Step 1 finished---
 EOF
