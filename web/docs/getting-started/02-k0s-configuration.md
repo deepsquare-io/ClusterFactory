@@ -22,7 +22,7 @@ You can track these files on Git:
 
 ```shell title="user@local:/cluster-factory-ce"
 git add .
-git commit -m "Initiliazed my config"
+git commit -m "Initialized my config"
 ```
 
 Edit the `k0sctl.yaml` file. Start with the `hosts` field :
