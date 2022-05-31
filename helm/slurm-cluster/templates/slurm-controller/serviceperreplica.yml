@@ -1,0 +1,64 @@
+{{- if and .Values.controller.enabled .Values.controller.servicePerReplica.enabled }}
+{{- $count := .Values.controller.replicas | int -}}
+{{- $serviceValues := .Values.controller.servicePerReplica -}}
+apiVersion: v1
+kind: List
+metadata:
+  name: "{{ template "slurm-cluster.controller.name" . }}-serviceperreplica"
+  namespace: '{{ $.Release.Namespace }}'
+items:
+{{- range $i, $e := until $count }}
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: "{{ template "slurm-cluster.controller.name" $ }}-{{ $i }}"
+      namespace: '{{ $.Release.Namespace }}'
+      labels:
+        release: {{ $.Release.Name | quote }}
+        chart: "{{ $.Chart.Name }}"
+        app: "{{ template "slurm-cluster.controller.name" $ }}"
+        app.kubernetes.io/name: "{{ template "slurm-cluster.controller.name" $ }}"
+        app.kubernetes.io/instance: "{{ template "slurm-cluster.controller.name" $ }}"
+        app.kubernetes.io/component: controller
+        {{- if $serviceValues.labels }}
+        {{ toYaml $serviceValues.labels | indent 4 }}
+        {{- end }}
+      {{- if $serviceValues.annotations }}
+      annotations:
+      {{ toYaml $serviceValues.annotations | indent 4 }}
+      {{- end }}
+    spec:
+      {{- if $serviceValues.clusterIP }}
+      clusterIP: {{ $serviceValues.clusterIP }}
+      {{- end }}
+      {{- if $serviceValues.externalIPs }}
+      externalIPs:
+      {{ toYaml $serviceValues.externalIPs | indent 4 }}
+      {{- end }}
+      {{- if $serviceValues.loadBalancerIP }}
+      loadBalancerIP: {{ $serviceValues.loadBalancerIP }}
+      {{- end }}
+      {{- if $serviceValues.loadBalancerSourceRanges }}
+      loadBalancerSourceRanges:
+      {{- range $cidr := $serviceValues.loadBalancerSourceRanges }}
+        - {{ $cidr }}
+      {{- end }}
+      {{- end }}
+      {{- if ne $serviceValues.type "ClusterIP" }}
+      externalTrafficPolicy: {{ $serviceValues.externalTrafficPolicy }}
+      {{- end }}
+      ports:
+        - name: slurmctld
+          {{- if eq $serviceValues.type "NodePort" }}
+          nodePort: {{ $serviceValues.nodePort }}
+          {{- end }}
+          port: {{ $serviceValues.port }}
+          targetPort: slurmctld
+      selector:
+        app.kubernetes.io/name: "{{ template "slurm-cluster.controller.name" $ }}"
+        app.kubernetes.io/instance: "{{ template "slurm-cluster.controller.name" $ }}"
+        app.kubernetes.io/component: controller
+        statefulset.kubernetes.io/pod-name: "{{ template "slurm-cluster.controller.name" $ }}-{{ $i }}"
+      type: "{{ $serviceValues.type }}"
+{{- end }}
+{{- end }}

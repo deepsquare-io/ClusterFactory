@@ -1,0 +1,58 @@
+{
+  "variables": {
+    "boot_wait": "3s",
+    "disk_size": "50G",
+    "iso_checksum": "53a62a72881b931bdad6b13bcece7c3a2d4ca9c4a2f1e1a8029d081dd25ea61f",
+    "iso_url": "https://download.rockylinux.org/vault/rocky/8.4/isos/x86_64/Rocky-8.4-x86_64-boot.iso",
+    "memsize": "8192",
+    "numvcpus": "4"
+  },
+  "builders": [
+    {
+      "name": "cloud-light",
+      "type": "qemu",
+      "accelerator": "kvm",
+      "communicator": "none",
+      "boot_command": [
+        "<up><tab><bs><bs><bs><bs><bs> ",
+        "inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cloud.light.cfg ",
+        "inst.cmdline",
+        "<enter><wait>"
+      ],
+      "boot_wait": "{{ user `boot_wait` }}",
+      "disk_size": "{{ user `disk_size` }}",
+      "iso_url": "{{ user `iso_url` }}",
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "headless": true,
+      "cpus": "{{ user `numvcpus` }}",
+      "memory": "{{ user `memsize` }}",
+      "vnc_bind_address": "0.0.0.0",
+      "http_directory": "http",
+      "shutdown_timeout": "1h",
+      "qemuargs": [["-serial", "stdio"]]
+    },
+    {
+      "name": "cloud-gpu",
+      "type": "qemu",
+      "accelerator": "kvm",
+      "communicator": "none",
+      "boot_command": [
+        "<up><tab><bs><bs><bs><bs><bs> ",
+        "inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cloud.gpu.cfg ",
+        "inst.cmdline",
+        "<enter><wait>"
+      ],
+      "boot_wait": "{{ user `boot_wait` }}",
+      "disk_size": "{{ user `disk_size` }}",
+      "iso_url": "{{ user `iso_url` }}",
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "headless": true,
+      "cpus": "{{ user `numvcpus` }}",
+      "memory": "{{ user `memsize` }}",
+      "vnc_bind_address": "0.0.0.0",
+      "http_directory": "http",
+      "shutdown_timeout": "1h",
+      "qemuargs": [["-serial", "stdio"]]
+    }
+  ]
+}

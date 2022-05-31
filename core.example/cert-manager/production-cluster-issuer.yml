@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  namespace: cert-manager
+  name: production-cluster-issuer
+spec:
+  acme:
+    email: john.smith@example.com
+    server: https://acme-v02.api.letsencrypt.org/directory
+    preferredChain: 'ISRG Root X1'
+    privateKeySecretRef:
+      name: production-cluster-issuer-account-key
+    solvers:
+      - http01:
+          ingress:
+            class: traefik

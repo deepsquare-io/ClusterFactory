@@ -1,0 +1,101 @@
+replicas: 1
+
+image: 'docker.io/bitnami/openldap:2.6.1'
+imagePullPolicy: 'IfNotPresent'
+
+labels: {}
+annotations: {}
+
+ldapPort: 1389
+ldapsPort: 1636
+
+resources:
+  requests:
+    cpu: 125m
+    memory: 1Gi
+  limits:
+    memory: 1Gi
+
+nodeAffinity: {}
+
+updateStrategy:
+  type: RollingUpdate
+
+livenessProbe:
+  initialDelaySeconds: 60
+  timeoutSeconds: 1
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 3
+readinessProbe:
+  timeoutSeconds: 1
+  periodSeconds: 2
+  successThreshold: 1
+  failureThreshold: 3
+
+# How long to wait to stop gracefully
+terminationGracePeriod: 10
+
+## Use an alternate scheduler.
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+schedulerName: ''
+
+imagePullSecrets: {}
+
+nodeSelector: {}
+tolerations: []
+
+# persistence is mounted on /bitnami/openldap/
+persistence:
+  storageClassName: ''
+  accessModes: ['ReadWriteOnce']
+  size: 5Gi
+  selectorLabels: {}
+
+initContainers: []
+
+## By enabling tls, LDAP_TLS_* env variables will be automatically set.
+## The format of the secret MUST be kubernetes.io/tls (ca.crt, tls.crt, tls.key).
+## ref: https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets
+tls:
+  enabled: false
+  secretName: ''
+
+## Defaults imported from https://hub.docker.com/r/bitnami/openldap/
+## Do not add sensitive informations here, prefer secret.
+env:
+  LDAP_ROOT: 'dc=example,dc=org'
+  LDAP_CONFIG_ADMIN_ENABLED: 'no'
+  LDAP_USER_DC: 'users'
+  LDAP_GROUP: 'readers'
+  LDAP_ADD_SCHEMAS: 'yes'
+  LDAP_EXTRA_SCHEMAS: 'cosine,inetorgperson,nis'
+  LDAP_SKIP_DEFAULT_TREE: 'no'
+  LDAP_CUSTOM_LDIF_DIR: '/ldifs'
+  LDAP_CUSTOM_SCHEMA_FILE: '/schema/custom.ldif'
+  LDAP_ULIMIT_NOFILES: '1024'
+  LDAP_ALLOW_ANON_BINDING: 'yes'
+  LDAP_LOGLEVEL: '256'
+
+# Use envSecretName to import password and other sensitive env variables
+envSecretName: ''
+
+# Extra volume mounts
+volumeMounts:
+  []
+  # - name: custom-ldifs
+  #   mountPath: /ldifs
+  #   readOnly: true
+
+# Extra volumes (use it to mount secrets like ldif)
+volumes:
+  []
+  # - name: custom-ldifs
+  #   configMap:
+  #     name: custom-ldifs
+  #     defaultMode: 256
+
+service:
+  enabled: true
+  type: ClusterIP

@@ -1,0 +1,170 @@
+{{- if .Values.db.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: "{{ template "slurm-cluster.db.name" . }}"
+  namespace: '{{ .Release.Namespace }}'
+  labels:
+    release: '{{ .Release.Name }}'
+    chart: '{{ .Chart.Name }}'
+    app: "{{ template "slurm-cluster.db.name" . }}"
+spec:
+  serviceName: "{{ template "slurm-cluster.db.name" . }}"
+  selector:
+    matchLabels:
+      app: "{{ template "slurm-cluster.db.name" . }}"
+      app.kubernetes.io/name: "{{ template "slurm-cluster.db.name" . }}"
+      app.kubernetes.io/instance: "{{ template "slurm-cluster.db.name" . }}"
+      app.kubernetes.io/component: db
+  replicas: {{ .Values.db.replicas }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy }}
+  template:
+    metadata:
+      name: "{{ template "slurm-cluster.db.name" . }}"
+      labels:
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}"
+        app: "{{ template "slurm-cluster.db.name" . }}"
+        app.kubernetes.io/name: "{{ template "slurm-cluster.db.name" . }}"
+        app.kubernetes.io/instance: "{{ template "slurm-cluster.db.name" . }}"
+        app.kubernetes.io/component: db
+{{- if .Values.db.labels }}
+{{ toYaml .Values.db.labels | indent 8 }}
+{{- end }}
+{{- if or .Values.db.annotations .Values.db.net.enabled }}
+      annotations:
+{{- end }}
+{{- if .Values.db.networks }}
+        k8s.v1.cni.cncf.io/networks: {{ .Values.db.networks | toJson }}
+{{- else }}
+{{- if .Values.db.net.enabled }}
+        k8s.v1.cni.cncf.io/networks: "{{ .Release.Namespace }}/{{ template "slurm-cluster.db.name" . }}-net"
+{{- end }}
+{{- end }}
+{{- if .Values.db.annotations }}
+{{ toYaml .Values.db.annotations | indent 8 }}
+{{- end }}
+    spec:
+      {{- if .Values.db.schedulerName }}
+      schedulerName: "{{ .Values.db.schedulerName }}"
+      {{- end }}
+      securityContext:
+{{ toYaml .Values.db.podSecurityContext | indent 8 }}
+      {{- with .Values.db.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.db.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.db.nodeAffinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.db.terminationGracePeriod }}
+      {{- if .Values.db.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.db.imagePullSecrets | indent 8 }}
+      {{- end }}
+      initContainers:
+        - name: "init-slurmdbd-perms"
+          image: "{{ .Values.db.image }}"
+          imagePullPolicy: "{{ .Values.db.imagePullPolicy }}"
+          command: ["sh", "-c"]
+          args:
+            - |-
+              cp -RLp /etc/slurm/* /out/;
+              cp -RLp /in/* /out/;
+              find /out -type f -exec chmod 600 {} \;;
+              chown -R 1501:1501 /out/;
+          volumeMounts:
+            - name: slurmdbd-conf
+              mountPath: /in
+            - name: slurmdbd-conf-with-perms
+              mountPath: /out
+      {{- if .Values.db.initContainers }}
+{{ toYaml .Values.db.initContainers | indent 8 }}
+      {{- end }}
+      {{- if .Values.db.dnsPolicy }}
+      dnsPolicy: "{{ .Values.db.dnsPolicy }}"
+      {{- end }}
+      {{- if .Values.db.dnsConfig }}
+      dnsConfig:
+{{ toYaml .Values.db.dnsConfig | indent 8 }}
+      {{- end }}
+      containers:
+        - name: "{{ template "slurm-cluster.db.name" . }}"
+          image: "{{ .Values.db.image }}"
+          imagePullPolicy: "{{ .Values.db.imagePullPolicy }}"
+          command:
+{{ toYaml .Values.db.command | indent 12 }}
+          ports:
+            - containerPort: 6819
+              name: slurmdbd
+          readinessProbe:
+            tcpSocket:
+              port: 6819
+{{ toYaml .Values.db.readinessProbe | indent 12 }}
+          livenessProbe:
+            tcpSocket:
+              port: 6819
+{{ toYaml .Values.db.livenessProbe | indent 12 }}
+          volumeMounts:
+            - name: slurmdbd-conf-with-perms
+              mountPath: /etc/slurm
+              readOnly: false
+            - name: sssd
+              mountPath: /secrets/sssd
+              readOnly: true
+            - name: munge
+              mountPath: /secrets/munge
+              readOnly: true
+            - mountPath: /tmp
+              name: tmp
+              subPath: tmp
+            - mountPath: /run
+              name: tmp
+              subPath: run
+            - mountPath: /var/log
+              name: tmp
+              subPath: log
+            - name: slurm-jwt
+              mountPath: /secrets/slurm
+              readOnly: true
+            {{- if .Values.db.volumeMounts }}
+{{ toYaml .Values.db.volumeMounts | indent 12 }}
+            {{- end }}
+          resources:
+{{ toYaml .Values.db.resources | indent 12 }}
+      volumes:
+        - name: tmp
+          emptyDir:
+            medium: "{{ .Values.db.tmp.medium }}"
+            sizeLimit: "{{ .Values.db.tmp.size }}"
+        - name: slurmdbd-conf-with-perms
+          emptyDir: {}
+        - name: slurmdbd-conf
+          secret:
+            secretName: "{{ .Values.db.config.secretName }}"
+            {{- with .Values.db.config.items }}
+            items:
+{{ toYaml . | indent 14}}
+            {{- end }}
+        - name: sssd
+          secret:
+            secretName: "{{ .Values.sssd.secretName }}"
+            defaultMode: 256
+        - name: munge
+          secret:
+            secretName: "{{ .Values.munge.secretName }}"
+            defaultMode: 384
+        - name: slurm-jwt
+          secret:
+            secretName: "{{ .Values.jwt.secretName }}"
+            defaultMode: 384
+        {{- if .Values.db.volumes }}
+{{ toYaml .Values.db.volumes | indent 8 }}
+        {{- end }}
+{{- end }}

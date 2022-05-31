@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cvmfs-configmap
+  labels:
+    app.kubernetes.io/name: {{ include "cvmfs-csi.name" . }}
+    helm.sh/chart: {{ include "cvmfs-csi.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  {{- range $key, $entry := .Values.configs -}}
+  {{- if $entry.contents -}}
+  {{- $key | nindent 2 }}: |
+    {{- tpl $entry.contents $ | nindent 4 -}}
+    {{- end }}
+  {{- end }}

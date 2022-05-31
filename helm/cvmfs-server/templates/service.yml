@@ -1,0 +1,42 @@
+{{- if .Values.service.enabled }}
+{{- $serviceValues := .Values.service -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ template "cvmfs-server.name" $ }}"
+  namespace: '{{ $.Release.Namespace }}'
+  labels:
+    release: '{{ $.Release.Name }}'
+    chart: '{{ $.Chart.Name }}'
+    app: "{{ template "cvmfs-server.name" $ }}"
+spec:
+  type: {{ $serviceValues.type }}
+  {{- if $serviceValues.clusterIP }}
+  clusterIP: {{ $serviceValues.clusterIP }}
+  {{- end }}
+  {{- if $serviceValues.externalIPs }}
+  externalIPs:
+  {{ toYaml $serviceValues.externalIPs | indent 4 }}
+  {{- end }}
+  {{- if $serviceValues.loadBalancerIP }}
+  loadBalancerIP: {{ $serviceValues.loadBalancerIP }}
+  {{- end }}
+  {{- if $serviceValues.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := $serviceValues.loadBalancerSourceRanges }}
+    - {{ $cidr }}
+  {{- end }}
+  {{- end }}
+  {{- if ne $serviceValues.type "ClusterIP" }}
+  externalTrafficPolicy: {{ $serviceValues.externalTrafficPolicy }}
+  {{- end }}
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: "{{ template "cvmfs-server.name" $ }}"
+    app.kubernetes.io/name: "{{ template "cvmfs-server.name" $ }}"
+    app.kubernetes.io/instance: "{{ template "cvmfs-server.name" $ }}"
+{{- end }}

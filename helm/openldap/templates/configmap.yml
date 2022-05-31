@@ -1,0 +1,11 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: "{{ template "openldap.name" . }}-env"
+  namespace: '{{ .Release.Namespace }}'
+  labels:
+    release: '{{ .Release.Name }}'
+    chart: '{{ .Chart.Name }}'
+    app: "{{ template "openldap.name" . }}"
+data:
+{{ toYaml .Values.env | indent 2 }}

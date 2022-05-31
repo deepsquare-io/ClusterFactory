@@ -1,0 +1,76 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cvmfs-service-app
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: cvmfs
+  source:
+    repoURL: https://gitlab.cern.ch/helm/charts/cern.git
+    targetRevision: HEAD
+    path: squid
+    helm:
+      releaseName: cvmfs-service
+
+      values: |
+        image:
+          repository: datadog/squid
+          tag: latest
+          pullPolicy: IfNotPresent
+
+        service:
+          type: ClusterIP
+          port: 3128
+          annotations: null
+
+        ingress:
+          enabled: false
+          annotations: {}
+          paths:
+            - /
+          hosts: []
+          tls: []
+
+        config:
+          - 'acl local_nodes src YOUR_CLIENT_IPS'
+          - 'acl stratum_ones dst cvmfs.ch1.deepsquare.run'
+          - 'http_port 3128'
+          - 'http_access allow stratum_ones'
+          - 'http_access allow local_nodes'
+          - 'http_access allow localhost'
+          - 'http_access deny all'
+          - 'collapsed_forwarding on'
+          - 'minimum_expiry_time 0'
+          - 'maximum_object_size 1024 MB'
+          - 'cache_mem 128 MB'
+          - 'maximum_object_size_in_memory 128 KB'
+          - 'cache_dir ufs /var/spool/squid 50000 16 256'
+
+
+
+        resources: {}
+
+        nodeSelector: {}
+
+        tolerations: []
+
+        affinity: {}
+
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: cvmfs
+
+  syncPolicy:
+    automated:
+      prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+      allowEmpty: false # Allows deleting all application resources during automatic syncing ( false by default ).
+    syncOptions: []
+    retry:
+      limit: 5 # number of failed sync attempt retries; unlimited number of attempts if less than 0
+      backoff:
+        duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
+        factor: 2 # a factor to multiply the base duration after each failed retry
+        maxDuration: 3m # the maximum amount of time allowed for the backoff strategy

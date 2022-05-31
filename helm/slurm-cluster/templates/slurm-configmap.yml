@@ -1,0 +1,102 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: "{{ template "slurm-cluster.name" . }}-slurm-config"
+  namespace: '{{ .Release.Namespace }}'
+  labels:
+    release: '{{ .Release.Name }}'
+    chart: '{{ .Chart.Name }}'
+data:
+  slurm.conf: |
+    ##-- Cluster definition
+    ClusterName={{ .Values.slurmConfig.clusterName }}
+
+    SlurmUser=slurm
+
+    #-- Slurmctl
+    SlurmctldHost={{ template "slurm-cluster.controller.name" . }}-0
+    SlurmctldDebug={{ .Values.slurmConfig.controller.debug }}
+    SlurmctldParameters={{ .Values.slurmConfig.controller.parameters }}
+    StateSaveLocation=/var/spool/slurmctl
+    SlurmctldPidFile=/var/run/slurmctld.pid
+    SlurmctldLogFile=/var/log/slurm/slurmctld.log
+    {{- if .Values.controller.prologsConfigMap }}
+    PrologSlurmctld=/etc/slurm/prolog-slurmctld
+    {{- end }}
+    {{- if .Values.controller.epilogsConfigMap }}
+    EpilogSlurmctld=/etc/slurm/epilog-slurmctld
+    {{- end }}
+
+    #-- Slurmd
+    SlurmdDebug={{ .Values.slurmConfig.compute.debug }}
+    SlurmdLogFile=/var/log/slurm/slurmd.log
+    SrunPortRange={{ .Values.slurmConfig.compute.srunPortRangeStart }}-{{ .Values.slurmConfig.compute.srunPortRangeEnd }}
+
+    #-- Default ressources allocation
+{{ .Values.slurmConfig.defaultResourcesAllocation | indent 4 }}
+
+    #-- Scheduling
+{{ .Values.slurmConfig.scheduling | indent 4 }}
+
+    #-- Multifactor priority
+{{ .Values.slurmConfig.priorities | indent 4 }}
+
+    #-- Accounting
+{{ .Values.slurmConfig.accounting | indent 4 }}
+
+    #-- Multi Authentication
+{{ .Values.slurmConfig.auth | indent 4 }}
+
+    #-- Compute nodes
+{{ .Values.slurmConfig.nodes | indent 4 }}
+
+    #-- Partitions
+{{ .Values.slurmConfig.partitions | indent 4 }}
+
+    #-- Extra
+{{ .Values.slurmConfig.extra | indent 4 }}
+
+  gres.conf: |
+{{ .Values.slurmConfig.gres | indent 4 }}
+
+  cgroup.conf: |
+    CgroupAutomount=yes
+    ## Isolate CPUs cores using cgroups
+    ConstrainCores=yes
+    ## Isolate GPUs using cgroups
+    ConstrainDevices=yes
+    ## Isolate RAM using cgroups
+    ConstrainRAMSpace=yes
+    AllowedRAMSpace=130
+    #ConstrainSwapSpace=yes
+
+    #### From a old cgroup.conf
+    #ConstrainKmemSpace=yes
+    #CgroupReleaseAgentDir="/etc/slurm/cgroup"
+    #AllowedRAMSpace=20 #not working
+    #### end old cgroup.conf
+
+  plugstack.conf: |
+    include /etc/slurm/plugstack.conf.d/*
+
+  epilog-slurmctld: |
+    #!/bin/bash -ex
+
+    EPILOG_DIR=/etc/slurm/epilog-slurmctld.d
+
+    for script in "${EPILOG_DIR}"/*; do
+      if [ -x "${script}" ]; then
+        "${script}"
+      fi
+    done
+
+  prolog-slurmctld: |
+    #!/bin/bash -ex
+
+    PROLOG_DIR=/etc/slurm/prolog-slurmctld.d
+
+    for script in ${PROLOG_DIR}/*; do
+      if [ -x "${script}" ]; then
+        "${script}"
+      fi
+    done

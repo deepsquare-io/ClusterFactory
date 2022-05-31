@@ -1,0 +1,43 @@
+{{- if .Values.cache.alienCache.enabled }}
+{{- if not .Values.cache.alienCache.existingClaim }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}-cvmfs-alien-cache-pvc
+  labels:
+    app.kubernetes.io/name: {{ include "cvmfs-csi.name" . }}
+    helm.sh/chart: {{ include "cvmfs-csi.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app: csi-cvmfsplugin
+spec:
+  storageClassName: {{ .Values.cache.alienCache.storageClass }}
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.cache.alienCache.size }}
+{{ end -}}
+{{ else -}}
+{{- if .Values.cache.localCache.enabled }}
+{{- if not .Values.cache.localCache.existingClaim }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}-cvmfs-local-cache-pvc
+  labels:
+    app.kubernetes.io/name: {{ include "cvmfs-csi.name" . }}
+    helm.sh/chart: {{ include "cvmfs-csi.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app: csi-cvmfsplugin
+spec:
+  storageClassName: {{ .Values.cache.localCache.storageClass }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.cache.localCache.size }}
+{{ end -}}
+{{ end -}}
+{{ end -}}

@@ -1,0 +1,16 @@
+{{- if .Values.rbac.create }}
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ template "ipmi-exporter.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "ipmi-exporter.labels" . | indent 4 }}
+subjects:
+- kind: ServiceAccount
+  name: {{ template "ipmi-exporter.serviceAccountName" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "ipmi-exporter.fullname" . }}
+{{- end }}

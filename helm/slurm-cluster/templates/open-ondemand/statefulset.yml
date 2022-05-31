@@ -1,0 +1,264 @@
+{{- if .Values.ondemand.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: "{{ template "slurm-cluster.ondemand.name" . }}"
+  namespace: '{{ .Release.Namespace }}'
+  labels:
+    release: '{{ .Release.Name }}'
+    chart: '{{ .Chart.Name }}'
+    app: "{{ template "slurm-cluster.ondemand.name" . }}"
+spec:
+  serviceName: "{{ template "slurm-cluster.ondemand.name" . }}"
+  selector:
+    matchLabels:
+      app: "{{ template "slurm-cluster.ondemand.name" . }}"
+      app.kubernetes.io/name: "{{ template "slurm-cluster.ondemand.name" . }}"
+      app.kubernetes.io/instance: "{{ template "slurm-cluster.ondemand.name" . }}"
+      app.kubernetes.io/component: ondemand
+  replicas: {{ .Values.ondemand.replicas }}
+  updateStrategy:
+{{ toYaml .Values.ondemand.updateStrategy | trim | indent 4 }}
+  template:
+    metadata:
+      name: "{{ template "slurm-cluster.ondemand.name" . }}"
+      labels:
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}"
+        app: "{{ template "slurm-cluster.ondemand.name" . }}"
+        app.kubernetes.io/name: "{{ template "slurm-cluster.ondemand.name" . }}"
+        app.kubernetes.io/instance: "{{ template "slurm-cluster.ondemand.name" . }}"
+        app.kubernetes.io/component: ondemand
+{{- if .Values.ondemand.labels }}
+{{ toYaml .Values.ondemand.labels | indent 8 }}
+{{- end }}
+{{- if .Values.ondemand.annotations }}
+      annotations:
+{{ toYaml .Values.ondemand.annotations | indent 8 }}
+{{- end }}
+    spec:
+      {{- if .Values.ondemand.schedulerName }}
+      schedulerName: "{{ .Values.ondemand.schedulerName }}"
+      {{- end }}
+      securityContext:
+{{ toYaml .Values.ondemand.podSecurityContext | indent 8 }}
+      {{- with .Values.ondemand.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.ondemand.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.ondemand.hostAliases }}
+      hostAliases:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.ondemand.nodeAffinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.ondemand.terminationGracePeriod }}
+      {{- if .Values.ondemand.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.ondemand.imagePullSecrets | indent 8 }}
+      {{- end }}
+      initContainers:
+        - name: create-dev-apps-symlinks
+          image: busybox:1.34.1
+          command: ["sh", "-c"]
+          args:
+            - |-
+              echo "Creating dev symlinks";
+            {{- range $key, $value := .Values.ondemand.config.dev }}
+              mkdir -p "/out/{{ $key }}";
+              cd "/out/{{ $key }}";
+              ln -s "{{ $value.gateway }}" gateway;
+            {{- end }}
+          volumeMounts:
+            - name: dev-apps
+              mountPath: /out
+        - name: prepare-sys-apps
+          image: "{{ .Values.ondemand.image }}"
+          imagePullPolicy: "{{ .Values.ondemand.imagePullPolicy }}"
+          command: ["sh", "-c"]
+          args:
+            - |-
+              rsync -avzP /var/www/ood/apps/sys/ /out/;
+              cd out;
+            {{- range $key, $value := .Values.ondemand.config.apps }}
+              ln -s "/k8s/apps/sys/{{ $key }}/current" {{ $key }};
+            {{- end }}
+          volumeMounts:
+            - name: sys-apps
+              mountPath: /out
+      {{- if .Values.ondemand.initContainers }}
+{{ toYaml .Values.ondemand.initContainers | indent 8 }}
+      {{- end }}
+      {{- if .Values.ondemand.dnsPolicy }}
+      dnsPolicy: "{{ .Values.ondemand.dnsPolicy }}"
+      {{- end }}
+      {{- if .Values.ondemand.dnsConfig }}
+      dnsConfig:
+{{ toYaml .Values.ondemand.dnsConfig | indent 8 }}
+      {{- end }}
+      containers:
+        - name: "{{ template "slurm-cluster.ondemand.name" . }}"
+          image: "{{ .Values.ondemand.image }}"
+          imagePullPolicy: "{{ .Values.ondemand.imagePullPolicy }}"
+          command:
+{{ toYaml .Values.ondemand.command | indent 12 }}
+          ports:
+            - name: http
+              containerPort: 80
+            - name: oidc
+              containerPort: 5556
+            - name: ssh
+              containerPort: 22
+          {{- if .Values.ondemand.livenessProbe }}
+          livenessProbe:
+{{ toYaml .Values.ondemand.livenessProbe | indent 12 }}
+          {{- end }}
+          {{- if .Values.ondemand.readinessProbe }}
+          readinessProbe:
+{{ toYaml .Values.ondemand.readinessProbe | indent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: ood-portal-conf
+              mountPath: /etc/ood/config/ood_portal.yml
+              subPath: ood_portal.yml
+            - name: ood-conf
+              mountPath: /etc/ood/config/nginx_stage.yml
+              subPath: nginx_stage.yml
+            - name: ood-conf
+              mountPath: /etc/ood/config/hook.env
+              subPath: hook.env
+            - name: ood-conf
+              mountPath: /etc/ood/config/pun/html/missing_home_directory.html
+              subPath: missing_home_directory.html
+            {{- range $key, $val := .Values.ondemand.config.clusters }}
+            - name: ood-conf
+              mountPath: "/etc/ood/config/clusters.d/{{ $key }}.yml"
+              subPath: "{{ $key }}.yml"
+            {{- end }}
+            - name: "git-sync-volume"
+              mountPath: "/k8s/apps/sys/"
+              readOnly: true
+            - name: dev-apps
+              mountPath: "/var/www/ood/apps/dev/"
+            - name: sys-apps
+              mountPath: "/var/www/ood/apps/sys/"
+            - name: dex-state
+              mountPath: /etc/ood/dex
+              readOnly: false
+            - name: slurm-conf
+              mountPath: /etc/slurm
+              readOnly: false
+            - name: slurm-spank
+              mountPath: /etc/slurm/plugstack.conf.d
+              readOnly: true
+            - name: sssd
+              mountPath: /secrets/sssd
+              readOnly: true
+            - name: munge
+              mountPath: /secrets/munge
+              readOnly: true
+            - name: sshd-hostkeys
+              mountPath: /secrets/sshd
+              readOnly: true
+            - mountPath: /tmp
+              name: tmp
+              subPath: tmp
+            - mountPath: /run
+              name: tmp
+              subPath: run
+            - mountPath: /var/log
+              name: tmp
+              subPath: log
+            {{- if .Values.ondemand.volumeMounts }}
+{{ toYaml .Values.ondemand.volumeMounts | indent 12 }}
+            {{- end }}
+          resources:
+{{ toYaml .Values.ondemand.resources | indent 12 }}
+        {{- range $key, $value := .Values.ondemand.config.apps }}
+        - name: "git-sync-{{ $key }}"
+          image: k8s.gcr.io/git-sync/git-sync:v3.5.0
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: "{{ $value.gitSyncSecret }}"
+          volumeMounts:
+            - name: "git-sync-volume"
+              mountPath: "/out/{{ $key }}"
+              subPath: "{{ $key }}"
+              readOnly: false
+          args:
+            - "--root=/out/{{ $key }}"
+            - "--dest=current"
+            - "--depth=1"
+            - "--submodules=off"
+            - "--wait=60"
+          resources:
+            requests:
+              memory: "50Mi"
+        {{- end }}
+      volumes:
+        - name: tmp
+          emptyDir:
+            medium: "{{ .Values.ondemand.tmp.medium }}"
+            sizeLimit: "{{ .Values.ondemand.tmp.size }}"
+        - name: slurm-conf
+          configMap:
+            name: "{{ template "slurm-cluster.name" . }}-slurm-config"
+        - name: slurm-spank
+          configMap:
+            name: "{{ template "slurm-cluster.name" . }}-slurm-spank-config"
+        - name: sssd
+          secret:
+            secretName: "{{ .Values.sssd.secretName }}"
+            defaultMode: 256
+        - name: munge
+          secret:
+            secretName: "{{ .Values.munge.secretName }}"
+            defaultMode: 384
+        - name: ood-portal-conf
+          secret:
+            secretName: "{{ .Values.ondemand.oodPortalSecretName }}"
+            defaultMode: 256
+            items:
+              - key: ood_portal.yml
+                path: ood_portal.yml
+        - name: ood-conf
+          configMap:
+            name: "{{ template "slurm-cluster.ondemand.name" . }}-config"
+        - name: sshd-hostkeys
+          secret:
+            secretName: "{{ .Values.ondemand.sshd.secretName }}"
+            defaultMode: 256
+        - name: "git-sync-volume"
+          emptyDir: {}
+        - name: "dev-apps"
+          emptyDir: {}
+        - name: "sys-apps"
+          emptyDir: {}
+        {{- if .Values.ondemand.volumes }}
+{{ toYaml .Values.ondemand.volumes | indent 8 }}
+        {{- end }}
+  volumeClaimTemplates:
+    - metadata:
+        name: dex-state
+      spec:
+        accessModes: {{ .Values.ondemand.persistence.accessModes }}
+        storageClassName: "{{ .Values.ondemand.persistence.storageClassName }}"
+        resources:
+          requests:
+            storage: {{ .Values.ondemand.persistence.size }}
+        {{- with .Values.ondemand.persistence.selectorLabels }}
+        selector:
+          matchLabels:
+{{ toYaml . | indent 12 }}
+        {{- end }}
+    {{- if .Values.ondemand.volumeClaimTemplates }}
+{{ toYaml .Values.ondemand.volumeClaimTemplates | indent 4 }}
+    {{- end }}
+{{- end }}

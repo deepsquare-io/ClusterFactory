@@ -1,0 +1,11 @@
+apiVersion: v2
+appVersion: '1.0.1'
+description: A Helm chart to deploy the CVMFS-CSI Plugin with a pre-built configuration for Galaxy repositories
+name: csi-driver-cvmfs
+type: application
+version: 1.0.0
+maintainers:
+  - name: Marc Nguyen
+    email: marc@squarefactory.io
+  - name: Christophe Lillo
+    email: lillo@squarefactory.io

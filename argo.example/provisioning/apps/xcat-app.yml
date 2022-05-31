@@ -1,0 +1,71 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: xcat-app
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: provisioning
+  source:
+    repoURL: git@github.com:squarefactory/cluster-factory-ce.git
+    targetRevision: HEAD
+    path: helm/xcat
+    helm:
+      releaseName: xcat
+
+      values: |
+        nodeSelector:
+          topology.kubernetes.io/region: ch-sion
+          topology.kubernetes.io/zone: ch-sion-1
+
+        resources:
+          requests:
+            cpu: '250m'
+            memory: '8Gi'
+          limits:
+            cpu: '8'
+            memory: '8Gi'
+
+        persistence:
+          storageClassName: 'xcat-nfs'
+          accessModes: ['ReadWriteOnce']
+          size: 50Gi
+
+        net:
+          # Kubernetes host interface
+          masterInterface: eno2
+          mode: l2
+          type: ipvlan
+
+          # https://www.cni.dev/plugins/current/ipam/static/
+          ipam:
+            type: static
+            addresses:
+              - address: 192.168.0.3/24
+                gateway: 192.168.0.1
+            routes:
+              - dst: 0.0.0.0/0
+
+          dns:
+            nameservers:
+              - 127.0.0.1
+            searches:
+              - example.com
+
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: provisioning
+
+  syncPolicy:
+    automated:
+      prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+      allowEmpty: false # Allows deleting all application resources during automatic syncing ( false by default ).
+    syncOptions: []
+    retry:
+      limit: 5 # number of failed sync attempt retries; unlimited number of attempts if less than 0
+      backoff:
+        duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
+        factor: 2 # a factor to multiply the base duration after each failed retry
+        maxDuration: 3m # the maximum amount of time allowed for the backoff strategy

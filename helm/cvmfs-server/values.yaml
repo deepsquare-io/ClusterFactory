@@ -1,0 +1,124 @@
+replicas: 1
+
+image: 'ghcr.io/squarefactory/cvmfs-server:0.1.0'
+imagePullPolicy: 'IfNotPresent'
+
+labels: {}
+annotations: {}
+
+config:
+  server:
+    CVMFS_GEO_DB_FILE: NONE
+  replicas:
+    []
+    # - name: my-repo
+    #   url: http://my-repo/
+    #   keys: /etc/cvmfs/keys/my-repo
+    #   options: '-o root'
+
+resources:
+  requests:
+    cpu: 125m
+    memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 256Mi
+
+nodeAffinity: {}
+
+updateStrategy:
+  type: RollingUpdate
+
+livenessProbe:
+  tcpSocket:
+    port: 80
+  initialDelaySeconds: 60
+  timeoutSeconds: 1
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 3
+readinessProbe:
+  tcpSocket:
+    port: 80
+  timeoutSeconds: 1
+  periodSeconds: 2
+  successThreshold: 1
+  failureThreshold: 3
+
+podSecurityContext:
+  runAsUser: 0
+
+securityContext:
+  capabilities:
+    add:
+      - SYS_ADMIN
+      - NET_BIND_SERVICE
+  readOnlyRootFilesystem: false
+  runAsNonRoot: false
+  runAsUser: 0
+
+# How long to wait to stop gracefully
+terminationGracePeriod: 10
+
+## Use an alternate scheduler.
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+schedulerName: ''
+
+imagePullSecrets: {}
+
+nodeSelector: {}
+tolerations: []
+
+tmp:
+  medium: ''
+  size: 50Gi
+
+# state is the /var/spool/cvmfs directory
+state:
+  storageClassName: ''
+  accessModes: ['ReadWriteOnce']
+  size: 1000Gi
+  selectorLabels: {}
+
+# storage is the /srv/cvmfs directory
+storage:
+  storageClassName: ''
+  accessModes: ['ReadWriteOnce']
+  size: 1000Gi
+  selectorLabels: {}
+#    app: open-ondemand
+
+initContainers: []
+
+# Extra volume mounts
+volumeMounts:
+  []
+  # - name: repo-keys
+  #   mountPath: /etc/cvmfs/keys/my-repo
+  #   readOnly: true
+
+# Extra volumes (use it to mount secrets like keys)
+volumes:
+  []
+  # - name: repo-keys
+  #   secret:
+  #     secretName: repo-keys
+  #     defaultMode: 256
+
+# Extra volume claims
+volumeClaimTemplates: []
+
+service:
+  enabled: true
+  type: ClusterIP
+
+ingress:
+  enabled: false
+  annotations: {}
+  ingressClass: ''
+
+  hosts: []
+  # - www.example.com
+
+  tls: {}

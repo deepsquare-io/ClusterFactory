@@ -1,0 +1,26 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "ipmi-exporter.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  {{- if .Values.service.annotations }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
+{{- end }}
+  labels:
+    {{- include "ipmi-exporter.labels" . | indent 4 }}
+{{- if .Values.service.labels }}
+{{ toYaml .Values.service.labels | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: http
+      port: {{ .Values.service.port }}
+      protocol: TCP
+{{- if .Values.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.service.externalIPs | indent 4 }}
+{{- end }}
+  selector:
+    {{- include "ipmi-exporter.selectorLabels" . | indent 4 }}

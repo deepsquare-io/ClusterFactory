@@ -1,0 +1,76 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cvmfs-server-app
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: cvmfs
+  source:
+    repoURL: git@github.com:squarefactory/cluster-factory-ce.git
+    targetRevision: HEAD
+    path: helm/cvmfs-server
+    helm:
+      releaseName: cvmfs-server
+
+      values: |
+        replicas: 1
+
+        dnsPolicy: "None"
+        dnsConfig:
+          nameservers:
+            - 10.96.0.10
+          searches:
+            - slurm-cluster.svc.cluster.local
+            - example.com
+          options:
+            - name: ndots
+              value: "0"
+
+        nodeSelector:
+          kubernetes.io/hostname: mn1.example.com
+          topology.kubernetes.io/region: ch-sion
+          topology.kubernetes.io/zone: ch-sion-1
+
+        config:
+          replicas:
+            - name: stdenv.sion.csquare.run
+              url: http://cvmfs.ch1.deepsquare.run/cvmfs/stdenv.sion.csquare.run
+              keys: /etc/cvmfs/keys/sion.csquare.run
+              options: '-o root'
+
+        volumeMounts:
+          - name: sion-csquare-run-keys
+            mountPath: /etc/cvmfs/keys/sion.csquare.run/stdenv.sion.csquare.run.pub
+            subPath: stdenv.sion.csquare.run.pub
+            readOnly: true
+
+        volumes:
+          - name: sion-csquare-run-keys
+            secret:
+              secretName: sion-csquare-run-keys-secret
+              defaultMode: 256
+
+        state:
+          storageClassName: 'local-path'
+
+        storage:
+          storageClassName: 'local-path'
+
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: cvmfs
+
+  syncPolicy:
+    automated:
+      prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+      allowEmpty: false # Allows deleting all application resources during automatic syncing ( false by default ).
+    syncOptions: []
+    retry:
+      limit: 5 # number of failed sync attempt retries; unlimited number of attempts if less than 0
+      backoff:
+        duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
+        factor: 2 # a factor to multiply the base duration after each failed retry
+        maxDuration: 3m # the maximum amount of time allowed for the backoff strategy

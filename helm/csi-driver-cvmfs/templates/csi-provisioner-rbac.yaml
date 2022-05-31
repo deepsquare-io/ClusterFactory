@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cvmfs-provisioner
+  labels:
+    app.kubernetes.io/name: {{ include "cvmfs-csi.name" . }}
+    helm.sh/chart: {{ include "cvmfs-csi.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{include "cvmfs-csi.fullname" .}}-cvmfs-provisioner-runner
+  labels:
+    app.kubernetes.io/name: {{ include "cvmfs-csi.name" . }}
+    helm.sh/chart: {{ include "cvmfs-csi.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["persistentvolumes"]
+    verbs: ["get", "list", "watch", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims"]
+    verbs: ["get", "list", "watch", "update"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["storageclasses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["list", "watch", "create", "update", "patch"]
+
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{include "cvmfs-csi.fullname" .}}-cvmfs-provisioner-role
+  labels:
+    app.kubernetes.io/name: {{ include "cvmfs-csi.name" . }}
+    helm.sh/chart: {{ include "cvmfs-csi.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+subjects:
+  - kind: ServiceAccount
+    name: cvmfs-provisioner
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{include "cvmfs-csi.fullname" .}}-cvmfs-provisioner-runner
+  apiGroup: rbac.authorization.k8s.io

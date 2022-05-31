@@ -1,0 +1,65 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cvmfs-service-app
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: cvmfs
+  source:
+    repoURL: git@github.com:squarefactory/cluster-factory-ce.git
+    targetRevision: HEAD
+    path: helm/cvmfs-service
+    helm:
+      releaseName: cvmfs-service
+
+      values: |
+        dnsPolicy: "None"
+        dnsConfig:
+          nameservers:
+            - 10.96.0.10
+          searches:
+            - ch1.example.com
+          options:
+            - name: ndots
+              value: "0"
+
+        repositories:
+          - name: software-sion-csquare-run
+            repository: software.sion.csquare.run
+          - name: unpacked-sion-csquare-run
+            repository: unpacked.sion.csquare.run
+          - name: stdenv-sion-csquare-run
+            repository: stdenv.sion.csquare.run
+
+        configs:
+          default.local:
+            mountPath: default.local
+            contents: |
+              CVMFS_QUOTA_LIMIT=-1
+              CVMFS_USE_GEOAPI=no
+              CVMFS_HTTP_PROXY="DIRECT"
+              CVMFS_KEYS_DIR="/etc/cvmfs/keys"
+              CVMFS_SERVER_URL="http://cvmfs.ch1.deepsquare.run/cvmfs/@fqrn@"
+              CVMFS_USER=root
+
+        keys:
+          secretName: 'sion-csquare-run-keys-secret'
+
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: cvmfs
+
+  syncPolicy:
+    automated:
+      prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+      allowEmpty: false # Allows deleting all application resources during automatic syncing ( false by default ).
+    syncOptions: []
+    retry:
+      limit: 5 # number of failed sync attempt retries; unlimited number of attempts if less than 0
+      backoff:
+        duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
+        factor: 2 # a factor to multiply the base duration after each failed retry
+        maxDuration: 3m # the maximum amount of time allowed for the backoff strategy

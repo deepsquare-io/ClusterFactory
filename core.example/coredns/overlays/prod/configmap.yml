@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns
+  namespace: kube-system
+  labels:
+    k0s.k0sproject.io/stack: coredns
+data:
+  Corefile: |
+    .:53 {
+      errors
+      health {
+        lameduck 5s
+      }
+      ready
+      kubernetes cluster.local in-addr.arpa ip6.arpa {
+        pods insecure
+        ttl 30
+        fallthrough in-addr.arpa ip6.arpa
+      }
+      prometheus :9153
+      forward . tls://9.9.9.9
+      reload
+    }
+    example.com:53 {
+      log
+      errors
+      ready
+      hosts /etc/coredns/example.com.db
+      reload
+    }
+
+  example.com.db: |
+    192.168.0.1 gateway.example.com
+    192.168.0.2 mn1.example.com
+    192.168.0.3 xcatmn.example.com
+    192.168.0.5 cvmfs.example.com
+    192.168.0.6 nfs.example.com
+    192.168.0.7 mysql.example.com
+    192.168.0.8 ldap.example.com
+
+    192.168.0.10 slurm-cluster-example-controller-0.example.com
+    192.168.0.20 slurm-cluster-example-login-0.example.com
+    192.168.0.21 slurm-cluster-example-login-1.example.com
+    192.168.0.51 cn1.example.com
+
+    192.168.1.100 metallb-0.example.com
+    192.168.1.100 argocd.example.com
+    192.168.1.100 traefik.example.com
+    192.168.1.100 prometheus.example.com
+    192.168.1.100 grafana.example.com

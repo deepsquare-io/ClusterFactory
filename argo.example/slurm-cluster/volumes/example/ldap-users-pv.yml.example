@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ldap-users-example-pv
+  namespace: slurm-cluster
+  labels:
+    app: slurm-login
+    topology.kubernetes.io/region: ch-sion
+    topology.kubernetes.io/zone: ch-sion-1
+spec:
+  capacity:
+    storage: 1000Gi
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+    - noatime
+    - nodiratime
+  csi:
+    driver: nfs.csi.k8s.io
+    readOnly: false
+    volumeHandle: 9dfe77a5-92cb-432a-9650-9e1d718e20c6
+    volumeAttributes:
+      server: nfs.example.com
+      share: '/srv/nfs/ldap-users'
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ldap-users-example-pvc
+  namespace: slurm-cluster
+  labels:
+    app: slurm-login
+    topology.kubernetes.io/region: ch-sion
+    topology.kubernetes.io/zone: ch-sion-1
+spec:
+  volumeName: ldap-users-example-pv
+  accessModes: [ReadWriteMany]
+  storageClassName: ''
+  resources:
+    requests:
+      storage: 1000Gi

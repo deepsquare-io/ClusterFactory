@@ -1,0 +1,212 @@
+{{- if .Values.controller.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: "{{ template "slurm-cluster.controller.name" . }}"
+  namespace: '{{ .Release.Namespace }}'
+  labels:
+    release: '{{ .Release.Name }}'
+    chart: '{{ .Chart.Name }}'
+    app: "{{ template "slurm-cluster.controller.name" . }}"
+spec:
+  serviceName: "{{ template "slurm-cluster.controller.name" . }}"
+  selector:
+    matchLabels:
+      app: "{{ template "slurm-cluster.controller.name" . }}"
+      app.kubernetes.io/name: "{{ template "slurm-cluster.controller.name" . }}"
+      app.kubernetes.io/instance: "{{ template "slurm-cluster.controller.name" . }}"
+      app.kubernetes.io/component: controller
+  replicas: {{ .Values.controller.replicas }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy }}
+  template:
+    metadata:
+      name: "{{ template "slurm-cluster.controller.name" . }}"
+      labels:
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}"
+        app: "{{ template "slurm-cluster.controller.name" . }}"
+        app.kubernetes.io/name: "{{ template "slurm-cluster.controller.name" . }}"
+        app.kubernetes.io/instance: "{{ template "slurm-cluster.controller.name" . }}"
+        app.kubernetes.io/component: controller
+{{- if .Values.controller.labels }}
+{{ toYaml .Values.controller.labels | indent 8 }}
+{{- end }}
+{{- if .Values.controller.annotations }}
+      annotations:
+{{ toYaml .Values.controller.annotations | indent 8 }}
+{{- end }}
+    spec:
+      {{- if .Values.controller.schedulerName }}
+      schedulerName: "{{ .Values.controller.schedulerName }}"
+      {{- end }}
+      securityContext:
+{{ toYaml .Values.controller.podSecurityContext | indent 8 }}
+      {{- with .Values.controller.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.controller.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.controller.nodeAffinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.controller.terminationGracePeriod }}
+      {{- if .Values.controller.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.controller.imagePullSecrets | indent 8 }}
+      {{- end }}
+      {{- if .Values.controller.initContainers }}
+      initContainers:
+{{ toYaml .Values.controller.initContainers | indent 8 }}
+      {{- end }}
+      {{- if .Values.controller.dnsPolicy }}
+      dnsPolicy: "{{ .Values.controller.dnsPolicy }}"
+      {{- end }}
+      {{- if .Values.controller.dnsConfig }}
+      dnsConfig:
+{{ toYaml .Values.controller.dnsConfig | indent 8 }}
+      {{- end }}
+      containers:
+        - name: "{{ template "slurm-cluster.controller.name" . }}"
+          image: "{{ .Values.controller.image }}"
+          imagePullPolicy: "{{ .Values.controller.imagePullPolicy }}"
+          command:
+{{ toYaml .Values.controller.command | indent 12 }}
+          securityContext:
+{{ toYaml .Values.securityContext | indent 12 }}
+          ports:
+            - containerPort: 6817
+              name: slurmctld
+              hostPort: 6817
+          readinessProbe:
+            tcpSocket:
+              port: 6817
+{{ toYaml .Values.controller.readinessProbe | indent 12 }}
+          livenessProbe:
+            tcpSocket:
+              port: 6817
+{{ toYaml .Values.controller.livenessProbe | indent 12 }}
+          volumeMounts:
+            - name: state
+              mountPath: /var/spool/slurmctl
+            - name: slurm-conf
+              mountPath: /etc/slurm/slurm.conf
+              subPath: slurm.conf
+              readOnly: true
+            - name: slurm-conf
+              mountPath: /etc/slurm/gres.conf
+              subPath: gres.conf
+              readOnly: true
+            - name: slurm-conf
+              mountPath: /etc/slurm/cgroup.conf
+              subPath: cgroup.conf
+              readOnly: true
+            - name: slurm-conf
+              mountPath: /etc/slurm/plugstack.conf
+              subPath: plugstack.conf
+              readOnly: true
+            - name: slurm-conf
+              mountPath: /etc/slurm/epilog-slurmctld
+              subPath: epilog-slurmctld
+              readOnly: true
+            - name: slurm-conf
+              mountPath: /etc/slurm/prolog-slurmctld
+              subPath: prolog-slurmctld
+              readOnly: true
+            {{- if .Values.controller.prologsConfigMap }}
+            - name: slurmctl-prologs
+              mountPath: /etc/slurm/prolog-slurmctld.d
+              readOnly: true
+            {{- end }}
+            {{- if .Values.controller.epilogsConfigMap }}
+            - name: slurmctl-epilogs
+              mountPath: /etc/slurm/epilog-slurmctld.d
+              readOnly: true
+            {{- end }}
+            - name: slurm-spank
+              mountPath: /etc/slurm/plugstack.conf.d
+              readOnly: true
+            - name: slurm-jwt
+              mountPath: /secrets/slurm
+              readOnly: true
+            - name: sssd
+              mountPath: /secrets/sssd
+              readOnly: true
+            - name: munge
+              mountPath: /secrets/munge
+              readOnly: true
+            - mountPath: /tmp
+              name: tmp
+              subPath: tmp
+            - mountPath: /run
+              name: tmp
+              subPath: run
+            - mountPath: /var/log
+              name: tmp
+              subPath: log
+            {{- if .Values.controller.volumeMounts }}
+{{ toYaml .Values.controller.volumeMounts | indent 12 }}
+            {{- end }}
+          resources:
+{{ toYaml .Values.controller.resources | indent 12 }}
+      volumes:
+        - name: tmp
+          emptyDir:
+            medium: "{{ .Values.controller.tmp.medium }}"
+            sizeLimit: "{{ .Values.controller.tmp.size }}"
+        - name: slurm-conf
+          configMap:
+            name: "{{ template "slurm-cluster.name" . }}-slurm-config"
+            defaultMode: 493
+        - name: slurm-spank
+          configMap:
+            name: "{{ template "slurm-cluster.name" . }}-slurm-spank-config"
+        {{- if .Values.controller.prologsConfigMap }}
+        - name: slurmctl-prologs
+          configMap:
+            name: "{{ .Values.controller.prologsConfigMap }}"
+            defaultMode: 493
+        {{- end }}
+        {{- if .Values.controller.epilogsConfigMap }}
+        - name: slurmctl-epilogs
+          configMap:
+            name: "{{ .Values.controller.epilogsConfigMap }}"
+            defaultMode: 493
+        {{- end }}
+        - name: slurm-jwt
+          secret:
+            secretName: "{{ .Values.jwt.secretName }}"
+            defaultMode: 384
+        - name: sssd
+          secret:
+            secretName: "{{ .Values.sssd.secretName }}"
+            defaultMode: 256
+        - name: munge
+          secret:
+            secretName: "{{ .Values.munge.secretName }}"
+            defaultMode: 384
+        {{- if .Values.controller.volumes }}
+{{ toYaml .Values.controller.volumes | indent 8 }}
+        {{- end }}
+  volumeClaimTemplates:
+    - metadata:
+        name: state
+      spec:
+        accessModes: {{ .Values.controller.persistence.accessModes }}
+        storageClassName: "{{ .Values.controller.persistence.storageClassName }}"
+        resources:
+          requests:
+            storage: {{ .Values.controller.persistence.size }}
+        {{- with .Values.controller.persistence.selectorLabels }}
+        selector:
+          matchLabels:
+{{ toYaml . | indent 12 }}
+        {{- end }}
+    {{- if .Values.controller.volumeClaimTemplates }}
+{{ toYaml .Values.controller.volumeClaimTemplates | indent 4 }}
+    {{- end }}
+{{- end }}

@@ -1,0 +1,51 @@
+{{- if and .Values.db.enabled .Values.db.service.enabled }}
+{{- $serviceValues := .Values.db.service -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ template "slurm-cluster.db.name" $ }}"
+  namespace: '{{ $.Release.Namespace }}'
+  labels:
+    release: {{ $.Release.Name | quote }}
+    chart: "{{ $.Chart.Name }}"
+    app: "{{ template "slurm-cluster.db.name" $ }}"
+    app.kubernetes.io/name: "{{ template "slurm-cluster.db.name" $ }}"
+    app.kubernetes.io/instance: "{{ template "slurm-cluster.db.name" $ }}"
+    app.kubernetes.io/component: db
+    {{- if $serviceValues.labels }}
+    {{ toYaml $serviceValues.labels | indent 4 }}
+    {{- end }}
+  {{- if $serviceValues.annotations }}
+  annotations:
+  {{ toYaml $serviceValues.annotations | indent 4 }}
+  {{- end }}
+spec:
+  {{- if $serviceValues.clusterIP }}
+  clusterIP: {{ $serviceValues.clusterIP }}
+  {{- end }}
+  {{- if $serviceValues.externalIPs }}
+  externalIPs:
+  {{ toYaml $serviceValues.externalIPs | indent 4 }}
+  {{- end }}
+  {{- if $serviceValues.loadBalancerIP }}
+  loadBalancerIP: {{ $serviceValues.loadBalancerIP }}
+  {{- end }}
+  {{- if $serviceValues.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := $serviceValues.loadBalancerSourceRanges }}
+    - {{ $cidr }}
+  {{- end }}
+  {{- end }}
+  {{- if ne $serviceValues.type "ClusterIP" }}
+  externalTrafficPolicy: {{ $serviceValues.externalTrafficPolicy }}
+  {{- end }}
+  ports:
+    - name: slurmdbd
+      port: 6819
+      targetPort: slurmdbd
+  selector:
+    app.kubernetes.io/name: "{{ template "slurm-cluster.db.name" $ }}"
+    app.kubernetes.io/instance: "{{ template "slurm-cluster.db.name" $ }}"
+    app.kubernetes.io/component: db
+  type: "{{ $serviceValues.type }}"
+{{- end }}

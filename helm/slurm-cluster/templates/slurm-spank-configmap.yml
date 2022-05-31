@@ -1,0 +1,11 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: "{{ template "slurm-cluster.name" . }}-slurm-spank-config"
+  namespace: '{{ .Release.Namespace }}'
+  labels:
+    release: '{{ .Release.Name }}'
+    chart: '{{ .Chart.Name }}'
+data:
+  spank.conf: |
+    optional /usr/lib64/slurm/spank_pyxis.so

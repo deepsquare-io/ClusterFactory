@@ -1,0 +1,13 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: 'slurmctl-example-prologs'
+  namespace: 'slurm-cluster'
+  labels:
+    topology.kubernetes.io/region: ch-sion
+    topology.kubernetes.io/zone: ch-sion-1
+data:
+  none.sh: |
+    #!/bin/bash
+
+    echo "Hello Prolog!"

@@ -1,0 +1,64 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: csi-cvmfsplugin-provisioner
+  labels:
+    app.kubernetes.io/name: {{ include "cvmfs-csi.name" . }}
+    helm.sh/chart: {{ include "cvmfs-csi.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app: csi-cvmfsplugin-provisioner
+spec:
+  selector:
+    app: csi-cvmfsplugin-provisioner
+  ports:
+    - name: dummy
+      port: 12345
+
+---
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: csi-cvmfsplugin-provisioner
+  labels:
+    app.kubernetes.io/name: {{ include "cvmfs-csi.name" . }}
+    helm.sh/chart: {{ include "cvmfs-csi.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: csi-cvmfsplugin-provisioner
+  serviceName: "csi-cvmfsplugin-provisioner"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "cvmfs-csi.fullname" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app: csi-cvmfsplugin-provisioner
+    spec:
+      serviceAccountName: cvmfs-provisioner
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: csi-provisioner
+          image: {{ .Values.csiProvisioner.image }}
+          args:
+            {{- range $arg := .Values.csiProvisioner.args }}
+            - {{ $arg | quote -}}
+            {{- end }}
+          env:
+            - name: ADDRESS
+              value: /var/lib/kubelet/plugins/csi-cvmfsplugin/csi.sock
+          imagePullPolicy: "IfNotPresent"
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /var/lib/kubelet/plugins/csi-cvmfsplugin
+      volumes:
+        - name: socket-dir
+          hostPath:
+            path: {{ .Values.csiPlugin.kubeletDir }}/plugins/csi-cvmfsplugin
+            type: DirectoryOrCreate

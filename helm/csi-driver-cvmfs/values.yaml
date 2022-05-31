@@ -1,0 +1,119 @@
+# Default values for galaxy-cvmfs-csi.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# All contents will be run through tpl
+# All mountPaths are relative to /etc/cvmfs/
+configs:
+  defaultLocal:
+    mountPath: default.local
+    contents: |
+      CVMFS_QUOTA_LIMIT=-1
+      CVMFS_CACHE_BASE={{ .Values.cache.localCache.mountPath }}
+      CVMFS_USE_GEOAPI=no
+      CVMFS_HTTP_PROXY="DIRECT"
+      CVMFS_KEYS_DIR="/etc/cvmfs/keys"
+      {{- if .Values.cache.alienCache.enabled }}
+      CVMFS_ALIEN_CACHE={{ .Values.cache.alienCache.mountPath }}
+      CVMFS_SHARED_CACHE=no
+      {{- end -}}
+  # gxyDataKey:
+  #   mountPath: keys/data.galaxyproject.org.pub
+  #   contents: |
+  #     -----BEGIN PUBLIC KEY-----
+  #     MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5LHQuKWzcX5iBbCGsXGt
+  #     6CRi9+a9cKZG4UlX/lJukEJ+3dSxVDWJs88PSdLk+E25494oU56hB8YeVq+W8AQE
+  #     3LWx2K2ruRjEAI2o8sRgs/IbafjZ7cBuERzqj3Tn5qUIBFoKUMWMSIiWTQe2Sfnj
+  #     GzfDoswr5TTk7aH/FIXUjLnLGGCOzPtUC244IhHARzu86bWYxQJUw0/kZl5wVGcH
+  #     maSgr39h1xPst0Vx1keJ95AH0wqxPbCcyBGtF1L6HQlLidmoIDqcCQpLsGJJEoOs
+  #     NVNhhcb66OJHah5ppI1N3cZehdaKyr1XcF9eedwLFTvuiwTn6qMmttT/tHX7rcxT
+  #     owIDAQAB
+  #     -----END PUBLIC KEY-----
+
+# A storage class will be created for each repository
+repositories:
+  {}
+  # The key will be used for the storage class name
+  # The value will be used for the repository
+
+  #cvmfs-gxy-cloud: cloud.galaxyproject.org
+  # cvmfs-gxy-data: data.galaxyproject.org
+  # cvmfs-gxy-main: main.galaxyproject.org
+#  cvmfs-gxy-sandbox: sandbox.galaxyproject.org
+#  cvmfs-gxy-test: test.galaxyproject.org
+#  cvmfs-gxy-singularity: singularity.galaxyproject.org
+
+cache:
+  # If both local and alien cache are disabled, ephemeral
+  # storage (emptyDir volume) will be used for caching
+  # Requires a ReadWriteOnce volume for the local cache
+  # localCache can not be used in a multi-node setup unless
+  # the cache PVs are defined manually for all pods of the DaemonSet.
+  # If local cache is enabled, alien cache must be disabled.
+  localCache:
+    enabled: false
+    storageClass: ''
+    # size in Mi, will propagate to both default.local and PV/PVC size
+    size: 10000Mi
+    mountPath: /mnt/cvmfs/localcache
+    # existingClaim: existing-claim
+  # Optional shared ReadWriteMany cache volume.
+  # If alien cache is enabled, local cache must be disabled.
+  # An emptyDir ephemeral volume will be used for local
+  # control files for each pod scaled by the DaemonSet on
+  # each node. The alien cache volume will be shared
+  # among all the CVMFS clients running on the different nodes.
+  # Read more about alien cache limitations at:
+  # https://cvmfs.readthedocs.io/en/stable/cpt-configure.html#alien-cache
+  alienCache:
+    enabled: false
+    size: 10000Mi
+    storageClass: nfs
+    mountPath: /mnt/cvmfs/aliencache
+    # existingClaim: existing-claim
+  preload:
+    enabled: false
+    repositories:
+      []
+      # - name: main.galaxyproject.org
+      #   mountPath: /cvmfs/main.galaxyproject.org
+      #   image: busybox
+      #   commands:
+      #     - find /cvmfs/main.galaxyproject.org/shed_tools -type f -not -path "*/.hg/*" -path "*.xml" -exec cat \{\} \; > /dev/null
+      #     - find /cvmfs/main.galaxyproject.org/config -type f -exec cat \{\} \; > /dev/null
+      #     - find /cvmfs/main.galaxyproject.org/tool_data -type f -exec cat \{\} \; > /dev/null
+      # - name: data.galaxyproject.org
+      #   mountPath: /cvmfs/data.galaxyproject.org
+      #   # Docker image with cvmfs_preload binary pre-installed
+      #   image: almahmoud/cvmfs_preload:latest
+      #   mountConfigs:
+      #     - defaultLocal
+      #     - gxyDataKey
+      #   mountCache: true
+      #   commands:
+      #     - cvmfs_preload -u http://cvmfs0-psu0.galaxyproject.org/cvmfs/data.galaxyproject.org -r /mnt/cvmfs/aliencache -k /etc/cvmfs/keys
+
+# Advanced settings
+# Changing these settings is not advised unless you know what you are doing
+csiPlugin:
+  # This image includes the patch to the plugin allowing
+  # for multiple PVCs across multiple namespaces
+  # https://github.com/cernops/cvmfs-csi/commit/c680862082738aba1469707a891a6f7fecf72f53
+  image: cloudve/csi-cvmfsplugin:v1.0.1
+  args:
+    - '--nodeid=$(NODE_ID)'
+    - '--endpoint=$(CSI_ENDPOINT)'
+    - '--v=5'
+    - '--drivername=csi-cvmfsplugin'
+  kubeletDir: /var/lib/kubelet
+  nodeDriverImage: quay.io/k8scsi/csi-node-driver-registrar:v2.1.0
+csiAttacher:
+  image: quay.io/k8scsi/csi-attacher:v3.1.0
+  args:
+    - '--v=5'
+    - '--csi-address=$(ADDRESS)'
+csiProvisioner:
+  image: quay.io/k8scsi/csi-provisioner:v2.1.2
+  args:
+    - '--csi-address=$(ADDRESS)'
+    - '--v=5'

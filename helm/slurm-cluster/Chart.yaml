@@ -1,0 +1,15 @@
+apiVersion: v2
+name: slurm-cluster
+description: 'Slurm: A Highly Scalable Workload Manager'
+type: application
+home: https://github.com/SquareFactory/slurm-docker
+icon: https://upload.wikimedia.org/wikipedia/commons/3/3a/Slurm_logo.svg
+sources:
+  - https://github.com/SquareFactory/slurm-docker
+version: 0.1.0
+appVersion: '21.08.8-2-1'
+maintainers:
+  - name: Marc Nguyen
+    email: marc@squarefactory.io
+  - name: Christophe Lillo
+    email: lillo@squarefactory.io

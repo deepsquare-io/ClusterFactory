@@ -1,0 +1,29 @@
+# Cluster Factory CE Docs
+
+This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
+
+### Installation
+
+```
+$ pnpm install
+```
+
+### Local Development
+
+```
+$ pnpm run start
+```
+
+This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
+
+### Build
+
+```
+$ pnpm run build
+```
+
+This command generates static content into the `build` directory and can be served using any static contents hosting service.
+
+### Deployment
+
+We are using Github Actions to deploy the documentation to Github Pages. A commit to the `main` branch will deploy the documentation.

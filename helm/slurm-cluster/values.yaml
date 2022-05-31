@@ -1,0 +1,618 @@
+sssd:
+  # secret containing sssd.conf
+  # Will be mounted in /secrets/sssd
+  secretName:
+
+munge:
+  # secret containing munge.key
+  # Will be mounted in /secrets/munge
+  secretName:
+
+# secret containing jwt_hs256.key
+# Will be mounted in /secrets/slurm and copied to /var/spool/slurm/jwt_hs256.key
+jwt:
+  secretName:
+
+slurmConfig:
+  clusterName: my-cluster
+
+  compute:
+    srunPortRangeStart: 60001
+    srunPortRangeEnd: 63000
+    debug: debug5
+
+  controller:
+    # Use DNS to login to the controller (should be {{.Release.Name}}-controller-0)
+    parameters: enable_configless
+    debug: debug5
+
+  auth: |
+    AuthType=auth/munge
+    AuthAltTypes=auth/jwt
+    AuthAltParameters=jwt_key=/var/spool/slurm/jwt_hs256.key
+
+  accounting: |
+    AccountingStorageType=accounting_storage/slurmdbd
+    AccountingStorageHost=slurmdb.example.com
+    AccountingStoragePort=6819
+    AccountingStorageTRES=gres/gpu
+    AccountingStoreFlags=job_comment,job_env,job_script
+    AccountingStorageEnforce=associations,limits,qos
+
+  defaultResourcesAllocation: |
+    DefCpuPerGPU=4
+    DefMemPerCpu=7000
+
+  scheduling: |
+    SchedulerType=sched/backfill
+    SelectType=select/cons_tres
+    SelectTypeParameters=CR_CPU_Memory
+    SchedulerTimeSlice=60
+    UnkillableStepTimeout=300
+
+  priorities: |
+    PriorityType=priority/multifactor
+    # The larger the job, the greater its job size priority.
+    PriorityFavorSmall=NO
+    # The job's age factor reaches 1.0 after waiting in the
+    # queue for 2 weeks.
+    #PriorityMaxAge=14-0
+    # This next group determines the weighting of each of the
+    # components of the Multi-factor Job Priority Plugin.
+    # The default value for each of the following is 1.
+    PriorityWeightAge=0
+    PriorityWeightFairshare=0
+    PriorityWeightJobSize=0
+    PriorityWeightPartition=0
+    PriorityWeightQOS=100
+    PriorityDecayHalfLife=0
+    PriorityUsageResetPeriod=MONTHLY
+
+  nodes: |
+    NodeName=cn[1-10] Sockets=8 CoresPerSocket=2 ThreadsPerCore=2 RealMemory=112000 Gres=gpu:2
+    NodeName=cn[11-12] Sockets=8 CoresPerSocket=2 ThreadsPerCore=2 RealMemory=112000 Gres=gpu:2
+
+  partitions: |
+    PartitionName=main Nodes=cn[1-10] Default=YES MaxTime=INFINITE State=UP OverSubscribe=NO TRESBillingWeights="CPU=2.6,Mem=0.25G,GRES/gpu=24.0"
+    PartitionName=main-beeond Nodes=cn[1-10] Default=NO MaxTime=INFINITE State=UP OverSubscribe=EXCLUSIVE TRESBillingWeights="CPU=2.6,Mem=0.25G,GRES/gpu=24.0"
+    PartitionName=private Nodes=cn[11-12] Default=NO MaxTime=INFINITE State=UP OverSubscribe=NO Hidden=YES AllowQos=admin
+
+  gres: |
+    NodeName=cn[1-12] File=/dev/nvidia[0-3] AutoDetect=nvml
+
+  # Extra slurm.conf configuration
+  extra: |
+    LaunchParameters=enable_nss_slurm
+    DebugFlags=Script,Gang,SelectType
+    TCPTimeout=5
+
+    # MPI stacks running over Infiniband or OmniPath require the ability to allocate more
+    # locked memory than the default limit. Unfortunately, user processes on login nodes
+    # may have a small memory limit (check it by ulimit -a) which by default are propagated
+    # into Slurm jobs and hence cause fabric errors for MPI.
+    PropagateResourceLimitsExcept=MEMLOCK
+
+    ProctrackType=proctrack/cgroup
+    TaskPlugin=task/cgroup
+    SwitchType=switch/none
+    MpiDefault=pmix_v2
+    ReturnToService=2 #temp
+    GresTypes=gpu
+    PreemptType=preempt/qos
+    PreemptMode=REQUEUE
+    PreemptExemptTime=-1
+    Prolog=/etc/slurm/prolog.d/*
+    Epilog=/etc/slurm/epilog.d/*
+
+    # Federation
+    FederationParameters=fed_display
+
+controller:
+  enabled: true
+  replicas: 1
+
+  image: 'ghcr.io/squarefactory/slurm:22.05.0-1-controller'
+  imagePullPolicy: 'IfNotPresent'
+
+  labels: {}
+  annotations: {}
+
+  command: ['/init']
+
+  resources:
+    requests:
+      cpu: '250m'
+      memory: '256Mi'
+    limits:
+      memory: '1Gi'
+
+  nodeAffinity: {}
+
+  updateStrategy: RollingUpdate
+
+  podSecurityContext:
+    runAsUser: 0
+
+  # schedulerName:
+  # dnsPolicy:
+  # dnsConfig:
+
+  securityContext:
+    capabilities:
+      drop: [ALL]
+  readOnlyRootFilesystem: false
+  runAsNonRoot: false
+  runAsUser: 0
+
+  # How long to wait to stop gracefully
+  terminationGracePeriod: 10
+
+  ## Use an alternate scheduler.
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  schedulerName: ''
+
+  imagePullSecrets: {}
+
+  nodeSelector: {}
+  tolerations: []
+
+  tmp:
+    medium: ''
+    size: 50Gi
+
+  persistence:
+    storageClassName: ''
+    accessModes: ['ReadWriteOnce']
+    size: 50Gi
+    selectorLabels: {}
+  #    app: slurm-controller
+
+  readinessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    successThreshold: 3
+    timeoutSeconds: 5
+
+  livenessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+
+  initContainers: []
+
+  # Extra volume mounts
+  volumeMounts: []
+
+  # Extra volumes
+  volumes: []
+
+  # Extra volume claims
+  volumeClaimTemplates: []
+
+  # Extra prologs (permissions will be 755)
+  #prologsConfigMap: 'prologs-config-map'
+  prologsConfigMap: ''
+
+  # Extra epilogs (permissions will be 755)
+  #epilogsConfigMap: 'epilogs-config-map'
+  epilogsConfigMap: ''
+
+  servicePerReplica:
+    enabled: true
+    annotations: {}
+    labels: {}
+    clusterIP: ''
+
+    ## Port for Slurm Controller Service to listen on
+    ##
+    port: 6817
+
+    ## Port to expose on each node
+    ## Only used if service.type is 'NodePort'
+    ##
+    nodePort: 36817
+
+    ## Additional ports to open for Slurm Controller service
+    additionalPorts: []
+
+    externalIPs: []
+    loadBalancerIP: ''
+    loadBalancerSourceRanges: []
+
+    ## Denotes if this Service desires to route external traffic to node-local or cluster-wide endpoints
+    ##
+    externalTrafficPolicy: Cluster
+
+    ## Service type
+    ##
+    type: ClusterIP
+
+login:
+  enabled: false
+  replicas: 1
+
+  image: 'ghcr.io/squarefactory/slurm:22.05.0-1-login'
+  imagePullPolicy: 'IfNotPresent'
+
+  labels: {}
+  annotations: {}
+  # https://github.com/k8snetworkplumbingwg/multus-cni/blob/master/docs/how-to-use.md
+  networks: ''
+
+  command: ['/init']
+
+  resources:
+    requests:
+      cpu: '100m'
+      memory: '256Mi'
+    limits:
+      memory: '1Gi'
+
+  nodeAffinity: {}
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+
+  podSecurityContext:
+    runAsUser: 0
+
+  # schedulerName:
+  # dnsPolicy:
+  # dnsConfig:
+
+  securityContext:
+    capabilities:
+      drop: [ALL]
+  readOnlyRootFilesystem: false
+  runAsNonRoot: false
+  runAsUser: 0
+
+  # How long to wait to stop gracefully
+  terminationGracePeriod: 10
+
+  ## Use an alternate scheduler.
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  schedulerName: ''
+
+  imagePullSecrets: {}
+
+  nodeSelector: {}
+  tolerations: []
+
+  # secret containing SSH host keys
+  #
+  # Snippet to regenerate keys:
+  #
+  #   yes 'y' | ssh-keygen -N '' -f ./ssh_host_rsa_key -t rsa -C ondemand
+  #   yes 'y' | ssh-keygen -N '' -f ./ssh_host_ecdsa_key -t ecdsa -C ondemand
+  #   yes 'y' | ssh-keygen -N '' -f ./ssh_host_ed25519_key -t ed25519 -C ondemand
+  sshd:
+    secretName:
+
+  tmp:
+    medium: ''
+    size: 50Gi
+
+  initContainers: []
+
+  # Extra volume mounts
+  volumeMounts: []
+
+  # Extra volumes
+  volumes: []
+
+  net:
+    # Kubernetes host interface
+    type: ipvlan
+    masterInterface: eth0
+    mode: l2
+
+    # https://www.cni.dev/plugins/current/ipam/static/
+    ipam:
+      type: host-local
+      ranges:
+        - - subnet: 10.10.2.0/24
+            rangeStart: 10.10.2.46
+            rangeEnd: 10.10.2.50
+            gateway: 10.10.2.1
+
+  service:
+    enabled: true
+    type: ClusterIP
+
+  # Slurm REST API
+  rest:
+    enabled: false
+    image: 'ghcr.io/squarefactory/slurm:22.05.0-1-rest'
+    imagePullPolicy: 'IfNotPresent'
+    command: ['/init']
+
+    # Extra volume mounts (use login.volumes to add volumes)
+    volumeMounts: []
+
+    resources:
+      requests:
+        cpu: '100m'
+        memory: '128Mi'
+      limits:
+        memory: '256Mi'
+
+ondemand:
+  enabled: false
+  replicas: 1
+
+  image: 'ghcr.io/squarefactory/open-ondemand:2.0.23-3'
+  imagePullPolicy: 'IfNotPresent'
+
+  labels: {}
+  annotations: {}
+
+  command: ['/init']
+
+  hostAliases:
+    - ip: '127.0.0.1'
+      hostnames:
+        - 'ondemand.example.com'
+
+  # secret containing SSH host keys
+  #
+  # Snippet to regenerate keys:
+  #
+  #   yes 'y' | ssh-keygen -N '' -f ./ssh_host_rsa_key -t rsa -C headnode
+  #   yes 'y' | ssh-keygen -N '' -f ./ssh_host_ecdsa_key -t ecdsa -C headnode
+  #   yes 'y' | ssh-keygen -N '' -f ./ssh_host_ed25519_key -t ed25519 -C headnod
+  sshd:
+    secretName:
+
+  # https://osc.github.io/ood-documentation/latest/reference/files/ood-portal-yml.html
+  oodPortalSecretName: ''
+
+  config:
+    # https://osc.github.io/ood-documentation/master/customization.html#branding
+    nginxStage: {}
+    # https://osc.github.io/ood-documentation/develop/installation/resource-manager/kubernetes.html#deploy-hooks-to-bootstrap-users-kubernetes-configuration
+    hookEnv: |
+      K8S_USERNAME_PREFIX=""
+      NAMESPACE_PREFIX=""
+      NETWORK_POLICY_ALLOW_CIDR="127.0.0.1/32"
+      IDP_ISSUER_URL="https://idp.example.com/auth/realms/main/protocol/openid-connect/token"
+      CLIENT_ID="changeme"
+      CLIENT_SECRET="changeme"
+      IMAGE_PULL_SECRET=""
+      REGISTRY_DOCKER_CONFIG_JSON="/some/path/to/docker/config.json"
+      USE_POD_SECURITY_POLICY=false
+      USE_JOB_POD_REAPER=false
+    clusters:
+      {}
+      # https://osc.github.io/ood-documentation/latest/installation/add-cluster-config.html
+      # my-cluster:
+      #   v2:
+      #     metadata:
+      #       title: 'My Cluster'
+      #     login:
+      #       host: '10.10.2.41'
+    apps:
+      {}
+      # https://github.com/kubernetes/git-sync
+      # my_app:
+      #   gitSyncSecret: ''
+    dev:
+      {}
+      # https://osc.github.io/ood-documentation/latest/app-development/enabling-development-mode.html
+      # john:
+      #   gateway: /home/john/ondemand/dev
+
+  resources:
+    requests:
+      cpu: '250m'
+      memory: '256Mi'
+    limits:
+      cpu: '1'
+      memory: '1Gi'
+
+  nodeAffinity: {}
+
+  updateStrategy:
+    type: RollingUpdate
+
+  livenessProbe:
+    tcpSocket:
+      port: 80
+    initialDelaySeconds: 60
+    timeoutSeconds: 1
+    periodSeconds: 10
+    successThreshold: 1
+    failureThreshold: 3
+  readinessProbe:
+    tcpSocket:
+      port: 80
+    timeoutSeconds: 1
+    periodSeconds: 2
+    successThreshold: 1
+    failureThreshold: 3
+
+  podSecurityContext:
+    runAsUser: 0
+
+  securityContext:
+    capabilities:
+      drop: [ALL]
+  readOnlyRootFilesystem: false
+  runAsNonRoot: false
+  runAsUser: 0
+
+  # How long to wait to stop gracefully
+  terminationGracePeriod: 10
+
+  ## Use an alternate scheduler.
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  schedulerName: ''
+
+  imagePullSecrets: {}
+
+  nodeSelector: {}
+  tolerations: []
+
+  tmp:
+    medium: ''
+    size: 50Gi
+
+  persistence:
+    storageClassName: ''
+    accessModes: ['ReadWriteOnce']
+    size: 50Gi
+    selectorLabels: {}
+  #    app: open-ondemand
+
+  initContainers: []
+
+  # Extra volume mounts
+  volumeMounts: []
+
+  # Extra volumes
+  volumes: []
+
+  # Extra volume claims
+  volumeClaimTemplates: []
+
+  service:
+    enabled: true
+    type: ClusterIP
+
+  httpIngress:
+    enabled: false
+    annotations: {}
+    ingressClass: ''
+
+    hosts: []
+    # - www.example.com
+
+    tls: {}
+
+  oidcIngress:
+    enabled: false
+    annotations: {}
+    ingressClass: ''
+
+    hosts: []
+    # - www.example.com
+
+    tls: {}
+
+db:
+  enabled: false
+  replicas: 1
+
+  image: 'ghcr.io/squarefactory/slurm:22.05.0-1-db'
+  imagePullPolicy: 'IfNotPresent'
+
+  labels: {}
+  annotations: {}
+
+  # https://github.com/k8snetworkplumbingwg/multus-cni/blob/master/docs/how-to-use.md
+  networks: ''
+
+  command: ['/init']
+
+  ## Pass secret containing slurmdbd.conf
+  ## The secret will be mounted on the /etc/slurm directory, chmod 1501 (slurm user)
+  ## Modify the path using `items`. If `items` is empty, all the file defined in
+  ## the secret will be mounted.
+  config:
+    secretName: ''
+    items: []
+    # - key: file
+    #   path: sub/file-renamed
+
+  resources:
+    requests:
+      cpu: '100m'
+      memory: '128Mi'
+    limits:
+      memory: '256Mi'
+
+  nodeAffinity: {}
+
+  updateStrategy: RollingUpdate
+
+  podSecurityContext:
+    runAsUser: 0
+
+  # schedulerName:
+  # dnsPolicy:
+  # dnsConfig:
+
+  securityContext:
+    capabilities:
+      drop: [ALL]
+  readOnlyRootFilesystem: false
+  runAsNonRoot: false
+  runAsUser: 0
+
+  # How long to wait to stop gracefully
+  terminationGracePeriod: 10
+
+  ## Use an alternate scheduler.
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  schedulerName: ''
+
+  imagePullSecrets: {}
+
+  nodeSelector: {}
+  tolerations: []
+
+  tmp:
+    medium: ''
+    size: 50Gi
+
+  readinessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    successThreshold: 3
+    timeoutSeconds: 5
+
+  livenessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+
+  initContainers: []
+
+  # Extra volume mounts
+  volumeMounts: []
+
+  # Extra volumes
+  volumes: []
+
+  # Use IPVLAN Network
+  # If disabled, uses pod network.
+  net:
+    enabled: false
+    # Kubernetes host interface
+    type: ipvlan
+    masterInterface: eth0
+    mode: l2
+
+    # https://www.cni.dev/plugins/current/ipam/static/
+    ipam:
+      type: host-local
+      ranges:
+        - - subnet: 10.10.2.0/24
+            rangeStart: 10.10.2.46
+            rangeEnd: 10.10.2.50
+            gateway: 10.10.2.1
+
+  service:
+    enabled: true
+    type: ClusterIP
