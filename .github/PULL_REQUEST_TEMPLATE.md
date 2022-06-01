@@ -1,11 +1,3 @@
----
-name: Pull Request Template
-about: Suggest an idea for this project
-title: '<type>[optional scope]: <description>'
-assignees: amnesium, Darkness4
-
----
-
 <!--
 Thanks for sending a pull request!
 
