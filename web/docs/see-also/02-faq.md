@@ -38,12 +38,12 @@ With this setup, we had many problems:
 
 Kubernetes has also these benefits:
 
-- Easy to deploy, easy to join a cluster. (Via kubeadm, K0s or k3s. All of them had a good experience deployment experience.)
-- Easy to maintain thanks to K0s, Helm and Dockerfiles
-- Easy to scale thanks to the Kubernetes Scheduler and Horizontal Pod Auto-scheduling
-- All declarative and GitOps friendly
-- Custom Resources with Kubernetes Operators
-- Easy networking and routing with the Ingresses
+- **Easy to deploy, easy to join a cluster.** (Via kubeadm, K0s or k3s. All of them had a good experience deployment experience.)
+- **Easy to maintain** thanks to K0s, Helm and Dockerfiles
+- **Easy to scale** thanks to the Kubernetes Scheduler and Horizontal Pod Auto-scheduling
+- All **declarative** and **GitOps friendly**
+- **Custom Resources** with Kubernetes Operators
+- **Easy networking and routing** with the Ingresses
 
 While Kubernetes seems complex because of all the features, it's the one with the most explicit syntax. Everything is inside a YAML and everything is sorted and well-defined thanks to the "Groups, Versions and Kinds" syntax.
 
@@ -57,14 +57,14 @@ While you can do some research and development to see which stack you could use 
 
 We were looking for two things:
 
-- Ease of deployment
-- Ease of maintainance
+- **Ease of deployment**
+- **Ease of maintainance**
 
 While the Cluster API looked pretty interesting with kubeadm, we thought K0s had everything we needed:
 
-- Declarative deployment
-- Easy update, backup, restore and reset
-- And a bonus: only one binary is deployed, without any dependencies
+- **Declarative deployment**
+- **Easy update, backup, restore and reset**
+- And a bonus: **only one binary is deployed**, without any dependencies
 
 If we had to use an immutable operating system, we'd rather build our own. Using an immutable operating system means being vendor-locked and not allowing "mutability". This means that for the sake of security and easy maintainability, it is impossible to edit the OS.
 
