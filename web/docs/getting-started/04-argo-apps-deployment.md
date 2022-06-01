@@ -247,7 +247,7 @@ Create the file `argo/my-monitoring/prometheus-crd-app.yml` and add:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: prometheus-app
+  name: prometheus-crd-app
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -282,7 +282,7 @@ spec:
 
 ```
 
-Then we need to configure the Argo CD application which actually deploys the kube-prometheus-stack.
+Then, we need to configure the Argo CD application which actually deploys the kube-prometheus-stack.
 
 Basically:
 
