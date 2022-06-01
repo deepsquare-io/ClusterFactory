@@ -239,7 +239,50 @@ After applying the file, feel free to delete the `-secret.yaml.local` file. If y
 
 ## 3. Configure the Argo Application
 
-Let's start with the configuration of the behavior of Argo CD.
+Let's start with the CRDs of kube-prometheus-stack. Because the CRDs are too large, we need to deploy an Argo CD application which only deploys the CRDs.
+
+Create the file `argo/my-monitoring/prometheus-crd-app.yml` and add:
+
+```yaml title="argo/my-monitoring/prometheus-crd-app.yml"
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus-app
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: monitoring
+  source:
+    chart: kube-prometheus-stack
+    repoURL: https://github.com/prometheus-community/helm-charts.git
+    path: charts/kube-prometheus-stack/crds/
+    targetRevision: kube-prometheus-stack-35.5.1
+
+    directory:
+      recurse: true
+
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: monitoring
+
+  syncPolicy:
+    automated:
+      prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+      allowEmpty: false # Allows deleting all application resources during automatic syncing ( false by default ).
+    syncOptions:
+      - Replace=true
+    retry:
+      limit: 5 # number of failed sync attempt retries; unlimited number of attempts if less than 0
+      backoff:
+        duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
+        factor: 2 # a factor to multiply the base duration after each failed retry
+        maxDuration: 3m # the maximum amount of time allowed for the backoff strategy
+
+```
+
+Then we need to configure the Argo CD application which actually deploys the kube-prometheus-stack.
 
 Basically:
 
@@ -259,6 +302,8 @@ spec:
     targetRevision: 34.0.0
     helm:
       releaseName: prometheus
+
+      skipCrds: true  # skipCrds because CRDs are too long!
 
       values: '' # ! We are going to FILL HERE later
 
@@ -489,6 +534,7 @@ spec:
 Now, just deploy the Argo CD app:
 
 ```shell title="user@local:/cluster-factory-ce"
+kubectl apply -f argo/my-monitoring/prometheus-crd-app.yml
 kubectl apply -f argo/my-monitoring/prometheus-app.yml
 ```
 

@@ -572,5 +572,6 @@ And edit the values based on your use-cases.
 ## 4. Deploy the app
 
 ```shell title="user@local:/cluster-factory-ce"
+kubectl apply -f argo/monitoring/apps/prometheus-crd-app.yml
 kubectl apply -f argo/monitoring/apps/prometheus-app.yml
 ```
