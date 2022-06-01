@@ -1,4 +1,4 @@
-# Cluster Factory Community Edition Kubernetes Stack
+# Cluster Factory Community Edition
 
 ## Overview
 
