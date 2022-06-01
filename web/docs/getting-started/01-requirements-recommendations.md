@@ -11,7 +11,7 @@ All nodes should have a Linux distribution with:
 - The Linux kernel version higher than 3.10.
 - An init system based on SystemD or OpenRC.
 
-Cluster Factory has been fully tested on Rocky Linux and is our recommended OS.
+Cluster Factory has been fully tested on Rocky Linux which is our recommended OS.
 
 ### Required utilities
 
@@ -37,7 +37,7 @@ We recommend:
 - [VSCode](https://code.visualstudio.com). Any IDE with YAML support is a good alternative.
 - **[Lens](https://k8slens.dev) to manage your Kubernetes cluster.**
 
-## Recommended documentations
+## Recommended documentation
 
 - [Kubernetes documentation](https://kubernetes.io/docs/concepts/)
 - [Kubernetes API reference](https://kubernetes.io/docs/reference/kubernetes-api/)
