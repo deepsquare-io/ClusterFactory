@@ -72,7 +72,7 @@ const config = {
           src: 'img/deepsquare-logo-h.svg',
           srcDark: 'img/deepsquare-logo-h-neg.svg',
         },
-        copyright: `Copyright © ${new Date().getFullYear()} Cluster Factory CE Docs, <a href="https://squarefactory.io">SquareFactory</a>. Built with Docusaurus.`,
+        copyright: `<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>. Copyright © ${new Date().getFullYear()} Cluster Factory CE Docs, <a href="https://squarefactory.io">SquareFactory</a>. Built with Docusaurus.`,
       },
       prism: {
         theme: lightCodeTheme,
