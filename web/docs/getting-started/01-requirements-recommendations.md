@@ -37,7 +37,7 @@ We recommend:
 - [VSCode](https://code.visualstudio.com). Any IDE with YAML support is a good alternative.
 - **[Lens](https://k8slens.dev) to manage your Kubernetes cluster.**
 
-## Recommended documentations
+## Recommended documentation
 
 - [Kubernetes documentation](https://kubernetes.io/docs/concepts/)
 - [Kubernetes API reference](https://kubernetes.io/docs/reference/kubernetes-api/)
