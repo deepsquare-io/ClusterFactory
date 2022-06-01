@@ -11,7 +11,7 @@ We will deploy:
 
 ## CoreDNS configuration
 
-The initial configuration of CoreDNS given by k0s is not satisfying our needs. This is why we are applying a new configuration.
+The initial configuration of CoreDNS given by k0s does not fulfil our needs. This is why we are applying a new configuration.
 
 CoreDNS is exposed to the external network thanks to the `IngressRoute` objects in the [`core/coredns/overlays/prod/ingress-route.yml`](https://github.com/SquareFactory/cluster-factory-ce/blob/main/core.example/coredns/overlays/prod/ingress-route.yml).
 
@@ -251,7 +251,7 @@ spec:
 
 Run the `2.deploy-core-apps.sh` script to deploy the cluster.
 
-Congratulations! You have successfully deployed a Kubernetes Cluster with the minimum needs. We still recommend to deploy the Monitoring stack to monitor the RAM and CPU usage of the containers. Nevertheless, you can follow the [guides](/docs/guides), learn the [main concepts of Cluster Factory](/docs/main-concepts/k0s), or continue the [Getting Started](./argo-apps-deployment).
+Congratulations! You have successfully deployed a Kubernetes Cluster with the minimum requirements. We still recommend to deploy the Monitoring stack to monitor the RAM and CPU usage of the containers. Nevertheless, you can follow the [guides](/docs/guides), learn the [main concepts of Cluster Factory](/docs/main-concepts/k0s), or continue the [Getting Started](./argo-apps-deployment).
 
 :::note
 
