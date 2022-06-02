@@ -9,6 +9,10 @@
     {
       "matchDepTypes": ["devDependencies"],
       "automerge": true
+    },
+    {
+      "matchPackageNames": ["@mdx-js/react"],
+      "allowedVersions": "< 2.0 || >= 3.0"
     }
   ],
   "commitMessagePrefix": "chore(renovate):"
