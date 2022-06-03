@@ -19,5 +19,5 @@ PersistentVolumes won't be inside the backup.
 ## Restore
 
 ```shell
-k0sctl apply --restore-from /path/to/backup_file.tar.gz
+k0sctl apply --debug --restore-from /path/to/backup_file.tar.gz
 ```

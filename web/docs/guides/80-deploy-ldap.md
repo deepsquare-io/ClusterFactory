@@ -211,7 +211,7 @@ You must open ports 636 and 389 on the load balancer of Traefik by configuring t
 Apply:
 
 ```shell title="user@local:/cluster-factory-ce"
-k0sctl apply --config k0sctl.yaml
+k0sctl apply --debug --config k0sctl.yaml
 kubectl apply -f argo/ldap/ingresses/ingress-routes-tcp.yaml
 ```
 

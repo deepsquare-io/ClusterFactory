@@ -5,7 +5,7 @@
 set -e
 
 section "Setup the whole cluster"
-k0sctl apply --config ./k0sctl.yaml
+k0sctl apply --debug --config ./k0sctl.yaml
 
 section "Fetch the config"
 k0sctl kubeconfig --config ./k0sctl.yaml >./kubeconfig

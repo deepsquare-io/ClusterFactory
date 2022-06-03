@@ -311,7 +311,7 @@ Or, you can run `k0sctl` manually:
 
 ```shell title="user@local:/cluster-factory-ce"
 PATH="$(pwd)/bin:${PATH}"
-k0sctl apply --config ./k0sctl.yaml
+k0sctl apply --debug --config ./k0sctl.yaml
 
 # Fetch the kubeconfig
 k0sctl kubeconfig --config ./k0sctl.yaml >./kubeconfig

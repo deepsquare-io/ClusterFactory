@@ -14,7 +14,7 @@ Updating the k0s cluster is super easy!
 2. And apply it:
 
 ```shell
-k0sctl apply --config k0sctl.yaml
+k0sctl apply --debug --config k0sctl.yaml
 
 # OR
 
