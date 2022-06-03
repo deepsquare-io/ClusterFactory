@@ -47,13 +47,13 @@ Kubernetes has also these benefits:
 
 While Kubernetes seems complex because of all the features, it's the one with the most explicit syntax. Everything is inside a YAML and everything is sorted and well-defined thanks to the "Groups, Versions and Kinds" syntax.
 
-## Why Cluster Factory over Vanilla Kubernetes ?
+## Why Cluster Factory over Vanilla Kubernetes?
 It is possible to use your own Kubernetes to administer your clusters! The main difference between
 the vanilla Kubernetes and Cluster Factory is that we integrate a battle-tested stack that we use in our HPC clusters.
 
 While you can do some research and development to see which stack you could use to manage your HPC clusters, Cluster Factory is the solution we built and chose as the core of our clusters at [SquareFactory](https://www.squarefactory.io).
 
-## Why K0s at its core ? Why not kubeadm or k3s ? or an immutable OS like CoreOS ?
+## Why K0s at its core? Why not kubeadm or k3s? or an immutable OS like CoreOS?
 
 We were looking for two things:
 
