@@ -533,7 +533,7 @@ div[class*=' codeBlockTitle'] {
 }
 
 [data-theme='dark'] img[src$='#white-bg'] {
-  background-color: #fff;
+  background-color: #f6f6f6;
 }
 
 /* Selection */
