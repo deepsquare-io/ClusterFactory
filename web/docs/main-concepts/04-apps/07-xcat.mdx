@@ -7,7 +7,11 @@ High-Performance Computing clusters.
 
 The architecture is the following:
 
-![Xcat-arch](07-xcat.assets/Xcat-arch.png)
+<div style={{textAlign: 'center'}}>
+
+![Xcat-arch](07-xcat.assets/xcat.drawio.png#invert-on-dark)
+
+</div>
 
 **xCAT Management Node** is deployed as a container and runs multiple network services responsible for the provisioning of bare-metal systems.
 
@@ -31,7 +35,11 @@ While a lot of solutions exist for bare-metal provisioning like [OpenStack Ironi
 
 Disk-less (or Stateless) provisioning is based on an OverlayFS root, with the OS being loaded from a SquashFS image. The OverlayFS is mounted as a `tmpfs`, that is, in the RAM.
 
-![upper-lower](07-xcat.assets/6ecbb344ae8145db8deedaeecd0f49betplv-k3u1fbpfcp-zoom-1.png)
+<div style={{textAlign: 'center'}}>
+
+![upper-lower](07-xcat.assets/overlayfs.drawio.svg#invert-on-dark)
+
+</div>
 
 Since the root is mounted in RAM, restarting a node will "clean it up", similar to a Docker container.
 
