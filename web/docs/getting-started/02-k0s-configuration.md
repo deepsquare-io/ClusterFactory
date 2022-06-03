@@ -40,6 +40,7 @@ spec:
         port: 22
         keyPath: ~/.ssh/id_ed25519
       role: controller+worker
+      noTaints: true
       privateInterface: eno1
       privateAddress: 192.168.0.2
       installFlags:

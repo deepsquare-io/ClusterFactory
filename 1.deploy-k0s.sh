@@ -17,9 +17,6 @@ section "Wait for all node to be ready"
 sleep 30
 kubectl wait nodes --timeout=3600s --all --for condition=Ready
 
-section "Remove Master NoSchedule Taint"
-kubectl taint nodes --kubeconfig kubeconfig --all node-role.kubernetes.io/master:NoSchedule- || echo "taint removal failed: error ignored"
-
 section "Wait for all deployments to be Available"
 sleep 10
 kubectl wait deployments --timeout=3600s --all --all-namespaces --for condition=Available
