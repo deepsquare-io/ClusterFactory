@@ -12,7 +12,11 @@ Slurm has three key features:
 
 The architecture is the following:
 
-![img](08-slurm.assets/arch.gif#white-bg)
+<div style={{textAlign: 'center'}}>
+
+![slurm concepts](08-slurm.assets/slurm.drawio.png#invert-on-dark)
+
+</div>
 
 **The client/login node** can send commands to the **Slurm controller daemon (slurmctld)**
 (and directly to a compute node in case of a [srun job](https://slurm.schedmd.com/srun.html)).
