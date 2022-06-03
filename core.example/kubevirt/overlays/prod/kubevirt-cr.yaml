@@ -7,7 +7,7 @@ spec:
   infra:
     nodePlacement:
       nodeSelector:
-        node-role.kubernetes.io/control-plane: ''
+        node-role.kubernetes.io/control-plane: 'true'
   workloads:
     nodePlacement:
       nodeSelector: {}

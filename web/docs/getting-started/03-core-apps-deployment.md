@@ -241,7 +241,7 @@ spec:
   infra:
     nodePlacement:
       nodeSelector:
-        node-role.kubernetes.io/control-plane: '' # Restrict virt-controller and virt-api pods to only run on the control-plane nodes.
+        node-role.kubernetes.io/control-plane: 'true' # Restrict virt-controller and virt-api pods to only run on the control-plane nodes.
   workloads:
     nodePlacement:
       nodeSelector: {} # Allow the virt-handler pods to only on all nodes 
