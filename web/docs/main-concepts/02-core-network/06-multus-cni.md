@@ -2,7 +2,11 @@
 
 Multus CNI allows us to attach multiple network interfaces to pods, similarly to Docker and Virtual Machines.
 
-![multus-pod-image](06-multus-cni.assets/multus-pod-image.svg#white-bg)
+<div style={{textAlign: 'center'}}>
+
+![multus-pod-image](06-multus-cni.assets/multus.drawio.svg#white-bg)
+
+</div>
 
 The first reason we use Multus is so that KubeVirt supports multiple network interfaces.
 
