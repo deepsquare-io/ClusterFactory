@@ -50,8 +50,8 @@ spec:
           after:
             - mkdir -p /var/lib/k0s/kubelet
             - sh -c "if [ -L /var/lib/kubelet ]; then echo symlink already exists; else rm -f /var/lib/kubelet && ln -s /var/lib/k0s/kubelet /var/lib/kubelet; fi"
-            - sh -c 'if [ "$(getenforce)" -nq "Permissive" ]; then sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config; fi'
-            - sh -c 'if [ "$(getenforce)" -nq "Permissive" ]; then setenforce 0; fi'
+            - sh -c 'if [ "$(getenforce)" -eq "Permissive" ]; then sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config; fi'
+            - sh -c 'if [ "$(getenforce)" -eq "Permissive" ]; then setenforce 0; fi'
 
   ...
 ```
