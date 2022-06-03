@@ -51,7 +51,7 @@ While Kubernetes seems complex because of all the features, it's the one with th
 It is possible to use your own Kubernetes to administer your clusters! The main difference between
 the vanilla Kubernetes and Cluster Factory is that we integrate a battle-tested stack that we use in our HPC clusters.
 
-While you can do some research and development to see which stack you could use to manage your HPC clusters. Cluster Factory is the solution we built and chose as the core of our clusters at [SquareFactory](https://www.squarefactory.io).
+While you can do some research and development to see which stack you could use to manage your HPC clusters, Cluster Factory is the solution we built and chose as the core of our clusters at [SquareFactory](https://www.squarefactory.io).
 
 ## Why K0s at its core ? Why not kubeadm or k3s ? or an immutable OS like CoreOS ?
 
