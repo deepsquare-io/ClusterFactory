@@ -150,7 +150,7 @@ Your router must be capable of using BGP. If not, you should use an appliance wi
 ```yaml title="k0sctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
 - name: metallb
   chartname: bitnami/metallb
-  version: '3.0.4'
+  version: '3.0.7'
   namespace: metallb
   values: |
 
@@ -183,7 +183,7 @@ Your router must be capable of using BGP. If not, you should use an appliance wi
 ```yaml title="k0sctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
 - name: metallb
   chartname: bitnami/metallb
-  version: '3.0.4'
+  version: '3.0.7'
   namespace: metallb
   values: |
 
