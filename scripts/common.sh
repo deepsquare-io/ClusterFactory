@@ -93,3 +93,19 @@ fi
 echo "Found helm: $(helm version)"
 echo
 export HELM
+
+ETCDCTL="$(command -v etcdctl)"
+if ! [ -x "$ETCDCTL" ]; then
+  ETCDCTL_VERSION=v3.5.4
+  GOOGLE_URL=https://storage.googleapis.com/etcd
+  echo "helm could not be found. Downloading it locally in ./bin."
+  rm -f ./bin/etcdctl
+  curl -fsSL "${GOOGLE_URL}/${ETCDCTL_VERSION}/etcd-${ETCDCTL_VERSION}-${os}-${architecture}.tar.gz" | tar -zxvf - "etcd-${ETCDCTL_VERSION}-${os}-${architecture}/etcdctl"
+  mv "etcd-${ETCDCTL_VERSION}-${os}-${architecture}/etcdctl" ./bin/etcdctl
+  rmdir "etcd-${ETCDCTL_VERSION}-${os}-${architecture}"
+  chmod +x ./bin/etcdctl
+  ETCDCTL="$(command -v etcdctl)"
+fi
+echo "Found etcdctl: $(etcdctl version)"
+echo
+export ETCDCTL
