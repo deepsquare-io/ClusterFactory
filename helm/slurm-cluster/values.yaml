@@ -300,6 +300,12 @@ login:
     medium: ''
     size: 50Gi
 
+  livenessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 10
+
   initContainers: []
 
   # Extra volume mounts
