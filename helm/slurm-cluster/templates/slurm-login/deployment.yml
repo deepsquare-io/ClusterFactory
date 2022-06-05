@@ -83,6 +83,11 @@ spec:
           ports:
             - containerPort: 22
               name: sshd
+          livenessProbe:
+            exec:
+              command:
+                - sinfo
+{{ toYaml .Values.login.livenessProbe | indent 12 }}
           volumeMounts:
             - name: slurm-conf
               mountPath: /etc/slurm
