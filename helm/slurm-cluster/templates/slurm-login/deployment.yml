@@ -128,8 +128,10 @@ spec:
             - containerPort: 6820
               name: slurmrestd
           livenessProbe:
-            tcpSocket:
-              port: 6820
+            exec:
+              command:
+                - /command/s6-svstat
+                - /var/run/s6-rc/servicedirs/slurmrest/
 {{ toYaml .Values.login.livenessProbe | indent 12 }}
           volumeMounts:
             - name: slurm-conf
