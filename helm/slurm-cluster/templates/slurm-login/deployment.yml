@@ -127,6 +127,10 @@ spec:
           ports:
             - containerPort: 6820
               name: slurmrestd
+          livenessProbe:
+            tcpSocket:
+              port: 6820
+{{ toYaml .Values.login.livenessProbe | indent 12 }}
           volumeMounts:
             - name: slurm-conf
               mountPath: /etc/slurm
