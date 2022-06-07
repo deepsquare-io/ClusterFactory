@@ -240,9 +240,9 @@ chmod 600 ./kubeconfig
 export KUBECONFIG="$(pwd)/kubeconfig"
 kubectl get nodes
 # NAME            STATUS   ROLES           AGE     VERSION
+# k0s-ch-sion-1   Ready    control-plane   61d     v1.23.6+k0s
 # k0s-at-vie-1    Ready    control-plane   3d22h   v1.23.6+k0s
 # k0s-de-fra-1    Ready    control-plane   4d      v1.23.6+k0s
-# k0s-ch-sion-1   Ready    control-plane   61d     v1.23.6+k0s
 ```
 
 **On a controller node**:
