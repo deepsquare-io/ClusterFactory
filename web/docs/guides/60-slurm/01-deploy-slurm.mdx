@@ -1212,9 +1212,46 @@ login:
             rangeStart: 192.168.0.20
             rangeEnd: 192.168.0.21
             gateway: 192.168.0.1
+      routes:
+        - dst: 192.168.0.0/24
 ```
 
 Edit the values accordingly.
+
+:::warning
+
+Because `k8s-pod-network` is the default network, you must write routes to your networks.
+
+For example, if we have two sites `10.10.0.0/24` and `10.10.1.0/24`, you would write:
+
+```yaml
+ipam:
+  type: host-local
+  ranges:
+    - - subnet: 10.10.0.0/24
+        rangeStart: 10.10.0.20
+        rangeEnd: 10.10.0.21
+        gateway: 10.10.0.1
+  routes:
+    - dst: 10.10.0.0/24
+    - dst: 10.10.1.0/24
+```
+
+If we `kubectl exec` to the container and run `ip route`, you would see:
+
+```shell title="root@slurm-cluster-e<cluster name>-login-b9b7cd9d5-9ntkn"
+# ip route
+default via 169.254.1.1 dev eth0
+10.10.0.0/24 via 10.10.0.1 dev net1
+10.10.1.0/24 via 10.10.0.1 dev net1
+169.254.1.1 dev eth0 scope link
+10.10.0.0/20 via 10.10.0.1 dev net1
+10.10.0.0/20 dev net1 proto kernel scope link src 10.10.0.21
+```
+
+The issue is tracked at [SquareFactory/cluster-factory-ce#29](https://github.com/SquareFactory/cluster-factory-ce/issues/29) and [projectcalico/calico#5199](https://github.com/projectcalico/calico/issues/5199).
+
+:::
 
 If you are using LDAPS and the CA is private, add these values:
 
