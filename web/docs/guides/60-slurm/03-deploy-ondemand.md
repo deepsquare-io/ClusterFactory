@@ -591,7 +591,7 @@ kubectl apply -f argo/slurm-cluster/secrets/openondemand-portal-sealed-secret.ym
 ```yaml title="argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml > spec > source > helm > values"
 ondemand:
   enabled: true
-  image: ghcr.io/squarefactory/open-ondemand:2.0.23-3
+  image: ghcr.io/squarefactory/open-ondemand:2.0.26-slurm22.05
 
   command: ['sh', '-c', 'update-ca-trust && /init']
 
