@@ -44,9 +44,9 @@ spec:
       port: 22
       targetPort: sshd
     {{- if .Values.login.rest.enabled }}
-    - name: slurmrestd
-      port: 6820
-      targetPort: slurmrestd
+    - name: http
+      port: 6822
+      targetPort: http
     {{- end }}
   selector:
     app.kubernetes.io/name: "{{ template "slurm-cluster.login.name" $ }}"
