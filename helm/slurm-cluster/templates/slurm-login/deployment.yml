@@ -106,13 +106,13 @@ spec:
               readOnly: true
             - mountPath: /tmp
               name: tmp
-              subPath: tmp
+              subPath: login/tmp
             - mountPath: /run
               name: tmp
-              subPath: run
+              subPath: login/run
             - mountPath: /var/log
               name: tmp
-              subPath: log
+              subPath: login/log
             {{- if .Values.login.volumeMounts }}
 {{ toYaml .Values.login.volumeMounts | indent 12 }}
             {{- end }}
@@ -148,13 +148,13 @@ spec:
               readOnly: true
             - mountPath: /tmp
               name: tmp
-              subPath: tmp
+              subPath: slurmrestd/tmp
             - mountPath: /run
               name: tmp
-              subPath: run
+              subPath: slurmrestd/run
             - mountPath: /var/log
               name: tmp
-              subPath: log
+              subPath: slurmrestd/log
             {{- if .Values.login.rest.volumeMounts }}
 {{ toYaml .Values.login.rest.volumeMounts | indent 12 }}
             {{- end }}
