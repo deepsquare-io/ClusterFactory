@@ -274,9 +274,7 @@ Use Packer to build OS images.
 
 You can build the SquareFactory OS image using the recipes stored in `packer-recipes`. It runs RedHat Kickstart and installs all the dependencies.
 
-The root filesystem is then copied to xCAT using rsync.
-
-You can use the xCAT OS image builder, but we highly recommend using Packer to create OS images for cloud and bare metal.
+You can then copy the root filesystem to xCAT using rsync. Follow the [guide "Build an OS Image with Packer" for more details](/docs/guides/provisioning/packer-build).
 
 ```shell title="mystanzafile"
 rocky8.4-x86_64-netboot-compute:
@@ -295,6 +293,46 @@ rocky8.4-x86_64-netboot-compute:
 ```
 
 Our root filesystem is stored inside `/install/netboot/rocky8.4/x86_64/compute/rootimg`.
+
+The file `/install/rocky8.4/x86_64/Packages/compute.rocky8.x86_64.exlist` contains a list files/directories that are trimmed before packing the image.
+
+Create the file and add:
+
+```shell title="/install/rocky8.4/x86_64/Packages/compute.rocky8.x86_64.exlist"
+./boot*
+./usr/include*
+./usr/lib/locale*
+./usr/lib64/perl5/Encode/CN*
+./usr/lib64/perl5/Encode/JP*
+./usr/lib64/perl5/Encode/TW*
+./usr/lib64/perl5/Encode/KR*
+./lib/kbd/keymaps/i386*
+./lib/kbd/keymaps/mac*
+./lib/kdb/keymaps/include*
+./usr/local/include*
+./usr/local/share/man*
+./usr/share/man*
+./usr/share/cracklib*
+./usr/share/doc*
+./usr/share/gnome*
+./usr/share/i18n*
++./usr/share/i18n/en_US*
+./usr/share/info*
+./usr/share/locale/*
++./usr/share/locale/en_US*
++./usr/share/locale/C*
++./usr/share/locale/locale.alias
++./usr/lib/locale/locale-archive
++./usr/lib/locale/en*
+./usr/share/man*
+./usr/share/omf*
+./usr/share/vim/site/doc*
+./usr/share/vim/vim74/doc*
+./usr/share/zoneinfo*
+./var/cache/man*
+./var/lib/yum*
+./tmp*
+```
 
 Create one post-boot script inside `/install/postscripts` called `git-configs-execute`, which `git clone` and executes scripts from a git repository.
 
