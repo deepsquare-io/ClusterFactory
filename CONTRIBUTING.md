@@ -1,4 +1,4 @@
-# How to contribute to Cluster Factory
+# How to contribute to ClusterFactory
 
 ## Welcome
 
@@ -6,7 +6,7 @@ Everyone is welcome to contribute code via pull requests, to file issues on
 GitHub, to help triage, reproduce, or fix bugs that people have filed, to add to
 our documentation, or to help out in any other way.
 
-We can grant commit access (which includes full rights to the issue database, such as being able to edit labels) to people who have gained our trust and demonstrated a commitment to Cluster Factory.
+We can grant commit access (which includes full rights to the issue database, such as being able to edit labels) to people who have gained our trust and demonstrated a commitment to ClusterFactory.
 
 ## Helping out in the issue database
 

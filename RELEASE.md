@@ -1,4 +1,4 @@
-# Releasing Cluster Factory CE
+# Releasing ClusterFactory CE
 
 ## Creating a release
 

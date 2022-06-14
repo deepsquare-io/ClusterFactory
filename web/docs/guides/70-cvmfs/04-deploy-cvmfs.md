@@ -6,7 +6,7 @@ Let's assume we plan to replicate `http://cvmfs.example.com/cvmfs/repo.example.c
 
 ## Helm and Docker resources
 
-The Helm resources are stored on [Cluster Factory Git Repository](https://github.com/SquareFactory/cluster-factory-ce/tree/main/helm/cvmfs-server).
+The Helm resources are stored on [ClusterFactory Git Repository](https://github.com/SquareFactory/cluster-factory-ce/tree/main/helm/cvmfs-server).
 
 The Dockerfile is described in the git repository [SquareFactory/cvmfs-server-docker](https://github.com/SquareFactory/cvmfs-server-docker).
 

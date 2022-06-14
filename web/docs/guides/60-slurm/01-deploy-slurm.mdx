@@ -13,7 +13,7 @@ Deploying the SLURM database isn't stable yet. Please feel free to [create an is
 
 ## Helm and Docker resources
 
-The Helm resources are stored on [the Cluster Factory CE Git Repository](https://github.com/SquareFactory/cluster-factory-ce/tree/main/helm/slurm-cluster).
+The Helm resources are stored on [the ClusterFactory CE Git Repository](https://github.com/SquareFactory/cluster-factory-ce/tree/main/helm/slurm-cluster).
 
 The Dockerfile is described in the git repository [SquareFactory/slurm-docker](https://github.com/SquareFactory/slurm-docker).
 
@@ -606,7 +606,7 @@ controller:
 
 Notice that `kubernetes.io/hostname` is used, this is because the slurm controller will be using the host network and we don't want to make the slurm controller move around.
 
-We might develop a HA setup in the future version of Cluster Factory.
+We might develop a HA setup in the future version of ClusterFactory.
 
 If you are using LDAPS and the CA is private, append these values:
 
@@ -934,7 +934,7 @@ And send the os image to xcat. [Follow the guide "Build an OS Image with Packer"
 
 Next, you have to configure a service by using a xCAT postscript. Our recommendation is to use a xCAT postscript to pull a Git repository which, based on the content of the repository, copies the files and executes the postscripts in that Git repository.
 
-This way, the GitOps practice is always followed and permits to adapt for the future version of Cluster Factory.
+This way, the GitOps practice is always followed and permits to adapt for the future version of ClusterFactory.
 
 The service:
 

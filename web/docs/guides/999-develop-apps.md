@@ -1,4 +1,4 @@
-# Develop Applications to integrate into Cluster Factory
+# Develop Applications to integrate into ClusterFactory
 
 This guide covers the general process to develop an application for Cluster
 Factory and might help you to integrate your applications.

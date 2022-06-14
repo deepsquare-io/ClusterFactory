@@ -6,7 +6,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/palenight');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Cluster Factory CE',
+  title: 'ClusterFactory CE',
   tagline: 'A k8s-based infrastructure orchestration tool',
   url: 'https://docs.clusterfactory.io',
   baseUrl: '/',
@@ -53,9 +53,9 @@ const config = {
         },
       },
       navbar: {
-        title: 'Cluster Factory CE Docs',
+        title: 'ClusterFactory CE Docs',
         logo: {
-          alt: 'Cluster Factory CE Logo',
+          alt: 'ClusterFactory CE Logo',
           src: 'img/logo.svg',
         },
         items: [
@@ -73,7 +73,7 @@ const config = {
           src: 'img/deepsquare-logo-h.svg',
           srcDark: 'img/deepsquare-logo-h-neg.svg',
         },
-        copyright: `<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> © ${new Date().getFullYear()} Cluster Factory CE Docs, <a href="https://squarefactory.io">SquareFactory</a>. Built with Docusaurus.`,
+        copyright: `<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> © ${new Date().getFullYear()} ClusterFactory CE Docs, <a href="https://squarefactory.io">SquareFactory</a>. Built with Docusaurus.`,
       },
       prism: {
         theme: lightCodeTheme,

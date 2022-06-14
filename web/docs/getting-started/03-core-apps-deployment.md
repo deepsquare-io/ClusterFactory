@@ -244,14 +244,14 @@ spec:
         node-role.kubernetes.io/control-plane: 'true' # Restrict virt-controller and virt-api pods to only run on the control-plane nodes.
   workloads:
     nodePlacement:
-      nodeSelector: {} # Allow the virt-handler pods to only on all nodes 
+      nodeSelector: {} # Allow the virt-handler pods to only on all nodes
 ```
 
 ## Deploying the core apps
 
 Run the `2.deploy-core-apps.sh` script to deploy the cluster.
 
-Congratulations! You have successfully deployed a Kubernetes Cluster with the minimum requirements. We still recommend to deploy the Monitoring stack to monitor the RAM and CPU usage of the containers. Nevertheless, you can follow the [guides](/docs/guides), learn the [main concepts of Cluster Factory](/docs/main-concepts/k0s), or continue the [Getting Started](./argo-apps-deployment).
+Congratulations! You have successfully deployed a Kubernetes Cluster with the minimum requirements. We still recommend to deploy the Monitoring stack to monitor the RAM and CPU usage of the containers. Nevertheless, you can follow the [guides](/docs/guides), learn the [main concepts of ClusterFactory](/docs/main-concepts/k0s), or continue the [Getting Started](./argo-apps-deployment).
 
 :::note
 

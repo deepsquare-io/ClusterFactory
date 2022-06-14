@@ -2,7 +2,7 @@
 
 ## Specifying the hosts
 
-You may want to [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the [Cluster Factory CE repository](https://github.com/SquareFactory/cluster-factory-ce) or create a private copy, so you could use Argo CD on your own repository.
+You may want to [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the [ClusterFactory CE repository](https://github.com/SquareFactory/cluster-factory-ce) or create a private copy, so you could use Argo CD on your own repository.
 
 For now, let's just clone the repository:
 

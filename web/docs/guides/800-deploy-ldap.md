@@ -5,7 +5,7 @@ import TabItem from '@theme/TabItem';
 
 ## Helm and Docker resources
 
-The Helm resources are stored on [Cluster Factory Git Repository](https://github.com/SquareFactory/cluster-factory-ce/tree/main/helm/openldap).
+The Helm resources are stored on [ClusterFactory Git Repository](https://github.com/SquareFactory/cluster-factory-ce/tree/main/helm/openldap).
 
 The Dockerfile is described in the git repository [bitnami/bitnami-docker-openldap](https://github.com/bitnami/bitnami-docker-openldap).
 

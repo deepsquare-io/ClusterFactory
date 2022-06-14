@@ -11,7 +11,7 @@ All nodes should have a Linux distribution with:
 - The Linux kernel version higher than 3.10.
 - An init system based on SystemD or OpenRC.
 
-Cluster Factory has been fully tested on Rocky Linux which is our recommended OS.
+ClusterFactory has been fully tested on Rocky Linux which is our recommended OS.
 
 ### Required utilities
 
