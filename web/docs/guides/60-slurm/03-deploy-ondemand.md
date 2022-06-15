@@ -7,7 +7,7 @@ Open OnDemand, a dashboard for SLURM, can be deployed along with the SLURM contr
 
 ## Helm and Docker resources
 
-The Helm resources are stored on [the ClusterFactory CE Git Repository](https://github.com/SquareFactory/cluster-factory-ce/tree/main/helm/slurm-cluster).
+The Helm resources are stored on [the ClusterFactory CE Git Repository](https://github.com/SquareFactory/ClusterFactory-CE/tree/main/helm/slurm-cluster).
 
 The Dockerfile is described in the git repository [SquareFactory/open-ondemand-docker](https://github.com/SquareFactory/open-ondemand-docker).
 
@@ -19,7 +19,7 @@ docker pull ghcr.io/squarefactory/open-ondemand:latest
 
 :::note
 
-You should always verify the default Helm [values](https://github.com/SquareFactory/cluster-factory-ce/blob/main/helm/slurm-cluster/values.yaml) before editing the `values` field of an Argo CD `Application`.
+You should always verify the default Helm [values](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/helm/slurm-cluster/values.yaml) before editing the `values` field of an Argo CD `Application`.
 
 :::
 
@@ -69,7 +69,7 @@ allowedTopologies:
           - <FILL ME> # <country code>-<city>-<index>
 ```
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/slurm-cluster/volumes/dex-state-nfs.yaml
 ```
 
@@ -107,7 +107,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
 ```
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/slurm-cluster/volumes/dex-state-pv.yaml
 ```
 
@@ -576,13 +576,13 @@ Edit the file accordingly. For more information, consult the [Open OnDemand docu
 
 2. Seal the secret:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 ./kubeseal-every-local-files.sh
 ```
 
 3. Apply the SealedSecret:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/slurm-cluster/secrets/openondemand-portal-sealed-secret.yml
 ```
 
@@ -811,7 +811,7 @@ You should also handle the redirection from `oidc` to `oidcs` and `http` to `htt
 
 Apply the application:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml
 ```
 

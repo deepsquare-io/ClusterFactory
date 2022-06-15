@@ -25,7 +25,7 @@ metadata:
 
 and apply:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/my-monitoring/namespace.yml
 ```
 
@@ -61,7 +61,7 @@ spec:
 
 and apply:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/my-monitoring/app-project.yml
 ```
 
@@ -182,7 +182,7 @@ allowedTopologies:
 
 Apply it:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/my-monitoring/storageclasses.yaml
 ```
 
@@ -231,7 +231,7 @@ Just run the `kubeseal-every-local-files.sh`, this script will generate a `grafa
 
 Apply this file:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/my-monitoring/grafana-admin-sealed-secret.yaml
 ```
 
@@ -279,7 +279,6 @@ spec:
         duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
         factor: 2 # a factor to multiply the base duration after each failed retry
         maxDuration: 3m # the maximum amount of time allowed for the backoff strategy
-
 ```
 
 Then, we need to configure the Argo CD application which actually deploys the kube-prometheus-stack.
@@ -303,7 +302,7 @@ spec:
     helm:
       releaseName: prometheus
 
-      skipCrds: true  # skipCrds because CRDs are too long!
+      skipCrds: true # skipCrds because CRDs are too long!
 
       values: '' # ! We are going to FILL HERE later
 
@@ -533,7 +532,7 @@ spec:
 
 Now, just deploy the Argo CD app:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/my-monitoring/prometheus-crd-app.yml
 kubectl apply -f argo/my-monitoring/prometheus-app.yml
 ```

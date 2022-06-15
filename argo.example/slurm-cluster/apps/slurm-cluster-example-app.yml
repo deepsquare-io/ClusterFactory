@@ -8,7 +8,7 @@ metadata:
 spec:
   project: slurm-cluster
   source:
-    repoURL: git@github.com:squarefactory/cluster-factory-ce.git
+    repoURL: git@github.com:squarefactory/ClusterFactory-CE.git
     targetRevision: HEAD
     path: helm/slurm-cluster
     helm:

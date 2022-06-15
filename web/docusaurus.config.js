@@ -14,7 +14,7 @@ const config = {
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
   organizationName: 'SquareFactory',
-  projectName: 'cluster-factory-ce',
+  projectName: 'ClusterFactory-CE',
   trailingSlash: false,
 
   presets: [
@@ -25,13 +25,13 @@ const config = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl: 'https://github.com/SquareFactory/cluster-factory-ce/tree/main/web/',
+          editUrl: 'https://github.com/SquareFactory/ClusterFactory-CE/tree/main/web/',
           remarkPlugins: [require('mdx-mermaid')],
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
-          editUrl: 'https://github.com/SquareFactory/cluster-factory-ce/tree/feat/docs/web/',
+          editUrl: 'https://github.com/SquareFactory/ClusterFactory-CE/tree/feat/docs/web/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -60,7 +60,7 @@ const config = {
         },
         items: [
           {
-            href: 'https://github.com/SquareFactory/cluster-factory-ce',
+            href: 'https://github.com/SquareFactory/ClusterFactory-CE',
             label: 'GitHub',
             position: 'right',
           },

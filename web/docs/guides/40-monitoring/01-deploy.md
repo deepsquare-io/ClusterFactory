@@ -22,7 +22,7 @@ Like in the Getting Started, we won't be deploying Thanos and AlertManager.
 
 ## 1. Deploy Namespace and AppProject
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/monitoring/
 ```
 
@@ -91,7 +91,7 @@ allowedTopologies:
           - <FILL ME> # <country code>-<city>-<index>
 ```
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/monitoring/volumes/storage-classes.yaml
 ```
 
@@ -156,7 +156,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
 ```
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/monitoring/volumes/persistent-volumes.yaml
 ```
 
@@ -180,7 +180,7 @@ spec:
       storage: 10Gi
 ```
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/monitoring/volumes/persistent-volume-claim.yaml
 ```
 
@@ -206,13 +206,13 @@ stringData:
 
 2. Seal the secret:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 ./kubeseal-every-local-files.sh
 ```
 
 3. Apply the SealedSecret:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/monitoring/secrets/grafana-admin-sealed-secret.yaml
 ```
 
@@ -571,7 +571,7 @@ And edit the values based on your use-cases.
 
 ## 4. Deploy the app
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/monitoring/apps/prometheus-crd-app.yml
 kubectl apply -f argo/monitoring/apps/prometheus-app.yml
 ```
