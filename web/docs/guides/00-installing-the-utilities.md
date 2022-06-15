@@ -2,7 +2,7 @@
 
 You need 4 command line tools to be able to manage your Kubernetes cluster:
 
-- [`k0sctl`](https://github.com/k0sproject/k0sctl/releases), for deployment, backup, and upgrading of the Kubernetes cluster.
+- [`cfctl`](https://github.com/SquareFactory/cfctl/releases), for deployment, backup, and upgrading of the Kubernetes cluster.
 - [`kubectl`](https://kubernetes.io/docs/tasks/tools/#kubectl), for managing your Kubernetes cluster.
 - [`kubeseal`](https://github.com/bitnami-labs/sealed-secrets/releases/), for encrypting the secrets.
 - [`helm`](https://github.com/helm/helm/releases/), for Helm chart template.

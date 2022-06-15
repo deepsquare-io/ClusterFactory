@@ -2,20 +2,20 @@
 
 :::caution
 
-Updating and applying `k0sctl.yaml` will create downtime!
+Updating and applying `cfctl.yaml` will create downtime!
 
 :::
 
 There are two ways to update the K0s Helm extensions:
 
-- Updating directly the `k0sctl.yaml` and deploying with `k0sctl`
+- Updating directly the `cfctl.yaml` and deploying with `cfctl`
 - Updating the CRD `helm.k0sproject.io` and deploying with `kubectl`
 
-We recommend updating the `k0sctl.yaml`, editing and applying the CRD to avoid downtime. For example, if you wish to update Traefik:
+We recommend updating the `cfctl.yaml`, editing and applying the CRD to avoid downtime. For example, if you wish to update Traefik:
 
-1. Update `k0sctl.yaml`
+1. Update `cfctl.yaml`
 
-```diff title="k0sctl.yaml > spec > k0s > config > spec > extensions > helm > charts[]"
+```diff title="cfctl.yaml > spec > k0s > config > spec > extensions > helm > charts[]"
                 - name: traefik
                   chartname: traefik/traefik
 -                 version: '10.15.0'

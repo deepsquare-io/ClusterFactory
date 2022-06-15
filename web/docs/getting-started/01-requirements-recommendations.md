@@ -15,7 +15,7 @@ ClusterFactory has been fully tested on Rocky Linux which is our recommended OS.
 
 ### Required utilities
 
-- [`k0sctl`](https://github.com/k0sproject/k0sctl/releases), for deployment, backing up, and upgrading of the Kubernetes cluster.
+- [`cfctl`](https://github.com/SquareFactory/cfctl/releases), for deployment, backing up, and upgrading of the Kubernetes cluster.
 - [`kubectl`](https://kubernetes.io/docs/tasks/tools/#kubectl), for managing your Kubernetes cluster.
 - [`kubeseal`](https://github.com/bitnami-labs/sealed-secrets/releases/), for encrypting the secrets.
 - [`helm`](https://github.com/helm/helm/releases/), for Helm chart template.
@@ -41,5 +41,5 @@ We recommend:
 
 - [Kubernetes documentation](https://kubernetes.io/docs/concepts/)
 - [Kubernetes API reference](https://kubernetes.io/docs/reference/kubernetes-api/)
-- [k0sctl.yaml specs file](https://github.com/k0sproject/k0sctl#spec-fields)
+- [cfctl.yaml specs file](https://github.com/SquareFactory/cfctl#spec-fields)
 - [Argo CD declarative setup](https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/)

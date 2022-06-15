@@ -187,9 +187,9 @@ spec:
           port: 1636
 ```
 
-You must open ports 636 and 389 on the load balancer of Traefik by configuring the `k0sctl.yaml`:
+You must open ports 636 and 389 on the load balancer of Traefik by configuring the `cfctl.yaml`:
 
-```yaml title="k0sctl.yaml > spec > k0s > config > spec > extensions > helm > chart[]
+```yaml title="cfctl.yaml > spec > k0s > config > spec > extensions > helm > chart[]
 - name: traefik
   chartname: traefik/traefik
   version: '10.15.0'
@@ -211,7 +211,7 @@ You must open ports 636 and 389 on the load balancer of Traefik by configuring t
 Apply:
 
 ```shell title="user@local:/ClusterFactory-CE"
-k0sctl apply --debug --config k0sctl.yaml
+cfctl apply --debug --config cfctl.yaml
 kubectl apply -f argo/ldap/ingresses/ingress-routes-tcp.yaml
 ```
 

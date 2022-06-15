@@ -5,10 +5,10 @@
 set -e
 
 section "Setup the whole cluster"
-k0sctl apply --debug --config ./k0sctl.yaml
+cfctl apply --debug --config ./cfctl.yaml
 
 section "Fetch the config"
-k0sctl kubeconfig --config ./k0sctl.yaml >./kubeconfig
+cfctl kubeconfig --config ./cfctl.yaml >./kubeconfig
 chmod 600 ./kubeconfig
 
 export KUBECONFIG="$WORKDIR/kubeconfig"

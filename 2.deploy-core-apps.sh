@@ -5,7 +5,7 @@
 set -e
 
 section "Fetch the config"
-k0sctl kubeconfig --config ./k0sctl.yaml >"$KUBECONFIG"
+cfctl kubeconfig --config ./cfctl.yaml >"$KUBECONFIG"
 chmod 600 ./kubeconfig
 
 section "Deploy kubevirt (virtual machines deployments)"

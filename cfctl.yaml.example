@@ -1,4 +1,4 @@
-apiVersion: k0sctl.k0sproject.io/v1beta1
+apiVersion: cfctl.clusterfactory.io/v1beta1
 kind: Cluster
 metadata:
   name: k8s.example.com-cluster

@@ -127,10 +127,10 @@ listen stats
     stats uri /
 ```
 
-### 2. Editing `k0sctl.yaml` to set up the nodes
+### 2. Editing `cfctl.yaml` to set up the nodes
 
-```yaml title="k0sctl.yaml"
-apiVersion: k0sctl.k0sproject.io/v1beta1
+```yaml title="cfctl.yaml"
+apiVersion: cfctl.clusterfactory.io/v1beta1
 kind: Cluster
 metadata:
   name: k8s.example.com-cluster
@@ -229,13 +229,13 @@ spec:
 Apply the config and be patient:
 
 ```shell
-k0sctl apply --debug --config=k0sctl.yaml
+cfctl apply --debug --config=cfctl.yaml
 ```
 
 ### Verify everything is good
 
 ```shell
-k0sctl kubeconfig --config ./k0sctl.yaml >./kubeconfig
+cfctl kubeconfig --config ./cfctl.yaml >./kubeconfig
 chmod 600 ./kubeconfig
 export KUBECONFIG="$(pwd)/kubeconfig"
 kubectl get nodes
@@ -284,7 +284,7 @@ kubectl drain <node>
 kubectl delete <node>
 ```
 
-**Remove the node from `k0sctl.yaml`.**
+**Remove the node from `cfctl.yaml`.**
 
 4. Remove the controller from ETCD.
 
