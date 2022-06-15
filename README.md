@@ -26,7 +26,7 @@ If you'd like to try ClusterFactory CE, you should start by reading our [Quick S
 ## Join the Community
 
 - [Community Discord](https://discord.gg/zt4GF5HYHX) - Request for support and help from the ClusterFactory community.
-- [Github Issues](https://github.com/SquareFactory/cluster-factory-ce/issues) - Submit your issues and feature requests via Github.
+- [Github Issues](https://github.com/SquareFactory/ClusterFactory-CE/issues) - Submit your issues and feature requests via Github.
 
 We welcome your help in building ClusterFactory CE! If you are interested, we invite you to check
 out the [Contributing Guide](./CONTRIBUTING.md).

@@ -10,7 +10,7 @@ The CVMFS CSI Plugin isn't stable yet, so we have to do it the old way: using `h
 
 ## Helm and Docker resources
 
-The Helm resources are stored on [ClusterFactory Git Repository](https://github.com/SquareFactory/cluster-factory-ce/tree/main/helm/cvmfs-service).
+The Helm resources are stored on [ClusterFactory Git Repository](https://github.com/SquareFactory/ClusterFactory-CE/tree/main/helm/cvmfs-service).
 
 The Dockerfile is described in the git repository [cvmfs/cvmfs](https://github.dev/cvmfs/cvmfs/blob/devel/packaging/container/Dockerfile).
 
@@ -24,7 +24,7 @@ docker pull docker.io/cvmfs/cvmfs:latest
 
 Apply the AppProject:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/cvmfs/app-project.yml
 ```
 
@@ -50,13 +50,13 @@ stringData:
 
 2. Seal the secret:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 ./kubeseal-every-local-files.sh
 ```
 
 3. Apply the SealedSecret:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/cvmfs/secrets/cvmfs-keys-sealed-secret.yml
 ```
 
@@ -106,7 +106,7 @@ The key will be moved to the path `/etc/cvmfs/keys/sion.csquare.run/software.sio
 
 ### 3.d. Verify the default values.
 
-Verify the default value inside the [git repository](https://github.com/SquareFactory/cluster-factory-ce/tree/main/helm/cvmfs-service/values.yaml).
+Verify the default value inside the [git repository](https://github.com/SquareFactory/ClusterFactory-CE/tree/main/helm/cvmfs-service/values.yaml).
 
 You can change the `hostPath` if needed:
 
@@ -117,7 +117,7 @@ persistence:
 
 ## 4. Deploy the CVMFS service
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/provisioning/apps/cvmfs-service-app.yml
 ```
 

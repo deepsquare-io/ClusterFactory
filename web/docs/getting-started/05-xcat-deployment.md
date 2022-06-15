@@ -8,7 +8,7 @@ However, the order is the same.
 
 ## 1. Namespace and AppProject
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/provisioning
 ```
 
@@ -44,7 +44,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
 ```
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/provisioning/volumes/xcat-pv.yml
 ```
 
@@ -80,7 +80,7 @@ metadata:
 spec:
   project: provisioning
   source:
-    repoURL: git@github.com:squarefactory/cluster-factory-ce.git
+    repoURL: git@github.com:squarefactory/ClusterFactory-CE.git
     targetRevision: HEAD
     path: helm/xcat
     helm:
@@ -167,7 +167,7 @@ This way, instead of using a Virtual Machine to deploy xCAT, you can use a conta
 
 Deploy the app:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/provisioning/apps/xcat-app.yml
 ```
 

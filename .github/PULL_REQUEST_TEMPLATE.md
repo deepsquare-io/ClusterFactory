@@ -1,7 +1,7 @@
 <!--
 Thanks for sending a pull request!
 
-Please make sure you've read our contributing guidelines and how to submit a pull request (https://github.com/SquareFactory/cluster-factory-ce/blob/main/CONTRIBUTING.md).
+Please make sure you've read our contributing guidelines and how to submit a pull request (https://github.com/SquareFactory/ClusterFactory-CE/blob/main/CONTRIBUTING.md).
 
 We are following Conventional Commits:
 

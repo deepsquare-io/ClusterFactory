@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 ## Helm and Docker resources
 
-The Helm resources are stored on [ClusterFactory Git Repository](https://github.com/SquareFactory/cluster-factory-ce/tree/main/helm/xcat).
+The Helm resources are stored on [ClusterFactory Git Repository](https://github.com/SquareFactory/ClusterFactory-CE/tree/main/helm/xcat).
 
 The Dockerfile is described in the git repository [SquareFactory/xcat-rocky](https://github.com/SquareFactory/xcat-rocky).
 
@@ -19,7 +19,7 @@ docker pull ghcr.io/squarefactory/xcat-rocky:latest
 
 ## 1. Deploy Namespace and AppProject
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/provisioning/
 ```
 
@@ -61,7 +61,7 @@ allowedTopologies:
           - <FILL ME> # <country code>-<city>-<index>
 ```
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/provisioning/volumes/storage-class.yaml
 ```
 
@@ -98,7 +98,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
 ```
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/provisioning/volumes/persistent-volume.yaml
 ```
 
@@ -142,7 +142,7 @@ persistence:
 
 :::tip
 
-Read the [`values.yaml`](https://github.com/SquareFactory/cluster-factory-ce/blob/main/helm/xcat/values.yaml) to see all the default values.
+Read the [`values.yaml`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/helm/xcat/values.yaml) to see all the default values.
 
 :::
 
@@ -212,10 +212,10 @@ Use IPAM `static` since xCAT has a ISC DHCP server.
 
 ### 3.d. Verify the default values.
 
-Verify the default value inside the [git repository](https://github.com/SquareFactory/cluster-factory-ce/blob/main/helm/xcat/values.yaml).
+Verify the default value inside the [git repository](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/helm/xcat/values.yaml).
 
 ## 4. Deploy xCAT
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/provisioning/apps/xcat-app.yml
 ```

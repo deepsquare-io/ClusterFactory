@@ -6,7 +6,7 @@ Let's assume we plan to replicate `http://cvmfs.example.com/cvmfs/repo.example.c
 
 ## Helm and Docker resources
 
-The Helm resources are stored on [ClusterFactory Git Repository](https://github.com/SquareFactory/cluster-factory-ce/tree/main/helm/cvmfs-server).
+The Helm resources are stored on [ClusterFactory Git Repository](https://github.com/SquareFactory/ClusterFactory-CE/tree/main/helm/cvmfs-server).
 
 The Dockerfile is described in the git repository [SquareFactory/cvmfs-server-docker](https://github.com/SquareFactory/cvmfs-server-docker).
 
@@ -18,7 +18,7 @@ docker pull ghcr.io/squarefactory/cvmfs-server:latest
 
 ## 1. Deploy Namespace and AppProject
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/cvmfs/
 ```
 
@@ -46,13 +46,13 @@ stringData:
 
 2. Seal the secret:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 ./kubeseal-every-local-files.sh
 ```
 
 3. Apply the SealedSecret:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/cvmfs/secrets/keys-sealed-secret.yaml
 ```
 
@@ -64,7 +64,7 @@ Basically, `local-path-provisioner` creates the `/opt/local-path-provisioner` di
 
 To deploy the provisioner:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/default/apps/local-path-provisioner-app.yml
 ```
 
@@ -157,11 +157,11 @@ More about `cert-manager` in [their documentation](https://cert-manager.io/docs/
 
 ### 3.e. Verify the default values.
 
-Verify the default value inside the [git repository](https://github.com/SquareFactory/cluster-factory-ce/blob/main/helm/cvmfs-server/values.yaml).
+Verify the default value inside the [git repository](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/helm/cvmfs-server/values.yaml).
 
 ## 4. Deploy the app
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/cvmfs/apps/cvmfs-server-app.yml
 ```
 

@@ -7,13 +7,13 @@ import TabItem from '@theme/TabItem';
 
 :::caution
 
-Deploying the SLURM database isn't stable yet. Please feel free to [create an issue](https://github.com/SquareFactory/cluster-factory-ce/issues/new) so we can improve its stability.
+Deploying the SLURM database isn't stable yet. Please feel free to [create an issue](https://github.com/SquareFactory/ClusterFactory-CE/issues/new) so we can improve its stability.
 
 :::
 
 ## Helm and Docker resources
 
-The Helm resources are stored on [the ClusterFactory CE Git Repository](https://github.com/SquareFactory/cluster-factory-ce/tree/main/helm/slurm-cluster).
+The Helm resources are stored on [the ClusterFactory CE Git Repository](https://github.com/SquareFactory/ClusterFactory-CE/tree/main/helm/slurm-cluster).
 
 The Dockerfile is described in the git repository [SquareFactory/slurm-docker](https://github.com/SquareFactory/slurm-docker).
 
@@ -28,7 +28,7 @@ docker pull ghcr.io/squarefactory/slurm:latest-rest
 
 :::note
 
-You should always verify the default Helm [values](https://github.com/SquareFactory/cluster-factory-ce/blob/main/helm/slurm-cluster/values.yaml) before editing the `values` field of an Argo CD `Application`.
+You should always verify the default Helm [values](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/helm/slurm-cluster/values.yaml) before editing the `values` field of an Argo CD `Application`.
 
 :::
 
@@ -108,13 +108,13 @@ stringData:
 
 2. Seal the secret:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 ./kubeseal-every-local-files.sh
 ```
 
 3. Apply the SealedSecret:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/slurm-cluster/secrets/sssd-sealed-secret.yaml
 ```
 
@@ -148,13 +148,13 @@ stringData:
 
 2. Seal the secret:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 ./kubeseal-every-local-files.sh
 ```
 
 3. Apply the SealedSecret:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/slurm-cluster/secrets/slurm-sealed-secret.yaml
 ```
 
@@ -185,13 +185,13 @@ data:
 
 2. Seal the secret:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 ./kubeseal-every-local-files.sh
 ```
 
 3. Apply the SealedSecret:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/cvmfs/secrets/munge-sealed-secret.yml
 ```
 
@@ -236,7 +236,7 @@ spec:
       group: '*'
 ```
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/slurm-cluster/
 ```
 
@@ -255,7 +255,7 @@ metadata:
 spec:
   project: slurm-cluster
   source:
-    repoURL: git@github.com:squarefactory/cluster-factory-ce.git
+    repoURL: git@github.com:squarefactory/ClusterFactory-CE.git
     targetRevision: HEAD
     path: helm/slurm-cluster
     helm:
@@ -401,13 +401,13 @@ Replace the `<FILL ME>` according to your existing configuration.
 
 2. Seal the secret:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 ./kubeseal-every-local-files.sh
 ```
 
 3. Apply the SealedSecret:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/slurm-cluster/secrets/slurmdbd-conf-sealed-secret.yml
 ```
 
@@ -451,7 +451,7 @@ db:
 
 You can already deploy it:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml
 ```
 
@@ -495,7 +495,7 @@ allowedTopologies:
           - <FILL ME> # <country code>-<city>-<index>
 ```
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/slurm-cluster/volumes/controller-state-<cluster name>-nfs.yaml
 ```
 
@@ -533,7 +533,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
 ```
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/slurm-cluster/volumes/controller-state-<cluster name>-pv.yaml
 ```
 
@@ -630,7 +630,7 @@ controller:
 
 You can already deploy it:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml
 ```
 
@@ -924,7 +924,7 @@ elfutils-libelf-devel
 
 Build the image with:
 
-```shell title="user@local:/cluster-factory-ce/packer-recipes/rocky"
+```shell title="user@local:/ClusterFactory-CE/packer-recipes/rocky"
 packer build compute.my-cluster.json
 ```
 
@@ -1102,13 +1102,13 @@ Replace the `<FILL ME>` with the values based on the generated files.
 
 2. Seal the secret:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 ./kubeseal-every-local-files.sh
 ```
 
 3. Apply the SealedSecret:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/slurm-cluster/secrets/login-sshd-sealed-secret.yml
 ```
 
@@ -1169,7 +1169,7 @@ spec:
 
 Apply the PV and PVC:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/slurm-cluster/volumes/ldap-users-<cluster name>-pv.yml
 ```
 
@@ -1249,7 +1249,7 @@ default via 169.254.1.1 dev eth0
 10.10.0.0/20 dev net1 proto kernel scope link src 10.10.0.21
 ```
 
-The issue is tracked at [SquareFactory/cluster-factory-ce#29](https://github.com/SquareFactory/cluster-factory-ce/issues/29) and [projectcalico/calico#5199](https://github.com/projectcalico/calico/issues/5199).
+The issue is tracked at [SquareFactory/ClusterFactory-CE#29](https://github.com/SquareFactory/ClusterFactory-CE/issues/29) and [projectcalico/calico#5199](https://github.com/projectcalico/calico/issues/5199).
 
 :::
 
@@ -1280,7 +1280,7 @@ login:
 
 You can deploy it:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml
 ```
 

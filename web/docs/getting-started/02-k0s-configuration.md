@@ -2,17 +2,17 @@
 
 ## Specifying the hosts
 
-You may want to [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the [ClusterFactory CE repository](https://github.com/SquareFactory/cluster-factory-ce) or create a private copy, so you could use Argo CD on your own repository.
+You may want to [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the [ClusterFactory CE repository](https://github.com/SquareFactory/ClusterFactory-CE) or create a private copy, so you could use Argo CD on your own repository.
 
 For now, let's just clone the repository:
 
 ```shell title="user@local:/"
-git clone https://github.com/SquareFactory/cluster-factory-ce.git
+git clone https://github.com/SquareFactory/ClusterFactory-CE.git
 ```
 
 Copy `argo.example`, `core.example`, `k0sctl.yaml.example`, and remove the `.example`:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 cp -R argo.example/ argo/
 cp -R core.example/ core/
 cp k0sctl.yaml.example k0sctl.yaml
@@ -20,7 +20,7 @@ cp k0sctl.yaml.example k0sctl.yaml
 
 You can track these files on Git:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 git add .
 git commit -m "Initialized my config"
 ```
@@ -314,7 +314,7 @@ You can re-run the scripts if you modify the `k0sctl.yaml` file.
 
 Or, you can run `k0sctl` manually:
 
-```shell title="user@local:/cluster-factory-ce"
+```shell title="user@local:/ClusterFactory-CE"
 PATH="$(pwd)/bin:${PATH}"
 k0sctl apply --debug --config ./k0sctl.yaml
 
