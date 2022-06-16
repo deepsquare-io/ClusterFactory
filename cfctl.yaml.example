@@ -84,7 +84,7 @@ spec:
             charts:
               - name: metallb
                 chartname: bitnami/metallb
-                version: '3.0.7'
+                version: '3.0.9'
                 namespace: metallb
                 values: |
                   configInline:
@@ -105,7 +105,7 @@ spec:
 
               - name: traefik
                 chartname: traefik/traefik
-                version: '10.19.5'
+                version: '10.21.1'
                 namespace: traefik
                 values: |
                   deployment:
