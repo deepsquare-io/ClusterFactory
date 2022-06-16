@@ -51,7 +51,7 @@ spec:
           before:
             # Install CNI plugins
             - mkdir -p /opt/cni/bin/
-            - OS=linux CNI_VER=v1.1.1 ARCH=amd64 sh -c "curl -fsSL https://github.com/containernetworking/plugins/releases/download/\${CNI_VER}/cni-plugins-\${OS}-\${ARCH}-\${CNI_VER}.tgz | tar -C \"/opt/cni/bin\" -xzf -"
+            - curl -fsSL https://github.com/containernetworking/plugins/releases/download/v1.1.1/cni-plugins-linux-amd64-v1.1.1.tgz | tar -C "/opt/cni/bin" -xzf -
             # Fix Kubelet directory
             - mkdir -p /var/lib/k0s/kubelet
             - sh -c "if [ -L /var/lib/kubelet ]; then echo symlink already exists; else rm -rf /var/lib/kubelet && ln -s /var/lib/k0s/kubelet /var/lib/kubelet; fi"
