@@ -53,7 +53,7 @@ spec:
                   - kube-dns
       containers:
         - name: coredns
-          image: docker.io/coredns/coredns:1.9.1
+          image: docker.io/coredns/coredns:1.9.3
           imagePullPolicy: IfNotPresent
           resources:
             limits:
