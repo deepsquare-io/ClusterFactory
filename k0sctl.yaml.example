@@ -30,7 +30,7 @@ spec:
             - sh -c 'if [ "$(getenforce)" = "Permissive" ]; then setenforce 0; fi'
 
   k0s:
-    version: 1.23.6+k0s.1
+    version: 1.23.7+k0s.1
     dynamicConfig: false
     config:
       apiVersion: k0s.k0sproject.io/v1beta1
