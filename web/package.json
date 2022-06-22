@@ -16,8 +16,8 @@
   },
   "dependencies": {
     "@algolia/client-search": "4.13.1",
-    "@babel/preset-env": "7.18.2",
     "@babel/core": "^7.0.0-0",
+    "@babel/preset-env": "7.18.2",
     "@docusaurus/core": "2.0.0-beta.21",
     "@docusaurus/plugin-google-gtag": "2.0.0-beta.21",
     "@docusaurus/preset-classic": "2.0.0-beta.21",
