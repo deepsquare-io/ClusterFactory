@@ -24,9 +24,10 @@ jobs:
       - name: Install dependencies
         run: |
           export DEBIAN_FRONTEND=noninteractive
-          sudo apt update && sudo apt install -y python3 curl jq yq sed gawk perl
+          sudo apt update && sudo apt install -y python3 curl jq sed gawk perl
+          sudo curl -fsSL https://github.com/mikefarah/yq/releases/download/v4.25.3/yq_linux_amd64 -o /usr/local/bin/yq && sudo chmod +x /usr/local/bin/yq
 
-      - name: Update Dockerfile
+      - name: Update versions
         env:
           TOKEN: ${{ steps.generate_token.outputs.token }}
         run: ./.ci/check-versions.sh ${TOKEN}
