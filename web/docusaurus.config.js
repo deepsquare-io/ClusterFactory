@@ -43,7 +43,6 @@ const config = {
       }),
     ],
   ],
-
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
@@ -84,6 +83,24 @@ const config = {
         defaultMode: 'dark',
         disableSwitch: false,
         respectPrefersColorScheme: false,
+      },
+      algolia: {
+        // The application ID provided by Algolia
+        appId: 'LV046ZHO1F',
+
+        // Public API key: it is safe to commit it
+        apiKey: '905b0e3c79a89f531473425705fe001b',
+
+        indexName: 'clusterfactory',
+
+        // Optional: see doc section below
+        contextualSearch: true,
+
+        // Optional: Algolia search parameters
+        searchParameters: {},
+
+        // Optional: path for search page that enabled by default (`false` to disable it)
+        searchPagePath: 'search',
       },
     }),
 };

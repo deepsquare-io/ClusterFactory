@@ -1,7 +1,7 @@
 namespace: kube-system
 resources:
   - ../../base
-  - ingress-route.yml
+  - ingress-route.yaml
 patchesStrategicMerge:
-  - deployment.yml
-  - configmap.yml
+  - deployment.yaml
+  - configmap.yaml
