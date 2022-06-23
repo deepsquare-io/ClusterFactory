@@ -2,9 +2,9 @@
 
 Updating the k0s cluster is super easy!
 
-1. Edit the `k0sctl.yaml`:
+1. Edit the `cfctl.yaml`:
 
-```diff title="k0sctl.yaml > spec > k0s"
+```diff title="cfctl.yaml > spec > k0s"
     k0s:
 -     version: 1.23.5+k0s.0
 +     version: 1.23.6+k0s.1
@@ -14,7 +14,7 @@ Updating the k0s cluster is super easy!
 2. And apply it:
 
 ```shell
-k0sctl apply --debug --config k0sctl.yaml
+cfctl apply --debug --config cfctl.yaml
 
 # OR
 

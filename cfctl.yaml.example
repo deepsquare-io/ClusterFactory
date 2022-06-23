@@ -1,4 +1,4 @@
-apiVersion: k0sctl.k0sproject.io/v1beta1
+apiVersion: cfctl.clusterfactory.io/v1beta1
 kind: Cluster
 metadata:
   name: k8s.example.com-cluster
@@ -19,12 +19,6 @@ spec:
       hooks:
         apply:
           before:
-            # Install CNI plugins
-            - mkdir -p /opt/cni/bin/
-            - curl -fsSL https://github.com/containernetworking/plugins/releases/download/v1.1.1/cni-plugins-linux-amd64-v1.1.1.tgz | tar -C "/opt/cni/bin" -xzf -
-            # Fix Kubelet directory
-            - mkdir -p /var/lib/k0s/kubelet
-            - sh -c "if [ -L /var/lib/kubelet ]; then echo symlink already exists; else rm -rf /var/lib/kubelet && ln -s /var/lib/k0s/kubelet /var/lib/kubelet; fi"
             # Set SELinux Permissive
             - sh -c 'if [ "$(getenforce)" = "Permissive" ]; then sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config; fi'
             - sh -c 'if [ "$(getenforce)" = "Permissive" ]; then setenforce 0; fi'

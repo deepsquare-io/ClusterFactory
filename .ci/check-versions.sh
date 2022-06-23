@@ -23,9 +23,9 @@ sed -Ei "s|coredns_version=.*\$|coredns_version=${coredns_version}|g" "$script_p
 sed -Ei "s|image: docker.io/coredns/coredns:.*|image: docker.io/coredns/coredns:${coredns_version}|g" "$project_path/core.example/coredns/base/deployment.yaml"
 
 # Utils version
-k0sctl_version=$(curl -H "Authorization: token ${TOKEN}" -fsSL https://api.github.com/repos/k0sproject/k0sctl/releases/latest | jq -r '.tag_name')
-sed -Ei "s|k0sctl_version=.*\$|k0sctl_version=${k0sctl_version}|g" "$script_path/version-lock"
-sed -Ei "s|K0SCTL_VERSION=.*|K0SCTL_VERSION=${k0sctl_version}|g" "$project_path/scripts/common.sh"
+cfctl_version=$(curl -H "Authorization: token ${TOKEN}" -fsSL https://api.github.com/repos/SquareFactory/cfctl/releases/latest | jq -r '.tag_name')
+sed -Ei "s|cfctl_version=.*\$|cfctl_version=${cfctl_version}|g" "$script_path/version-lock"
+sed -Ei "s|CFCTL_VERSION=.*|CFCTL_VERSION=${cfctl_version}|g" "$project_path/scripts/common.sh"
 
 kubeseal_version=$(curl -H "Authorization: token ${TOKEN}" -fsSL https://api.github.com/repos/bitnami-labs/sealed-secrets/releases/latest | jq -r '.tag_name' | tr -d 'v')
 sed -Ei "s|kubeseal_version=.*\$|kubeseal_version=${kubeseal_version}|g" "$script_path/version-lock"
@@ -51,27 +51,27 @@ sed -Ei "s/targetRevision: .*\$/targetRevision: kube-prometheus-stack-${kube_pro
 sed -Ei "s/targetRevision: kube-prometheus-stack-.*\$/targetRevision: kube-prometheus-stack-${kube_prometheus_stack_version}/g" "$project_path/web/docs/getting-started/04-argo-apps-deployment.md"
 sed -Ei "s/targetRevision: [0-9].*\$/targetRevision: ${kube_prometheus_stack_version}/g" "$project_path/web/docs/getting-started/04-argo-apps-deployment.md"
 
-# k0sctl.yaml
+# cfctl.yaml
 k0s_version=$(curl -H "Authorization: token ${TOKEN}" -fsSL https://api.github.com/repos/k0sproject/k0s/releases/latest | jq -r '.tag_name' | tr -d 'v')
 sed -Ei "s/k0s_version=.*\$/k0s_version=${k0s_version}/g" "$script_path/version-lock"
-perl -i -0777 -pe "s/k0s:\n(.*)version: .*/k0s:\n\1version: '${k0s_version}'/g" "$project_path/k0sctl.yaml.example"
+perl -i -0777 -pe "s/k0s:\n(.*)version: .*/k0s:\n\1version: '${k0s_version}'/g" "$project_path/cfctl.yaml.example"
 perl -i -0777 -pe "s/k0s:\n(.*)version: .*/k0s:\n\1version: '${k0s_version}'/g" "$project_path/web/docs/getting-started/02-k0s-configuration.md"
 
 metallb_version=$(curl -fsSL https://charts.bitnami.com/bitnami/index.yaml | yq '.entries.metallb.[0].version')
 sed -Ei "s/metallb_version=.*\$/metallb_version=${metallb_version}/g" "$script_path/version-lock"
-perl -i -0777 -pe "s/name: metallb\n(.*)\n(.*)version: .*/name: metallb\n\1\n\2version: '${metallb_version}'/g" "$project_path/k0sctl.yaml.example"
+perl -i -0777 -pe "s/name: metallb\n(.*)\n(.*)version: .*/name: metallb\n\1\n\2version: '${metallb_version}'/g" "$project_path/cfctl.yaml.example"
 perl -i -0777 -pe "s/name: metallb\n(.*)\n(.*)version: .*/name: metallb\n\1\n\2version: '${metallb_version}'/g" "$project_path/web/docs/getting-started/02-k0s-configuration.md"
 
 traefik_version=$(curl -fsSL https://helm.traefik.io/traefik/index.yaml | yq '.entries.traefik.[0].version')
 sed -Ei "s/traefik_version=.*\$/traefik_version=${traefik_version}/g" "$script_path/version-lock"
-perl -i -0777 -pe "s/name: traefik\n(.*)\n(.*)version: .*/name: traefik\n\1\n\2version: '${traefik_version}'/g" "$project_path/k0sctl.yaml.example"
+perl -i -0777 -pe "s/name: traefik\n(.*)\n(.*)version: .*/name: traefik\n\1\n\2version: '${traefik_version}'/g" "$project_path/cfctl.yaml.example"
 perl -i -0777 -pe "s/name: traefik\n(.*)\n(.*)version: .*/name: traefik\n\1\n\2version: '${traefik_version}'/g" "$project_path/web/docs/getting-started/02-k0s-configuration.md"
 perl -i -0777 -pe "s/name: traefik\n(.*)\n(.*)version: .*/name: traefik\n\1\n\2version: '${traefik_version}'/g" "$project_path/web/docs/guides/800-deploy-ldap.md"
 
 cert_manager_version=$(curl -fsSL https://charts.jetstack.io/index.yaml | yq '.entries.cert-manager.[0].version')
 sed -Ei "s/cert_manager_version=.*\$/cert_manager_version=${cert_manager_version}/g" "$script_path/version-lock"
-perl -i -0777 -pe "s/name: cert-manager\n(.*)\n(.*)version: .*/name: cert-manager\n\1\n\2version: '${cert_manager_version}'/g" "$project_path/k0sctl.yaml.example"
+perl -i -0777 -pe "s/name: cert-manager\n(.*)\n(.*)version: .*/name: cert-manager\n\1\n\2version: '${cert_manager_version}'/g" "$project_path/cfctl.yaml.example"
 
 csi_driver_nfs_version=$(curl -fsSL https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts/index.yaml | yq '.entries.csi-driver-nfs.[0].version')
 sed -Ei "s/csi_driver_nfs_version=.*\$/csi_driver_nfs_version=${csi_driver_nfs_version}/g" "$script_path/version-lock"
-perl -i -0777 -pe "s/name: csi-driver-nfs\n(.*)\n(.*)version: .*/name: csi-driver-nfs\n\1\n\2version: '${csi_driver_nfs_version}'/g" "$project_path/k0sctl.yaml.example"
+perl -i -0777 -pe "s/name: csi-driver-nfs\n(.*)\n(.*)version: .*/name: csi-driver-nfs\n\1\n\2version: '${csi_driver_nfs_version}'/g" "$project_path/cfctl.yaml.example"

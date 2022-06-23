@@ -147,7 +147,7 @@ The service is already enabled.
 
 In case you don't know how to use `Ingress` with `cert-manager` and Traefik. Use the annotations `traefik.ingress.kubernetes.io/router.entrypoints` and `traefik.ingress.kubernetes.io/router.tls` to indicates the port used by Traefik.
 
-The `k0sctl.yaml` indicates that the entrypoints `websecure` is the port 443.
+The `cfctl.yaml` indicates that the entrypoints `websecure` is the port 443.
 
 More about Traefik with Kubernetes Ingresses in [their documentation](https://doc.traefik.io/traefik/routing/providers/kubernetes-ingress/).
 

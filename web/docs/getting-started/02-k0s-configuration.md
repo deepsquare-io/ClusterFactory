@@ -10,12 +10,12 @@ For now, let's just clone the repository:
 git clone https://github.com/SquareFactory/ClusterFactory-CE.git
 ```
 
-Copy `argo.example`, `core.example`, `k0sctl.yaml.example`, and remove the `.example`:
+Copy `argo.example`, `core.example`, `cfctl.yaml.example`, and remove the `.example`:
 
 ```shell title="user@local:/ClusterFactory-CE"
 cp -R argo.example/ argo/
 cp -R core.example/ core/
-cp k0sctl.yaml.example k0sctl.yaml
+cp cfctl.yaml.example cfctl.yaml
 ```
 
 You can track these files on Git:
@@ -25,10 +25,10 @@ git add .
 git commit -m "Initialized my config"
 ```
 
-Edit the `k0sctl.yaml` file. Start with the `hosts` field :
+Edit the `cfctl.yaml` file. Start with the `hosts` field :
 
-```yaml title=k0sctl.yaml
-apiVersion: k0sctl.k0sproject.io/v1beta1
+```yaml title=cfctl.yaml
+apiVersion: cfctl.clusterfactory.io/v1beta1
 kind: Cluster
 metadata:
   name: k8s.example.com-cluster
@@ -49,12 +49,6 @@ spec:
       hooks:
         apply:
           before:
-            # Install CNI plugins
-            - mkdir -p /opt/cni/bin/
-            - curl -fsSL https://github.com/containernetworking/plugins/releases/download/v1.1.1/cni-plugins-linux-amd64-v1.1.1.tgz | tar -C "/opt/cni/bin" -xzf -
-            # Fix Kubelet directory
-            - mkdir -p /var/lib/k0s/kubelet
-            - sh -c "if [ -L /var/lib/kubelet ]; then echo symlink already exists; else rm -rf /var/lib/kubelet && ln -s /var/lib/k0s/kubelet /var/lib/kubelet; fi"
             # Set SELinux Permissive
             - sh -c 'if [ "$(getenforce)" = "Permissive" ]; then sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config; fi'
             - sh -c 'if [ "$(getenforce)" = "Permissive" ]; then setenforce 0; fi'
@@ -64,7 +58,7 @@ spec:
 
 Provide each host with a valid IP address that is reachable by k0ctl, and the connection details for an SSH connection. Edit the labels for multi-zone usage.
 
-[The `k0sctl.yaml` specification is written in the repository of k0sctl](https://github.com/k0sproject/k0sctl#spec-fields).
+[The `cfctl.yaml` specification is written in the repository of cfctl](https://github.com/SquareFactory/cfctl#spec-fields).
 
 **You should read the specification carefully as the modification of one the host field won't be allowed in the future**.
 
@@ -74,7 +68,7 @@ If you wish to use a HA setup, please follow [this guide](https://docs.k0sprojec
 
 After you set the `hosts` field, you must configure the k0s architecture by editing the `k0s` field:
 
-```yaml title="k0sctl.yaml > spec > k0s"
+```yaml title="cfctl.yaml > spec > k0s"
 k0s:
   version: '1.23.8+k0s.0'
   dynamicConfig: false
@@ -152,7 +146,7 @@ However, MetalLB 0.13.0 is not yet available at the time of writing.
 
 Your router must be capable of using BGP. If not, you should use an appliance with BGP capabilities (like pfSense, or just a Linux machine with BIRD).
 
-```yaml title="k0sctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
+```yaml title="cfctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
 - name: metallb
   chartname: bitnami/metallb
   version: '3.0.9'
@@ -185,7 +179,7 @@ Your router must be capable of using BGP. If not, you should use an appliance wi
 
 [Use L2 if you have only one zone](https://metallb.universe.tf/configuration/#layer-2-configuration).
 
-```yaml title="k0sctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
+```yaml title="cfctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
 - name: metallb
   chartname: bitnami/metallb
   version: '3.0.9'
@@ -204,7 +198,7 @@ Your router must be capable of using BGP. If not, you should use an appliance wi
 
 After configuring the Load Balancer, you should configure Traefik, the main Ingress and L7 load balancer.
 
-```yaml title="k0sctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
+```yaml title="cfctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
 - name: traefik
   chartname: traefik/traefik
   version: '10.22.0'
@@ -308,18 +302,18 @@ We use Traefik because it can do a lot of complex route operations while still b
 
 ## Initial Deployment
 
-Run the `1.deploy-k0s.sh` script to deploy the cluster. This script will also download the utilities `k0sctl`, `kubectl` and `kubeseal` if not found in `PATH`.
+Run the `1.deploy-k0s.sh` script to deploy the cluster. This script will also download the utilities `cfctl`, `kubectl` and `kubeseal` if not found in `PATH`.
 
-You can re-run the scripts if you modify the `k0sctl.yaml` file.
+You can re-run the scripts if you modify the `cfctl.yaml` file.
 
-Or, you can run `k0sctl` manually:
+Or, you can run `cfctl` manually:
 
 ```shell title="user@local:/ClusterFactory-CE"
 PATH="$(pwd)/bin:${PATH}"
-k0sctl apply --debug --config ./k0sctl.yaml
+cfctl apply --debug --config ./cfctl.yaml
 
 # Fetch the kubeconfig
-k0sctl kubeconfig --config ./k0sctl.yaml >./kubeconfig
+cfctl kubeconfig --config ./cfctl.yaml >./kubeconfig
 ```
 
 Store the kubeconfig inside `~/.kube/config`, or just `export KUBECONFIG=$(pwd)/kubeconfig`.

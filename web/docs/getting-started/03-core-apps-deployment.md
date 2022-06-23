@@ -15,7 +15,7 @@ The initial configuration of CoreDNS given by k0s does not fulfil our needs. Thi
 
 CoreDNS is exposed to the external network thanks to the `IngressRoute` objects in the [`core/coredns/overlays/prod/ingress-route.yml`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/core.example/coredns/overlays/prod/ingress-route.yml).
 
-If this is an unwanted feature (because you are using an other DNS for example), feel free to remove the routes and close the ports in the Traefik extension specification inside `k0sctl.yaml`.
+If this is an unwanted feature (because you are using an other DNS for example), feel free to remove the routes and close the ports in the Traefik extension specification inside `cfctl.yaml`.
 
 The files that you should look for are [`core/coredns/overlays/prod/configmap.yml`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/core.example/coredns/overlays/prod/configmap.yml) and [`core/coredns/overlays/prod/deployment.yml`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/core.example/coredns/overlays/prod/deployment.yml).
 
@@ -255,10 +255,10 @@ Congratulations! You have successfully deployed a Kubernetes Cluster with the mi
 
 :::note
 
-You may notice that the installation of Argo CD and Sealed Secrets could have been done using `k0sctl.yaml`.
+You may notice that the installation of Argo CD and Sealed Secrets could have been done using `cfctl.yaml`.
 
-However, we found that this would cause coupling problems with `k0sctl` (for example, you would have to redeploy the k0s cluster every time you need to update Argo CD, which means downtime).
+However, we found that this would cause coupling problems with `cfctl` (for example, you would have to redeploy the k0s cluster every time you need to update Argo CD, which means downtime).
 
-We believe that the `extensions` field in `k0sctl.yaml` should only be used for network applications, or should not be used at all.
+We believe that the `extensions` field in `cfctl.yaml` should only be used for network applications, or should not be used at all.
 
 :::

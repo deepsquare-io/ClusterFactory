@@ -33,18 +33,18 @@ esac
 
 echo "Detected supported architecture: $(uname -m)"
 
-K0SCTL="$(command -v k0sctl)"
-if ! [ -x "${K0SCTL}" ]; then
-  K0SCTL_VERSION=v0.13.0
-  echo "k0sctl could not be found. Downloading it locally in ./bin"
-  rm -f ./bin/k0sctl
-  curl -fsSL -o ./bin/k0sctl "https://github.com/k0sproject/k0sctl/releases/download/${K0SCTL_VERSION}/k0sctl-${os}-${architecture}"
-  chmod +x ./bin/k0sctl
-  K0SCTL="$(command -v k0sctl)"
+CFCTL="$(command -v cfctl)"
+if ! [ -x "${CFCTL}" ]; then
+  CFCTL_VERSION=v0.13.0+9001
+  echo "cfctl could not be found. Downloading it locally in ./bin"
+  rm -f ./bin/cfctl
+  curl -fsSL -o ./bin/cfctl "https://github.com/SquareFactory/cfctl/releases/download/${CFCTL_VERSION}/cfctl-${os}-${architecture}"
+  chmod +x ./bin/cfctl
+  CFCTL="$(command -v cfctl)"
 fi
-echo "Found k0sctl: $(k0sctl version)"
+echo "Found cfctl: $(cfctl version)"
 echo
-export K0SCTL
+export CFCTL
 
 architecture=""
 case $(uname -m) in

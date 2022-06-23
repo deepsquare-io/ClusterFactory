@@ -3,7 +3,7 @@
 ## Backup
 
 ```shell
-k0sctl backup
+cfctl backup
 ```
 
 This will create a `tar.gz` with:
@@ -19,5 +19,5 @@ PersistentVolumes won't be inside the backup.
 ## Restore
 
 ```shell
-k0sctl apply --debug --restore-from /path/to/backup_file.tar.gz
+cfctl apply --debug --restore-from /path/to/backup_file.tar.gz
 ```

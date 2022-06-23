@@ -127,10 +127,10 @@ listen stats
     stats uri /
 ```
 
-### 2. Editing `k0sctl.yaml` to set up the nodes
+### 2. Editing `cfctl.yaml` to set up the nodes
 
-```yaml title="k0sctl.yaml"
-apiVersion: k0sctl.k0sproject.io/v1beta1
+```yaml title="cfctl.yaml"
+apiVersion: cfctl.clusterfactory.io/v1beta1
 kind: Cluster
 metadata:
   name: k8s.example.com-cluster
@@ -151,12 +151,6 @@ spec:
       hooks:
         apply:
           before:
-            # Install CNI plugins
-            - mkdir -p /opt/cni/bin/
-            - curl -fsSL https://github.com/containernetworking/plugins/releases/download/v1.1.1/cni-plugins-linux-amd64-v1.1.1.tgz | tar -C "/opt/cni/bin" -xzf -
-            # Fix Kubelet directory
-            - mkdir -p /var/lib/k0s/kubelet
-            - sh -c "if [ -L /var/lib/kubelet ]; then echo symlink already exists; else rm -rf /var/lib/kubelet && ln -s /var/lib/k0s/kubelet /var/lib/kubelet; fi"
             # Set SELinux Permissive
             - sh -c 'if [ "$(getenforce)" = "Permissive" ]; then sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config; fi'
             - sh -c 'if [ "$(getenforce)" = "Permissive" ]; then setenforce 0; fi'
@@ -176,12 +170,6 @@ spec:
       hooks:
         apply:
           before:
-            # Install CNI plugins
-            - mkdir -p /opt/cni/bin/
-            - curl -fsSL https://github.com/containernetworking/plugins/releases/download/v1.1.1/cni-plugins-linux-amd64-v1.1.1.tgz | tar -C "/opt/cni/bin" -xzf -
-            # Fix Kubelet directory
-            - mkdir -p /var/lib/k0s/kubelet
-            - sh -c "if [ -L /var/lib/kubelet ]; then echo symlink already exists; else rm -rf /var/lib/kubelet && ln -s /var/lib/k0s/kubelet /var/lib/kubelet; fi"
             # Set SELinux Permissive
             - sh -c 'if [ "$(getenforce)" = "Permissive" ]; then sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config; fi'
             - sh -c 'if [ "$(getenforce)" = "Permissive" ]; then setenforce 0; fi'
@@ -201,12 +189,6 @@ spec:
       hooks:
         apply:
           before:
-            # Install CNI plugins
-            - mkdir -p /opt/cni/bin/
-            - curl -fsSL https://github.com/containernetworking/plugins/releases/download/v1.1.1/cni-plugins-linux-amd64-v1.1.1.tgz | tar -C "/opt/cni/bin" -xzf -
-            # Fix Kubelet directory
-            - mkdir -p /var/lib/k0s/kubelet
-            - sh -c "if [ -L /var/lib/kubelet ]; then echo symlink already exists; else rm -rf /var/lib/kubelet && ln -s /var/lib/k0s/kubelet /var/lib/kubelet; fi"
             # Set SELinux Permissive
             - sh -c 'if [ "$(getenforce)" = "Permissive" ]; then sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config; fi'
             - sh -c 'if [ "$(getenforce)" = "Permissive" ]; then setenforce 0; fi'
@@ -229,13 +211,13 @@ spec:
 Apply the config and be patient:
 
 ```shell
-k0sctl apply --debug --config=k0sctl.yaml
+cfctl apply --debug --config=cfctl.yaml
 ```
 
 ### Verify everything is good
 
 ```shell
-k0sctl kubeconfig --config ./k0sctl.yaml >./kubeconfig
+cfctl kubeconfig --config ./cfctl.yaml >./kubeconfig
 chmod 600 ./kubeconfig
 export KUBECONFIG="$(pwd)/kubeconfig"
 kubectl get nodes
@@ -284,7 +266,7 @@ kubectl drain <node>
 kubectl delete <node>
 ```
 
-**Remove the node from `k0sctl.yaml`.**
+**Remove the node from `cfctl.yaml`.**
 
 4. Remove the controller from ETCD.
 
