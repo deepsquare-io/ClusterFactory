@@ -75,4 +75,3 @@ perl -i -0777 -pe "s/name: cert-manager\n(.*)\n(.*)version: .*/name: cert-manage
 csi_driver_nfs_version=$(curl -fsSL https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts/index.yaml | yq '.entries.csi-driver-nfs.[0].version')
 sed -Ei "s/csi_driver_nfs_version=.*\$/csi_driver_nfs_version=${csi_driver_nfs_version}/g" "$script_path/version-lock"
 perl -i -0777 -pe "s/name: csi-driver-nfs\n(.*)\n(.*)version: .*/name: csi-driver-nfs\n\1\n\2version: '${csi_driver_nfs_version}'/g" "$project_path/cfctl.yaml.example"
-# TODO: replace also in the doc
