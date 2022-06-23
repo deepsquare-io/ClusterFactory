@@ -1,4 +1,0 @@
-resources:
-  - deployment.yml
-  - rbac.yml
-  - configmap.yml
