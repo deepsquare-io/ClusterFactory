@@ -30,7 +30,7 @@ spec:
             - sh -c 'if [ "$(getenforce)" = "Permissive" ]; then setenforce 0; fi'
 
   k0s:
-    version: 1.23.7+k0s.1
+    version: '1.23.8+k0s.0'
     dynamicConfig: false
     config:
       apiVersion: k0s.k0sproject.io/v1beta1
@@ -210,14 +210,14 @@ spec:
 
               - name: cert-manager
                 chartname: jetstack/cert-manager
-                version: v1.8.0
+                version: 'v1.8.1'
                 namespace: cert-manager
                 values: |
                   installCRDs: true
 
               - name: csi-driver-nfs
                 chartname: csi-driver-nfs/csi-driver-nfs
-                version: 'v4.0.0'
+                version: 'v4.1.0'
                 namespace: csi-driver-nfs
                 values: |
                   driver:

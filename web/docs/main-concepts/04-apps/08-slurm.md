@@ -45,6 +45,6 @@ NVIDIA Enroot is very similar to Docker. The main difference is that it runs con
 
 The resource management feature of Slurm is also quite powerful to make sure users doesn't consume too many resources.
 
-However, although Slurm is powerful, it has its drawbacks. For example, the REST API is not stable and the documentation is not precise enough for a user-friendly experience. Also, since Slurm is programmed in C, we had problems with memory leaks (which were fixed very recently in version 21.08.7).
+However, although Slurm is powerful, it has its drawbacks. For example, the REST API is not stable and the documentation is not precise enough for a user-friendly experience. Also, since Slurm is programmed in C, we had problems with memory leaks (which were fixed in version 21.08.7).
 
 [OAR](https://oar.imag.fr), a job scheduler based on Perl (the v3 will be based on Python), could be a valid alternative/addition.

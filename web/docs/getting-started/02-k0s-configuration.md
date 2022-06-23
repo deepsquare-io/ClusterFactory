@@ -76,7 +76,7 @@ After you set the `hosts` field, you must configure the k0s architecture by edit
 
 ```yaml title="k0sctl.yaml > spec > k0s"
 k0s:
-  version: 1.23.6+k0s.1
+  version: '1.23.8+k0s.0'
   dynamicConfig: false
   config:
     apiVersion: k0s.k0sproject.io/v1beta1
@@ -155,7 +155,7 @@ Your router must be capable of using BGP. If not, you should use an appliance wi
 ```yaml title="k0sctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
 - name: metallb
   chartname: bitnami/metallb
-  version: '3.0.7'
+  version: '3.0.9'
   namespace: metallb
   values: |
 
@@ -188,7 +188,7 @@ Your router must be capable of using BGP. If not, you should use an appliance wi
 ```yaml title="k0sctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
 - name: metallb
   chartname: bitnami/metallb
-  version: '3.0.7'
+  version: '3.0.9'
   namespace: metallb
   values: |
 
@@ -207,7 +207,7 @@ After configuring the Load Balancer, you should configure Traefik, the main Ingr
 ```yaml title="k0sctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
 - name: traefik
   chartname: traefik/traefik
-  version: '10.19.5'
+  version: '10.22.0'
   namespace: traefik
   values: |
 

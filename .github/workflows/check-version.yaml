@@ -1,0 +1,43 @@
+name: Check versions
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+  push:
+    branches: [main]
+
+jobs:
+  check-updates:
+    name: Check for updates
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Generate token
+        id: generate_token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+
+      - name: Install dependencies
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
+          sudo apt update && sudo apt install -y python3 curl jq yq sed gawk perl
+
+      - name: Update Dockerfile
+        env:
+          TOKEN: ${{ steps.generate_token.outputs.token }}
+        run: ./.ci/check-versions.sh ${TOKEN}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+          commit-message: 'chore: update dependencies'
+          delete-branch: true
+          title: 'chore: update dependencies'
+          branch: chore/update-dependencies
+          reviewers: |
+            Darkness4

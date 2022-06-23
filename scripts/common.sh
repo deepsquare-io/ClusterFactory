@@ -67,7 +67,7 @@ export KUBECTL
 
 KUBESEAL="$(command -v kubeseal)"
 if ! [ -x "$KUBESEAL" ]; then
-  KUBESEAL_VERSION=0.17.5
+  KUBESEAL_VERSION=0.18.0
   echo "kubeseal could not be found. Downloading it locally in ./bin."
   rm -f ./bin/kubeseal
   curl -fsSL "https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-${os}-${architecture}.tar.gz" | tar -zxvf - kubeseal
@@ -81,10 +81,10 @@ export KUBESEAL
 
 HELM="$(command -v helm)"
 if ! [ -x "$HELM" ]; then
-  HELM_VERSION=3.9.0
+  HELM_VERSION=v3.9.0
   echo "helm could not be found. Downloading it locally in ./bin."
   rm -f ./bin/helm
-  curl -fsSL "https://get.helm.sh/helm-v${HELM_VERSION}-${os}-${architecture}.tar.gz" | tar -zxvf - "${os}-${architecture}/helm"
+  curl -fsSL "https://get.helm.sh/helm-${HELM_VERSION}-${os}-${architecture}.tar.gz" | tar -zxvf - "${os}-${architecture}/helm"
   mv "${os}-${architecture}/helm" ./bin/helm
   rmdir "${os}-${architecture}"
   chmod +x ./bin/helm
