@@ -5,7 +5,7 @@ kubevirt_version=v0.54.0
 coredns_version=1.9.3
 
 # Utils Version
-k0sctl_version=v0.13.0
+k0scfctlctl_version=v0.13.0
 kubeseal_version=0.18.0
 helm_version=v3.9.0
 etcdctl=aze
@@ -14,7 +14,7 @@ etcdctl=aze
 local_path_provisioner_version=v0.0.22
 kube_prometheus_stack_version=36.2.0
 
-# k0sctl.yaml
+# cfctl.yaml
 k0s_version=1.23.8+k0s.0
 metallb_version=3.0.9
 traefik_version=10.22.0
