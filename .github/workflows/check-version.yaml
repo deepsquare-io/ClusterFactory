@@ -40,5 +40,4 @@ jobs:
           delete-branch: true
           title: 'chore: update dependencies'
           branch: chore/update-dependencies
-          reviewers: |
-            Darkness4
+          signoff: true
