@@ -35,11 +35,7 @@ spec:
 
 Provide each host with a valid IP address that is reachable by k0ctl, and the connection details for an SSH connection. Edit the labels for multi-zone usage.
 
-[The `cfctl.yaml` specification is written in the repository of cfctl](https://github.com/SquareFactory/cfctl#spec-fields).
-
-**You should read the specification carefully as the modification of one the host field won't be allowed in the future**.
-
-If you wish to use a HA setup, please follow [this guide](https://docs.k0sproject.io/v1.23.6+k0s.0/high-availability/).
+[The `cfctl.yaml` specification is written in the repository of cfctl](/docs/reference/cfctl.yaml).
 
 ## Configuring the k0s architecture
 
@@ -97,7 +93,7 @@ Check the CIDR and make sure it doesn't conflict with any IP range of your netwo
 
 Again, **You should read the specification carefully as the modification of one the k0s field won't be allowed in the future**.
 
-If you wish to use a HA setup, please follow [this guide](https://docs.k0sproject.io/v1.23.6+k0s.0/high-availability/).
+If you wish to use a HA setup, please follow [this guide](/docs/guides/maintenance/high-availability).
 
 After setting up k0s, you can change the `extensions` field. This field can be changed at any time. You can add or change extensions. However, removing an extension is permanent.
 

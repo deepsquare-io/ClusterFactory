@@ -51,7 +51,7 @@ Spec is a description of a cluster configuration.
 
   - `controller` - a controller host
   - `controller+worker` - a controller host that will also run workloads
-  - `single` - a [single-node cluster](https://docs.k0sproject.io/main/k0s-single-node/) host, the configuration can only contain one host
+  - `single` - a single-node cluster host, the configuration can only contain one host
   - `worker` - a worker host
 
 - **privateInterface**: (string), optional, default: ` `

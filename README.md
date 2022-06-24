@@ -50,7 +50,7 @@ This is why we are developing ClusterFactory CE:
 
 - [Kubernetes Documentation (not going to lie, you're gonna need it)](https://kubernetes.io/docs/concepts/)
 - [Helm Values Files](https://helm.sh/docs/chart_template_guide/values_files/)
-- [K0s Configuration](https://docs.k0sproject.io/v1.23.5+k0s.0/configuration/)
+- [K0s Configuration](https://docs.k0sproject.io/v1.23.8+k0s.0/configuration/)
 - [Cert-Manager Issuers Configuration](https://cert-manager.io/docs/configuration/)
 - [Multus CNI Quickstart](https://github.com/k8snetworkplumbingwg/multus-cni/blob/master/docs/quickstart.md)
 - [CNI Plugins Overview](https://www.cni.dev/plugins/current/)

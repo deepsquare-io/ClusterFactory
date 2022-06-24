@@ -203,7 +203,7 @@ Since we are doing GitOps, we will store a sealed secret in the git repository. 
 
 To avoid storing clear-text secrets in git, SealedSecrets encrypts secrets using asymmetric encryption. Currently, a SealedSecrets controller should run on the Kubernetes cluster with a unique private key. This private key is the master key and should only be stored on the Kubernetes cluster.
 
-If you want to backup the key (because you want to do a migration, or to prepare for a disaster), you can follow [this guide](https://github.com/bitnami-labs/sealed-secrets#how-can-i-do-a-backup-of-my-sealedsecrets). You can also [backup the whole cluster using cfctl](https://docs.k0sproject.io/v1.23.6+k0s.0/backup/).
+If you want to backup the key (because you want to do a migration, or to prepare for a disaster), you can follow [this guide](https://github.com/bitnami-labs/sealed-secrets#how-can-i-do-a-backup-of-my-sealedsecrets). You can also [backup the whole cluster using cfctl](/docs/guides/maintenance/backup-restore).
 
 :::warning
 
