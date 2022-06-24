@@ -1,16 +1,18 @@
-# 2. Setting up your repository for GitOps
+# Setting up the Git repository for GitOps
 
 To enable GitOps and be able to follow the updates of the ClusterFactory CE repository, you should [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the [ClusterFactory CE repository](https://github.com/SquareFactory/ClusterFactory-CE) or create a private copy, so you could use Argo CD on your own repository.
 
-## 1. Fork the repository
+## Setting up the Git repository
 
-### Method 1: Create a public fork
+### 1. Fork the repository
+
+#### Method 1: Create a public fork
 
 1. Use the "Fork" button on Github and create the fork on your favorite account.
 
 <div style={{textAlign: 'center'}}>
 
-![Fork button](02-setting-up-repository.assets/fork_button.png)
+![Fork button](01-setting-up-repository.assets/fork_button.png)
 
 </div>
 
@@ -21,7 +23,7 @@ To enable GitOps and be able to follow the updates of the ClusterFactory CE repo
    git clone git@github.com:<your account>/ClusterFactory-CE.git
    ```
 
-### Method 2: Create a private fork
+#### Method 2: Create a private fork
 
 1. Create a bare clone of the repository.
 
@@ -54,7 +56,7 @@ To enable GitOps and be able to follow the updates of the ClusterFactory CE repo
    git clone git@github.com:<your account>/ClusterFactory-CE.git
    ```
 
-## 2. Setup the upstream remote for git
+### 2. Setup the upstream remote for git
 
 Git is capable of managing multiple remote repositories. By default, `origin` is linked to the `<your account>/ClusterFactory-CE` repository. To be able to fetch updates from the upstream `SquareFactory/ClusterFactory-CE` repository, we need to add a remote repository that we call `upstream`.
 
@@ -75,7 +77,7 @@ Git is capable of managing multiple remote repositories. By default, `origin` is
    # upstream	DISABLE (push)
    ```
 
-## 3. Checkout to a stable version and create a new branch
+### 3. Checkout to a stable version and create a new branch
 
 You can checkout to a stable version:
 
@@ -85,7 +87,7 @@ git checkout -b v0.7.0 configs
 git branch -D main
 ```
 
-## 4. Rename the examples and commit
+### 4. Rename the examples and commit
 
 Copy `argo.example`, `core.example`, `cfctl.yaml.example`, and remove the `.example`:
 
@@ -104,7 +106,7 @@ git push -u origin configs
 # You can also delete the remote main branch
 ```
 
-## 5. Use `git fetch` and `git merge` to merge the upstream main into the local branch
+## Use `git fetch` and `git merge` to merge the upstream main into the local branch
 
 Because ClusterFactory CE will be updated regularly, you can fetch the updates with git fetch:
 
@@ -114,7 +116,7 @@ git fetch --tags upstream
 
 <div style={{textAlign: 'center'}}>
 
-![git-fetch](02-setting-up-repository.assets/image-20220624193812004.png)
+![git-fetch](01-setting-up-repository.assets/image-20220624193812004.png)
 
 </div>
 
@@ -126,7 +128,7 @@ git merge v0.8.0
 
 <div style={{textAlign: 'center'}}>
 
-![git-merge](02-setting-up-repository.assets/image-20220624194957531.png)
+![git-merge](01-setting-up-repository.assets/image-20220624194957531.png)
 
 </div>
 
@@ -136,7 +138,7 @@ git push
 
 <div style={{textAlign: 'center'}}>
 
-![git-push](02-setting-up-repository.assets/image-20220624195047988.png)
+![git-push](01-setting-up-repository.assets/image-20220624195047988.png)
 
 </div>
 
@@ -149,9 +151,17 @@ git merge upstream/main
 git push
 ```
 
-## Why fork and use GitOps ?
+If everything goes well, your git graph should always look like this:
 
-Now that you have a fork, you can push your own changes into your repository. For example, if you want to deploy your applications, you should write your manifests and commit these files to your repository, like this:
+<div style={{textAlign: 'center'}}>
+
+![git-graph-example](01-setting-up-repository.assets/image-20220624204605963.png)
+
+</div>
+
+## Use Argo CD to pull, synchronize and deploy the manifests
+
+If you want to deploy your applications, you should write your manifests and commit these files to your repository, like this:
 
 ```text
 ./
@@ -163,15 +173,88 @@ Now that you have a fork, you can push your own changes into your repository. Fo
 │   ├── cvmfs-server/
 │   ├── cvmfs-service/
 │   ├── ipmi-exporter/
+│   ├── my-helm-application/  <----- HERE if it's a helm application
+│   │   ├── templates/
+│   │   ├── Chart.yaml
+│   │   └── values.yaml
 │   ├── openldap/
 │   ├── slurm-cluster/
 │   └── xcat/
-├── manifests/                <-----
+├── manifests/                <----- Or HERE if it's a kustomized/vanilla Kubernetes application
 │   └── my-application/       <-----
 │       └── statefulset.yaml  <-----
 └── ...
 ```
 
-Since ClusterFactory CE uses Argo CD, it is able to retrieve your repository from your Git hosting server, synchronize changes and deploy your Kubernetes manifests.
+Argo CD is able to retrieve your repository from your Git hosting server, synchronize changes and deploy your Kubernetes manifests.
 
-For now, let's just deploy K0s!
+1. Create a local secret containing a SSH deploy key and the git url:
+
+```yaml title="argo/default/secrets/my-repository-secret.yaml.local"
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-repository-secret
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repository
+type: Opaque
+stringData:
+  sshPrivateKey: |
+    -----BEGIN RSA PRIVATE KEY-----
+    -----END RSA PRIVATE KEY-----
+  type: git
+  url: git@github.com:<your account>/<your repo>.git
+```
+
+2. Seal it and apply it:
+
+```shell
+./kubeseal-every-local-files.sh
+kubectl apply -f argo/default/secrets/my-repository-sealed-secret.yaml
+```
+
+3. Configure an Argo CD Application:
+
+```yaml title="argo/default/apps/my-application.yaml"
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-application
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:<your account>/<your repo>.git
+    targetRevision: HEAD
+    path: manifests/my-application
+    directory:
+      recurse: true
+
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+
+  syncPolicy:
+    automated:
+      prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+      allowEmpty: false # Allows deleting all application resources during automatic syncing ( false by default ).
+    syncOptions: []
+    retry:
+      limit: 5 # number of failed sync attempt retries; unlimited number of attempts if less than 0
+      backoff:
+        duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
+        factor: 2 # a factor to multiply the base duration after each failed retry
+        maxDuration: 3m # the maximum amount of time allowed for the backoff strategy
+```
+
+4. And apply it:
+
+```shell
+kubectl apply -f argo/default/apps/my-application.yaml
+```
+
+Argo CD will deploy and synchroize automatically by following the HEAD commit. You can also specify the branch instead of `HEAD`.
