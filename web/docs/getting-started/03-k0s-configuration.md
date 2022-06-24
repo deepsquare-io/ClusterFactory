@@ -1,29 +1,6 @@
-# 2. K0s Configuration
+# 3. K0s Configuration
 
 ## Specifying the hosts
-
-You may want to [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the [ClusterFactory CE repository](https://github.com/SquareFactory/ClusterFactory-CE) or create a private copy, so you could use Argo CD on your own repository.
-
-For now, let's just clone the repository:
-
-```shell title="user@local:/"
-git clone https://github.com/SquareFactory/ClusterFactory-CE.git
-```
-
-Copy `argo.example`, `core.example`, `cfctl.yaml.example`, and remove the `.example`:
-
-```shell title="user@local:/ClusterFactory-CE"
-cp -R argo.example/ argo/
-cp -R core.example/ core/
-cp cfctl.yaml.example cfctl.yaml
-```
-
-You can track these files on Git:
-
-```shell title="user@local:/ClusterFactory-CE"
-git add .
-git commit -m "Initialized my config"
-```
 
 Edit the `cfctl.yaml` file. Start with the `hosts` field :
 

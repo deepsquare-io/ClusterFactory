@@ -1,4 +1,4 @@
-# 5. xCAT Deployment
+# 6. xCAT Deployment
 
 The `argo/provisioning` directory deploys the xCAT application.
 

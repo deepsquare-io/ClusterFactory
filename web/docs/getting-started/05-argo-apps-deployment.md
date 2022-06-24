@@ -1,4 +1,4 @@
-# 4. Argo Apps Deployment
+# 5. Argo Apps Deployment
 
 Time to play with Argo CD!
 

@@ -1,4 +1,4 @@
-# 6. xCAT Configuration
+# 7. xCAT Configuration
 
 :::note
 

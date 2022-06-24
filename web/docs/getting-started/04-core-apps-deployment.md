@@ -1,4 +1,4 @@
-# 3. Core Apps Deployment
+# 4. Core Apps Deployment
 
 We will deploy:
 
