@@ -48,24 +48,24 @@ kube_prometheus_stack_version=$(curl -fsSL https://prometheus-community.github.i
 sed -Ei "s/kube_prometheus_stack_version=.*\$/kube_prometheus_stack_version=${kube_prometheus_stack_version}/g" "$script_path/version-lock"
 sed -Ei "s/targetRevision: .*\$/targetRevision: ${kube_prometheus_stack_version}/g" "$project_path/argo.example/monitoring/apps/prometheus-app.yml"
 sed -Ei "s/targetRevision: .*\$/targetRevision: kube-prometheus-stack-${kube_prometheus_stack_version}/g" "$project_path/argo.example/monitoring/apps/prometheus-crd-app.yml"
-sed -Ei "s/targetRevision: kube-prometheus-stack-.*\$/targetRevision: kube-prometheus-stack-${kube_prometheus_stack_version}/g" "$project_path/web/docs/getting-started/04-argo-apps-deployment.md"
-sed -Ei "s/targetRevision: [0-9].*\$/targetRevision: ${kube_prometheus_stack_version}/g" "$project_path/web/docs/getting-started/04-argo-apps-deployment.md"
+sed -Ei "s/targetRevision: kube-prometheus-stack-.*\$/targetRevision: kube-prometheus-stack-${kube_prometheus_stack_version}/g" "$project_path/web/docs/getting-started/05-argo-apps-deployment.md"
+sed -Ei "s/targetRevision: [0-9].*\$/targetRevision: ${kube_prometheus_stack_version}/g" "$project_path/web/docs/getting-started/05-argo-apps-deployment.md"
 
 # cfctl.yaml
 k0s_version=$(curl -H "Authorization: token ${TOKEN}" -fsSL https://api.github.com/repos/k0sproject/k0s/releases/latest | jq -r '.tag_name' | tr -d 'v')
 sed -Ei "s/k0s_version=.*\$/k0s_version=${k0s_version}/g" "$script_path/version-lock"
 perl -i -0777 -pe "s/k0s:\n(.*)version: .*/k0s:\n\1version: '${k0s_version}'/g" "$project_path/cfctl.yaml.example"
-perl -i -0777 -pe "s/k0s:\n(.*)version: .*/k0s:\n\1version: '${k0s_version}'/g" "$project_path/web/docs/getting-started/02-k0s-configuration.md"
+perl -i -0777 -pe "s/k0s:\n(.*)version: .*/k0s:\n\1version: '${k0s_version}'/g" "$project_path/web/docs/getting-started/03-k0s-configuration.md"
 
 metallb_version=$(curl -fsSL https://charts.bitnami.com/bitnami/index.yaml | yq '.entries.metallb.[0].version')
 sed -Ei "s/metallb_version=.*\$/metallb_version=${metallb_version}/g" "$script_path/version-lock"
 perl -i -0777 -pe "s/name: metallb\n(.*)\n(.*)version: .*/name: metallb\n\1\n\2version: '${metallb_version}'/g" "$project_path/cfctl.yaml.example"
-perl -i -0777 -pe "s/name: metallb\n(.*)\n(.*)version: .*/name: metallb\n\1\n\2version: '${metallb_version}'/g" "$project_path/web/docs/getting-started/02-k0s-configuration.md"
+perl -i -0777 -pe "s/name: metallb\n(.*)\n(.*)version: .*/name: metallb\n\1\n\2version: '${metallb_version}'/g" "$project_path/web/docs/getting-started/03-k0s-configuration.md"
 
 traefik_version=$(curl -fsSL https://helm.traefik.io/traefik/index.yaml | yq '.entries.traefik.[0].version')
 sed -Ei "s/traefik_version=.*\$/traefik_version=${traefik_version}/g" "$script_path/version-lock"
 perl -i -0777 -pe "s/name: traefik\n(.*)\n(.*)version: .*/name: traefik\n\1\n\2version: '${traefik_version}'/g" "$project_path/cfctl.yaml.example"
-perl -i -0777 -pe "s/name: traefik\n(.*)\n(.*)version: .*/name: traefik\n\1\n\2version: '${traefik_version}'/g" "$project_path/web/docs/getting-started/02-k0s-configuration.md"
+perl -i -0777 -pe "s/name: traefik\n(.*)\n(.*)version: .*/name: traefik\n\1\n\2version: '${traefik_version}'/g" "$project_path/web/docs/getting-started/03-k0s-configuration.md"
 perl -i -0777 -pe "s/name: traefik\n(.*)\n(.*)version: .*/name: traefik\n\1\n\2version: '${traefik_version}'/g" "$project_path/web/docs/guides/800-deploy-ldap.md"
 
 cert_manager_version=$(curl -fsSL https://charts.jetstack.io/index.yaml | yq '.entries.cert-manager.[0].version')
