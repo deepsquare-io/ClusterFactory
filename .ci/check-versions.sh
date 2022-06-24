@@ -1,4 +1,4 @@
-#!/bin/sh -ex
+#!/bin/sh -e
 
 script_path="$(dirname "$0")"
 project_path="$script_path/../"
@@ -35,9 +35,9 @@ helm_version=$(curl -H "Authorization: token ${TOKEN}" -fsSL https://api.github.
 sed -Ei "s|helm_version=.*\$|helm_version=${helm_version}|g" "$script_path/version-lock"
 sed -Ei "s|HELM_VERSION=.*|HELM_VERSION=${helm_version}|g" "$project_path/scripts/common.sh"
 
-etdctl_version=$(curl -H "Authorization: token ${TOKEN}" -fsSL https://api.github.com/repos/etcd-io/etcd/releases/latest | jq -r '.tag_name')
-sed -Ei "s|etdctl_version=.*\$|etdctl_version=${etdctl_version}|g" "$script_path/version-lock"
-sed -Ei "s|ETCDCTL_VERSION=.*|ETCDCTL_VERSION=${etdctl_version}|g" "$project_path/scripts/common.sh"
+etcdctl_version=$(curl -H "Authorization: token ${TOKEN}" -fsSL https://api.github.com/repos/etcd-io/etcd/releases/latest | jq -r '.tag_name')
+sed -Ei "s|etcdctl_version=.*\$|etcdctl_version=${etcdctl_version}|g" "$script_path/version-lock"
+sed -Ei "s|ETCDCTL_VERSION=.*|ETCDCTL_VERSION=${etcdctl_version}|g" "$project_path/scripts/common.sh"
 
 # Apps
 local_path_provisioner_version=$(curl -H "Authorization: token ${TOKEN}" -fsSL https://api.github.com/repos/rancher/local-path-provisioner/tags | jq -r '.[0].name')
