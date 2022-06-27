@@ -69,7 +69,7 @@ jobs:
           CRAWLER_API_KEY: ${{ secrets.CRAWLER_API_KEY }}
           CRAWLER_ID: ${{ secrets.CRAWLER_ID }}
         run: |
-          sudo apt update -y && apt install -y curl
+          sudo apt update -y && sudo apt install -y curl
           curl -H "Content-Type: application/json" \
             --user "${CRAWLER_USER_ID}:${CRAWLER_API_KEY}" \
             -X POST \
