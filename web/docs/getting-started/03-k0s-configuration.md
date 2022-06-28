@@ -27,8 +27,8 @@ spec:
         apply:
           before:
             # Set SELinux Permissive
-            - sh -c 'if [ "$(getenforce)" = "Permissive" ]; then sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config; fi'
-            - sh -c 'if [ "$(getenforce)" = "Permissive" ]; then setenforce 0; fi'
+            - sh -c 'if [ "$(getenforce)" != "Permissive" ]; then sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config; fi'
+            - sh -c 'if [ "$(getenforce)" != "Permissive" ]; then setenforce 0; fi'
 
   ...
 ```
