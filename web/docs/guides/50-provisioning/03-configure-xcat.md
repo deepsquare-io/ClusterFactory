@@ -189,7 +189,7 @@ Edit accordingly and apply the stanza:
 cat cn1.stanza | mkdef -z
 ```
 
-And regenerate the DNS and DHCP configuration:
+Regenerate the DNS and DHCP configuration:
 
 ```shell title="ssh root@xcat"
 echo "reconfiguring hosts..."
@@ -200,6 +200,12 @@ echo "reconfiguring dhcpd config..."
 makedhcp -n
 echo "reconfiguring dhcpd leases..."
 makedhcp -a
+```
+
+And regenerate the PXE boot configuration:
+
+```shell title="ssh root@xcat"
+nodeset <node/noderange> osimage=rocky8.4-x86_64-netboot-compute
 ```
 
 More details [here](https://xcat-docs.readthedocs.io/en/stable/guides/admin-guides/references/man7/node.7.html).
