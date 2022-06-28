@@ -174,7 +174,7 @@ After configuring the Load Balancer, you should configure Traefik, the main Ingr
 ```yaml title="cfctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
 - name: traefik
   chartname: traefik/traefik
-  version: '10.22.0'
+  version: '10.23.0'
   namespace: traefik
   values: |
 
