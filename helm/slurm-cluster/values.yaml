@@ -111,7 +111,7 @@ controller:
   enabled: true
   replicas: 1
 
-  image: 'ghcr.io/squarefactory/slurm:22.05.0-1-controller'
+  image: 'ghcr.io/squarefactory/slurm:22.05.2-1-controller'
   imagePullPolicy: 'IfNotPresent'
 
   labels: {}
@@ -234,7 +234,7 @@ login:
   enabled: false
   replicas: 1
 
-  image: 'ghcr.io/squarefactory/slurm:22.05.0-1-login'
+  image: 'ghcr.io/squarefactory/slurm:22.05.2-1-login'
   imagePullPolicy: 'IfNotPresent'
 
   labels: {}
@@ -336,7 +336,7 @@ login:
   # Slurm REST API
   rest:
     enabled: false
-    image: 'ghcr.io/squarefactory/slurm:22.05.0-1-rest'
+    image: 'ghcr.io/squarefactory/slurm:22.05.2-1-rest'
     imagePullPolicy: 'IfNotPresent'
     command: ['/init']
 
@@ -517,7 +517,7 @@ db:
   enabled: false
   replicas: 1
 
-  image: 'ghcr.io/squarefactory/slurm:22.05.0-1-db'
+  image: 'ghcr.io/squarefactory/slurm:22.05.2-1-db'
   imagePullPolicy: 'IfNotPresent'
 
   labels: {}
