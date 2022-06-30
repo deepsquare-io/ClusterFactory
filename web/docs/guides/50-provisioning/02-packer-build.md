@@ -103,6 +103,13 @@ set -ex
 #-- No firewall
 systemctl disable firewalld
 
+# Install xCat provisioning service
+curl -fsSL "https://raw.githubusercontent.com/xcat2/xcat-core/master/xCAT/postscripts/xcatpostinit1.netboot" -o /opt/xcat/xcatpostinit1
+chmod 755 /opt/xcat/xcatpostinit1
+
+curl -fsSL "https://raw.githubusercontent.com/xcat2/xcat-core/master/xCAT/postscripts/xcatpostinit1.service" -o /etc/systemd/system/xcatpostinit1.service
+ln -s "../xcatpostinit1.service" "/etc/systemd/system/multi-user.target.wants/xcatpostinit1.service"
+
 # Kickstart copies install boot options. Serial is turned on for logging with
 # Packer which disables console output. Disable it so console output is shown
 # during deployments

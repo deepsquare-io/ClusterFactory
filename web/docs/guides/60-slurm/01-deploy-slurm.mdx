@@ -751,6 +751,13 @@ part / --size=1 --grow --asprimary --fstype=xfs
 set -ex
 mkdir /opt/xcat
 
+# Install xCat provisioning service
+curl -fsSL "https://raw.githubusercontent.com/xcat2/xcat-core/master/xCAT/postscripts/xcatpostinit1.netboot" -o /opt/xcat/xcatpostinit1
+chmod 755 /opt/xcat/xcatpostinit1
+
+curl -fsSL "https://raw.githubusercontent.com/xcat2/xcat-core/master/xCAT/postscripts/xcatpostinit1.service" -o /etc/systemd/system/xcatpostinit1.service
+ln -s "../xcatpostinit1.service" "/etc/systemd/system/multi-user.target.wants/xcatpostinit1.service"
+
 # Postinstall
 #-- No firewall
 systemctl disable firewalld
