@@ -16,7 +16,7 @@ specifiers:
   clsx: 1.1.1
   mdx-mermaid: 1.2.3
   mermaid: 8.11.5
-  prism-react-renderer: 1.3.3
+  prism-react-renderer: 1.3.5
   react: 17.0.2
   react-dom: 17.0.2
   typescript: 4.7.4
@@ -34,7 +34,7 @@ dependencies:
   clsx: 1.1.1
   mdx-mermaid: 1.2.3_hkyganhjs47e53n4rpnp4la5f4
   mermaid: 8.11.5_@babel+preset-env@7.18.6
-  prism-react-renderer: 1.3.3_react@17.0.2
+  prism-react-renderer: 1.3.5_react@17.0.2
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
   unist-util-visit: 2.0.3
@@ -2082,7 +2082,7 @@ packages:
       lodash: 4.17.21
       nprogress: 0.2.0
       postcss: 8.4.14
-      prism-react-renderer: 1.3.3_react@17.0.2
+      prism-react-renderer: 1.3.5_react@17.0.2
       prismjs: 1.28.0
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
@@ -2118,7 +2118,7 @@ packages:
       '@docusaurus/plugin-content-pages': 2.0.0-beta.21_3tgeifm2vmwrlpqlopppsnjtcu
       clsx: 1.1.1
       parse-numeric-range: 1.3.0
-      prism-react-renderer: 1.3.3_react@17.0.2
+      prism-react-renderer: 1.3.5_react@17.0.2
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       tslib: 2.4.0
@@ -7702,8 +7702,8 @@ packages:
     engines: {node: '>=4'}
     dev: false
 
-  /prism-react-renderer/1.3.3_react@17.0.2:
-    resolution: {integrity: sha512-Viur/7tBTCH2HmYzwCHmt2rEFn+rdIWNIINXyg0StiISbDiIhHKhrFuEK8eMkKgvsIYSjgGqy/hNyucHp6FpoQ==}
+  /prism-react-renderer/1.3.5_react@17.0.2:
+    resolution: {integrity: sha512-IJ+MSwBWKG+SM3b2SUfdrhC+gu01QkV2KmRQgREThBfSQRoufqRfxfHUxpG1WcaFjP+kojcFyO9Qqtpgt3qLCg==}
     peerDependencies:
       react: '>=0.14.9'
     dependencies:
