@@ -1,0 +1,277 @@
+sssd:
+  # secret containing sssd.conf
+  # Will be mounted in /secrets/sssd
+  secretName: sssd-secret
+
+munge:
+  # secret containing munge.key
+  # Will be mounted in /secrets/munge
+  secretName: munge-secret
+
+# secret containing jwt_hs256.key
+# Will be mounted in /secrets/slurm
+jwt:
+  secretName: slurm-secret
+
+slurmConfig:
+  clusterName: example
+
+  compute:
+    srunPortRangeStart: 60001
+    srunPortRangeEnd: 63000
+    debug: debug5
+
+  controller:
+    parameters: enable_configless
+    debug: debug5
+
+  accounting: |
+    AccountingStorageType=accounting_storage/slurmdbd
+    AccountingStorageHost=slurm-cluster-example-db.slurm-cluster.svc.cluster.local
+    AccountingStoragePort=6819
+    AccountingStorageTRES=gres/gpu
+    AccountingStoreFlags=job_comment,job_env,job_script
+    # AccountingStorageEnforce=associations,limits,qos
+
+  defaultResourcesAllocation: |
+    DefCpuPerGPU=8
+    DefMemPerCpu=600
+
+  scheduling: |
+    SchedulerParameters=salloc_wait_nodes,sbatch_wait_nodes,batch_sched_delay=15
+    SchedulerType=sched/backfill
+    SelectType=select/cons_tres
+    SelectTypeParameters=CR_CPU_Memory
+    SchedulerTimeSlice=60
+    UnkillableStepTimeout=300
+
+  priorities: |
+    # PriorityType=priority/multifactor
+    # PriorityFavorSmall=NO
+    # PriorityWeightAge=1000
+    # PriorityWeightFairshare=10000
+    # PriorityWeightTRES=CPU=1000,Mem=2000,GRES/gpu=8000
+    # PriorityWeightJobSize=1000
+    # PriorityWeightPartition=1000
+    # PriorityWeightQOS=1000
+    # PriorityDecayHalfLife=0
+    # PriorityUsageResetPeriod=MONTHLY
+
+  nodes: |
+    NodeName=cn1  CPUs=32 Boards=1 SocketsPerBoard=1 CoresPerSocket=16 ThreadsPerCore=2 RealMemory=128473 Gres=gpu:4
+
+  partitions: |
+    PartitionName=main Nodes=cn1 Default=YES MaxTime=INFINITE State=UP OverSubscribe=EXCLUSIVE
+
+  gres: |
+    NodeName=cn1 Name=gpu File=/dev/nvidia[0-3]
+
+  # Extra slurm.conf configuration
+  extra: |
+    LaunchParameters=enable_nss_slurm
+    DebugFlags=Script,Gang,SelectType
+    TCPTimeout=5
+    CommunicationParameters=NoAddrCache
+
+    # MPI stacks running over Infiniband or OmniPath require the ability to allocate more
+    # locked memory than the default limit. Unfortunately, user processes on login nodes
+    # may have a small memory limit (check it by ulimit -a) which by default are propagated
+    # into Slurm jobs and hence cause fabric errors for MPI.
+    PropagateResourceLimitsExcept=MEMLOCK
+
+    ProctrackType=proctrack/cgroup
+    TaskPlugin=task/cgroup
+    SwitchType=switch/none
+    MpiDefault=pmix_v2
+    ReturnToService=2 #temp
+    GresTypes=gpu
+    PreemptType=preempt/qos
+    PreemptMode=REQUEUE
+    PreemptExemptTime=-1
+    Prolog=/etc/slurm/prolog.d/*
+    Epilog=/etc/slurm/epilog.d/*
+
+    # Federation
+    FederationParameters=fed_display
+
+    # Cloud Bursting
+    #SuspendProgram=/slurm_powersave/suspend.sh
+    #ResumeProgram=/slurm_powersave/resume.sh
+    SuspendTime=180
+    ResumeTimeout=600
+    MessageTimeout=60
+    BatchStartTimeout=300
+
+controller:
+  replicas: 1
+
+  command: ['sh', '-c', 'update-ca-trust && /init']
+
+  persistence:
+    storageClassName: 'controller-state-nfs'
+    accessModes: ['ReadWriteOnce']
+    size: 50Gi
+    selectorLabels:
+      app: slurm-controller
+      topology.kubernetes.io/region: ch-sion
+      topology.kubernetes.io/zone: ch-sion-1
+
+  prologsConfigMap: slurmctl-example-prologs
+  epilogsConfigMap: slurmctl-example-epilogs
+
+  nodeSelector:
+    topology.kubernetes.io/region: ch-sion
+    topology.kubernetes.io/zone: ch-sion-1
+
+  resources:
+    requests:
+      cpu: '100m'
+      memory: '256Mi'
+    limits:
+      memory: '1Gi'
+
+  dnsPolicy: 'None'
+  dnsConfig:
+    nameservers:
+      - 10.96.0.10
+    searches:
+      - slurm-cluster.svc.cluster.local
+      - example.com
+    options:
+      - name: ndots
+        value: '0'
+
+  # Extra volume mounts
+  volumeMounts:
+    - name: ca-cert
+      mountPath: /etc/pki/ca-trust/source/anchors/example.com.ca.pem
+      subPath: example.com.ca.pem
+
+  # Extra volumes
+  volumes:
+    - name: ca-cert
+      secret:
+        secretName: local-ca-secret
+
+  # Extra volume claims
+  volumeClaimTemplates: []
+
+  servicePerReplica:
+    port: 6817
+    type: ClusterIP
+
+login:
+  enabled: true
+  replicas: 2
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+
+  command: ['sh', '-c', 'update-ca-trust && /init']
+
+  sshd:
+    secretName: login-sshd-secret
+
+  nodeSelector:
+    topology.kubernetes.io/region: ch-sion
+    topology.kubernetes.io/zone: ch-sion-1
+
+  dnsPolicy: 'None'
+  dnsConfig:
+    nameservers:
+      - 10.96.0.10
+    searches:
+      - slurm-cluster.svc.cluster.local
+      - example.com
+    options:
+      - name: ndots
+        value: '0'
+
+  resources:
+    requests:
+      cpu: '100m'
+      memory: '256Mi'
+    limits:
+      memory: '1Gi'
+
+  # Extra volume mounts
+  volumeMounts:
+    - name: ca-cert
+      mountPath: /etc/pki/ca-trust/source/anchors/example.ca.pem
+      subPath: example.ca.pem
+    - name: ldap-users-pvc
+      mountPath: /home/ldap-users
+
+  # Extra volumes
+  volumes:
+    - name: ca-cert
+      secret:
+        secretName: local-ca-secret
+    - name: ldap-users-pvc
+      persistentVolumeClaim:
+        claimName: ldap-users-example-pvc
+  net:
+    # Kubernetes host interface
+    masterInterface: priv0
+    mode: l2
+    type: ipvlan
+
+    # https://www.cni.dev/plugins/current/ipam/static/
+    ipam:
+      type: host-local
+      ranges:
+        - - subnet: 192.168.0.0/24
+            rangeStart: 192.168.0.20
+            rangeEnd: 192.168.0.21
+            gateway: 192.168.0.1
+      routes:
+        - dst: 192.168.0.0/24 # west1
+
+  rest:
+    enabled: true
+    command: ['sh', '-c', 'update-ca-trust && /init']
+
+    resources:
+      requests:
+        cpu: '100m'
+        memory: '128Mi'
+      limits:
+        memory: '256Mi'
+
+    # Extra volume mounts
+    volumeMounts:
+      - name: ca-cert
+        mountPath: /etc/pki/ca-trust/source/anchors/example.ca.pem
+        subPath: example.ca.pem
+
+db:
+  enabled: true
+
+  command: ['sh', '-c', 'update-ca-trust && /init']
+
+  config:
+    secretName: 'slurmdbd-example-conf-secret'
+
+  resources:
+    requests:
+      cpu: '100m'
+      memory: '128Mi'
+    limits:
+      memory: '256Mi'
+
+  volumeMounts:
+    - name: ca-cert
+      mountPath: /etc/pki/ca-trust/source/anchors/example.ca.pem
+      subPath: example.ca.pem
+
+  volumes:
+    - name: ca-cert
+      secret:
+        secretName: local-ca-secret
+
+  nodeSelector:
+    topology.kubernetes.io/region: ch-sion
+    topology.kubernetes.io/zone: ch-sion-1

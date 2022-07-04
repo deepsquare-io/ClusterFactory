@@ -1,0 +1,40 @@
+image:
+  repository: datadog/squid
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 3128
+  annotations: null
+
+ingress:
+  enabled: false
+  annotations: {}
+  paths:
+    - /
+  hosts: []
+  tls: []
+
+config:
+  - 'acl local_nodes src YOUR_CLIENT_IPS'
+  - 'acl stratum_ones dst cvmfs.ch1.deepsquare.run'
+  - 'http_port 3128'
+  - 'http_access allow stratum_ones'
+  - 'http_access allow local_nodes'
+  - 'http_access allow localhost'
+  - 'http_access deny all'
+  - 'collapsed_forwarding on'
+  - 'minimum_expiry_time 0'
+  - 'maximum_object_size 1024 MB'
+  - 'cache_mem 128 MB'
+  - 'maximum_object_size_in_memory 128 KB'
+  - 'cache_dir ufs /var/spool/squid 50000 16 256'
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
