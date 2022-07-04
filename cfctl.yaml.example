@@ -84,7 +84,7 @@ spec:
             charts:
               - name: metallb
                 chartname: bitnami/metallb
-                version: '3.0.9'
+                version: '3.0.10'
                 namespace: metallb
                 values: |
                   configInline:
@@ -105,7 +105,7 @@ spec:
 
               - name: traefik
                 chartname: traefik/traefik
-                version: '10.23.0'
+                version: '10.24.0'
                 namespace: traefik
                 values: |
                   deployment:
@@ -211,7 +211,7 @@ spec:
 
               - name: csi-driver-nfs
                 chartname: csi-driver-nfs/csi-driver-nfs
-                version: 'v4.1.0'
+                version: 'v4.2.0'
                 namespace: csi-driver-nfs
                 values: |
                   driver:
