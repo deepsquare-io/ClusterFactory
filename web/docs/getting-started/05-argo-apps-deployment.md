@@ -257,7 +257,7 @@ spec:
     chart: kube-prometheus-stack
     repoURL: https://github.com/prometheus-community/helm-charts.git
     path: charts/kube-prometheus-stack/crds/
-    targetRevision: kube-prometheus-stack-36.2.0
+    targetRevision: kube-prometheus-stack-36.2.1
 
     directory:
       recurse: true
@@ -298,7 +298,7 @@ spec:
   source:
     chart: kube-prometheus-stack
     repoURL: https://prometheus-community.github.io/helm-charts
-    targetRevision: 36.2.0
+    targetRevision: 36.2.1
     helm:
       releaseName: prometheus
 
@@ -512,7 +512,7 @@ spec:
   source:
     chart: kube-prometheus-stack
     repoURL: https://prometheus-community.github.io/helm-charts
-    targetRevision: 36.2.0
+    targetRevision: 36.2.1
     helm:
       releaseName: prometheus
 

@@ -122,7 +122,7 @@ Your router must be capable of using BGP. If not, you should use an appliance wi
 ```yaml title="cfctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
 - name: metallb
   chartname: bitnami/metallb
-  version: '3.0.9'
+  version: '3.0.10'
   namespace: metallb
   values: |
 
@@ -155,7 +155,7 @@ Your router must be capable of using BGP. If not, you should use an appliance wi
 ```yaml title="cfctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
 - name: metallb
   chartname: bitnami/metallb
-  version: '3.0.9'
+  version: '3.0.10'
   namespace: metallb
   values: |
 
@@ -174,7 +174,7 @@ After configuring the Load Balancer, you should configure Traefik, the main Ingr
 ```yaml title="cfctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
 - name: traefik
   chartname: traefik/traefik
-  version: '10.23.0'
+  version: '10.24.0'
   namespace: traefik
   values: |
 
