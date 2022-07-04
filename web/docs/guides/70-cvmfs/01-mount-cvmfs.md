@@ -60,19 +60,48 @@ stringData:
 kubectl apply -f argo/cvmfs/secrets/cvmfs-keys-sealed-secret.yml
 ```
 
-## 3. Editing `cvmfs-service-app.yml` values
+## 3. Editing `cvmfs-service-app.yml` to use the fork
 
-### 3.a. Select the CVMFS repositories
+Change the `repoURL` to the URL used to pull the fork. Also add the `values-production.yaml` file to customize the values.
 
-```yaml title="argo/provisioning/apps/cvmfs-service-app.yml > spec > source > helm > values > repositories"
+```yaml title="argo/provisioning/apps/cvmfs-service-app.yml > spec > source"
+source:
+  # You should have forked this repo. Change the URL to your fork.
+  repoURL: git@github.com:<your account>/ClusterFactory-CE.git
+  targetRevision: HEAD
+  path: helm/cvmfs-service
+  helm:
+    releaseName: cvmfs-service
+
+    # Create a values file inside your fork and change the values.
+    valueFiles:
+      - values-production.yaml
+```
+
+## 4. Adding custom values to the chart
+
+:::tip
+
+Read the [`values.yaml`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/helm/cvmfs-service/values.yaml) to see all the default values.
+
+:::
+
+### 4.a. Create the values file
+
+Create the values file `values-production.yaml` inside the `helm/cvmfs-service/` directory.
+
+### 4.b. Select the CVMFS repositories
+
+```yaml title="helm/cvmfs-service/values-production.yaml"
 repositories:
   - name: software-sion-csquare-run
     repository: software.sion.csquare.run
 ```
 
-### 3.b. Configure the CVMFS client
+### 4.c. Configure the CVMFS client
 
-```yaml title="argo/provisioning/apps/cvmfs-service-app.yml > spec > source > helm > values > configs"
+```yaml title="helm/cvmfs-service/values-production.yaml"
+# ...
 configs:
   default.local:
     mountPath: default.local
@@ -85,16 +114,18 @@ configs:
       CVMFS_USER=root
 ```
 
-### 3.c. Configure the keys
+### 4.d. Configure the keys
 
-```yaml title="argo/provisioning/apps/cvmfs-service-app.yml > spec > source > helm > values > keys"
+```yaml title="helm/cvmfs-service/values-production.yaml"
+# ...
 keys:
   secretName: 'cvmfs-keys-secret'
 ```
 
 The keys will be mounted on the `/etc/cvmfs/keys` directory. If you wish to change the path of each key:
 
-```yaml title="argo/provisioning/apps/cvmfs-service-app.yml > spec > source > helm > values > keys"
+```yaml title="helm/cvmfs-service/values-production.yaml"
+#...
 keys:
   secretName: 'cvmfs-keys-secret'
   items:
@@ -104,24 +135,23 @@ keys:
 
 The key will be moved to the path `/etc/cvmfs/keys/sion.csquare.run/software.sion.csquare.run.pub`.
 
-### 3.d. Verify the default values.
+## 5. Deploy the CVMFS service
 
-Verify the default value inside the [git repository](https://github.com/SquareFactory/ClusterFactory-CE/tree/main/helm/cvmfs-service/values.yaml).
+Commit and push:
 
-You can change the `hostPath` if needed:
-
-```yaml title="argo/provisioning/apps/cvmfs-service-app.yml > spec > source > helm > values > persistence"
-persistence:
-  hostPath: /cvmfs
+```shell title="user@local:/ClusterFactory-CE"
+git add .
+git commit -m "Added CVMFS service"
+git push
 ```
 
-## 4. Deploy the CVMFS service
+And deploy the Argo CD application:
 
 ```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/provisioning/apps/cvmfs-service-app.yml
 ```
 
-## 5. Mount the repositories to a container
+## 6. Mount the repositories to a container
 
 ```yaml title="job.yaml"
 apiVersion: batch/v1

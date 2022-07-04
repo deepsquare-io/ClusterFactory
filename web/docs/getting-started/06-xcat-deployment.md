@@ -80,14 +80,16 @@ metadata:
 spec:
   project: provisioning
   source:
-    repoURL: git@github.com:squarefactory/ClusterFactory-CE.git
+    # You should have forked this repo. Change the URL to your fork.
+    repoURL: git@github.com:<your account>/ClusterFactory-CE.git
     targetRevision: HEAD
     path: helm/xcat
     helm:
       releaseName: xcat
 
-      values: |
-        ...
+      # We will create a values file inside the fork and change the values.
+      valueFiles:
+        - values-production.yaml
 
   destination:
     server: 'https://kubernetes.default.svc'
@@ -107,9 +109,9 @@ spec:
         maxDuration: 3m # the maximum amount of time allowed for the backoff strategy
 ```
 
-For the values:
+To edit the values, we won't need to use the subchart pattern because xCat is already defined inside the git repository. Add the `values-production.yaml` file directly inside the helm application:
 
-```yaml title="values-custom.yaml"
+```yaml title="helm/xcat/values-production.yaml"
 nodeSelector:
   topology.kubernetes.io/region: ch-sion
   topology.kubernetes.io/zone: ch-sion-1
@@ -164,6 +166,14 @@ IPVLAN allows us to directly expose the pod to the host network. To do that, you
 More details on IPAM [here](https://www.cni.dev/plugins/current/ipam/static/) and for IPVLAN [here](https://www.cni.dev/plugins/current/main/ipvlan/).
 
 This way, instead of using a Virtual Machine to deploy xCAT, you can use a container!
+
+Commit and push:
+
+```shell
+git add .
+git commit -m "Added xCAT application and values"
+git push
+```
 
 Deploy the app:
 

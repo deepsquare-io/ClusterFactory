@@ -255,13 +255,15 @@ metadata:
 spec:
   project: slurm-cluster
   source:
-    repoURL: git@github.com:squarefactory/ClusterFactory-CE.git
+   # You should have forked this repo. Change the URL to your fork.
+    repoURL: git@github.com:<FILL ME: your account>/ClusterFactory-CE.git
     targetRevision: HEAD
     path: helm/slurm-cluster
     helm:
       releaseName: slurm-cluster-<FILL ME: cluster name>
 
-      values: '' # FILL ME
+      valueFiles:
+        - values-<FILL ME: cluster name>.yaml
 
   destination:
     server: 'https://kubernetes.default.svc'
@@ -285,78 +287,77 @@ spec:
 
 Add:
 
-```yaml title="argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml > spec > source > helm > values"
-values: |
-  sssd:
-    secretName: sssd-secret
+```yaml title="helm/slurm-cluster/values-<cluster name>.yaml"
+sssd:
+  secretName: sssd-secret
 
-  munge:
-    secretName: munge-secret
+munge:
+  secretName: munge-secret
 
-  jwt:
-    secretName: slurm-secret
+jwt:
+  secretName: slurm-secret
 
-  slurmConfig:
-    clusterName: <FILL ME: cluster-name>
+slurmConfig:
+  clusterName: <FILL ME: cluster-name>
 
-    compute:
-      srunPortRangeStart: 60001
-      srunPortRangeEnd: 63000
-      debug: debug5
+  compute:
+    srunPortRangeStart: 60001
+    srunPortRangeEnd: 63000
+    debug: debug5
 
-    accounting: |
-      AccountingStorageType=accounting_storage/slurmdbd
-      AccountingStorageHost=slurm-cluster-<FILL ME: cluster name>.slurm-cluster.svc.cluster.local
-      AccountingStoragePort=6819
-      AccountingStorageTRES=gres/gpu
+  accounting: |
+    AccountingStorageType=accounting_storage/slurmdbd
+    AccountingStorageHost=slurm-cluster-<FILL ME: cluster name>.slurm-cluster.svc.cluster.local
+    AccountingStoragePort=6819
+    AccountingStorageTRES=gres/gpu
 
-    controller:
-      parameters: enable_configless
-      debug: debug5
+  controller:
+    parameters: enable_configless
+    debug: debug5
 
-    defaultResourcesAllocation: |
-      # Change accordingly
-      DefCpuPerGPU=4
-      DefMemPerCpu=7000
+  defaultResourcesAllocation: |
+    # Change accordingly
+    DefCpuPerGPU=4
+    DefMemPerCpu=7000
 
-    nodes: |
-      # Change accordingly
-      NodeName=cn[1-12]  CPUs=32 Boards=1 SocketsPerBoard=1 CoresPerSocket=16 ThreadsPerCore=2 RealMemory=128473 Gres=gpu:4
+  nodes: |
+    # Change accordingly
+    NodeName=cn[1-12]  CPUs=32 Boards=1 SocketsPerBoard=1 CoresPerSocket=16 ThreadsPerCore=2 RealMemory=128473 Gres=gpu:4
 
-    partitions: |
-      # Change accordingly
-      PartitionName=main Nodes=cn[1-12] Default=YES MaxTime=INFINITE State=UP OverSubscribe=NO TRESBillingWeights="CPU=2.6,Mem=0.25G,GRES/gpu=24.0"
+  partitions: |
+    # Change accordingly
+    PartitionName=main Nodes=cn[1-12] Default=YES MaxTime=INFINITE State=UP OverSubscribe=NO TRESBillingWeights="CPU=2.6,Mem=0.25G,GRES/gpu=24.0"
 
-    gres: |
-      # Change accordingly
-      NodeName=cn[1-12] File=/dev/nvidia[0-3] AutoDetect=nvml
+  gres: |
+    # Change accordingly
+    NodeName=cn[1-12] File=/dev/nvidia[0-3] AutoDetect=nvml
 
-    # Extra slurm.conf configuration
-    extra: |
-      LaunchParameters=enable_nss_slurm
-      DebugFlags=Script,Gang,SelectType
-      TCPTimeout=5
+  # Extra slurm.conf configuration
+  extra: |
+    LaunchParameters=enable_nss_slurm
+    DebugFlags=Script,Gang,SelectType
+    TCPTimeout=5
 
-      # MPI stacks running over Infiniband or OmniPath require the ability to allocate more
-      # locked memory than the default limit. Unfortunately, user processes on login nodes
-      # may have a small memory limit (check it by ulimit -a) which by default are propagated
-      # into Slurm jobs and hence cause fabric errors for MPI.
-      PropagateResourceLimitsExcept=MEMLOCK
+    # MPI stacks running over Infiniband or OmniPath require the ability to allocate more
+    # locked memory than the default limit. Unfortunately, user processes on login nodes
+    # may have a small memory limit (check it by ulimit -a) which by default are propagated
+    # into Slurm jobs and hence cause fabric errors for MPI.
+    PropagateResourceLimitsExcept=MEMLOCK
 
-      ProctrackType=proctrack/cgroup
-      TaskPlugin=task/cgroup
-      SwitchType=switch/none
-      MpiDefault=pmix_v2
-      ReturnToService=2
-      GresTypes=gpu
-      PreemptType=preempt/qos
-      PreemptMode=REQUEUE
-      PreemptExemptTime=-1
-      Prolog=/etc/slurm/prolog.d/*
-      Epilog=/etc/slurm/epilog.d/*
+    ProctrackType=proctrack/cgroup
+    TaskPlugin=task/cgroup
+    SwitchType=switch/none
+    MpiDefault=pmix_v2
+    ReturnToService=2
+    GresTypes=gpu
+    PreemptType=preempt/qos
+    PreemptMode=REQUEUE
+    PreemptExemptTime=-1
+    Prolog=/etc/slurm/prolog.d/*
+    Epilog=/etc/slurm/epilog.d/*
 
-      # Federation
-      FederationParameters=fed_display
+    # Federation
+    FederationParameters=fed_display
 ```
 
 ## 3. Slurm DB Deployment
@@ -413,11 +414,11 @@ kubectl apply -f argo/slurm-cluster/secrets/slurmdbd-conf-sealed-secret.yml
 
 ### 3.b. Values: Enable SLURM DB
 
-Edit the `slurm-cluster-<cluster name>-app.yml` values
+Edit the `elm/slurm-cluster/values-<cluster name>.yaml` values
 
 Let's add the values to deploy a SLURM DB.
 
-```yaml title="argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml > spec > source > helm > values"
+```yaml title="helm/slurm-cluster/values-<cluster name>.yaml"
 db:
   enabled: true
 
@@ -427,7 +428,7 @@ db:
 
 If you are using LDAPS and the CA is private:
 
-```yaml title="argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml > spec > source > helm > values"
+```yaml title="helm/slurm-cluster/values-<cluster name>.yaml"
 db:
   enabled: true
 
@@ -451,11 +452,18 @@ db:
 
 You can already deploy it:
 
+```shell
+git add .
+git commit -m "Added SLURM DB values"
+git push
+```
+
 ```shell title="user@local:/ClusterFactory-CE"
+# This is optional if the application is already deployed.
 kubectl apply -f argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml
 ```
 
-The service should be accessible at the address `slurm-cluster-<cluster name>-db-0.slurm-cluster.svc.cluster.local`.
+The service should be accessible at the address `slurm-cluster-<cluster name>-db-0.slurm-cluster.svc.cluster.local`. Use that URL in the slurm config.
 
 ## 4. Slurm Controller Deployment
 
@@ -549,7 +557,7 @@ Let's add the values to deploy a SLURM Controller.
 <Tabs groupId="volume">
   <TabItem value="storage-class" label="StorageClass (dynamic)" default>
 
-```yaml title="argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml > spec > source > helm > values"
+```yaml title="helm/slurm-cluster/values-<cluster name>.yaml"
 controller:
   enabled: true
 
@@ -574,7 +582,7 @@ controller:
   </TabItem>
   <TabItem value="persistent-volume" label="PersistentVolume (static)">
 
-```yaml title="argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml > spec > source > helm > values"
+```yaml title="helm/slurm-cluster/values-<cluster name>.yaml"
 controller:
   enabled: true
 
@@ -610,7 +618,7 @@ We might develop a HA setup in the future version of ClusterFactory.
 
 If you are using LDAPS and the CA is private, append these values:
 
-```yaml title="argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml > spec > source > helm > values"
+```yaml title="helm/slurm-cluster/values-<cluster name>.yaml"
 controller:
   # ...
   command: ['sh', '-c', 'update-ca-trust && /init']
@@ -630,14 +638,21 @@ controller:
 
 You can already deploy it:
 
+```shell
+git add .
+git commit -m "Added SLURM Controller values"
+git push
+```
+
 ```shell title="user@local:/ClusterFactory-CE"
+# This is optional if the application is already deployed.
 kubectl apply -f argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml
 ```
 
 :::note
 
 The SLURM controller is in host mode using `hostPort` so it can communicate with the bare-metal hosts. There
-is also a SLURM controller `Service` running for the internal communication (with Slurm DB and Slurm Login).
+is also a SLURM controller `Service` running for the internal communication with Slurm DB and Slurm Login.
 
 :::
 
@@ -711,7 +726,7 @@ firstboot --disable
 # Poweroff after the install is finished
 poweroff
 # Firewall
-firewall --enabled --service=ssh
+firewall --disable
 # Disable Initial Setup on first boot
 firstboot --disable
 ignoredisk --only-use=vda
@@ -986,20 +1001,26 @@ chmod 600 /etc/sssd/sssd.conf
 cat <<\END >/etc/systemd/system/slurmd.service
 [Unit]
 Description=Slurm node daemon
-After=network.target munge.service
+After=network.target munge.service remote-fs.target
+Wants=network-online.target
+
 [Service]
-Type=forking
+Type=simple
 EnvironmentFile=-/etc/default/slurmd
-ExecStartPre=/usr/bin/id slurm
 Restart=always
 RestartSec=3
-ExecStart=/usr/sbin/slurmd -d /usr/sbin/slurmstepd --conf-server slurmctl.example.com
+ExecStart=/usr/sbin/slurmd -D -d /usr/sbin/slurmstepd --conf-server $CONTROLLER_HOST
 ExecReload=/bin/kill -HUP $MAINPID
 PIDFile=/var/run/slurmd.pid
 KillMode=process
-LimitNOFILE=51200
+LimitNOFILE=131072
 LimitMEMLOCK=infinity
 LimitSTACK=infinity
+Delegate=yes
+
+StandardOutput=null
+StandardError=null
+
 [Install]
 WantedBy=multi-user.target
 END
@@ -1182,7 +1203,7 @@ kubectl apply -f argo/slurm-cluster/volumes/ldap-users-<cluster name>-pv.yml
 
 ### 6.b. Values: Enable SLURM Login
 
-```yaml title="argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml > spec > source > helm > values"
+```yaml title="helm/slurm-cluster/values-<cluster name>.yaml"
 login:
   enabled: true
   replicas: 1
@@ -1262,7 +1283,7 @@ The issue is tracked at [SquareFactory/ClusterFactory-CE#29](https://github.com/
 
 If you are using LDAPS and the CA is private, add these values:
 
-```yaml title="argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml > spec > source > helm > values"
+```yaml title="helm/slurm-cluster/values-<cluster name>.yaml"
 login:
   # ...
   command: ['sh', '-c', 'update-ca-trust && /init']
@@ -1287,7 +1308,14 @@ login:
 
 You can deploy it:
 
+```shell
+git add .
+git commit -m "Added SLURM Login values"
+git push
+```
+
 ```shell title="user@local:/ClusterFactory-CE"
+# This is optional if the application is already deployed.
 kubectl apply -f argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml
 ```
 

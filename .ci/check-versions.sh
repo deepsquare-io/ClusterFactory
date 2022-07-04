@@ -46,10 +46,10 @@ sed -Ei "s/targetRevision: .*\$/targetRevision: ${local_path_provisioner_version
 
 kube_prometheus_stack_version=$(curl -fsSL https://prometheus-community.github.io/helm-charts/index.yaml | yq '.entries.kube-prometheus-stack.[0].version')
 sed -Ei "s/kube_prometheus_stack_version=.*\$/kube_prometheus_stack_version=${kube_prometheus_stack_version}/g" "$script_path/version-lock"
-sed -Ei "s/targetRevision: .*\$/targetRevision: ${kube_prometheus_stack_version}/g" "$project_path/argo.example/monitoring/apps/prometheus-app.yml"
+sed -Ei "s/version: .*\$/version: ${kube_prometheus_stack_version}/g" "$project_path/helm-subcharts/kube-prometheus-stack/Chart.yaml"
 sed -Ei "s/targetRevision: .*\$/targetRevision: kube-prometheus-stack-${kube_prometheus_stack_version}/g" "$project_path/argo.example/monitoring/apps/prometheus-crd-app.yml"
+sed -Ei "s/version: .*\$/version: ${kube_prometheus_stack_version}/g" "$project_path/web/docs/getting-started/05-argo-apps-deployment.md"
 sed -Ei "s/targetRevision: kube-prometheus-stack-.*\$/targetRevision: kube-prometheus-stack-${kube_prometheus_stack_version}/g" "$project_path/web/docs/getting-started/05-argo-apps-deployment.md"
-sed -Ei "s/targetRevision: [0-9].*\$/targetRevision: ${kube_prometheus_stack_version}/g" "$project_path/web/docs/getting-started/05-argo-apps-deployment.md"
 
 # cfctl.yaml
 k0s_version=$(curl -H "Authorization: token ${TOKEN}" -fsSL https://api.github.com/repos/k0sproject/k0s/releases/latest | jq -r '.tag_name' | tr -d 'v')

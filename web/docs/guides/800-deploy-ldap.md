@@ -215,13 +215,41 @@ cfctl apply --debug --config cfctl.yaml
 kubectl apply -f argo/ldap/ingresses/ingress-routes-tcp.yaml
 ```
 
-## 3. Editing the `openldap-app.yml` values
+## 3. Editing `openldap-app.yml` to use the fork
 
-### 3.a. Configure the OpenLDAP environment variables
+Change the `repoURL` to the URL used to pull the fork. Also add the `values-production.yaml` file to customize the values.
+
+```yaml title="argo.example/ldap/apps/openldap-app.yml > spec > source"
+source:
+  # You should have forked this repo. Change the URL to your fork.
+  repoURL: git@github.com:<your account>/ClusterFactory-CE.git
+  targetRevision: HEAD
+  path: helm/openldap
+  helm:
+    releaseName: openldap
+
+    # Create a values file inside your fork and change the values.
+    valueFiles:
+      - values-production.yaml
+```
+
+## 4. Adding custom values to the chart
+
+:::tip
+
+Read the [`values.yaml`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/helm/openldap/values.yaml) to see all the default values.
+
+:::
+
+### 4.a. Create the values file
+
+Create the values file `values-production.yaml` inside the `helm/openldap/` directory.
+
+### 4.b. Configure the OpenLDAP environment variables
 
 Edit the `env` field according to you needs:
 
-```yaml title="argo/ldap/apps/openldap-app.yml > spec > source > helm > values > env"
+```yaml title="helm/openldap/values-production.yaml"
 env:
   BITNAMI_DEBUG: 'true'
   LDAP_ROOT: 'dc=example,dc=org'
@@ -238,12 +266,13 @@ env:
   LDAP_LOGLEVEL: '256'
 ```
 
-### 3.b. Mount the volume
+### 4.c. Mount the volume
 
 <Tabs groupId="volume">
   <TabItem value="storage-class" label="StorageClass (dynamic)" default>
 
-```yaml title="argo/ldap/apps/openldap-app.yml > spec > source > helm > values > env"
+```yaml title="helm/openldap/values-production.yaml"
+# ...
 persistence:
   storageClassName: 'openldap-nfs'
 ```
@@ -251,7 +280,8 @@ persistence:
   </TabItem>
   <TabItem value="persistent-volume" label="PersistentVolume (static)">
 
-```yaml title="argo/ldap/apps/openldap-app.yml > spec > source > helm > values > env"
+```yaml title="helm/openldap/values-production.yaml"
+# ...
 persistence:
   selectorLabels:
     app: ldap
@@ -260,11 +290,17 @@ persistence:
   </TabItem>
 </Tabs>
 
-### 3.c. Verify the default values
-
-Verify the default value inside the [git repository](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/helm/openldap/values.yaml).
-
 ## 4. Deploy the app
+
+Commit and push:
+
+```shell title="user@local:/ClusterFactory-CE"
+git add .
+git commit -m "Added OpenLDAP service"
+git push
+```
+
+And deploy the Argo CD application:
 
 ```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/ldap/apps/openldap-app.yml

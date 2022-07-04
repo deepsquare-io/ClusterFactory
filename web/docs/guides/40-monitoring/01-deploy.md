@@ -216,14 +216,40 @@ stringData:
 kubectl apply -f argo/monitoring/secrets/grafana-admin-sealed-secret.yaml
 ```
 
-## 3. Editing the `prometheus-app.yml` values
+## 3. Editing `prometheus-app.yml` to use the fork
 
-### 3.a. Add the values to the Argo CD application
+Replace the `repoURL` with the url of your fork:
+
+```yaml title="argo/monitoring/apps/prometheus-app.yml > spec > source"
+source:
+  # You should have forked this repo. Change the URL to your fork.
+  repoURL: git@github.com:<your account>/ClusterFactory-CE.git
+  targetRevision: HEAD
+  path: helm-subcharts/kube-prometheus-stack
+  helm:
+    releaseName: prometheus
+
+    skipCrds: true
+
+    # If the values file is not `values.yaml`:
+    # valueFiles:
+    #   - values-example.yaml
+```
+
+## 4. Add the values file to the subchart
+
+:::tip
+
+Read the [`values.yaml`](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml) to see all the default values.
+
+:::
+
+Create a `values.yaml` inside the `helm-subcharts/kube-prometheus-stack` directory.
 
 <Tabs groupId="volume">
   <TabItem value="storage-class" label="StorageClass (dynamic)" default>
 
-```yaml title="argo/monitoring/apps/prometheus-app.yml > spec > source > helm > values"
+```yaml title="helm-subcharts/kube-prometheus-stack/values.yaml"
 alertmanager:
   enabled: false
 
@@ -381,7 +407,7 @@ prometheus:
   </TabItem>
   <TabItem value="persistent-volume" label="PersistentVolume (static)">
 
-```yaml title="argo/monitoring/apps/prometheus-app.yml > spec > source > helm > values"
+```yaml title="helm-subcharts/kube-prometheus-stack/values.yaml"
 alertmanager:
   enabled: false
 
@@ -563,13 +589,17 @@ chown 1000:2000 /srv/nfs/k8s/prometheus
 
 :::
 
-### 3.b. Verify the default values.
+## 5. Deploy the app
 
-Verify the default value inside the [the Prometheus Community Git Repository](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml).
+Commit and push:
 
-And edit the values based on your use-cases.
+```shell title="user@local:/ClusterFactory-CE"
+git add .
+git commit -m "Added Prometheus stack application and values"
+git push
+```
 
-## 4. Deploy the app
+And deploy:
 
 ```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/monitoring/apps/prometheus-crd-app.yml

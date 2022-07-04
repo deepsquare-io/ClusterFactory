@@ -257,7 +257,7 @@ spec:
     chart: kube-prometheus-stack
     repoURL: https://github.com/prometheus-community/helm-charts.git
     path: charts/kube-prometheus-stack/crds/
-    targetRevision: kube-prometheus-stack-36.2.0
+    targetRevision: kube-prometheus-stack-36.2.1
 
     directory:
       recurse: true
@@ -281,9 +281,27 @@ spec:
         maxDuration: 3m # the maximum amount of time allowed for the backoff strategy
 ```
 
-Then, we need to configure the Argo CD application which actually deploys the kube-prometheus-stack.
+Next, we need to configure the Argo CD application that actually deploys the kube-prometheus stack.
 
-Basically:
+However, in order to apply custom values and still be GitOps compliant, we will need to use the [subchart](https://helm.sh/docs/chart_template_guide/subcharts_and_globals/) pattern.
+
+To do that, in your fork, create a subchart or reuse the existing one:
+
+```yaml title="helm-subcharts/kube-prometheus-stack/Chart.yaml"
+apiVersion: v2
+name: kube-prometheus-stack-subchart
+description: Kube Prometheus Stack subchart
+type: application
+version: 36.2.1
+appVersion: '0.1.2'
+
+dependencies:
+  - name: kube-prometheus-stack
+    version: 36.2.1
+    repository: https://prometheus-community.github.io/helm-charts
+```
+
+We will create the `values.yaml` file later on. Create the Argo CD Application which will use the subchart:
 
 ```yaml title="argo/my-monitoring/prometheus-app.yml"
 apiVersion: argoproj.io/v1alpha1
@@ -296,15 +314,18 @@ metadata:
 spec:
   project: my-monitoring
   source:
-    chart: kube-prometheus-stack
-    repoURL: https://prometheus-community.github.io/helm-charts
-    targetRevision: 36.2.0
+    # You should have forked this repo. Change the URL to your fork.
+    repoURL: git@github.com:<your account>/ClusterFactory-CE.git
+    targetRevision: HEAD
+    path: helm-subcharts/kube-prometheus-stack
     helm:
       releaseName: prometheus
 
       skipCrds: true # skipCrds because CRDs are too long!
 
-      values: '' # ! We are going to FILL HERE later
+      # If the values file is not `values.yaml`:
+      # valueFiles:
+      #   - values-example.yaml
 
   destination:
     server: 'https://kubernetes.default.svc'
@@ -326,11 +347,11 @@ spec:
 
 More details [here](https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/application.yaml).
 
-Since [Kube-Prometheus-Stack](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml) is a Helm application, we are going to override some values in the `values` field.
+Since [Kube-Prometheus-Stack](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml) is a Helm application, we are going to override some values by creating a `values.yaml` file inside the subchart.
 
 We are also going to configure the Ingresses here.
 
-```yaml title="values-custom.yaml"
+```yaml title="helm-subcharts/kube-prometheus-stack/values.yaml"
 alertmanager:
   enabled: false
 
@@ -497,40 +518,15 @@ prometheus:
               storage: 50Gi
 ```
 
-All the content should go inside the `prometheus-app.yaml`:
+Now, you can commit and push:
 
-```yaml title="argo/my-monitoring/prometheus-app.yml"
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: prometheus-app
-  namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
-spec:
-  project: my-monitoring
-  source:
-    chart: kube-prometheus-stack
-    repoURL: https://prometheus-community.github.io/helm-charts
-    targetRevision: 36.2.0
-    helm:
-      releaseName: prometheus
-
-      # (put the content of values-custom.yaml here)
-      values: |
-
-        alertmanager:
-          enabled: false
-
-        ## Using default values from https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
-        ##
-        grafana:
-          enabled: true
-
-        ...
+```shell title="user@local:/ClusterFactory-CE"
+git add .
+git commit -m "Added kube-prometheus-stack subchart"
+git push
 ```
 
-Now, just deploy the Argo CD app:
+You can deploy the Argo CD app:
 
 ```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/my-monitoring/prometheus-crd-app.yml
