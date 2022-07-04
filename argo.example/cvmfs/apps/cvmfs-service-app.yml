@@ -8,44 +8,17 @@ metadata:
 spec:
   project: cvmfs
   source:
+    # You should have forked this repo. Change the URL to your fork.
     repoURL: git@github.com:squarefactory/ClusterFactory-CE.git
     targetRevision: HEAD
     path: helm/cvmfs-service
     helm:
       releaseName: cvmfs-service
 
-      values: |
-        dnsPolicy: "None"
-        dnsConfig:
-          nameservers:
-            - 10.96.0.10
-          searches:
-            - ch1.example.com
-          options:
-            - name: ndots
-              value: "0"
-
-        repositories:
-          - name: software-sion-csquare-run
-            repository: software.sion.csquare.run
-          - name: unpacked-sion-csquare-run
-            repository: unpacked.sion.csquare.run
-          - name: stdenv-sion-csquare-run
-            repository: stdenv.sion.csquare.run
-
-        configs:
-          default.local:
-            mountPath: default.local
-            contents: |
-              CVMFS_QUOTA_LIMIT=-1
-              CVMFS_USE_GEOAPI=no
-              CVMFS_HTTP_PROXY="DIRECT"
-              CVMFS_KEYS_DIR="/etc/cvmfs/keys"
-              CVMFS_SERVER_URL="http://cvmfs.ch1.deepsquare.run/cvmfs/@fqrn@"
-              CVMFS_USER=root
-
-        keys:
-          secretName: 'sion-csquare-run-keys-secret'
+      # Create a values file inside your fork and change the values.
+      valueFiles:
+        []
+        # - values-example.yaml
 
   destination:
     server: 'https://kubernetes.default.svc'

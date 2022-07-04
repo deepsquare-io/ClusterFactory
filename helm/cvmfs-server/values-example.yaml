@@ -1,0 +1,42 @@
+replicas: 1
+
+dnsPolicy: 'None'
+dnsConfig:
+  nameservers:
+    - 10.96.0.10
+  searches:
+    - slurm-cluster.svc.cluster.local
+    - example.com
+  options:
+    - name: ndots
+      value: '0'
+
+nodeSelector:
+  kubernetes.io/hostname: mn1.example.com
+  topology.kubernetes.io/region: ch-sion
+  topology.kubernetes.io/zone: ch-sion-1
+
+config:
+  replicas:
+    - name: stdenv.sion.csquare.run
+      url: http://cvmfs.ch1.deepsquare.run/cvmfs/stdenv.sion.csquare.run
+      keys: /etc/cvmfs/keys/sion.csquare.run
+      options: '-o root'
+
+volumeMounts:
+  - name: sion-csquare-run-keys
+    mountPath: /etc/cvmfs/keys/sion.csquare.run/stdenv.sion.csquare.run.pub
+    subPath: stdenv.sion.csquare.run.pub
+    readOnly: true
+
+volumes:
+  - name: sion-csquare-run-keys
+    secret:
+      secretName: sion-csquare-run-keys-secret
+      defaultMode: 256
+
+state:
+  storageClassName: 'local-path'
+
+storage:
+  storageClassName: 'local-path'

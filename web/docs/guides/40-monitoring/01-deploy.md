@@ -216,325 +216,353 @@ stringData:
 kubectl apply -f argo/monitoring/secrets/grafana-admin-sealed-secret.yaml
 ```
 
-## 3. Editing the `prometheus-app.yml` values
+## 3. Editing `prometheus-app.yml` to use the fork
 
-### 3.a. Add the values to the Argo CD application
+Replace the `repoURL` with the url of your fork:
+
+```yaml title="argo/monitoring/apps/prometheus-app.yml > spec > source"
+source:
+  # You should have forked this repo. Change the URL to your fork.
+  repoURL: git@github.com:<your account>/ClusterFactory-CE.git
+  targetRevision: HEAD
+  path: helm-subcharts/kube-prometheus-stack
+  helm:
+    releaseName: prometheus
+
+    skipCrds: true
+
+    # If the values file is not `values.yaml`:
+    # valueFiles:
+    #   - values-example.yaml
+```
+
+## 4. Add the values file to the subchart
+
+:::tip
+
+Read the [`values.yaml`](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml) to see all the default values.
+
+:::
+
+Create a `values.yaml` inside the `helm-subcharts/kube-prometheus-stack` directory.
 
 <Tabs groupId="volume">
   <TabItem value="storage-class" label="StorageClass (dynamic)" default>
 
-```yaml title="argo/monitoring/apps/prometheus-app.yml > spec > source > helm > values"
-alertmanager:
-  enabled: false
-
-grafana:
-  enabled: true
-
-  image:
-    repository: grafana/grafana-oss
-    tag: 8.4.5
-
-  persistence:
-    type: pvc
-    enabled: true
-    storageClassName: grafana-nfs
-
-  securityContext:
-    runAsUser: 472
-    runAsGroup: 472
-    fsGroup: 472
-
-  admin:
-    existingSecret: 'grafana-admin-secret'
-    userKey: admin-user
-    passwordKey: admin-password
-
-  initChownData:
+```yaml title="helm-subcharts/kube-prometheus-stack/values.yaml"
+kube-prometheus-stack:
+  alertmanager:
     enabled: false
 
-  ingress:
-    enabled: true
-    ingressClassName: traefik
-
-    annotations:
-      cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
-      traefik.ingress.kubernetes.io/router.entrypoints: websecure
-      traefik.ingress.kubernetes.io/router.tls: 'true'
-
-    hosts:
-      - grafana.example.com
-
-    path: /
-
-    tls:
-      - secretName: grafana.example.com-secret
-        hosts:
-          - grafana.example.com
-
-## Component scraping the kube controller manager
-##
-kubeControllerManager:
-  enabled: false
-
-## Component scraping coreDns. Use either this or kubeDns
-##
-coreDns:
-  enabled: false
-
-## Component scraping kubeDns. Use either this or coreDns
-##
-kubeDns:
-  enabled: false
-
-## Component scraping etcd
-##
-kubeEtcd:
-  enabled: false
-
-## Component scraping kube scheduler
-##
-kubeScheduler:
-  enabled: false
-
-## Component scraping kube proxy
-##
-kubeProxy:
-  enabled: false
-
-## Component scraping kube state metrics
-##
-kubeStateMetrics:
-  enabled: true
-
-## Configuration for kube-state-metrics subchart
-##
-kube-state-metrics:
-  prometheus:
-    monitor:
-      enabled: true
-
-## Deploy node exporter as a daemonset to all nodes
-##
-nodeExporter:
-  enabled: true
-
-## Configuration for prometheus-node-exporter subchart
-##
-prometheus-node-exporter:
-  prometheus:
-    monitor:
-      enabled: true
-
-## Manages Prometheus and Alertmanager components
-##
-prometheusOperator:
-  enabled: true
-
-## Deploy a Prometheus instance
-##
-prometheus:
-  enabled: true
-
-  ingress:
+  grafana:
     enabled: true
 
-    annotations:
-      cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
-      traefik.ingress.kubernetes.io/router.entrypoints: websecure
-      traefik.ingress .kubernetes.io/router.tls: 'true'
+    image:
+      repository: grafana/grafana-oss
+      tag: 8.4.5
 
-    hosts:
-      - prometheus.example.com
+    persistence:
+      type: pvc
+      enabled: true
+      storageClassName: grafana-nfs
 
-    paths:
-      - /
+    securityContext:
+      runAsUser: 472
+      runAsGroup: 472
+      fsGroup: 472
 
-    tls:
-      - secretName: prometheus.example.com-secret
-        hosts:
-          - prometheus.example.com
+    admin:
+      existingSecret: 'grafana-admin-secret'
+      userKey: admin-user
+      passwordKey: admin-password
 
-  prometheusSpec:
-    ruleSelectorNilUsesHelmValues: false
-    serviceMonitorSelectorNilUsesHelmValues: false
-    podMonitorSelectorNilUsesHelmValues: false
-    probeSelectorNilUsesHelmValues: false
+    initChownData:
+      enabled: false
 
-    resources:
-      limits:
-        cpu: 1
-        memory: 2Gi
-      requests:
-        cpu: 200m
-        memory: 2Gi
+    ingress:
+      enabled: true
+      ingressClassName: traefik
 
-    storageSpec:
-      volumeClaimTemplate:
-        spec:
-          storageClassName: 'prometheus-nfs'
-          accessModes: ['ReadWriteOnce']
-          resources:
-            requests:
-              storage: 50Gi
+      annotations:
+        cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
+        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+        traefik.ingress.kubernetes.io/router.tls: 'true'
+
+      hosts:
+        - grafana.example.com
+
+      path: /
+
+      tls:
+        - secretName: grafana.example.com-secret
+          hosts:
+            - grafana.example.com
+
+  ## Component scraping the kube controller manager
+  ##
+  kubeControllerManager:
+    enabled: false
+
+  ## Component scraping coreDns. Use either this or kubeDns
+  ##
+  coreDns:
+    enabled: false
+
+  ## Component scraping kubeDns. Use either this or coreDns
+  ##
+  kubeDns:
+    enabled: false
+
+  ## Component scraping etcd
+  ##
+  kubeEtcd:
+    enabled: false
+
+  ## Component scraping kube scheduler
+  ##
+  kubeScheduler:
+    enabled: false
+
+  ## Component scraping kube proxy
+  ##
+  kubeProxy:
+    enabled: false
+
+  ## Component scraping kube state metrics
+  ##
+  kubeStateMetrics:
+    enabled: true
+
+  ## Configuration for kube-state-metrics subchart
+  ##
+  kube-state-metrics:
+    prometheus:
+      monitor:
+        enabled: true
+
+  ## Deploy node exporter as a daemonset to all nodes
+  ##
+  nodeExporter:
+    enabled: true
+
+  ## Configuration for prometheus-node-exporter subchart
+  ##
+  prometheus-node-exporter:
+    prometheus:
+      monitor:
+        enabled: true
+
+  ## Manages Prometheus and Alertmanager components
+  ##
+  prometheusOperator:
+    enabled: true
+
+  ## Deploy a Prometheus instance
+  ##
+  prometheus:
+    enabled: true
+
+    ingress:
+      enabled: true
+
+      annotations:
+        cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
+        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+        traefik.ingress .kubernetes.io/router.tls: 'true'
+
+      hosts:
+        - prometheus.example.com
+
+      paths:
+        - /
+
+      tls:
+        - secretName: prometheus.example.com-secret
+          hosts:
+            - prometheus.example.com
+
+    prometheusSpec:
+      ruleSelectorNilUsesHelmValues: false
+      serviceMonitorSelectorNilUsesHelmValues: false
+      podMonitorSelectorNilUsesHelmValues: false
+      probeSelectorNilUsesHelmValues: false
+
+      resources:
+        limits:
+          cpu: 1
+          memory: 2Gi
+        requests:
+          cpu: 200m
+          memory: 2Gi
+
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: 'prometheus-nfs'
+            accessModes: ['ReadWriteOnce']
+            resources:
+              requests:
+                storage: 50Gi
 ```
 
   </TabItem>
   <TabItem value="persistent-volume" label="PersistentVolume (static)">
 
-```yaml title="argo/monitoring/apps/prometheus-app.yml > spec > source > helm > values"
-alertmanager:
-  enabled: false
-
-grafana:
-  enabled: true
-
-  image:
-    repository: grafana/grafana-oss
-    tag: 8.4.5
-
-  persistence:
-    type: pvc
-    enabled: true
-    existingClaim: grafana-pv-claim
-
-  securityContext:
-    runAsUser: 472
-    runAsGroup: 472
-    fsGroup: 472
-
-  admin:
-    existingSecret: 'grafana-admin-secret'
-    userKey: admin-user
-    passwordKey: admin-password
-
-  initChownData:
+```yaml title="helm-subcharts/kube-prometheus-stack/values.yaml"
+kube-prometheus-stack:
+  alertmanager:
     enabled: false
 
-  ingress:
-    enabled: true
-    ingressClassName: traefik
-
-    annotations:
-      cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
-      traefik.ingress.kubernetes.io/router.entrypoints: websecure
-      traefik.ingress.kubernetes.io/router.tls: 'true'
-
-    hosts:
-      - grafana.example.com
-
-    path: /
-
-    tls:
-      - secretName: grafana.example.com-secret
-        hosts:
-          - grafana.example.com
-
-## Component scraping the kube controller manager
-##
-kubeControllerManager:
-  enabled: false
-
-## Component scraping coreDns. Use either this or kubeDns
-##
-coreDns:
-  enabled: false
-
-## Component scraping kubeDns. Use either this or coreDns
-##
-kubeDns:
-  enabled: false
-
-## Component scraping etcd
-##
-kubeEtcd:
-  enabled: false
-
-## Component scraping kube scheduler
-##
-kubeScheduler:
-  enabled: false
-
-## Component scraping kube proxy
-##
-kubeProxy:
-  enabled: false
-
-## Component scraping kube state metrics
-##
-kubeStateMetrics:
-  enabled: true
-
-## Configuration for kube-state-metrics subchart
-##
-kube-state-metrics:
-  prometheus:
-    monitor:
-      enabled: true
-
-## Deploy node exporter as a daemonset to all nodes
-##
-nodeExporter:
-  enabled: true
-
-## Configuration for prometheus-node-exporter subchart
-##
-prometheus-node-exporter:
-  prometheus:
-    monitor:
-      enabled: true
-
-## Manages Prometheus and Alertmanager components
-##
-prometheusOperator:
-  enabled: true
-
-## Deploy a Prometheus instance
-##
-prometheus:
-  enabled: true
-
-  ingress:
+  grafana:
     enabled: true
 
-    annotations:
-      cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
-      traefik.ingress.kubernetes.io/router.entrypoints: websecure
-      traefik.ingress .kubernetes.io/router.tls: 'true'
+    image:
+      repository: grafana/grafana-oss
+      tag: 8.4.5
 
-    hosts:
-      - prometheus.example.com
+    persistence:
+      type: pvc
+      enabled: true
+      existingClaim: grafana-pv-claim
 
-    paths:
-      - /
+    securityContext:
+      runAsUser: 472
+      runAsGroup: 472
+      fsGroup: 472
 
-    tls:
-      - secretName: prometheus.example.com-secret
-        hosts:
-          - prometheus.example.com
+    admin:
+      existingSecret: 'grafana-admin-secret'
+      userKey: admin-user
+      passwordKey: admin-password
 
-  prometheusSpec:
-    ruleSelectorNilUsesHelmValues: false
-    serviceMonitorSelectorNilUsesHelmValues: false
-    podMonitorSelectorNilUsesHelmValues: false
-    probeSelectorNilUsesHelmValues: false
+    initChownData:
+      enabled: false
 
-    resources:
-      limits:
-        cpu: 1
-        memory: 2Gi
-      requests:
-        cpu: 200m
-        memory: 2Gi
+    ingress:
+      enabled: true
+      ingressClassName: traefik
 
-    storageSpec:
-      volumeClaimTemplate:
-        spec:
-          volumeName: 'prometheus-pv'
-          storageClassName: ''
-          accessModes: ['ReadWriteOnce']
-          resources:
-            requests:
-              storage: 50Gi
+      annotations:
+        cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
+        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+        traefik.ingress.kubernetes.io/router.tls: 'true'
+
+      hosts:
+        - grafana.example.com
+
+      path: /
+
+      tls:
+        - secretName: grafana.example.com-secret
+          hosts:
+            - grafana.example.com
+
+  ## Component scraping the kube controller manager
+  ##
+  kubeControllerManager:
+    enabled: false
+
+  ## Component scraping coreDns. Use either this or kubeDns
+  ##
+  coreDns:
+    enabled: false
+
+  ## Component scraping kubeDns. Use either this or coreDns
+  ##
+  kubeDns:
+    enabled: false
+
+  ## Component scraping etcd
+  ##
+  kubeEtcd:
+    enabled: false
+
+  ## Component scraping kube scheduler
+  ##
+  kubeScheduler:
+    enabled: false
+
+  ## Component scraping kube proxy
+  ##
+  kubeProxy:
+    enabled: false
+
+  ## Component scraping kube state metrics
+  ##
+  kubeStateMetrics:
+    enabled: true
+
+  ## Configuration for kube-state-metrics subchart
+  ##
+  kube-state-metrics:
+    prometheus:
+      monitor:
+        enabled: true
+
+  ## Deploy node exporter as a daemonset to all nodes
+  ##
+  nodeExporter:
+    enabled: true
+
+  ## Configuration for prometheus-node-exporter subchart
+  ##
+  prometheus-node-exporter:
+    prometheus:
+      monitor:
+        enabled: true
+
+  ## Manages Prometheus and Alertmanager components
+  ##
+  prometheusOperator:
+    enabled: true
+
+  ## Deploy a Prometheus instance
+  ##
+  prometheus:
+    enabled: true
+
+    ingress:
+      enabled: true
+
+      annotations:
+        cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
+        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+        traefik.ingress .kubernetes.io/router.tls: 'true'
+
+      hosts:
+        - prometheus.example.com
+
+      paths:
+        - /
+
+      tls:
+        - secretName: prometheus.example.com-secret
+          hosts:
+            - prometheus.example.com
+
+    prometheusSpec:
+      ruleSelectorNilUsesHelmValues: false
+      serviceMonitorSelectorNilUsesHelmValues: false
+      podMonitorSelectorNilUsesHelmValues: false
+      probeSelectorNilUsesHelmValues: false
+
+      resources:
+        limits:
+          cpu: 1
+          memory: 2Gi
+        requests:
+          cpu: 200m
+          memory: 2Gi
+
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            volumeName: 'prometheus-pv'
+            storageClassName: ''
+            accessModes: ['ReadWriteOnce']
+            resources:
+              requests:
+                storage: 50Gi
 ```
 
   </TabItem>
@@ -563,13 +591,17 @@ chown 1000:2000 /srv/nfs/k8s/prometheus
 
 :::
 
-### 3.b. Verify the default values.
+## 5. Deploy the app
 
-Verify the default value inside the [the Prometheus Community Git Repository](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml).
+Commit and push:
 
-And edit the values based on your use-cases.
+```shell title="user@local:/ClusterFactory-CE"
+git add .
+git commit -m "Added Prometheus stack application and values"
+git push
+```
 
-## 4. Deploy the app
+And deploy:
 
 ```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/monitoring/apps/prometheus-crd-app.yml

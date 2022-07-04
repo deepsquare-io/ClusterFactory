@@ -281,9 +281,27 @@ spec:
         maxDuration: 3m # the maximum amount of time allowed for the backoff strategy
 ```
 
-Then, we need to configure the Argo CD application which actually deploys the kube-prometheus-stack.
+Next, we need to configure the Argo CD application that actually deploys the kube-prometheus stack.
 
-Basically:
+However, in order to apply custom values and still be GitOps compliant, we will need to use the [subchart](https://helm.sh/docs/chart_template_guide/subcharts_and_globals/) pattern.
+
+To do that, in your fork, create a subchart or reuse the existing one:
+
+```yaml title="helm-subcharts/kube-prometheus-stack/Chart.yaml"
+apiVersion: v2
+name: kube-prometheus-stack-subchart
+description: Kube Prometheus Stack subchart
+type: application
+version: 36.2.1
+appVersion: '0.1.2'
+
+dependencies:
+  - name: kube-prometheus-stack
+    version: 36.2.1
+    repository: https://prometheus-community.github.io/helm-charts
+```
+
+We will create the `values.yaml` file later on. Create the Argo CD Application which will use the subchart:
 
 ```yaml title="argo/my-monitoring/prometheus-app.yml"
 apiVersion: argoproj.io/v1alpha1
@@ -296,15 +314,18 @@ metadata:
 spec:
   project: my-monitoring
   source:
-    chart: kube-prometheus-stack
-    repoURL: https://prometheus-community.github.io/helm-charts
-    targetRevision: 36.2.1
+    # You should have forked this repo. Change the URL to your fork.
+    repoURL: git@github.com:<your account>/ClusterFactory-CE.git
+    targetRevision: HEAD
+    path: helm-subcharts/kube-prometheus-stack
     helm:
       releaseName: prometheus
 
       skipCrds: true # skipCrds because CRDs are too long!
 
-      values: '' # ! We are going to FILL HERE later
+      # If the values file is not `values.yaml`:
+      # valueFiles:
+      #   - values-example.yaml
 
   destination:
     server: 'https://kubernetes.default.svc'
@@ -326,211 +347,187 @@ spec:
 
 More details [here](https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/application.yaml).
 
-Since [Kube-Prometheus-Stack](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml) is a Helm application, we are going to override some values in the `values` field.
+Since [Kube-Prometheus-Stack](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml) is a Helm application, we are going to override some values by creating a `values.yaml` file inside the subchart.
 
 We are also going to configure the Ingresses here.
 
-```yaml title="values-custom.yaml"
-alertmanager:
-  enabled: false
-
-## Using default values from https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
-##
-grafana:
-  enabled: true
-
-  image:
-    repository: grafana/grafana-oss
-    tag: 8.5.1
-
-  persistence:
-    type: pvc
-    enabled: true
-    storageClassName: grafana-nfs
-
-  securityContext:
-    runAsUser: 472
-    runAsGroup: 472
-    fsGroup: 472
-
-  admin:
-    existingSecret: 'grafana-admin-secret'
-    userKey: admin-user
-    passwordKey: admin-password
-
-  initChownData:
+```yaml title="helm-subcharts/kube-prometheus-stack/values.yaml"
+kube-prometheus-stack:
+  alertmanager:
     enabled: false
 
-  ingress:
-    enabled: true
-    ingressClassName: traefik
-
-    annotations:
-      cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
-      traefik.ingress.kubernetes.io/router.entrypoints: websecure
-      traefik.ingress.kubernetes.io/router.tls: 'true'
-
-    hosts:
-      - grafana.example.com
-
-    path: /
-
-    tls:
-      - secretName: grafana.example.com-secret
-        hosts:
-          - grafana.example.com
-
-## Component scraping the kube controller manager
-##
-kubeControllerManager:
-  enabled: false
-
-## Component scraping coreDns. Use either this or kubeDns
-##
-coreDns:
-  enabled: false
-
-## Component scraping kubeDns. Use either this or coreDns
-##
-kubeDns:
-  enabled: false
-
-## Component scraping etcd
-##
-kubeEtcd:
-  enabled: false
-
-## Component scraping kube scheduler
-##
-kubeScheduler:
-  enabled: false
-
-## Component scraping kube proxy
-##
-kubeProxy:
-  enabled: false
-
-## Component scraping kube state metrics
-##
-kubeStateMetrics:
-  enabled: true
-
-## Configuration for kube-state-metrics subchart
-##
-kube-state-metrics:
-  prometheus:
-    monitor:
-      enabled: true
-
-## Deploy node exporter as a daemonset to all nodes
-##
-nodeExporter:
-  enabled: true
-
-## Configuration for prometheus-node-exporter subchart
-##
-prometheus-node-exporter:
-  prometheus:
-    monitor:
-      enabled: true
-
-## Manages Prometheus and Alertmanager components
-##
-prometheusOperator:
-  enabled: true
-
-  ## Resource limits & requests
+  ## Using default values from https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
   ##
-  resources:
-    limits:
-      cpu: 200m
-      memory: 200Mi
-    requests:
-      cpu: 100m
-      memory: 100Mi
-
-## Deploy a Prometheus instance
-##
-prometheus:
-  enabled: true
-
-  ingress:
+  grafana:
     enabled: true
 
-    annotations:
-      cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
-      traefik.ingress.kubernetes.io/router.entrypoints: websecure
-      traefik.ingress.kubernetes.io/router.tls: 'true'
+    image:
+      repository: grafana/grafana-oss
+      tag: 8.5.1
 
-    hosts:
-      - prometheus.example.com
+    persistence:
+      type: pvc
+      enabled: true
+      storageClassName: grafana-nfs
 
-    paths:
-      - /
+    securityContext:
+      runAsUser: 472
+      runAsGroup: 472
+      fsGroup: 472
 
-    tls:
-      - secretName: prometheus.example.com-secret
-        hosts:
-          - prometheus.example.com
+    admin:
+      existingSecret: 'grafana-admin-secret'
+      userKey: admin-user
+      passwordKey: admin-password
 
-  prometheusSpec:
-    ruleSelectorNilUsesHelmValues: false
-    serviceMonitorSelectorNilUsesHelmValues: false
-    podMonitorSelectorNilUsesHelmValues: false
-    probeSelectorNilUsesHelmValues: false
+    initChownData:
+      enabled: false
 
+    ingress:
+      enabled: true
+      ingressClassName: traefik
+
+      annotations:
+        cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
+        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+        traefik.ingress.kubernetes.io/router.tls: 'true'
+
+      hosts:
+        - grafana.example.com
+
+      path: /
+
+      tls:
+        - secretName: grafana.example.com-secret
+          hosts:
+            - grafana.example.com
+
+  ## Component scraping the kube controller manager
+  ##
+  kubeControllerManager:
+    enabled: false
+
+  ## Component scraping coreDns. Use either this or kubeDns
+  ##
+  coreDns:
+    enabled: false
+
+  ## Component scraping kubeDns. Use either this or coreDns
+  ##
+  kubeDns:
+    enabled: false
+
+  ## Component scraping etcd
+  ##
+  kubeEtcd:
+    enabled: false
+
+  ## Component scraping kube scheduler
+  ##
+  kubeScheduler:
+    enabled: false
+
+  ## Component scraping kube proxy
+  ##
+  kubeProxy:
+    enabled: false
+
+  ## Component scraping kube state metrics
+  ##
+  kubeStateMetrics:
+    enabled: true
+
+  ## Configuration for kube-state-metrics subchart
+  ##
+  kube-state-metrics:
+    prometheus:
+      monitor:
+        enabled: true
+
+  ## Deploy node exporter as a daemonset to all nodes
+  ##
+  nodeExporter:
+    enabled: true
+
+  ## Configuration for prometheus-node-exporter subchart
+  ##
+  prometheus-node-exporter:
+    prometheus:
+      monitor:
+        enabled: true
+
+  ## Manages Prometheus and Alertmanager components
+  ##
+  prometheusOperator:
+    enabled: true
+
+    ## Resource limits & requests
+    ##
     resources:
       limits:
-        cpu: 1
-        memory: 2Gi
-      requests:
         cpu: 200m
-        memory: 2Gi
+        memory: 200Mi
+      requests:
+        cpu: 100m
+        memory: 100Mi
 
-    storageSpec:
-      volumeClaimTemplate:
-        spec:
-          storageClassName: 'prometheus-nfs'
-          accessModes: ['ReadWriteOnce']
-          resources:
-            requests:
-              storage: 50Gi
+  ## Deploy a Prometheus instance
+  ##
+  prometheus:
+    enabled: true
+
+    ingress:
+      enabled: true
+
+      annotations:
+        cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
+        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+        traefik.ingress.kubernetes.io/router.tls: 'true'
+
+      hosts:
+        - prometheus.example.com
+
+      paths:
+        - /
+
+      tls:
+        - secretName: prometheus.example.com-secret
+          hosts:
+            - prometheus.example.com
+
+    prometheusSpec:
+      ruleSelectorNilUsesHelmValues: false
+      serviceMonitorSelectorNilUsesHelmValues: false
+      podMonitorSelectorNilUsesHelmValues: false
+      probeSelectorNilUsesHelmValues: false
+
+      resources:
+        limits:
+          cpu: 1
+          memory: 2Gi
+        requests:
+          cpu: 200m
+          memory: 2Gi
+
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: 'prometheus-nfs'
+            accessModes: ['ReadWriteOnce']
+            resources:
+              requests:
+                storage: 50Gi
 ```
 
-All the content should go inside the `prometheus-app.yaml`:
+Now, you can commit and push:
 
-```yaml title="argo/my-monitoring/prometheus-app.yml"
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: prometheus-app
-  namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
-spec:
-  project: my-monitoring
-  source:
-    chart: kube-prometheus-stack
-    repoURL: https://prometheus-community.github.io/helm-charts
-    targetRevision: 36.2.1
-    helm:
-      releaseName: prometheus
-
-      # (put the content of values-custom.yaml here)
-      values: |
-
-        alertmanager:
-          enabled: false
-
-        ## Using default values from https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
-        ##
-        grafana:
-          enabled: true
-
-        ...
+```shell title="user@local:/ClusterFactory-CE"
+git add .
+git commit -m "Added kube-prometheus-stack subchart"
+git push
 ```
 
-Now, just deploy the Argo CD app:
+You can deploy the Argo CD app:
 
 ```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/my-monitoring/prometheus-crd-app.yml

@@ -70,20 +70,49 @@ kubectl apply -f argo/default/apps/local-path-provisioner-app.yml
 
 The `StorageClass` `local-path` should be deployed.
 
-## 3. Editing `cvmfs-server-app.yml` values
+## 3. Editing `cvmfs-server-app.yml` to use the fork
 
-### 3.a. Select the nodes
+Change the `repoURL` to the URL used to pull the fork. Also add the `values-production.yaml` file to customize the values.
+
+```yaml title="argo.example/cvmfs/apps/cvmfs-server-app.yml > spec > source"
+source:
+  # You should have forked this repo. Change the URL to your fork.
+  repoURL: git@github.com:<your account>/ClusterFactory-CE.git
+  targetRevision: HEAD
+  path: helm/cvmfs-server
+  helm:
+    releaseName: cvmfs-server
+
+    # Create a values file inside your fork and change the values.
+    valueFiles:
+      - values-production.yaml
+```
+
+## 4. Adding custom values to the chart
+
+:::tip
+
+Read the [`values.yaml`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/helm/cvmfs-server/values.yaml) to see all the default values.
+
+:::
+
+### 4.a. Create the values file
+
+Create the values file `values-production.yaml` inside the `helm/cvmfs-server/` directory.
+
+### 4.b. Select the nodes
 
 Because we are using `local-path`, you should select the nodes hosting the volumes.
 
-```yaml title="argo/cvmfs/apps/cvmfs-server-app.yml > spec > source > helm > values > nodeSelector"
+```yaml title="helm/cvmfs-server/values-production.yaml"
 nodeSelector:
   kubernetes.io/hostname: my-node
 ```
 
-### 3.b. Mount the keys
+### 4.c. Mount the keys
 
-```yaml title="argo/cvmfs/apps/cvmfs-server-app.yml > spec > source > helm > values > config"
+```yaml title="helm/cvmfs-server/values-production.yaml"
+# ...
 volumeMounts:
   - name: keys
     mountPath: /etc/cvmfs/keys/cvmfs.example.com/repo.example.com.pub
@@ -103,9 +132,10 @@ storage:
   storageClassName: 'local-path'
 ```
 
-### 3.c. Add the replicas
+### 4.d. Add the replicas
 
-```yaml title="argo/cvmfs/apps/cvmfs-server-app.yml > spec > source > helm > values > config"
+```yaml title="helm/cvmfs-server/values-production.yaml"
+# ...
 config:
   replicas:
     - name: repo.example.com
@@ -120,11 +150,12 @@ Make sure the option `-o root` is present to avoid a deadlock.
 
 The `options` field is the arguments passed to `cvmfs_server add-replica`.
 
-### 3.d. (Optional) Expose the application to the external network
+### 4.e. (Optional) Expose the application to the external network
 
 If you want to expose your stratum 1 server, add these fields to the values:
 
-```yaml
+```yaml title="helm/cvmfs-server/values-production.yaml"
+# ...
 ingress:
   enabled: true
   annotations:
@@ -155,14 +186,20 @@ Use the annotation `cert-manager.io/cluster-issuer` to indicates the certificate
 
 More about `cert-manager` in [their documentation](https://cert-manager.io/docs/usage/ingress/).
 
-### 3.e. Verify the default values.
+## 5. Deploy the app
 
-Verify the default value inside the [git repository](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/helm/cvmfs-server/values.yaml).
-
-## 4. Deploy the app
+Commit and push:
 
 ```shell title="user@local:/ClusterFactory-CE"
-kubectl apply -f argo/cvmfs/apps/cvmfs-server-app.yml
+git add .
+git commit -m "Added CVMFS server"
+git push
+```
+
+And deploy the Argo CD application:
+
+```shell title="user@local:/ClusterFactory-CE"
+kubectl apply -f argo/provisioning/apps/cvmfs-server-app.yml
 ```
 
 If the Ingress is enabled and configured, the CVMFS server should be available on the IP specified by MetalLB. Configure your DNS so it redirects to this IP.

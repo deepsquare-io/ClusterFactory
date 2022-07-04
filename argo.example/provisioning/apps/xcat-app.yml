@@ -8,50 +8,17 @@ metadata:
 spec:
   project: provisioning
   source:
+    # You should have forked this repo. Change the URL to your fork.
     repoURL: git@github.com:squarefactory/ClusterFactory-CE.git
     targetRevision: HEAD
     path: helm/xcat
     helm:
       releaseName: xcat
 
-      values: |
-        nodeSelector:
-          topology.kubernetes.io/region: ch-sion
-          topology.kubernetes.io/zone: ch-sion-1
-
-        resources:
-          requests:
-            cpu: '250m'
-            memory: '8Gi'
-          limits:
-            cpu: '8'
-            memory: '8Gi'
-
-        persistence:
-          storageClassName: 'xcat-nfs'
-          accessModes: ['ReadWriteOnce']
-          size: 50Gi
-
-        net:
-          # Kubernetes host interface
-          masterInterface: eno2
-          mode: l2
-          type: ipvlan
-
-          # https://www.cni.dev/plugins/current/ipam/static/
-          ipam:
-            type: static
-            addresses:
-              - address: 192.168.0.3/24
-                gateway: 192.168.0.1
-            routes:
-              - dst: 0.0.0.0/0
-
-          dns:
-            nameservers:
-              - 127.0.0.1
-            searches:
-              - example.com
+      # Create a values file inside your fork and change the values.
+      valueFiles:
+        []
+        # - values-example.yaml
 
   destination:
     server: 'https://kubernetes.default.svc'

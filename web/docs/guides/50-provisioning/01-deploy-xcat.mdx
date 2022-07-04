@@ -13,7 +13,7 @@ The Dockerfile is described in the git repository [SquareFactory/xcat-rocky](htt
 
 An Docker image can be pulled with:
 
-```sh
+```shell
 docker pull ghcr.io/squarefactory/xcat-rocky:latest
 ```
 
@@ -23,9 +23,7 @@ docker pull ghcr.io/squarefactory/xcat-rocky:latest
 kubectl apply -f argo/provisioning/
 ```
 
-## 2. Persistent Volumes and PVC
-
-### 2.a. Creating a `StorageClass` or `PersistentVolume`
+## 2. Creating a `StorageClass` or `PersistentVolume`
 
 We will use NFS. Feel free to use another type of storage. We recommend at least 100 GB since the storage is used to store the root file system of the operating system images.
 
@@ -107,38 +105,22 @@ The label `app=xcat` will be used by the PersistentVolumeClaim.
   </TabItem>
 </Tabs>
 
-### 2.b. Editing the `xcat-app.yml` to select the volume
+## 3. Editing `xcat-app.yml` to use the fork
 
-<Tabs groupId="volume">
-  <TabItem value="storage-class" label="StorageClass (dynamic)" default>
+```yaml title="argo.example/provisioning/apps/xcat-app.yml > spec > source"
+source:
+  # You should have forked this repo. Change the URL to your fork.
+  repoURL: git@github.com:<your account>/ClusterFactory-CE.git
+  targetRevision: HEAD
+  path: helm/xcat
+  helm:
+    releaseName: xcat
 
-Edit the values accordingly:
-
-```yaml title="argo/provisioning/apps/xcat-app.yml > spec > source > helm > values"
-persistence:
-  storageClassName: 'xcat-nfs'
-  accessModes: ['ReadWriteOnce']
-  size: 50Gi
+    valueFiles:
+      - values-production.yaml
 ```
 
-  </TabItem>
-  <TabItem value="persistent-volume" label="PersistentVolume (static)">
-
-```yaml title="argo/provisioning/apps/xcat-app.yml > spec > source > helm > values > persistence"
-persistence:
-  storageClassName: ''
-  accessModes: ['ReadWriteOnce']
-  size: 50Gi
-  selectorLabels:
-    app: xcat
-    topology.kubernetes.io/region: <FILL ME> # <country code>-<city>
-    topology.kubernetes.io/zone: <FILL ME> # <country code>-<city>-<index>
-```
-
-  </TabItem>
-</Tabs>
-
-## 3. Editing `xcat-app.yml` values
+## 4. Adding custom values
 
 :::tip
 
@@ -146,19 +128,23 @@ Read the [`values.yaml`](https://github.com/SquareFactory/ClusterFactory-CE/blob
 
 :::
 
-### 3.a. Selecting a zone
+### 4.a. Add the values file to the chart
+
+Create `values-production.yaml` inside the `helm/xcat/` directory.
+
+### 4.b. Selecting a zone
 
 xCAT will use the host network. Make sure that xCAT stays on the same network by using the `nodeSelector`.
 
 Your nodes should be annotated with `topology.kubernetes.io/region` and `topology.kubernetes.io/zone`.
 
-```yaml title="argo/provisioning/apps/xcat-app.yml > spec > source > helm > values > nodeSelector"
+```yaml title="helm/xcat/values-production.yaml"
 nodeSelector:
   topology.kubernetes.io/region: <FILL ME> # <country code>-<city>
   topology.kubernetes.io/zone: <FILL ME> # <country code>-<city>-<index>
 ```
 
-### 3.b. Network configuration
+### 4.c. Network configuration
 
 xCAT will be connected to the host network using the IPVLAN CNI plugin. Make sure that Multus CNI is already installed.
 
@@ -184,7 +170,9 @@ kubectl apply -f https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-c
 
 Similar to configuring the network interface of a Virtual Machine, you must change these fields:
 
-```yaml title="argo/provisioning/apps/xcat-app.yml > spec > source > helm > values > net"
+```yaml title="title="helm/xcat/values-production.yaml"
+# ...
+
 net:
   # Kubernetes host interface
   masterInterface: eth0
@@ -210,11 +198,50 @@ net:
 
 Use IPAM `static` since xCAT has a ISC DHCP server.
 
-### 3.d. Verify the default values.
+### 4.d. Volume configuration
 
-Verify the default value inside the [git repository](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/helm/xcat/values.yaml).
+<Tabs groupId="volume">
+  <TabItem value="storage-class" label="StorageClass (dynamic)" default>
 
-## 4. Deploy xCAT
+Edit the values accordingly:
+
+```yaml title="helm/xcat/values-production.yaml"
+# ...
+persistence:
+  storageClassName: 'xcat-nfs'
+  accessModes: ['ReadWriteOnce']
+  size: 50Gi
+```
+
+  </TabItem>
+  <TabItem value="persistent-volume" label="PersistentVolume (static)">
+
+```yaml title="helm/xcat/values-production.yaml"
+# ...
+persistence:
+  storageClassName: ''
+  accessModes: ['ReadWriteOnce']
+  size: 50Gi
+  selectorLabels:
+    app: xcat
+    topology.kubernetes.io/region: <FILL ME> # <country code>-<city>
+    topology.kubernetes.io/zone: <FILL ME> # <country code>-<city>-<index>
+```
+
+  </TabItem>
+</Tabs>
+
+## 5. Deploy xCAT
+
+Commit and push:
+
+```shell title="user@local:/ClusterFactory-CE"
+git add .
+git commit -m "Added xCAT application and values"
+git push
+```
+
+And deploy:
 
 ```shell title="user@local:/ClusterFactory-CE"
 kubectl apply -f argo/provisioning/apps/xcat-app.yml

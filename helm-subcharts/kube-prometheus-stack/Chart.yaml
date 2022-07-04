@@ -1,0 +1,11 @@
+apiVersion: v2
+name: kube-prometheus-stack-subchart
+description: Kube Prometheus Stack subchart
+type: application
+version: 36.2.1
+appVersion: '36.2.1'
+
+dependencies:
+  - name: kube-prometheus-stack
+    version: 36.2.1
+    repository: https://prometheus-community.github.io/helm-charts

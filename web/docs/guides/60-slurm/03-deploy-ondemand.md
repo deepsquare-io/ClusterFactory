@@ -588,7 +588,7 @@ kubectl apply -f argo/slurm-cluster/secrets/openondemand-portal-sealed-secret.ym
 
 ## 2. Values: Enable Open OnDemand
 
-```yaml title="argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml > spec > source > helm > values"
+```yaml title="helm/slurm-cluster/values-<cluster name>.yaml"
 ondemand:
   enabled: true
   image: ghcr.io/squarefactory/open-ondemand:2.0.26-slurm22.05
@@ -698,7 +698,7 @@ data:
     exec /usr/bin/ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$@"
 ```
 
-```yaml title="argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml > spec > source > helm > values"
+```yaml title="helm/slurm-cluster/values-<cluster name>.yaml"
 ondemand:
   # ...
 
@@ -743,7 +743,7 @@ ondemand:
 
 You should also configure the Ingress:
 
-```yaml title="argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml > spec > source > helm > values"
+```yaml title="helm/slurm-cluster/values-<cluster name>.yaml"
 ondemand:
   # ...
   httpIngress:
@@ -771,7 +771,7 @@ ondemand:
 
 The entry point `oidc` (`5556/tcp`) must be opened on Traefik. If you are using `tls`, you should open the post `oidcs` (`5554/tcp`) and apply this Ingress instead:
 
-```yaml title="argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml > spec > source > helm > values"
+```yaml title="helm/slurm-cluster/values-<cluster name>.yaml"
 ondemand:
   # ...
   httpIngress:
@@ -809,9 +809,16 @@ ondemand:
 
 You should also handle the redirection from `oidc` to `oidcs` and `http` to `https`, by using either a [middleware](https://doc.traefik.io/traefik/middlewares/http/redirectscheme/), or using an [entry point redirection](https://doc.traefik.io/traefik/routing/entrypoints/#redirection) (use the CLI configuration).
 
-Apply the application:
+Deploy the application:
+
+```shell
+git add .
+git commit -m "Added SLURM OnDemand values"
+git push
+```
 
 ```shell title="user@local:/ClusterFactory-CE"
+# This is optional if the application is already deployed.
 kubectl apply -f argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml
 ```
 

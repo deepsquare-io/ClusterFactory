@@ -387,19 +387,19 @@ That's why we prefer to write Helm Charts instead of Kustomize. If the applicati
 
 To write a Helm application, we need to generalize the values (by using
 `example.com` as domain for example). The "overlay" values will be stored
-either inside the Helm application or inside a Git repository.
-
-For [DeepSquare](https://deepsquare.io), we've been storing the values inside the Argo CD `Application` files. If we need to track these values inside Git, we can use the `App of Apps` pattern.
+either inside a Git repository, more precisely, inside a fork.
 
 The Helm application must be available on a publicly accessible Git or Helm repository.
 
 The example for xCAT is stored inside [`helm/xcat`](https://github.com/SquareFactory/ClusterFactory-CE/tree/main/helm/xcat).
 
-## 4. Writing the Argo CD Application
+## 4. Writing the Argo CD Application and custom values
 
 After writing the Helm Chart, you can write the Argo CD `Application`.
 
 The example for xCAT is stored inside [`argo/provisioning/apps`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/argo.example/provisioning/apps/xcat-app.yml).
+
+The custom values are stored inside the `helm/xcat` directory. If the Helm application is not a Git repository, it's better to use the [subchart pattern by using helm dependencies](https://github.com/argoproj/argocd-example-apps/blob/master/helm-dependency/README.md).
 
 ## 5. Testing on the Kubernetes cluster
 
