@@ -227,7 +227,7 @@ type: Opaque
 
 **DON'T APPLY IT**. First, we will encrypt it.
 
-Just run the `kubeseal-every-local-files.sh`, this script will generate a `grafana-admin-sealed-secret.yaml`. This file can be put inside the git repository.
+Just run the `cfctl kubeseal`, this will generate a `grafana-admin-sealed-secret.yaml`. This file can be put inside the git repository.
 
 Apply this file:
 

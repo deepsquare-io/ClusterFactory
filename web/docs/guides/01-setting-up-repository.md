@@ -210,7 +210,7 @@ stringData:
 2. Seal it and apply it:
 
 ```shell
-./kubeseal-every-local-files.sh
+cfctl kubeseal
 kubectl apply -f argo/default/secrets/my-repository-sealed-secret.yaml
 ```
 

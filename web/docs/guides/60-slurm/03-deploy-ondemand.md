@@ -577,7 +577,7 @@ Edit the file accordingly. For more information, consult the [Open OnDemand docu
 2. Seal the secret:
 
 ```shell title="user@local:/ClusterFactory-CE"
-./kubeseal-every-local-files.sh
+cfctl kubeseal
 ```
 
 3. Apply the SealedSecret:

@@ -271,6 +271,23 @@ cfctl config status [command options] [arguments...]
    --output value, -o value  kubectl output formatting
 ```
 
+### kubeseal
+
+Kubeseal every '-secret.yaml.local' files recursively.
+
+**USAGE**
+
+```shell
+cfctl kubeseal [command options] [arguments...]
+```
+
+**OPTIONS**
+
+```shell
+   --controller-namespace value  The namespace where the sealed secrets controller resides. (default: "sealed-secrets") [$SEALED_SECRETS_CONTROLLER_NAMESPACE]
+   --controller-name value       The name of the sealed secrets controller. (default: "sealed-secrets")
+```
+
 ## completion
 
 Generates a shell auto-completion script.

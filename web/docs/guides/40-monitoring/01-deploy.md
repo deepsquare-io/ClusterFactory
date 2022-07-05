@@ -207,7 +207,7 @@ stringData:
 2. Seal the secret:
 
 ```shell title="user@local:/ClusterFactory-CE"
-./kubeseal-every-local-files.sh
+cfctl kubeseal
 ```
 
 3. Apply the SealedSecret:
