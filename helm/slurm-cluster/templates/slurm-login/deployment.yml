@@ -86,7 +86,9 @@ spec:
           livenessProbe:
             exec:
               command:
-                - sinfo
+                - sh
+                - -c
+                - sinfo && nc -vz 127.0.0.1 22
 {{ toYaml .Values.login.livenessProbe | indent 12 }}
           volumeMounts:
             - name: slurm-conf
