@@ -105,7 +105,7 @@ If some files were added and removed, you must change the `deployment.yml`:
 
 :::note
 
-### Configure the cert-manager issuers
+## Configure the cert-manager issuers
 
 Specify new certificate issuers in the `core/cert-manager` directory.
 
@@ -227,7 +227,7 @@ spec:
 
 Our recommendation is to use Ingress for simple routes with HTTP. Otherwise, IngressRoute is the best solution for all the cases.
 
-### (optional) Configure KubeVirt
+## (optional) Configure KubeVirt
 
 If you do not want to deploy KubeVirt in all zones, you can edit [`core/kubevirt/overlays/prod/kubevirt-cr.yaml`](https://github.dev/SquareFactory/ClusterFactory-CE/blob/main/core.example/kubevirt/overlays/prod/kubevirt-cr.yaml).
 
