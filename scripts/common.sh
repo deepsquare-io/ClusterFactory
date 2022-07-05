@@ -35,7 +35,7 @@ echo "Detected supported architecture: $(uname -m)"
 
 CFCTL="$(command -v cfctl)"
 if ! [ -x "${CFCTL}" ]; then
-  CFCTL_VERSION=v0.13.0+9002
+  CFCTL_VERSION=v0.13.0+9003
   echo "cfctl could not be found. Downloading it locally in ./bin"
   rm -f ./bin/cfctl
   curl -fsSL -o ./bin/cfctl "https://github.com/SquareFactory/cfctl/releases/download/${CFCTL_VERSION}/cfctl-${os}-${architecture}"
