@@ -5,7 +5,7 @@ kubevirt_version=v0.54.0
 coredns_version=1.9.3
 
 # Utils Version
-cfctl_version=v0.13.0+9003
+cfctl_version=v0.13.0+9004
 kubeseal_version=0.18.0
 helm_version=v3.9.0
 etcdctl_version=v3.5.4
