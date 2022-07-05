@@ -25,19 +25,19 @@ sed -Ei "s|image: docker.io/coredns/coredns:.*|image: docker.io/coredns/coredns:
 # Utils version
 cfctl_version=$(curl -H "Authorization: token ${TOKEN}" -fsSL https://api.github.com/repos/SquareFactory/cfctl/releases/latest | jq -r '.tag_name')
 sed -Ei "s|cfctl_version=.*\$|cfctl_version=${cfctl_version}|g" "$script_path/version-lock"
-sed -Ei "s|CFCTL_VERSION=.*|CFCTL_VERSION=${cfctl_version}|g" "$project_path/scripts/common.sh"
+sed -Ei "s|CFCTL_VERSION=.*|CFCTL_VERSION=${cfctl_version}|g" "$project_path/scripts/setup-env"
 
 kubeseal_version=$(curl -H "Authorization: token ${TOKEN}" -fsSL https://api.github.com/repos/bitnami-labs/sealed-secrets/releases/latest | jq -r '.tag_name' | tr -d 'v')
 sed -Ei "s|kubeseal_version=.*\$|kubeseal_version=${kubeseal_version}|g" "$script_path/version-lock"
-sed -Ei "s|KUBESEAL_VERSION=.*|KUBESEAL_VERSION=${kubeseal_version}|g" "$project_path/scripts/common.sh"
+sed -Ei "s|KUBESEAL_VERSION=.*|KUBESEAL_VERSION=${kubeseal_version}|g" "$project_path/scripts/setup-env"
 
 helm_version=$(curl -H "Authorization: token ${TOKEN}" -fsSL https://api.github.com/repos/helm/helm/releases/latest | jq -r '.tag_name')
 sed -Ei "s|helm_version=.*\$|helm_version=${helm_version}|g" "$script_path/version-lock"
-sed -Ei "s|HELM_VERSION=.*|HELM_VERSION=${helm_version}|g" "$project_path/scripts/common.sh"
+sed -Ei "s|HELM_VERSION=.*|HELM_VERSION=${helm_version}|g" "$project_path/scripts/setup-env"
 
 etcdctl_version=$(curl -H "Authorization: token ${TOKEN}" -fsSL https://api.github.com/repos/etcd-io/etcd/releases/latest | jq -r '.tag_name')
 sed -Ei "s|etcdctl_version=.*\$|etcdctl_version=${etcdctl_version}|g" "$script_path/version-lock"
-sed -Ei "s|ETCDCTL_VERSION=.*|ETCDCTL_VERSION=${etcdctl_version}|g" "$project_path/scripts/common.sh"
+sed -Ei "s|ETCDCTL_VERSION=.*|ETCDCTL_VERSION=${etcdctl_version}|g" "$project_path/scripts/setup-env"
 
 # Apps
 local_path_provisioner_version=$(curl -H "Authorization: token ${TOKEN}" -fsSL https://api.github.com/repos/rancher/local-path-provisioner/tags | jq -r '.[0].name')

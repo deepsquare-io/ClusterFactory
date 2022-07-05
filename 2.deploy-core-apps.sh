@@ -1,12 +1,14 @@
 #!/bin/sh
 
-. "./scripts/common.sh"
+. "./scripts/setup-env"
 
 set -e
 
 section "Fetch the config"
-cfctl kubeconfig --config ./cfctl.yaml >"$KUBECONFIG"
+cfctl kubeconfig --config ./cfctl.yaml >./kubeconfig
 chmod 600 ./kubeconfig
+
+export KUBECONFIG="$WORKDIR/kubeconfig"
 
 section "Deploy kubevirt (virtual machines deployments)"
 # Updating is only supported to n-1 to n. Be warned.

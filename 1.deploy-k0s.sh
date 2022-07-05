@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. "./scripts/common.sh"
+. "./scripts/setup-env"
 
 set -e
 

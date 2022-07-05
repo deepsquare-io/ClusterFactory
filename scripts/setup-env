@@ -7,7 +7,6 @@ section() {
 
 WORKDIR=$(pwd)
 export WORKDIR
-export KUBECONFIG="$WORKDIR/kubeconfig"
 
 mkdir -p ./bin
 PATH="$(pwd)/bin:${PATH}"

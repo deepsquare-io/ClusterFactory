@@ -12,7 +12,7 @@ We have a script inside the [`scripts`](https://github.com/SquareFactory/Cluster
 Just run:
 
 ```shell
-. ./scripts/common.sh
+. ./scripts/setup-env
 ```
 
 The binaries is stored inside the `bin` directory and the `PATH` is automatically set.
