@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 section() {
   echo
@@ -44,6 +44,7 @@ fi
 echo "Found cfctl: $(cfctl version)"
 echo
 export CFCTL
+. <(cfctl completion)
 
 architecture=""
 case $(uname -m) in
@@ -63,6 +64,7 @@ fi
 echo "Found kubectl: $(kubectl version --client)"
 echo
 export KUBECTL
+. <(kubectl completion "$(basename "$SHELL")")
 
 KUBESEAL="$(command -v kubeseal)"
 if ! [ -x "$KUBESEAL" ]; then
@@ -92,6 +94,7 @@ fi
 echo "Found helm: $(helm version)"
 echo
 export HELM
+. <(helm completion "$(basename "$SHELL")")
 
 ETCDCTL="$(command -v etcdctl)"
 if ! [ -x "$ETCDCTL" ]; then

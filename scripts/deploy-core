@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 BASEDIR="$(dirname "$(realpath "$0")")"
 PROJECTDIR="$BASEDIR/../"
@@ -20,15 +20,14 @@ kubectl apply -k "${PROJECTDIR}/core/kubevirt/overlays/prod"
 
 section "Wait for all deployments to be Available"
 sleep 10
-kubectl wait deployments --timeout=3600s --all --all-namespaces --for condition=Available
+kubectl wait deployments --timeout=300s --all --all-namespaces --for condition=Available
 
 section "Deploy multus (multiple network interfaces support)"
 kubectl apply -f https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset-thick-plugin.yml
-kubectl apply -f "${PROJECTDIR}/core/cni/calico-network-attachment-definition.yaml"
 
 section "Wait for all deployments to be Available"
 sleep 10
-kubectl wait deployments --timeout=3600s --all --all-namespaces --for condition=Available
+kubectl wait deployments --timeout=300s --all --all-namespaces --for condition=Available
 
 section "Deploy sealed secrets"
 "${PROJECTDIR}/core/sealed-secrets/install.sh"
@@ -47,7 +46,7 @@ section "Deploy Argo CD and setup argo-cd routes"
 kubectl apply -k "${PROJECTDIR}/core/argo-cd/"
 
 section "Wait for all deployments to be Available"
-kubectl wait deployments --timeout=3600s --all --all-namespaces --for condition=Available
+kubectl wait deployments --timeout=300s --all --all-namespaces --for condition=Available
 
 echo "Credentials for Argo CD are admin $(kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 --decode)"
 echo "You must change these credentials on the first login!"
