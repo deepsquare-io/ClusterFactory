@@ -35,7 +35,7 @@ spec:
 
 Provide each host with a valid IP address that is reachable by k0ctl, and the connection details for an SSH connection. Edit the labels for multi-zone usage.
 
-[The `cfctl.yaml` specification is written in the repository of cfctl](/docs/reference/cfctl.yaml).
+[See `cfctl.yaml` specification](/docs/reference/cfctl.yaml).
 
 ## Configuring the k0s architecture
 
@@ -91,7 +91,7 @@ k0s:
 
 Check the CIDR and make sure it doesn't conflict with any IP range of your network.
 
-Again, **You should read the specification carefully as the modification of one the k0s field won't be allowed in the future**.
+Again, **you should read the specification carefully as the modification of one the k0s field won't be allowed in the future**.
 
 If you wish to use a HA setup, please follow [this guide](/docs/guides/maintenance/high-availability).
 
@@ -99,7 +99,7 @@ After setting up k0s, you can change the `extensions` field. This field can be c
 
 ## Configuring MetalLB
 
-Start with `metallb`. MetalLB is a L2/L3 load balancer designed for bare metal Kubernetes clusters. It exposes the kubernetes `Services` to the external network. It uses either L2 or BGP to advertise routes. The network indicated by `metallb` must be outside the network when using BGP. Otherwise, when using L2, the network must be the same as your private network. For multi-zone clusters, you MUST use BGP.
+Start with `metallb`. MetalLB is a L2/L3 load balancer designed for bare metal Kubernetes clusters. It exposes the kubernetes `Services` to the external network. It uses either L2 (ARP) or BGP to advertise routes. The network indicated by `metallb` must be outside the network when using BGP. Otherwise, when using L2 (ARP), the network must be the same as your private network. For multi-zone clusters, you MUST use BGP.
 
 <div style={{textAlign: 'center'}}>
 
@@ -113,11 +113,11 @@ MetalLB 0.13.0 will allow you to create "zoned" L2 announcements, which means yo
 
 More precisely, this means that you can allow `192.168.0.100` in the network `192.168.0.0/24` in one zone, and `172.24.0.100` in the network `172.24.0.0/18` in an another zone, which means that you wouldn't need BGP anymore.
 
-However, MetalLB 0.13.0 is not yet available at the time of writing.
+However, MetalLB 0.13.0 is not yet available at the time of writing, and BGP is a sure-fire.
 
 :::
 
-Your router must be capable of using BGP. If not, you should use an appliance with BGP capabilities (like pfSense, or just a Linux machine with BIRD).
+Your router must be capable of using BGP. If not, you should use an appliance with BGP capabilities (like OPNsense, OpenWRT, vyOS, or Linux with BIRD).
 
 ```yaml title="cfctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
 - name: metallb

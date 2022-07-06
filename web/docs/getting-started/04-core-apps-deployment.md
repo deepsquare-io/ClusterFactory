@@ -15,7 +15,11 @@ The initial configuration of CoreDNS given by k0s does not fulfil our needs. Thi
 
 CoreDNS is exposed to the external network thanks to the `IngressRoute` objects in the [`core/coredns/overlays/prod/ingress-route.yml`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/core.example/coredns/overlays/prod/ingress-route.yml).
 
+:::caution
+
 If this is an unwanted feature (because you are using an other DNS for example), feel free to remove the routes and close the ports in the Traefik extension specification inside `cfctl.yaml`.
+
+:::
 
 The files that you should look for are [`core/coredns/overlays/prod/configmap.yml`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/core.example/coredns/overlays/prod/configmap.yml) and [`core/coredns/overlays/prod/deployment.yml`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/core.example/coredns/overlays/prod/deployment.yml).
 
