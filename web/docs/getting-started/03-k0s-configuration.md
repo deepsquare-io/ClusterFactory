@@ -275,23 +275,36 @@ We use Traefik because it can do a lot of complex route operations while still b
 
 ## Initial Deployment
 
-Run the `1.deploy-k0s.sh` script to deploy the cluster. This script will also download the utilities `cfctl`, `kubectl` and `kubeseal` if not found in `PATH`.
-
-You can re-run the scripts if you modify the `cfctl.yaml` file.
-
-Or, you can run `cfctl` manually:
+If you forgot to install the utilities, just run:
 
 ```shell title="user@local:/ClusterFactory-CE"
-PATH="$(pwd)/bin:${PATH}"
+. ./scripts/setup-env
+```
+
+Deploy the cluster with:
+
+```shell title="user@local:/ClusterFactory-CE"
+# Deploy the cluster
 cfctl apply --debug --config ./cfctl.yaml
 
 # Fetch the kubeconfig
 cfctl kubeconfig --config ./cfctl.yaml >./kubeconfig
+chmod 600 ./kubeconfig
 ```
 
-Store the kubeconfig inside `~/.kube/config`, or just `export KUBECONFIG=$(pwd)/kubeconfig`.
+You can store the kubeconfig inside `~/.kube/config`. Our recommendation is to set the `KUBECONFIG` environment variable to avoid mixing the Kubernetes contexts. Just like this:
 
-Just make sure to verify which configuration you are using with `kubectl config view`.
+```shell title="user@local:/ClusterFactory-CE"
+cfctl kubeconfig --config ./cfctl.yaml >./kubeconfig
+chmod 600 ./kubeconfig
+`export KUBECONFIG=$(pwd)/kubeconfig`.
+```
+
+Just make sure to verify which configuration you are using with `kubectl config current-context`. You can add an alias to your favorite shell:
+
+```shell
+alias kubectx="kubectl config current-context"
+```
 
 Congratulation, you have deployed your Kubernetes cluster! However, it's still missing a few core features:
 

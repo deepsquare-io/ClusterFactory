@@ -1,0 +1,4 @@
+namespace: argocd
+resources:
+  - certificate.yaml
+  - ingress-route.yaml

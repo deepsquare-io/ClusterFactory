@@ -249,7 +249,7 @@ spec:
 
 ## Deploying the core apps
 
-Run the `2.deploy-core-apps.sh` script to deploy the cluster.
+Run the `./scripts/deploy-core` script to deploy the core applications.
 
 Congratulations! You have successfully deployed a Kubernetes Cluster with the minimum requirements. We still recommend to deploy the Monitoring stack to monitor the RAM and CPU usage of the containers. Nevertheless, you can follow the [guides](/docs/guides), learn the [main concepts of ClusterFactory](/docs/main-concepts/k0s), or continue the [Getting Started](./argo-apps-deployment).
 

@@ -15,8 +15,4 @@ Updating the k0s cluster is super easy!
 
 ```shell
 cfctl apply --debug --config cfctl.yaml
-
-# OR
-
-./1.deploy-k0s.sh
 ```
