@@ -211,7 +211,7 @@ spec:
 
               - name: csi-driver-nfs
                 chartname: csi-driver-nfs/csi-driver-nfs
-                version: 'v4.2.0'
+                version: 'v4.1.0'
                 namespace: csi-driver-nfs
                 values: |
                   driver:
