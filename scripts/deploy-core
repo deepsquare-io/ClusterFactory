@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BASEDIR="$(dirname $(realpath "$0"))"
+BASEDIR="$(dirname "$(realpath "$0")")"
 PROJECTDIR="$BASEDIR/../"
 
 . "${BASEDIR}/setup-env"
