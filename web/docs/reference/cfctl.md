@@ -271,7 +271,7 @@ cfctl config status [command options] [arguments...]
    --output value, -o value  kubectl output formatting
 ```
 
-### kubeseal
+## kubeseal
 
 Kubeseal every '-secret.yaml.local' files recursively.
 
