@@ -62,6 +62,7 @@ spec:
             - |-
               cp -RLp /in/* /out/;
               find /out -type f -exec chmod 600 {} \;;
+              chown -R 1001:1001 /out/;
           volumeMounts:
             - name: openldap-certs
               mountPath: /in
