@@ -41,5 +41,5 @@ We recommend:
 
 - [Kubernetes documentation](https://kubernetes.io/docs/concepts/)
 - [Kubernetes API reference](https://kubernetes.io/docs/reference/kubernetes-api/)
-- [cfctl.yaml API reference](https://docs.clusterfactory.io/docs/reference/cfctl.yaml)
+- [cfctl.yaml API reference](/docs/reference/cfctl.yaml)
 - [Argo CD declarative setup](https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/)
