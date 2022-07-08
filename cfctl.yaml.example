@@ -204,7 +204,7 @@ spec:
 
               - name: cert-manager
                 chartname: jetstack/cert-manager
-                version: 'v1.9.0-beta.0'
+                version: 'v1.9.0-beta.1'
                 namespace: cert-manager
                 values: |
                   installCRDs: true
