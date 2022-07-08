@@ -54,8 +54,20 @@ spec:
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
       {{- end }}
-      {{- if .Values.initContainers }}
       initContainers:
+        - name: "init-perms"
+          image: busybox:1.34.1
+          command: ["sh", "-c"]
+          args:
+            - |-
+              cp -RLp /in/* /out/;
+              find /out -type f -exec chmod 600 {} \;;
+          volumeMounts:
+            - name: openldap-certs
+              mountPath: /in
+            - name: openldap-certs-with-perms
+              mountPath: /out
+      {{- if .Values.initContainers }}
 {{ toYaml .Values.initContainers | indent 8 }}
       {{- end }}
       {{- if .Values.dnsPolicy }}
@@ -118,7 +130,7 @@ spec:
             - name: openldap-data
               mountPath: /bitnami/openldap/
             {{- if .Values.tls.enabled }}
-            - name: openldap-certs
+            - name: openldap-certs-with-perms
               mountPath: /opt/bitnami/openldap/certs/
             {{- end }}
             {{- if .Values.volumeMounts }}
@@ -132,6 +144,8 @@ spec:
           secret:
             secretName:  "{{ .Values.tls.secretName }}"
             defaultMode: 256
+        - name: openldap-certs-with-perms
+          emptyDir: {}
         {{- end }}
         {{- if .Values.volumes }}
 {{ toYaml .Values.volumes | indent 8 }}
