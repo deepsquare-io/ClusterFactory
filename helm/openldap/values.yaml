@@ -12,9 +12,9 @@ ldapsPort: 1636
 resources:
   requests:
     cpu: 125m
-    memory: 1Gi
+    memory: 256Gi
   limits:
-    memory: 1Gi
+    memory: 256Gi
 
 nodeAffinity: {}
 
