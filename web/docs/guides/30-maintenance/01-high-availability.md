@@ -152,8 +152,8 @@ spec:
         apply:
           before:
             # Set SELinux Permissive
-            - sh -c 'if [ "$(getenforce)" != "Permissive" ]; then sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config; fi'
-            - sh -c 'if [ "$(getenforce)" != "Permissive" ]; then setenforce 0; fi'
+            - sh -c 'if [ "$(getenforce)" != "Permissive" ] && [ "$(getenforce)" != "Disabled" ]; then sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config; fi'
+            - sh -c 'if [ "$(getenforce)" != "Permissive" ] && [ "$(getenforce)" != "Disabled" ]; then setenforce 0; fi'
 
     - ssh:
         address: 10.10.1.2
@@ -171,8 +171,8 @@ spec:
         apply:
           before:
             # Set SELinux Permissive
-            - sh -c 'if [ "$(getenforce)" != "Permissive" ]; then sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config; fi'
-            - sh -c 'if [ "$(getenforce)" != "Permissive" ]; then setenforce 0; fi'
+            - sh -c 'if [ "$(getenforce)" != "Permissive" ] && [ "$(getenforce)" != "Disabled" ]; then sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config; fi'
+            - sh -c 'if [ "$(getenforce)" != "Permissive" ] && [ "$(getenforce)" != "Disabled" ]; then setenforce 0; fi'
 
     - ssh:
         address: 10.10.3.2
@@ -190,8 +190,8 @@ spec:
         apply:
           before:
             # Set SELinux Permissive
-            - sh -c 'if [ "$(getenforce)" != "Permissive" ]; then sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config; fi'
-            - sh -c 'if [ "$(getenforce)" != "Permissive" ]; then setenforce 0; fi'
+            - sh -c 'if [ "$(getenforce)" != "Permissive" ] && [ "$(getenforce)" != "Disabled" ]; then sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config; fi'
+            - sh -c 'if [ "$(getenforce)" != "Permissive" ] && [ "$(getenforce)" != "Disabled" ]; then setenforce 0; fi'
 
   k0s:
     ...
