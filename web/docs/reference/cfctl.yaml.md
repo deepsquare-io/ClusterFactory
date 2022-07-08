@@ -2,6 +2,216 @@
 
 `apiVersion: cfctl.clusterfactory.io/v1beta1`
 
+<details>
+  <summary>Example</summary>
+
+```yaml
+apiVersion: cfctl.clusterfactory.io/v1beta1
+kind: Cluster
+metadata:
+  name: k8s.example.com-cluster
+spec:
+  hosts:
+    - ssh:
+        address: 192.168.0.2
+        user: root
+        port: 22
+        keyPath: ~/.ssh/id_ed25519
+      role: controller+worker
+      noTaints: true
+      privateInterface: eno1
+      privateAddress: 192.168.0.2
+      installFlags:
+        - --debug
+        - --labels="topology.kubernetes.io/region=ch-sion,topology.kubernetes.io/zone=ch-sion-1"
+      hooks:
+        apply:
+          before:
+            # Set SELinux Permissive
+            - sh -c 'if [ "$(getenforce)" != "Permissive" ] && [ "$(getenforce)" != "Disabled" ]; then sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config; fi'
+            - sh -c 'if [ "$(getenforce)" != "Permissive" ] && [ "$(getenforce)" != "Disabled" ]; then setenforce 0; fi'
+
+  k0s:
+    version: '1.23.8+k0s.0'
+    dynamicConfig: false
+    config:
+      apiVersion: k0s.k0sproject.io/v1beta1
+      kind: Cluster
+      metadata:
+        name: k8s.example.com
+      spec:
+        api:
+          k0sApiPort: 9443
+          port: 6443
+        installConfig:
+          users:
+            etcdUser: etcd
+            kineUser: kube-apiserver
+            konnectivityUser: konnectivity-server
+            kubeAPIserverUser: kube-apiserver
+            kubeSchedulerUser: kube-scheduler
+        konnectivity:
+          adminPort: 8133
+          agentPort: 8132
+        network:
+          calico:
+            mode: 'vxlan'
+            overlay: Always
+            mtu: 0
+            wireguard: false
+          kubeProxy:
+            disabled: false
+            mode: iptables
+          kuberouter:
+            autoMTU: true
+            mtu: 0
+            peerRouterASNs: ''
+            peerRouterIPs: ''
+          podCIDR: 10.244.0.0/16
+          provider: calico
+          serviceCIDR: 10.96.0.0/12
+        podSecurityPolicy:
+          defaultPolicy: 00-k0s-privileged
+        storage:
+          type: etcd
+        telemetry:
+          enabled: false
+        extensions:
+          helm:
+            repositories:
+              - name: traefik
+                url: https://helm.traefik.io/traefik
+              - name: bitnami
+                url: https://charts.bitnami.com/bitnami
+              - name: jetstack
+                url: https://charts.jetstack.io
+              - name: csi-driver-nfs
+                url: https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts
+            charts:
+              - name: metallb
+                chartname: bitnami/metallb
+                version: '3.0.10'
+                namespace: metallb
+                values: |
+                  configInline:
+                    peers:
+                      - peer-address: 192.168.0.1
+                        peer-asn: 65000
+                        my-asn: 65001
+                        source-address: 192.168.0.2
+                        node-selectors:
+                          - match-labels:
+                              kubernetes.io/hostname: mn1.example.com
+
+                    address-pools:
+                      - name: main-pool
+                        protocol: bgp
+                        addresses:
+                          - 192.168.1.100/32
+
+              - name: traefik
+                chartname: traefik/traefik
+                version: '10.24.0'
+                namespace: traefik
+                values: |
+                  deployment:
+                    kind: DaemonSet
+
+                  ingressClass:
+                    enabled: true
+                    isDefaultClass: true
+
+                  service:
+                    enabled: true
+                    annotations:
+                      metallb.universe.tf/address-pool: main-pool
+                      metallb.universe.tf/allow-shared-ip: traefik-lb-key
+                    spec:
+                      externalTrafficPolicy: Cluster
+                      loadBalancerIP: 192.168.1.100
+
+                  providers:
+                    kubernetesCRD:
+                      enabled: true
+                      allowCrossNamespace: true
+                      allowExternalNameServices: true
+                      namespaces: []
+                    kubernetesIngress:
+                      enabled: true
+                      allowExternalNameServices: true
+                      namespaces: []
+                      ingressClass: traefik
+                      publishedService:
+                        enabled: true
+
+                  globalArguments:
+                    - '--global.checknewversion'
+                    - '--api.dashboard=true'
+
+                  additionalArguments:
+                    - '--entryPoints.websecure.proxyProtocol.insecure'
+                    - '--entryPoints.websecure.forwardedHeaders.insecure'
+
+                  ingressRoute:
+                    dashboard:
+                      enabled: false
+
+                  ports:
+                    traefik:
+                      port: 9000
+                      expose: false
+                      exposedPort: 9000
+                      protocol: TCP
+                    web:
+                      port: 80
+                      expose: true
+                      exposedPort: 80
+                      protocol: TCP
+                    websecure:
+                      port: 443
+                      expose: true
+                      exposedPort: 443
+                      protocol: TCP
+                      # NOTE: use cert-manager.
+                      tls:
+                        enabled: false
+                    metrics:
+                      port: 9100
+                      expose: false
+                      exposedPort: 9100
+                      protocol: TCP
+
+                  securityContext:
+                    capabilities:
+                      drop: [ALL]
+                      add: [NET_BIND_SERVICE]
+                    readOnlyRootFilesystem: true
+                    runAsGroup: 0
+                    runAsNonRoot: false
+                    runAsUser: 0
+
+                  podSecurityContext:
+                    fsGroup: 65532
+
+              - name: cert-manager
+                chartname: jetstack/cert-manager
+                version: 'v1.9.0-beta.1'
+                namespace: cert-manager
+                values: |
+                  installCRDs: true
+
+              - name: csi-driver-nfs
+                chartname: csi-driver-nfs/csi-driver-nfs
+                version: 'v4.1.0'
+                namespace: csi-driver-nfs
+                values: |
+                  driver:
+                    mountPermissions: 0775
+                  kubeletDir: /var/lib/k0s/kubelet
+```
+
+</details>
+
 ## Cluster
 
 Cluster is the configuration for a k0s cluster. It configures k0s on the listed hosts.
