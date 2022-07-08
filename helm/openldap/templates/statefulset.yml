@@ -55,6 +55,7 @@ spec:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
       {{- end }}
       initContainers:
+        {{- if .Values.tls.enabled }}
         - name: "init-perms"
           image: busybox:1.34.1
           command: ["sh", "-c"]
@@ -68,6 +69,7 @@ spec:
               mountPath: /in
             - name: openldap-certs-with-perms
               mountPath: /out
+        {{- end }}
       {{- if .Values.initContainers }}
 {{ toYaml .Values.initContainers | indent 8 }}
       {{- end }}
