@@ -99,21 +99,9 @@ spec:
               value: "/opt/bitnami/openldap/certs/ca.crt"
             {{- end }}
           livenessProbe:
-            exec:
-              command:
-                - sh
-                - -c
-                - >-
-                  ldapsearch
-                  -H ldap://127.0.0.1:{{ .Values.ldapPort }}
-                  -D cn=${LDAP_ADMIN_USERNAME:-"admin"},${LDAP_ROOT}
-                  -b ${LDAP_ROOT:-"dc=example,dc=orgs"}
-                  -w ${LDAP_ADMIN_PASSWORD:-"adminpassword"}
-{{ toYaml .Values.livenessProbe | indent 12 }}
-          readinessProbe:
             tcpSocket:
               port: ldap
-{{ toYaml .Values.readinessProbe | indent 12 }}
+{{ toYaml .Values.livenessProbe | indent 12 }}
           volumeMounts:
             - name: openldap-data
               mountPath: /bitnami/openldap/
