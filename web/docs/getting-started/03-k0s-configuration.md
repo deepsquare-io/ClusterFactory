@@ -243,14 +243,20 @@ After configuring the Load Balancer, you should configure Traefik, the main Ingr
         expose: true
         exposedPort: 443
         protocol: TCP
-        # NOTE: use cert-manager.
+        # You MUST open port 443 UDP!
+        # HTTP3 upgrades the connection from TCP to UDP.
+        http3: true
         tls:
-          enabled: false
+          enabled: true
       metrics:
         port: 9100
         expose: false
         exposedPort: 9100
         protocol: TCP
+
+    experimental:
+      http3:
+        enabled: true
 
     securityContext:
       capabilities:
