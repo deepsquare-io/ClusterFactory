@@ -12,10 +12,10 @@ etcdctl_version=v3.5.4
 
 # Apps
 local_path_provisioner_version=v0.0.22
-kube_prometheus_stack_version=36.6.1
+kube_prometheus_stack_version=36.6.2
 
 # cfctl.yaml
-k0s_version=1.23.8+k0s.0
+k0s_version=1.24.2+k0s.0
 metallb_version=3.0.10
 traefik_version=10.24.0
 cert_manager_version=v1.9.0-beta.1
