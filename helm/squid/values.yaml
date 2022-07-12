@@ -1,0 +1,97 @@
+replicas: 1
+
+image:
+  repository: docker.io/ubuntu/squid
+  tag: 5.2-22.04_beta
+imagePullPolicy: IfNotPresent
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 1
+
+labels: {}
+annotations: {}
+
+## Use an alternate scheduler.
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+schedulerName: ''
+
+podSecurityContext: {}
+tolerations: []
+nodeSelector: {}
+affinity: {}
+
+terminationGracePeriodSeconds: 5
+
+imagePullSecrets: {}
+
+initContainers: {}
+
+livenessProbe:
+  failureThreshold: 3
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+
+readinessProbe:
+  failureThreshold: 3
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  successThreshold: 3
+  timeoutSeconds: 5
+
+volumeMounts: []
+volumes: []
+
+tmp:
+  medium: ''
+  size: 50Gi
+
+resources:
+  {}
+  # requests:
+  #   cpu: '100m'
+  #   memory: '256Mi'
+  # limits:
+  #   memory: '256Mi'
+
+service:
+  enabled: true
+  type: ClusterIP
+
+ingress:
+  enabled: false
+  ingressClass: ''
+
+  annotations: {}
+
+  hosts:
+    []
+    # - squid.example.com
+
+  path: /
+
+  tls:
+    []
+    # - secretName: squid.example.com-secret
+    #   hosts:
+    #     - squid.example.com
+
+config:
+  ''
+  # acl local_nodes src YOUR_CLIENT_IPS
+  # acl stratum_ones dst cvmfs.ch1.deepsquare.run
+  # http_port 3128
+  # http_access allow stratum_ones
+  # http_access allow local_nodes
+  # http_access allow localhost
+  # http_access deny all
+  # collapsed_forwarding on
+  # minimum_expiry_time 0
+  # maximum_object_size 1024 MB
+  # cache_mem 128 MB
+  # maximum_object_size_in_memory 128 KB
+  # cache_dir ufs /var/spool/squid 50000 16 256

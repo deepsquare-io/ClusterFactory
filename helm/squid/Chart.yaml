@@ -1,0 +1,14 @@
+apiVersion: v2
+name: squid
+description: Deploys a squid proxy.
+type: application
+home: http://www.squid-cache.org
+sources:
+  - https://github.com/squid-cache/squid
+version: 0.1.0
+appVersion: 'squid:5.2-22.04_beta'
+maintainers:
+  - name: Marc Nguyen
+    email: marc@squarefactory.io
+  - name: Christophe Lillo
+    email: lillo@squarefactory.io

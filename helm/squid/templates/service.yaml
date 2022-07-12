@@ -1,0 +1,39 @@
+{{- if .Values.service.enabled }}
+{{- $serviceValues := .Values.service -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ template "squid.name" $ }}"
+  labels:
+    app: "{{ template "squid.name" $ }}"
+spec:
+  type: {{ $serviceValues.type }}
+  {{- if $serviceValues.clusterIP }}
+  clusterIP: {{ $serviceValues.clusterIP }}
+  {{- end }}
+  {{- if $serviceValues.externalIPs }}
+  externalIPs:
+  {{ toYaml $serviceValues.externalIPs | indent 4 }}
+  {{- end }}
+  {{- if $serviceValues.loadBalancerIP }}
+  loadBalancerIP: {{ $serviceValues.loadBalancerIP }}
+  {{- end }}
+  {{- if $serviceValues.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := $serviceValues.loadBalancerSourceRanges }}
+    - {{ $cidr }}
+  {{- end }}
+  {{- end }}
+  {{- if ne $serviceValues.type "ClusterIP" }}
+  externalTrafficPolicy: {{ $serviceValues.externalTrafficPolicy }}
+  {{- end }}
+  ports:
+    - port: 3128
+      targetPort: squid
+      protocol: TCP
+      name: squid
+  selector:
+    app: "{{ template "squid.name" $ }}"
+    app.kubernetes.io/name: "{{ template "squid.name" $ }}"
+    app.kubernetes.io/instance: "{{ template "squid.name" $ }}"
+{{- end }}
