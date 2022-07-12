@@ -24,6 +24,7 @@ spec:
       installFlags:
         - --debug
         - --labels="topology.kubernetes.io/region=ch-sion,topology.kubernetes.io/zone=ch-sion-1"
+        - --disable-components coredns
       hooks:
         apply:
           before:

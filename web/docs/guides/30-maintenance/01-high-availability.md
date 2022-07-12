@@ -148,6 +148,7 @@ spec:
       installFlags:
         - --debug
         - --labels="topology.kubernetes.io/region=ch-sion,topology.kubernetes.io/zone=ch-sion-1"
+        - --disable-components coredns
       hooks:
         apply:
           before:
@@ -167,6 +168,7 @@ spec:
       installFlags:
         - --debug
         - --labels="topology.kubernetes.io/region=at-vie,topology.kubernetes.io/zone=at-vie-1"
+        - --disable-components coredns
       hooks:
         apply:
           before:
@@ -186,6 +188,7 @@ spec:
       installFlags:
         - --debug
         - --labels="topology.kubernetes.io/region=de-fra,topology.kubernetes.io/zone=de-fra-1"
+        - --disable-components coredns
       hooks:
         apply:
           before:
