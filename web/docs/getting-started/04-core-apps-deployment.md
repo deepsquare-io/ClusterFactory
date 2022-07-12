@@ -19,7 +19,11 @@ CoreDNS will be exposed to the external network thanks to the `IngressRoute` obj
 
 If this is an unwanted feature (because you are using an other DNS for example), feel free to remove the routes and close the ports in the Traefik extension specification inside `cfctl.yaml`.
 
-```diff
+```shell title="user@local:/ClusterFactory-CE"
+rm core.example/coredns/overlays/prod/ingress-route.yaml
+```
+
+```diff title="cfctl.yaml"
               - name: traefik
                 chartname: traefik/traefik
                 version: '10.24.0'
@@ -41,6 +45,10 @@ If this is an unwanted feature (because you are using an other DNS for example),
 -                     expose: true
 -                     exposedPort: 53
 -                     protocol: UDP
+```
+
+```shell title="user@local:/ClusterFactory-CE"
+cfctl apply --debug --config ./cfctl.yaml
 ```
 
 :::
