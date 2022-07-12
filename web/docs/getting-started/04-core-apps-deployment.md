@@ -2,7 +2,7 @@
 
 We will deploy:
 
-- A new CoreDNS configuration
+- CoreDNS, the internal DNS for Kubernetes
 - Sealed Secrets, secret management optimized for GitOps
 - Cert-manager issuers, to generate your SSL certificates and enable, for free, TLS configuration.
 - Argo CD, to enable GitOps.
@@ -11,21 +11,45 @@ We will deploy:
 
 ## CoreDNS configuration
 
-The initial configuration of CoreDNS given by k0s does not fulfil our needs. This is why we are applying a new configuration.
+The CoreDNS given by k0s does not meet our needs, so we added `--disable-components coredns` in the `installFlags` of `cfctl.yaml`. We are going to deploy our own.
 
-CoreDNS is exposed to the external network thanks to the `IngressRoute` objects in the [`core/coredns/overlays/prod/ingress-route.yml`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/core.example/coredns/overlays/prod/ingress-route.yml).
+CoreDNS will be exposed to the external network thanks to the `IngressRoute` objects in the [`core/coredns/overlays/prod/ingress-route.yaml`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/core.example/coredns/overlays/prod/ingress-route.yaml).
 
 :::caution
 
 If this is an unwanted feature (because you are using an other DNS for example), feel free to remove the routes and close the ports in the Traefik extension specification inside `cfctl.yaml`.
 
+```diff
+              - name: traefik
+                chartname: traefik/traefik
+                version: '10.24.0'
+                namespace: traefik
+                values: |
+                  ports:
+                    traefik:
+                      port: 9000
+                      expose: false
+                      exposedPort: 9000
+                      protocol: TCP
+-                   dns-tcp:
+-                     port: 8053
+-                     expose: true
+-                     exposedPort: 53
+-                     protocol: TCP
+-                   dns-udp:
+-                     port: 8054
+-                     expose: true
+-                     exposedPort: 53
+-                     protocol: UDP
+```
+
 :::
 
-The files that you should look for are [`core/coredns/overlays/prod/configmap.yml`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/core.example/coredns/overlays/prod/configmap.yml) and [`core/coredns/overlays/prod/deployment.yml`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/core.example/coredns/overlays/prod/deployment.yml).
+The files that you should look for are [`core/coredns/overlays/prod/configmap.yaml`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/core.example/coredns/overlays/prod/configmap.yaml) and [`core/coredns/overlays/prod/deployment.yaml`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/core.example/coredns/overlays/prod/deployment.yaml).
 
 Inside the `ConfigMap`, you'll find:
 
-```yaml title="core/coredns/overlays/prod/configmap.yml"
+```yaml title="core/coredns/overlays/prod/configmap.yaml"
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -92,7 +116,7 @@ search example.com
 
 If some files were added and removed, you must change the `deployment.yml`:
 
-```diff title="core/coredns/overlays/prod/deployment.yml > spec > template > spec > volumes"
+```diff title="core/coredns/overlays/prod/deployment.yaml > spec > template > spec > volumes"
         volumes:
           - name: config-volume
             configMap:
@@ -148,11 +172,11 @@ spec:
 
 ## Configure the routes and certificates for the dashboards
 
-Argo CD and Traefik have dashboards. To change the addresses and certificates, modify the `ingress-route.yml` file and `certificate.yml` in the directories `core/argo-cd` and `core/traefik`.
+Argo CD and Traefik have dashboards. To change the addresses and certificates, modify the `ingress-route.yaml` file and `certificate.yaml` in the directories `core/argo-cd` and `core/traefik`.
 
 Make sure the addresses correspond to the ones defined in the CoreDNS (or in your private DNS).
 
-```yaml title="Example of ingress-route.yml for Traefik"
+```yaml title="Example of ingress-route.yaml for Traefik"
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
@@ -233,7 +257,7 @@ Our recommendation is to use Ingress for simple routes with HTTP. Otherwise, Ing
 
 ## (optional) Configure KubeVirt
 
-If you do not want to deploy KubeVirt in all zones, you can edit [`core/kubevirt/overlays/prod/kubevirt-cr.yaml`](https://github.dev/SquareFactory/ClusterFactory-CE/blob/main/core.example/kubevirt/overlays/prod/kubevirt-cr.yaml).
+If you do not want to deploy KubeVirt in all zones, you can edit [`core/kubevirt/overlays/prod/kubevirt-cr.yaml`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/core.example/kubevirt/overlays/prod/kubevirt-cr.yaml).
 
 ```yaml title="core/kubevirt/overlays/prod/kubevirt-cr.yaml"
 apiVersion: kubevirt.io/v1

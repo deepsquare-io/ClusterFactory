@@ -315,9 +315,9 @@ alias kubectx="kubectl config current-context"
 
 Congratulation, you have deployed your Kubernetes cluster! However, it's still missing a few core features:
 
+- CoreDNS, which is the internal DNS for Kubernetes
 - KubeVirt, to deploy VM workloads
 - Multus CNI, to support multiple network interfaces
 - Sealed Secrets, secret management optimized for GitOps
 - Cert-manager issuers, to generate your SSL certificates and enable, for free, TLS configuration.
 - Argo CD, to enable GitOps.
-- CoreDNS configurations
