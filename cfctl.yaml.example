@@ -85,7 +85,7 @@ spec:
             charts:
               - name: metallb
                 chartname: bitnami/metallb
-                version: '3.0.10'
+                version: '3.0.11'
                 namespace: metallb
                 values: |
                   configInline:
