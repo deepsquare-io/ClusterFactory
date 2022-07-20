@@ -34,6 +34,4 @@ spec:
       name: squid
   selector:
     app: "{{ template "squid.name" $ }}"
-    app.kubernetes.io/name: "{{ template "squid.name" $ }}"
-    app.kubernetes.io/instance: "{{ template "squid.name" $ }}"
 {{- end }}
