@@ -123,7 +123,7 @@ Your router must be capable of using BGP. If not, you should use an appliance wi
 ```yaml title="cfctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
 - name: metallb
   chartname: bitnami/metallb
-  version: '3.0.10'
+  version: '3.0.11'
   namespace: metallb
   values: |
 
@@ -156,7 +156,7 @@ Your router must be capable of using BGP. If not, you should use an appliance wi
 ```yaml title="cfctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
 - name: metallb
   chartname: bitnami/metallb
-  version: '3.0.10'
+  version: '3.0.11'
   namespace: metallb
   values: |
 

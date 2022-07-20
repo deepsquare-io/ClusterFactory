@@ -2,7 +2,7 @@ apiVersion: v2
 name: kube-prometheus-stack-subchart
 description: Kube Prometheus Stack subchart
 type: application
-version: 36.6.2
+version: 37.2.0
 appVersion: '36.2.1'
 
 dependencies:
