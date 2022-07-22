@@ -82,7 +82,7 @@ export KUBESEAL
 
 HELM="$(command -v helm)"
 if ! [ -x "$HELM" ]; then
-  HELM_VERSION=v3.9.1
+  HELM_VERSION=v3.9.2
   echo "helm could not be found. Downloading it locally in ./bin."
   rm -f ./bin/helm
   curl -fsSL "https://get.helm.sh/helm-${HELM_VERSION}-${os}-${architecture}.tar.gz" | tar -zxvf - "${os}-${architecture}/helm"
