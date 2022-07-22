@@ -17,6 +17,15 @@ resources:
   # limits:
   #   memory: 512Mi
 
+podSecurityContext:
+  runAsUser: 499
+  fsGroup: 499
+
+securityContext:
+  runAsUser: 499
+  runAsGroup: 499
+  runAsNonRoot: true
+
 nodeAffinity: {}
 
 updateStrategy:
@@ -103,3 +112,6 @@ volumes:
 service:
   enabled: true
   type: ClusterIP
+
+initChownData:
+  enabled: true
