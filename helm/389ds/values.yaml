@@ -1,0 +1,105 @@
+replicas: 1
+
+image:
+  repository: 'docker.io/389ds/dirsrv'
+  tag: ''
+imagePullPolicy: 'IfNotPresent'
+
+labels: {}
+annotations: {}
+
+resources:
+  {}
+  # requests:
+  #   # Beware that to low cpu will kill the container.
+  #   cpu: 300m
+  #   memory: 512Mi
+  # limits:
+  #   memory: 512Mi
+
+nodeAffinity: {}
+
+updateStrategy:
+  type: RollingUpdate
+
+startupProbe:
+  initialDelaySeconds: 180
+  timeoutSeconds: 10
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 10
+livenessProbe:
+  initialDelaySeconds: 30
+  timeoutSeconds: 10
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 10
+readinessProbe:
+  timeoutSeconds: 10
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 5
+
+# How long to wait to stop gracefully
+terminationGracePeriod: 10
+
+## Use an alternate scheduler.
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+schedulerName: ''
+
+imagePullSecrets: {}
+
+nodeSelector: {}
+tolerations: []
+
+# persistence is mounted on /bitnami/openldap/
+persistence:
+  storageClassName: ''
+  accessModes: ['ReadWriteOnce']
+  size: 5Gi
+  selectorLabels: {}
+
+initContainers: []
+
+tls:
+  ## Secret containing tls.key and tls.crt
+  secretName: ''
+
+config:
+  ## Set `cn=Directory Manager`'s password
+  dmPassword:
+    secretName: ''
+    key: 'dm-password'
+  ## Initial settings for the instance.
+  ## See: https://directory.fedoraproject.org/docs/389ds/howto/quickstart.html
+  inf:
+    secretName: ''
+    key: 'container.inf'
+  ## Use suffix as a basedn in `dsrc` file
+  suffixName: 'dc=example,dc=com'
+  ## set the log level for `ns-slapd
+  logLevel: 256
+  ## set LDBM autotune percentage (`nsslapd-cache-autosize`)
+  memoryPercentage: 25
+  ## If set to true, a DB reindex will be performed before the instance starts.
+  reindex: false
+
+# Extra volume mounts
+volumeMounts:
+  []
+  # - name: custom-ldifs
+  #   mountPath: /ldifs
+  #   readOnly: true
+
+# Extra volumes (use it to mount secrets like ldif)
+volumes:
+  []
+  # - name: custom-ldifs
+  #   configMap:
+  #     name: custom-ldifs
+  #     defaultMode: 256
+
+service:
+  enabled: true
+  type: ClusterIP

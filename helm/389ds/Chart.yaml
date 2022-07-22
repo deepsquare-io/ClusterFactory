@@ -1,0 +1,15 @@
+apiVersion: v2
+name: dirsrv-389ds
+description: The enterprise-class Open Source LDAP server for Linux.
+type: application
+home: https://directory.fedoraproject.org
+sources:
+  - https://github.com/389ds/389-ds-base/
+  - https://hub.docker.com/r/389ds/dirsrv
+version: 0.1.0
+appVersion: '2.1'
+maintainers:
+  - name: Marc Nguyen
+    email: marc@squarefactory.io
+  - name: Christophe Lillo
+    email: lillo@squarefactory.io

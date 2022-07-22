@@ -1,0 +1,169 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: "{{ template "389ds.name" . }}"
+  labels:
+    app: "{{ template "389ds.name" . }}"
+spec:
+  serviceName: "{{ template "389ds.name" . }}"
+  selector:
+    matchLabels:
+      app: "{{ template "389ds.name" . }}"
+  replicas: {{ .Values.replicas }}
+  updateStrategy:
+{{ toYaml .Values.updateStrategy | trim | indent 4 }}
+  template:
+    metadata:
+      name: "{{ template "389ds.name" . }}"
+      labels:
+        app: "{{ template "389ds.name" . }}"
+{{- if .Values.labels }}
+{{ toYaml .Values.labels | indent 8 }}
+{{- end }}
+{{- if .Values.annotations }}
+      annotations:
+{{ toYaml .Values.annotations | indent 8 }}
+{{- end }}
+    spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.nodeAffinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriod }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
+      initContainers:
+        - name: init-perms
+          image: busybox:1.34.1
+          command: ["sh", "-c"]
+          securityContext:
+            runAsNonRoot: false
+            runAsUser: 0
+          args:
+            - |-
+              cp -RLp /in/* /out/;
+          volumeMounts:
+            - name: 389ds-certs
+              readOnly: true
+              mountPath: /in
+            - name: 389ds-data
+              mountPath: /out
+              subPath: tls
+        {{- if .Values.initContainers }}
+{{ toYaml .Values.initContainers | indent 8 }}
+        {{- end }}
+      {{- if .Values.dnsPolicy }}
+      dnsPolicy: "{{ .Values.dnsPolicy }}"
+      {{- end }}
+      {{- if .Values.dnsConfig }}
+      dnsConfig:
+{{ toYaml .Values.dnsConfig | indent 8 }}
+      {{- end }}
+      containers:
+        - name: "{{ template "389ds.name" . }}"
+          image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+          ports:
+            - name: ldap
+              containerPort: 3389
+            - name: ldaps
+              containerPort: 3636
+          env:
+            - name: DS_DM_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.config.dmPassword.secretName }}"
+                  key: "{{ .Values.config.dmPassword.key }}"
+                  optional: false
+            - name: DS_SUFFIX_NAME
+              value: "{{ .Values.config.suffixName }}"
+            # DS_ERRORLOG_LEVEL - set the log level for `ns-slapd`, default is 266354688
+            - name: DS_ERRORLOG_LEVEL
+              value: "{{ .Values.config.logLevel }}"
+            # DS_MEMORY_PERCENTAGE - set LDBM autotune percentage (`nsslapd-cache-autosize`), default is 25
+            - name: DS_MEMORY_PERCENTAGE
+              value: "{{ .Values.config.memoryPercentage }}"
+            # DS_REINDEX` - run database reindex task (`db2index`)
+            - name: DS_REINDEX
+              value: "{{ .Values.config.reindex | ternary "True" "False" }}"
+          startupProbe:
+            tcpSocket:
+              port: 3389
+{{ toYaml .Values.startupProbe | indent 12 }}
+          readinessProbe:
+            exec:
+              command:
+                - /usr/lib/dirsrv/dscontainer
+                - -H
+{{ toYaml .Values.readinessProbe | indent 12 }}
+          livenessProbe:
+            exec:
+              command:
+                - /usr/lib/dirsrv/dscontainer
+                - -H
+{{ toYaml .Values.livenessProbe | indent 12 }}
+          volumeMounts:
+            - name: 389ds-data
+              mountPath: /data
+            {{- if .Values.config.inf.secretName }}
+            - name: 389ds-config-inf
+              mountPath: /data/config/container.inf
+              subPath: container.inf
+            {{- end }}
+            {{- if .Values.volumeMounts }}
+{{ toYaml .Values.volumeMounts | indent 12 }}
+            {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      volumes:
+        - name: 389ds-certs
+          secret:
+            secretName:  "{{ .Values.tls.secretName }}"
+            defaultMode: 256
+            items:
+              - key: tls.key
+                path: server.key
+              - key: tls.crt
+                path: server.crt
+              - key: ca.crt
+                path: ca/ca.crt
+        {{- if .Values.config.inf.secretName }}
+        - name: 389ds-config-inf
+          secret:
+            secretName:  "{{ .Values.config.inf.secretName }}"
+            items:
+              - key: "{{ .Values.config.inf.key }}"
+                path: container.inf
+        {{- end }}
+        - name: tmp
+          emptyDir: {}
+        {{- if .Values.volumes }}
+{{ toYaml .Values.volumes | indent 8 }}
+        {{- end }}
+  volumeClaimTemplates:
+    - metadata:
+        name: 389ds-data
+      spec:
+        accessModes: {{ .Values.persistence.accessModes }}
+        storageClassName: "{{ .Values.persistence.storageClassName }}"
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size }}
+        {{- with .Values.persistence.selectorLabels }}
+        selector:
+          matchLabels:
+{{ toYaml . | indent 12 }}
+        {{- end }}
