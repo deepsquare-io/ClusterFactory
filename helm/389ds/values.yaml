@@ -32,7 +32,7 @@ updateStrategy:
   type: RollingUpdate
 
 startupProbe:
-  initialDelaySeconds: 180
+  initialDelaySeconds: 120
   timeoutSeconds: 10
   periodSeconds: 10
   successThreshold: 1
