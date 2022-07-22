@@ -1,5 +1,5 @@
 # Core Version
-argocd_version=4.9.16
+argocd_version=4.10.0
 sealed_secrets_version=2.4.0
 kubevirt_version=v0.55.0-rc.0
 coredns_version=1.9.3
@@ -7,12 +7,12 @@ coredns_version=1.9.3
 # Utils Version
 cfctl_version=v0.13.1+9001
 kubeseal_version=0.18.1
-helm_version=v3.9.1
+helm_version=v3.9.2
 etcdctl_version=v3.5.4
 
 # Apps
 local_path_provisioner_version=v0.0.22
-kube_prometheus_stack_version=37.3.0
+kube_prometheus_stack_version=38.0.0
 
 # cfctl.yaml
 k0s_version=1.24.2+k0s.0
