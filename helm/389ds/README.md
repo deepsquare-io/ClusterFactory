@@ -29,63 +29,47 @@ dsconf localhost backend create --suffix dc=example,dc=com --be-name example_bac
 dsidm localhost initialise
 ```
 
-## Values
+## Automatic uidNumber gidNumber generation
 
-| Key                               | Type   | Default                    | Description |
-| --------------------------------- | ------ | -------------------------- | ----------- |
-| annotations                       | object | `{}`                       |             |
-| config.dmPassword.key             | string | `"dm-password"`            |             |
-| config.dmPassword.secretName      | string | `""`                       |             |
-| config.inf.key                    | string | `"container.inf"`          |             |
-| config.inf.secretName             | string | `""`                       |             |
-| config.logLevel                   | int    | `256`                      |             |
-| config.memoryPercentage           | int    | `25`                       |             |
-| config.reindex                    | bool   | `false`                    |             |
-| config.suffixName                 | string | `"dc=example,dc=com"`      |             |
-| image.repository                  | string | `"docker.io/389ds/dirsrv"` |             |
-| image.tag                         | string | `""`                       |             |
-| imagePullPolicy                   | string | `"IfNotPresent"`           |             |
-| imagePullSecrets                  | object | `{}`                       |             |
-| initChownData.enabled             | bool   | `true`                     |             |
-| initContainers                    | list   | `[]`                       |             |
-| labels                            | object | `{}`                       |             |
-| livenessProbe.failureThreshold    | int    | `10`                       |             |
-| livenessProbe.initialDelaySeconds | int    | `30`                       |             |
-| livenessProbe.periodSeconds       | int    | `10`                       |             |
-| livenessProbe.successThreshold    | int    | `1`                        |             |
-| livenessProbe.timeoutSeconds      | int    | `10`                       |             |
-| nodeAffinity                      | object | `{}`                       |             |
-| nodeSelector                      | object | `{}`                       |             |
-| persistence.accessModes[0]        | string | `"ReadWriteOnce"`          |             |
-| persistence.selectorLabels        | object | `{}`                       |             |
-| persistence.size                  | string | `"5Gi"`                    |             |
-| persistence.storageClassName      | string | `""`                       |             |
-| podSecurityContext.fsGroup        | int    | `499`                      |             |
-| podSecurityContext.runAsUser      | int    | `499`                      |             |
-| readinessProbe.failureThreshold   | int    | `5`                        |             |
-| readinessProbe.periodSeconds      | int    | `10`                       |             |
-| readinessProbe.successThreshold   | int    | `1`                        |             |
-| readinessProbe.timeoutSeconds     | int    | `10`                       |             |
-| replicas                          | int    | `1`                        |             |
-| resources                         | object | `{}`                       |             |
-| schedulerName                     | string | `""`                       |             |
-| securityContext.runAsGroup        | int    | `499`                      |             |
-| securityContext.runAsNonRoot      | bool   | `true`                     |             |
-| securityContext.runAsUser         | int    | `499`                      |             |
-| service.enabled                   | bool   | `true`                     |             |
-| service.type                      | string | `"ClusterIP"`              |             |
-| startupProbe.failureThreshold     | int    | `10`                       |             |
-| startupProbe.initialDelaySeconds  | int    | `180`                      |             |
-| startupProbe.periodSeconds        | int    | `10`                       |             |
-| startupProbe.successThreshold     | int    | `1`                        |             |
-| startupProbe.timeoutSeconds       | int    | `10`                       |             |
-| terminationGracePeriod            | int    | `10`                       |             |
-| tls.secretName                    | string | `""`                       |             |
-| tolerations                       | list   | `[]`                       |             |
-| updateStrategy.type               | string | `"RollingUpdate"`          |             |
-| volumeMounts                      | list   | `[]`                       |             |
-| volumes                           | list   | `[]`                       |             |
+Uniqueness:
 
----
+```shell
+dsconf localhost plugin attr-uniq add "mail attribute uniqueness" --attr-name mail --subtree "dc=hpc,dc=deepsquare,dc=run"
+dsconf localhost plugin attr-uniq add "uid attribute uniqueness" --attr-name uid --subtree "dc=hpc,dc=deepsquare,dc=run"
+dsconf localhost plugin attr-uniq add "uidNumber attribute uniqueness" --attr-name uidNumber --subtree "dc=hpc,dc=deepsquare,dc=run"
+dsconf localhost plugin attr-uniq add "gidNumber attribute uniqueness" --attr-name gidNumber --subtree "dc=hpc,dc=deepsquare,dc=run"
+dsconf localhost plugin attr-uniq enable "mail attribute uniqueness"
+dsconf localhost plugin attr-uniq enable "uid attribute uniqueness"
+dsconf localhost plugin attr-uniq enable "uidNumber attribute uniqueness"
+dsconf localhost plugin attr-uniq enable "gidNumber attribute uniqueness"
+```
 
-Autogenerated from chart metadata using [helm-docs v1.11.0](https://github.com/norwoodj/helm-docs/releases/v1.11.0)
+Distributed Number Assignment (DNA):
+
+```shell
+dsconf localhost plugin dna config "UID and GID numbers" add \
+  --type gidNumber uidNumber \
+  --filter "(|(objectclass=posixAccount)(objectclass=posixGroup))" \
+  --scope dc=hpc,dc=deepsquare,dc=run\
+  --next-value 1601 \
+  --magic-regen -1
+dsconf localhost plugin dna enable
+```
+
+Restart the server:
+
+```shell
+dsctl localhost restart
+```
+
+Test:
+
+```shell
+dsidm -b "dc=hpc,dc=deepsquare,dc=run" localhost user create \
+  --uid marc \
+  --cn marc \
+  --displayName marc \
+  --homeDirectory "/home/ldap-users/marc" \
+  --uidNumber -1 \
+  --gidNumber -1
+```
