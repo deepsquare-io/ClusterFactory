@@ -257,7 +257,7 @@ spec:
     chart: kube-prometheus-stack
     repoURL: https://github.com/prometheus-community/helm-charts.git
     path: charts/kube-prometheus-stack/crds/
-    targetRevision: kube-prometheus-stack-38.0.2
+    targetRevision: kube-prometheus-stack-38.0.3
 
     directory:
       recurse: true
@@ -292,12 +292,12 @@ apiVersion: v2
 name: kube-prometheus-stack-subchart
 description: Kube Prometheus Stack subchart
 type: application
-version: 38.0.2
+version: 38.0.3
 appVersion: '0.1.2'
 
 dependencies:
   - name: kube-prometheus-stack
-    version: 38.0.2
+    version: 38.0.3
     repository: https://prometheus-community.github.io/helm-charts
 ```
 
