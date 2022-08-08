@@ -25,7 +25,7 @@ spec:
             - sh -c 'if [ "$(getenforce)" != "Permissive" ] && [ "$(getenforce)" != "Disabled" ]; then setenforce 0; fi'
 
   k0s:
-    version: '1.24.2+k0s.0'
+    version: '1.24.3+k0s.0'
     dynamicConfig: false
     config:
       apiVersion: k0s.k0sproject.io/v1beta1
@@ -85,7 +85,7 @@ spec:
             charts:
               - name: metallb
                 chartname: bitnami/metallb
-                version: '3.0.12'
+                version: '4.0.1'
                 namespace: metallb
                 values: |
                   configInline:

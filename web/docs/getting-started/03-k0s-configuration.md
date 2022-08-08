@@ -44,7 +44,7 @@ After you set the `hosts` field, you must configure the k0s architecture by edit
 
 ```yaml title="cfctl.yaml > spec > k0s"
 k0s:
-  version: '1.24.2+k0s.0'
+  version: '1.24.3+k0s.0'
   dynamicConfig: false
   config:
     apiVersion: k0s.k0sproject.io/v1beta1
@@ -123,7 +123,7 @@ Your router must be capable of using BGP. If not, you should use an appliance wi
 ```yaml title="cfctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
 - name: metallb
   chartname: bitnami/metallb
-  version: '3.0.12'
+  version: '4.0.1'
   namespace: metallb
   values: |
 
@@ -156,7 +156,7 @@ Your router must be capable of using BGP. If not, you should use an appliance wi
 ```yaml title="cfctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
 - name: metallb
   chartname: bitnami/metallb
-  version: '3.0.12'
+  version: '4.0.1'
   namespace: metallb
   values: |
 

@@ -5,7 +5,7 @@ helm repo update
 
 helm upgrade --install \
   -n sealed-secrets \
-  --version 2.5.2 \
+  --version 2.6.0 \
   sealed-secrets \
   sealed-secrets/sealed-secrets \
   --create-namespace
