@@ -98,79 +98,9 @@ If you wish to use a HA setup, please follow [this guide](/docs/guides/maintenan
 
 After setting up k0s, you can change the `extensions` field. This field can be changed at any time. You can add or change extensions. However, removing an extension is permanent.
 
-## Configuring MetalLB
-
-Start with `metallb`. MetalLB is a L2/L3 load balancer designed for bare metal Kubernetes clusters. It exposes the kubernetes `Services` to the external network. It uses either L2 (ARP) or BGP to advertise routes. The network indicated by `metallb` must be outside the network when using BGP. Otherwise, when using L2 (ARP), the network must be the same as your private network. For multi-zone clusters, you MUST use BGP.
-
-<div style={{textAlign: 'center'}}>
-
-![metallb_concepts](02-k0s-configuration.assets/metallb_concepts.png#white-bg)
-
-</div>
-
-:::note
-
-MetalLB 0.13.0 will allow you to create "zoned" L2 announcements, which means you can make ARP calls by zone.
-
-More precisely, this means that you can allow `192.168.0.100` in the network `192.168.0.0/24` in one zone, and `172.24.0.100` in the network `172.24.0.0/18` in an another zone, which means that you wouldn't need BGP anymore.
-
-However, MetalLB 0.13.0 is not yet available at the time of writing, and BGP is a sure-fire.
-
-:::
-
-Your router must be capable of using BGP. If not, you should use an appliance with BGP capabilities (like OPNsense, OpenWRT, vyOS, or Linux with BIRD).
-
-```yaml title="cfctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
-- name: metallb
-  chartname: bitnami/metallb
-  version: '4.0.1'
-  namespace: metallb
-  values: |
-
-    configInline:
-      peers:
-        - peer-address: 192.168.0.1
-          peer-asn: 65000
-          my-asn: 65001
-          source-address: 192.168.0.2
-          node-selectors:
-            - match-labels:
-                kubernetes.io/hostname: mn1.at1.example.com
-        - peer-address: 10.10.2.1
-          peer-asn: 65002
-          my-asn: 65001
-          source-address: 10.10.2.2
-          node-selectors:
-            - match-labels:
-                kubernetes.io/hostname: mn1.ch1.example.com
-
-      address-pools:
-        - name: main-pool
-          protocol: bgp
-          addresses:
-            - 192.168.1.100/32
-```
-
-[Use L2 if you have only one zone](https://metallb.universe.tf/configuration/#layer-2-configuration).
-
-```yaml title="cfctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
-- name: metallb
-  chartname: bitnami/metallb
-  version: '4.0.1'
-  namespace: metallb
-  values: |
-
-    configInline:
-      address-pools:
-        - name: main-pool
-          protocol: layer2
-          addresses:
-            - 192.168.1.100/32
-```
-
 ## Configuring Traefik
 
-After configuring the Load Balancer, you should configure Traefik, the main Ingress and L7 load balancer.
+You should configure Traefik, which is the main Ingress and L7 load balancer.
 
 ```yaml title="cfctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
 - name: traefik
@@ -272,11 +202,13 @@ After configuring the Load Balancer, you should configure Traefik, the main Ingr
       fsGroup: 65532
 ```
 
-Look for `loadBalancerIP` and use the IPs from the MetalLB.
+Since we are using MetalLB, we select our `IPAddressPool` by using the `metallb.universe.tf/address-pool` annotation. In, the next chapter will deploy the `IPAddressPool`. For now, let's assume we only need one `IPAddressPool` which is `main-pool`.
 
-Add or remove ports. Since Traefik will be used as the main Ingress, these ports will be exposed to the external network.
+Look for `loadBalancerIP`, the value of that field we correspond to a IP address included in the `IPAddressPool`. **This IP address will be exposed to the external network.**
 
-The IngressClass is `traefik`. If you don't want to use Traefik, feel free to add another extension.
+After that, you can add or remove ports. Since Traefik will be used as the main Ingress, these ports will be exposed to the external network.
+
+The IngressClass is `traefik`. If you don't want to use Traefik as the main Ingress, feel free to add an another extension.
 
 We use Traefik because it can do a lot of complex route operations while still being able to do basic HTTP routing.
 
@@ -315,6 +247,7 @@ alias kubectx="kubectl config current-context"
 
 Congratulation, you have deployed your Kubernetes cluster! However, it's still missing a few core features:
 
+- MetalLB advertisements, for Load Balancing
 - CoreDNS, which is the internal DNS for Kubernetes
 - KubeVirt, to deploy VM workloads
 - Multus CNI, to support multiple network interfaces
