@@ -3,10 +3,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: "{{ template "slurm-cluster.ondemand.name" . }}"
-  namespace: '{{ .Release.Namespace }}'
   labels:
-    release: '{{ .Release.Name }}'
-    chart: '{{ .Chart.Name }}'
     app: "{{ template "slurm-cluster.ondemand.name" . }}"
 spec:
   serviceName: "{{ template "slurm-cluster.ondemand.name" . }}"
@@ -23,8 +20,6 @@ spec:
     metadata:
       name: "{{ template "slurm-cluster.ondemand.name" . }}"
       labels:
-        release: {{ .Release.Name | quote }}
-        chart: "{{ .Chart.Name }}"
         app: "{{ template "slurm-cluster.ondemand.name" . }}"
         app.kubernetes.io/name: "{{ template "slurm-cluster.ondemand.name" . }}"
         app.kubernetes.io/instance: "{{ template "slurm-cluster.ondemand.name" . }}"

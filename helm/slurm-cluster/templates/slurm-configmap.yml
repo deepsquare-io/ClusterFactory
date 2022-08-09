@@ -2,10 +2,8 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: "{{ template "slurm-cluster.name" . }}-slurm-config"
-  namespace: '{{ .Release.Namespace }}'
   labels:
-    release: '{{ .Release.Name }}'
-    chart: '{{ .Chart.Name }}'
+    app: "{{ template "slurm-cluster.name" $ }}"
 data:
   slurm.conf: |
     ##-- Cluster definition

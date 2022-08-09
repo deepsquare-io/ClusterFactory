@@ -1,0 +1,55 @@
+{{- if and .Values.login.metrics.enabled .Values.login.metrics.monitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "slurm-cluster.name" . }}-metrics
+  labels:
+    app: {{ template "slurm-cluster.name" . }}-metrics
+  {{- if .Values.login.metrics.monitor.additionalLabels }}
+    {{- toYaml .Values.login.metrics.monitor.additionalLabels | nindent 4 }}
+  {{- end }}
+spec:
+  jobLabel: {{ default "app.kubernetes.io/name" .Values.login.metrics.monitor.jobLabel }}
+  selector:
+    matchLabels:
+    {{- if .Values.login.metrics.monitor.selectorOverride }}
+      {{ toYaml .Values.login.metrics.monitor.selectorOverride | indent 6 }}
+    {{ else }}
+      app: "{{ template "slurm-cluster.login.name" $ }}"
+      app.kubernetes.io/name: "{{ template "slurm-cluster.login.name" $ }}"
+      app.kubernetes.io/instance: "{{ template "slurm-cluster.login.name" $ }}"
+      app.kubernetes.io/component: login
+    {{- end }}
+  endpoints:
+    - port: metrics
+      path: /metrics
+      scheme: {{ .Values.login.metrics.monitor.scheme }}
+    {{- with .Values.login.metrics.monitor.basicAuth }}
+      basicAuth:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.login.metrics.monitor.bearerTokenFile }}
+      bearerTokenFile: {{ . }}
+    {{- end }}
+    {{- with .Values.login.metrics.monitor.tlsConfig }}
+      tlsConfig:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.login.metrics.monitor.proxyUrl }}
+      proxyUrl: {{ . }}
+    {{- end }}
+    {{- with .Values.login.metrics.monitor.interval }}
+      interval: {{ . }}
+    {{- end }}
+    {{- with .Values.login.metrics.monitor.scrapeTimeout }}
+      scrapeTimeout: {{ . }}
+    {{- end }}
+    {{- with .Values.login.metrics.monitor.relabelings }}
+      relabelings:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.login.metrics.monitor.metricRelabelings }}
+      metricRelabelings:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+{{- end }}

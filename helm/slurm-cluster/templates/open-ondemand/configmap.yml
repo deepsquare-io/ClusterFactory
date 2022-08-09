@@ -3,10 +3,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: "{{ template "slurm-cluster.ondemand.name" . }}-config"
-  namespace: '{{ .Release.Namespace }}'
   labels:
-    release: '{{ .Release.Name }}'
-    chart: '{{ .Chart.Name }}'
     app: "{{ template "slurm-cluster.ondemand.name" . }}"
 data:
   nginx_stage.yml: |

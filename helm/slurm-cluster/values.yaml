@@ -111,7 +111,7 @@ controller:
   enabled: true
   replicas: 1
 
-  image: 'ghcr.io/squarefactory/slurm:22.05.2-1-controller'
+  image: 'ghcr.io/squarefactory/slurm:22.05.2-1-2-controller'
   imagePullPolicy: 'IfNotPresent'
 
   labels: {}
@@ -234,7 +234,7 @@ login:
   enabled: false
   replicas: 1
 
-  image: 'ghcr.io/squarefactory/slurm:22.05.2-1-login'
+  image: 'ghcr.io/squarefactory/slurm:22.05.2-1-2-login'
   imagePullPolicy: 'IfNotPresent'
 
   labels: {}
@@ -336,7 +336,7 @@ login:
   # Slurm REST API
   rest:
     enabled: false
-    image: 'ghcr.io/squarefactory/slurm:22.05.2-1-rest'
+    image: 'ghcr.io/squarefactory/slurm:22.05.2-1-2-rest'
     imagePullPolicy: 'IfNotPresent'
     command: ['/init']
 
@@ -349,6 +349,59 @@ login:
         memory: '128Mi'
       limits:
         memory: '256Mi'
+
+  metrics:
+    enabled: false
+
+    gpuAccounting: false
+
+    ## You can customize the command to refresh the tls configs with:
+    ## command: ['sh', '-c', 'update-ca-trust && /init']
+    command: ['/init']
+
+    image: ghcr.io/squarefactory/slurm:22.05.2-1-2-prometheus-exporter
+    imagePullPolicy: IfNotPresent
+
+    # Extra volume mounts (use login.volumes to add volumes)
+    volumeMounts: []
+
+    resources:
+      {}
+      # requests:
+      #   cpu: '100m'
+      #   memory: '256Mi'
+      # limits:
+      #   memory: '1Gi'
+
+    livenessProbe:
+      initialDelaySeconds: 60
+      timeoutSeconds: 1
+      periodSeconds: 10
+      successThreshold: 1
+      failureThreshold: 3
+
+    monitor:
+      enabled: false
+      additionalLabels: {}
+
+      jobLabel: ''
+      scheme: http
+      basicAuth: {}
+      bearerTokenFile:
+      tlsConfig: {}
+
+      ## proxyUrl: URL of a proxy that should be used for scraping.
+      ##
+      proxyUrl: ''
+
+      ## Override serviceMonitor selector
+      ##
+      selectorOverride: {}
+
+      relabelings: []
+      metricRelabelings: []
+      interval: ''
+      scrapeTimeout: 10s
 
 ondemand:
   enabled: false
@@ -517,7 +570,7 @@ db:
   enabled: false
   replicas: 1
 
-  image: 'ghcr.io/squarefactory/slurm:22.05.2-1-db'
+  image: 'ghcr.io/squarefactory/slurm:22.05.2-1-2-db'
   imagePullPolicy: 'IfNotPresent'
 
   labels: {}

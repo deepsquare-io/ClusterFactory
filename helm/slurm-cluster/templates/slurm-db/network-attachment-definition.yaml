@@ -3,10 +3,7 @@ apiVersion: 'k8s.cni.cncf.io/v1'
 kind: NetworkAttachmentDefinition
 metadata:
   name: {{ template "slurm-cluster.db.name" . }}-net
-  namespace: {{ .Release.Namespace }}
   labels:
-    release: '{{ .Release.Name }}'
-    chart: '{{ .Chart.Name }}'
     app: "{{ template "slurm-cluster.db.name" . }}"
 spec:
   config: |

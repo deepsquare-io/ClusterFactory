@@ -4,10 +4,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: "{{ template "slurm-cluster.login.name" $ }}"
-  namespace: '{{ $.Release.Namespace }}'
   labels:
-    release: {{ $.Release.Name | quote }}
-    chart: "{{ $.Chart.Name }}"
     app: "{{ template "slurm-cluster.login.name" $ }}"
     app.kubernetes.io/name: "{{ template "slurm-cluster.login.name" $ }}"
     app.kubernetes.io/instance: "{{ template "slurm-cluster.login.name" $ }}"
@@ -47,6 +44,11 @@ spec:
     - name: http
       port: 6822
       targetPort: http
+    {{- end }}
+    {{- if .Values.login.metrics.enabled }}
+    - name: metrics
+      port: 8080
+      targetPort: metrics
     {{- end }}
   selector:
     app.kubernetes.io/name: "{{ template "slurm-cluster.login.name" $ }}"

@@ -4,10 +4,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: "{{ template "slurm-cluster.db.name" $ }}"
-  namespace: '{{ $.Release.Namespace }}'
   labels:
-    release: {{ $.Release.Name | quote }}
-    chart: "{{ $.Chart.Name }}"
     app: "{{ template "slurm-cluster.db.name" $ }}"
     app.kubernetes.io/name: "{{ template "slurm-cluster.db.name" $ }}"
     app.kubernetes.io/instance: "{{ template "slurm-cluster.db.name" $ }}"

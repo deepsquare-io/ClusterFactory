@@ -3,10 +3,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: "{{ template "slurm-cluster.ondemand.name" . }}-http"
-  namespace: '{{ .Release.Namespace }}'
   labels:
-    release: '{{ .Release.Name }}'
-    chart: '{{ .Chart.Name }}'
     app: "{{ template "slurm-cluster.ondemand.name" . }}"
 {{- if .Values.ondemand.httpIngress.annotations }}
   annotations:
@@ -38,10 +35,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: "{{ template "slurm-cluster.ondemand.name" . }}-oidc"
-  namespace: '{{ .Release.Namespace }}'
   labels:
-    release: '{{ .Release.Name }}'
-    chart: '{{ .Chart.Name }}'
     app: "{{ template "slurm-cluster.ondemand.name" . }}"
 {{- if .Values.ondemand.oidcIngress.annotations }}
   annotations:

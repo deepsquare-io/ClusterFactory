@@ -3,10 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: "{{ template "slurm-cluster.login.name" . }}"
-  namespace: '{{ .Release.Namespace }}'
   labels:
-    release: '{{ .Release.Name }}'
-    chart: '{{ .Chart.Name }}'
     app: "{{ template "slurm-cluster.login.name" . }}"
 spec:
   selector:
@@ -22,8 +19,6 @@ spec:
     metadata:
       name: "{{ template "slurm-cluster.login.name" . }}"
       labels:
-        release: {{ .Release.Name | quote }}
-        chart: "{{ .Chart.Name }}"
         app: "{{ template "slurm-cluster.login.name" . }}"
         app.kubernetes.io/name: "{{ template "slurm-cluster.login.name" . }}"
         app.kubernetes.io/instance: "{{ template "slurm-cluster.login.name" . }}"
@@ -172,6 +167,52 @@ spec:
               name: nginx-config
               subPath: nginx.conf
               readOnly: true
+        {{- end }}
+        {{- if and .Values.login.enabled .Values.login.metrics.enabled }}
+        - name: "{{ template "slurm-cluster.name" . }}-metrics"
+          image: "{{ .Values.login.metrics.image }}"
+          imagePullPolicy: "{{ .Values.login.metrics.imagePullPolicy }}"
+          env:
+            - name: GPU_ACCT
+              value: "{{ .Values.login.metrics.gpuAccounting | ternary "true" "false" }}"
+          command:
+{{ toYaml .Values.login.metrics.command | indent 12 }}
+          ports:
+            - containerPort: 8080
+              name: metrics
+          livenessProbe:
+            exec:
+              command:
+                - /command/s6-svstat
+                - /var/run/s6-rc/servicedirs/slurm-prometheus-exporter/
+{{ toYaml .Values.login.metrics.livenessProbe | indent 12 }}
+          volumeMounts:
+            - name: slurm-conf
+              mountPath: /etc/slurm
+              readOnly: false
+            - name: slurm-spank
+              mountPath: /etc/slurm/plugstack.conf.d
+              readOnly: true
+            - name: sssd
+              mountPath: /secrets/sssd
+              readOnly: true
+            - name: munge
+              mountPath: /secrets/munge
+              readOnly: true
+            - mountPath: /tmp
+              name: tmp
+              subPath: metrics/tmp
+            - mountPath: /run
+              name: tmp
+              subPath: metrics/run
+            - mountPath: /var/log
+              name: tmp
+              subPath: metrics/log
+            {{- if .Values.login.metrics.volumeMounts }}
+{{ toYaml .Values.login.metrics.volumeMounts | indent 12 }}
+            {{- end }}
+          resources:
+{{ toYaml .Values.login.metrics.resources | indent 12 }}
         {{- end }}
       volumes:
         - name: tmp
