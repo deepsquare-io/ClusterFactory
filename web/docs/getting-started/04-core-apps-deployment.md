@@ -2,12 +2,101 @@
 
 We will deploy:
 
+- MetalLB advertisements, for Load Balancing
 - CoreDNS, the internal DNS for Kubernetes
 - Sealed Secrets, secret management optimized for GitOps
 - Cert-manager issuers, to generate your SSL certificates and enable, for free, TLS configuration.
 - Argo CD, to enable GitOps.
 - Multus CNI, to support multiple network interfaces
 - KubeVirt, to deploy VM workloads
+
+## Configuring MetalLB
+
+MetalLB is a L2/L3 load balancer designed for bare metal Kubernetes clusters. It exposes the kubernetes `Services` to the external network. It uses either L2 (ARP) or BGP to advertise routes. It is possible to make "zoned" advertisements with L2, but we heavily recommend to use BGP for multi-zone clusters.
+
+<div style={{textAlign: 'center'}}>
+
+![metallb_concepts](02-k0s-configuration.assets/metallb_concepts.png#white-bg)
+
+</div>
+
+### Multi-zone (BGP)
+
+Your router must be capable of using BGP. If not, you should use an appliance with BGP capabilities (like OPNsense, OpenWRT, vyOS, or Linux with BIRD) which act like a router.
+
+Let's start configuring the main `IPAddressPool`:
+
+```yaml title="core/metallb/address-pools.yaml"
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: main-pool
+  namespace: metallb
+spec:
+  addresses:
+    - 192.168.1.100/32
+```
+
+The indicated IP address will be allocated to the `LoadBalancer` Kubernetes Services, which is Traefik.
+
+We should now advertise the IP address by configuring a `BGPAdvertisement` and its peers:
+
+```yaml title="core/metallb/peers.yaml"
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: main-router
+  namespace: metallb
+spec:
+  myASN: 65001 # MetalLB Speaker ASN (Autonomous System Number)
+  peerASN: 65000 # The router ASN
+  peerAddress: 192.168.0.1 # The router address
+```
+
+```yaml title="core/metallb/advertisements.yaml"
+apiVersion: metallb.io/v1beta1
+kind: BGPAdvertisement
+metadata:
+  name: bgp-advertisement
+  namespace: metallb
+spec:
+  ipAddressPools:
+    - main-pool
+```
+
+With this configuration, the MetalLB speakers on all the nodes will advertise the IP address `192.168.1.100/32` to the router, which is at `192.168.0.1`. By receiving the advertisement, the router will create a BGP route `192.168.1.100/32 via <ip of the node>`.
+
+### Single zone (L2/ARP)
+
+Let's start configuring the main `IPAddressPool`:
+
+```yaml title="core/metallb/address-pools.yaml"
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: main-pool
+  namespace: metallb
+spec:
+  addresses:
+    - 192.168.1.100/32
+```
+
+The indicated IP address will be allocated to the `LoadBalancer` Kubernetes Services, which is Traefik.
+
+We should now advertise the IP address by configuring a `L2Advertisement`:
+
+```yaml title="core/metallb/advertisements.yaml"
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: l2-advertisement
+  namespace: metallb
+spec:
+  ipAddressPools:
+    - main-pool
+```
+
+That's all! The MetalLB speakers on all the nodes will advertise the IP address `192.168.1.100/32` to the router via ARP. By receiving the advertisement, the router will create a BGP route `192.168.1.100/32 via <ip of the node>`.
 
 ## CoreDNS configuration
 

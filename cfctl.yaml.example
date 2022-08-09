@@ -25,7 +25,7 @@ spec:
             - sh -c 'if [ "$(getenforce)" != "Permissive" ] && [ "$(getenforce)" != "Disabled" ]; then setenforce 0; fi'
 
   k0s:
-    version: '1.24.2+k0s.0'
+    version: '1.24.3+k0s.0'
     dynamicConfig: false
     config:
       apiVersion: k0s.k0sproject.io/v1beta1
@@ -85,24 +85,8 @@ spec:
             charts:
               - name: metallb
                 chartname: bitnami/metallb
-                version: '3.0.12'
+                version: '4.0.1'
                 namespace: metallb
-                values: |
-                  configInline:
-                    peers:
-                      - peer-address: 192.168.0.1
-                        peer-asn: 65000
-                        my-asn: 65001
-                        source-address: 192.168.0.2
-                        node-selectors:
-                          - match-labels:
-                              kubernetes.io/hostname: mn1.example.com
-
-                    address-pools:
-                      - name: main-pool
-                        protocol: bgp
-                        addresses:
-                          - 192.168.1.100/32
 
               - name: traefik
                 chartname: traefik/traefik

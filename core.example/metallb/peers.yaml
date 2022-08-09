@@ -1,0 +1,13 @@
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: main-router
+  namespace: metallb
+spec:
+  myASN: 65001 # MetalLB Speaker ASN (Autonomous System Number)
+  nodeSelectors:
+    - matchLabels:
+        kubernetes.io/hostname: mn1.example.com # The speaker node, which is the entrypoint.
+  peerASN: 65000 # The router ASN
+  peerAddress: 192.168.0.1 # The router address
+  sourceAddress: 192.168.0.2 # The speaker node IP, which is used to identity the network interface of the node.
