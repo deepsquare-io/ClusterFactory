@@ -85,7 +85,7 @@ spec:
             charts:
               - name: metallb
                 chartname: bitnami/metallb
-                version: '4.0.1'
+                version: '4.0.2'
                 namespace: metallb
 
               - name: traefik
