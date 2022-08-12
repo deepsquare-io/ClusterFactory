@@ -202,9 +202,9 @@ You should configure Traefik, which is the main Ingress and L7 load balancer.
       fsGroup: 65532
 ```
 
-Since we are using MetalLB, we select our `IPAddressPool` by using the `metallb.universe.tf/address-pool` annotation. In, the next chapter will deploy the `IPAddressPool`. For now, let's assume we only need one `IPAddressPool` which is `main-pool`.
+Since we are using MetalLB, we select our `IPAddressPool` by using the `metallb.universe.tf/address-pool` annotation. In the next chapter, we will deploy the `IPAddressPool`. For now, let's assume we only need one `IPAddressPool`, which is `main-pool`.
 
-Look for `loadBalancerIP`, the value of that field we correspond to a IP address included in the `IPAddressPool`. **This IP address will be exposed to the external network.**
+Look for `loadBalancerIP`, the value of that field correspond to an IP address included in the `IPAddressPool`. **This IP address will be exposed to the external network.**
 
 After that, you can add or remove ports. Since Traefik will be used as the main Ingress, these ports will be exposed to the external network.
 
@@ -236,7 +236,7 @@ You can store the kubeconfig inside `~/.kube/config`. Our recommendation is to s
 ```shell title="user@local:/ClusterFactory-CE"
 cfctl kubeconfig --config ./cfctl.yaml >./kubeconfig
 chmod 600 ./kubeconfig
-`export KUBECONFIG=$(pwd)/kubeconfig`.
+export KUBECONFIG=$(pwd)/kubeconfig
 ```
 
 Just make sure to verify which configuration you are using with `kubectl config current-context`. You can add an alias to your favorite shell:
