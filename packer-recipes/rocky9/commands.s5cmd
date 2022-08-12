@@ -1,0 +1,2 @@
+cp --acl public-read output-cloud-gpu/packer-cloud-gpu s3://compute-custom-templates/cn-template-gpu.qcow2
+cp --acl public-read output-cloud-light/packer-cloud-light s3://compute-custom-templates/cn-template-light.qcow2

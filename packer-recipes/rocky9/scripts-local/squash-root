@@ -1,0 +1,18 @@
+#!/bin/bash -e
+
+if [ $UID -ne 0 ]; then
+  echo "ERROR: Must be run as root!" >&2
+  exit 1
+fi
+
+TMP_DIR=$(mktemp -d /tmp/packer-XXXX)
+
+echo 'Mounting root partition...'
+mount "${NBD}p1" "$TMP_DIR"
+
+echo "Creating squashfs image $OUTPUT..."
+mksquashfs "$TMP_DIR" "$OUTPUT"
+
+echo 'Unmounting image...'
+umount "$TMP_DIR"
+rmdir "$TMP_DIR"

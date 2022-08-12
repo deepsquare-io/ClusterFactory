@@ -75,7 +75,7 @@ network --bootproto=dhcp --device=eth0
 # SELinux configuration
 selinux --disabled
 # System timezone
-timezone UTC --isUtc
+timezone UTC --utc
 # System bootloader configuration
 bootloader --location=mbr --driveorder="vda" --timeout=1
 # Root password
@@ -137,7 +137,7 @@ rm -f /etc/sysconfig/network-scripts/ifcfg-[^lo]*
 dnf clean all
 %end
 
-%packages
+%packages --excludedocs --excludedocs
 @minimal-environment
 chrony
 
