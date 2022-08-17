@@ -64,6 +64,12 @@ spec:
     - main-pool
 ```
 
+Apply the configuration:
+
+```shell title="user@local:/ClusterFactory-CE"
+kubectl apply -f ./core/metallb/
+```
+
 With this configuration, the MetalLB speakers on all the nodes will advertise the IP address `192.168.1.100/32` to the router, which is at `192.168.0.1`. By receiving the advertisement, the router will create a BGP route `192.168.1.100/32 via <ip of the node>`.
 
 ### Single zone (L2/ARP)
@@ -94,6 +100,12 @@ metadata:
 spec:
   ipAddressPools:
     - main-pool
+```
+
+Apply the configuration:
+
+```shell title="user@local:/ClusterFactory-CE"
+kubectl apply -f ./core/metallb/
 ```
 
 That's all! The MetalLB speakers on all the nodes will advertise the IP address `192.168.1.100/32` to the router via ARP. By receiving the advertisement, the router will create a BGP route `192.168.1.100/32 via <ip of the node>`.
