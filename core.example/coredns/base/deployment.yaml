@@ -36,6 +36,9 @@ spec:
       tolerations:
         - key: CriticalAddonsOnly
           operator: Exists
+        - key: 'node-role.kubernetes.io/control-plane'
+          operator: 'Exists'
+          effect: 'NoSchedule'
         - key: node-role.kubernetes.io/master
           operator: Exists
           effect: NoSchedule
@@ -57,11 +60,11 @@ spec:
           imagePullPolicy: IfNotPresent
           resources:
             limits:
-              cpu: 500m
-              memory: 500Mi
+              cpu: 250m
+              memory: 256Mi
             requests:
               cpu: 250m
-              memory: 250Mi
+              memory: 256Mi
           args: ['-conf', '/etc/coredns/Corefile']
           volumeMounts:
             - name: config-volume
