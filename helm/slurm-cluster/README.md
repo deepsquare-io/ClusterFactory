@@ -196,7 +196,7 @@ Slurm: A Highly Scalable Workload Manager
 | ondemand.httpIngress.hosts | list | `[]` |  |
 | ondemand.httpIngress.ingressClass | string | `""` |  |
 | ondemand.httpIngress.tls | object | `{}` |  |
-| ondemand.image | string | `"ghcr.io/squarefactory/open-ondemand:2.0.26-slurm22.05"` |  |
+| ondemand.image | string | `"ghcr.io/squarefactory/open-ondemand:2.0.28-slurm22.05-dex"` |  |
 | ondemand.imagePullPolicy | string | `"IfNotPresent"` |  |
 | ondemand.imagePullSecrets | object | `{}` |  |
 | ondemand.initContainers | list | `[]` |  |

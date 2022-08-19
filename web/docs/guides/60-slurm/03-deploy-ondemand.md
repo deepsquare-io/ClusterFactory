@@ -14,7 +14,7 @@ The Dockerfile is described in the git repository [SquareFactory/open-ondemand-d
 The Docker images can be pulled with:
 
 ```sh
-docker pull ghcr.io/squarefactory/open-ondemand:latest
+docker pull ghcr.io/squarefactory/open-ondemand:latest-dex
 ```
 
 :::note
@@ -591,7 +591,7 @@ kubectl apply -f argo/slurm-cluster/secrets/openondemand-portal-sealed-secret.ym
 ```yaml title="helm/slurm-cluster/values-<cluster name>.yaml"
 ondemand:
   enabled: true
-  image: ghcr.io/squarefactory/open-ondemand:2.0.26-slurm22.05
+  image: ghcr.io/squarefactory/open-ondemand:2.0.28-slurm22.05-dex
 
   command: ['sh', '-c', 'update-ca-trust && /init']
 

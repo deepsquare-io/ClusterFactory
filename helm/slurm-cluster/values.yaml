@@ -407,7 +407,8 @@ ondemand:
   enabled: false
   replicas: 1
 
-  image: 'ghcr.io/squarefactory/open-ondemand:2.0.26-slurm22.05'
+  # Remove the '-dex' to disable dex.
+  image: 'ghcr.io/squarefactory/open-ondemand:2.0.28-slurm22.05-dex'
   imagePullPolicy: 'IfNotPresent'
 
   labels: {}
