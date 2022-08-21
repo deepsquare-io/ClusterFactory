@@ -1,5 +1,5 @@
 resources:
-  - deployment.yaml
+  - daemonset.yaml
   - rbac.yaml
   - configmap.yaml
   - service.yaml

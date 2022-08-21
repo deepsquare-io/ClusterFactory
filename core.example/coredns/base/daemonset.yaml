@@ -1,21 +1,11 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: DaemonSet
 metadata:
   name: coredns
-  namespace: kube-system
   labels:
-    k0s.k0sproject.io/stack: coredns
     k8s-app: kube-dns
     kubernetes.io/name: CoreDNS
 spec:
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 1
-      maxSurge: 25%
-  revisionHistoryLimit: 10
-  progressDeadlineSeconds: 600
-  replicas: 2
   selector:
     matchLabels:
       k8s-app: kube-dns
@@ -33,38 +23,28 @@ spec:
       serviceAccount: coredns
       securityContext: {}
       schedulerName: default-scheduler
+      nodeSelector:
+        kubernetes.io/os: linux
+        node-role.kubernetes.io/control-plane: 'true'
       tolerations:
         - key: CriticalAddonsOnly
           operator: Exists
-        - key: 'node-role.kubernetes.io/control-plane'
-          operator: 'Exists'
-          effect: 'NoSchedule'
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
         - key: node-role.kubernetes.io/master
           operator: Exists
           effect: NoSchedule
-      nodeSelector:
-        kubernetes.io/os: linux
-      topologySpreadConstraints:
-        - maxSkew: 1
-          topologyKey: topology.kubernetes.io/zone
-          whenUnsatisfiable: ScheduleAnyway
-          labelSelector:
-            matchExpressions:
-              - key: k8s-app
-                operator: In
-                values:
-                  - kube-dns
       containers:
         - name: coredns
           image: docker.io/coredns/coredns:1.9.3
           imagePullPolicy: IfNotPresent
           resources:
             limits:
-              cpu: 250m
-              memory: 256Mi
+              memory: 170Mi
             requests:
-              cpu: 250m
-              memory: 256Mi
+              cpu: 100m
+              memory: 70Mi
           args: ['-conf', '/etc/coredns/Corefile']
           volumeMounts:
             - name: config-volume

@@ -3,5 +3,5 @@ resources:
   - ../../base
   - ingress-route.yaml
 patchesStrategicMerge:
-  - deployment.yaml
+  - daemonset.yaml
   - configmap.yaml
