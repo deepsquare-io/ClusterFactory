@@ -16,6 +16,10 @@ export KUBECONFIG="${PROJECTDIR}/kubeconfig"
 section "Deploy CoreDNS"
 kubectl apply -k "${PROJECTDIR}/core/coredns/overlays/prod"
 
+section "Make sure MetalLB is Available"
+sleep 10
+kubectl wait deployments --timeout=300s metallb-controller -n metallb --for condition=Available
+
 section "Deploy MetalLB"
 kubectl apply -f "${PROJECTDIR}/core/metallb"
 
@@ -24,16 +28,12 @@ section "Deploy kubevirt (virtual machines deployments)"
 # https://kubevirt.io/user-guide/operations/updating_and_deletion/
 kubectl apply -k "${PROJECTDIR}/core/kubevirt/overlays/prod"
 
-section "Wait for all deployments to be Available"
+section "Wait for KubeVirt deployments to be Available"
 sleep 10
-kubectl wait deployments --timeout=300s --all --all-namespaces --for condition=Available
+kubectl wait deployments --timeout=300s -n kubevirt --all --for condition=Available
 
 section "Deploy multus (multiple network interfaces support)"
 kubectl apply -f https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset-thick-plugin.yml
-
-section "Wait for all deployments to be Available"
-sleep 10
-kubectl wait deployments --timeout=300s --all --all-namespaces --for condition=Available
 
 section "Deploy sealed secrets"
 "${PROJECTDIR}/core/sealed-secrets/install.sh"
@@ -48,8 +48,8 @@ section "Deploy Argo CD and setup argo-cd routes"
 "${PROJECTDIR}/core/argo-cd/install.sh"
 kubectl apply -k "${PROJECTDIR}/core/argo-cd/"
 
-section "Wait for all deployments to be Available"
-kubectl wait deployments --timeout=300s --all --all-namespaces --for condition=Available
+section "Wait for ArgoCD deployments to be Available"
+kubectl wait deployments --timeout=300s -n argocd --all --for condition=Available
 
 echo "Credentials for Argo CD are admin $(kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 --decode)"
 echo "You must change these credentials on the first login!"
