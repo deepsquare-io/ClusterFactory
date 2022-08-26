@@ -16,3 +16,5 @@ Updating the k0s cluster is super easy!
 ```shell
 cfctl apply --debug --config cfctl.yaml
 ```
+
+Some containers may not be killed quickly enough, or worse, may be stuck. If this is the case, restart the node.
