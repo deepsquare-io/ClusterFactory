@@ -13,6 +13,12 @@ chmod 600 ./kubeconfig
 
 export KUBECONFIG="${PROJECTDIR}/kubeconfig"
 
+section "Deploy CoreDNS"
+kubectl apply -k "${PROJECTDIR}/core/coredns/overlays/prod"
+
+section "Deploy MetalLB"
+kubectl apply -f "${PROJECTDIR}/core/metallb"
+
 section "Deploy kubevirt (virtual machines deployments)"
 # Updating is only supported to n-1 to n. Be warned.
 # https://kubevirt.io/user-guide/operations/updating_and_deletion/
@@ -31,9 +37,6 @@ kubectl wait deployments --timeout=300s --all --all-namespaces --for condition=A
 
 section "Deploy sealed secrets"
 "${PROJECTDIR}/core/sealed-secrets/install.sh"
-
-section "Change CoreDNS prod configuration"
-kubectl apply -k "${PROJECTDIR}/core/coredns/overlays/prod/"
 
 section "Setup cert-manager issuers"
 kubectl apply -f "${PROJECTDIR}/core/cert-manager/"
