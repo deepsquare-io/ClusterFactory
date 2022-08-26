@@ -1,5 +1,5 @@
 # Core Version
-argocd_version=5.3.4
+argocd_version=5.3.6
 sealed_secrets_version=2.6.1
 kubevirt_version=v0.56.0-rc.1
 coredns_version=1.9.3
