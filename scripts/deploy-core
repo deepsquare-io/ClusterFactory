@@ -33,7 +33,7 @@ sleep 10
 kubectl wait deployments --timeout=300s -n kubevirt --all --for condition=Available
 
 section "Deploy multus (multiple network interfaces support)"
-kubectl apply -f https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset-thick-plugin.yml
+kubectl apply -k "${PROJECTDIR}/core/multus/"
 
 section "Deploy sealed secrets"
 "${PROJECTDIR}/core/sealed-secrets/install.sh"
