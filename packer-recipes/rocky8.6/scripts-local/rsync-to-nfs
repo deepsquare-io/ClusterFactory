@@ -16,7 +16,7 @@ clean() {
 trap clean EXIT
 
 export MOUNT=${MOUNT:-"10.10.2.11:/mnt/pool1/k8s/xcat"}
-export EXPORT_PATH=${EXPORT_PATH:-/install/netboot/rocky8.4/x86_64/compute/rootimg/}
+export EXPORT_PATH=${EXPORT_PATH:-/install/netboot/rocky8.6x86_64/compute/rootimg/}
 NFS_DIR=$(mktemp -d /tmp/nfs-XXXX)
 TMP_DIR=$(mktemp -d /tmp/packer-XXXX)
 

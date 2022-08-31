@@ -14,8 +14,8 @@ clean() {
 trap clean EXIT
 
 export XCAT_SERVER=${XCAT_SERVER:-root@10.10.2.160}
-export XCAT_EXPORT_PATH=${XCAT_EXPORT_PATH:-/xcatdata/install/netboot/rocky8.4/x86_64/compute/rootimg/}
-export XCAT_OSIMAGE=${XCAT_OSIMAGE:-rocky8.4-x86_64-netboot-compute}
+export XCAT_EXPORT_PATH=${XCAT_EXPORT_PATH:-/xcatdata/install/netboot/rocky8.6/x86_64/compute/rootimg/}
+export XCAT_OSIMAGE=${XCAT_OSIMAGE:-rocky8.6-x86_64-netboot-compute}
 
 TMP_DIR=$(mktemp -d /tmp/packer-XXXX)
 

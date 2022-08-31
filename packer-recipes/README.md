@@ -15,7 +15,7 @@ sudo packer build rocky.json
 # xCAT nfs mount
 export MOUNT=nfs.example.com:/mnt/pool1/k8s/xcat
 # xCAT root img
-export EXPORT_PATH=/install/netboot/rocky8.4/x86_64/compute/rootimg/
+export EXPORT_PATH=/install/netboot/rocky8.6/x86_64/compute/rootimg/
 
 source ./scripts-local/setup-nbd
 source ./scripts-local/rsync-to-nfs
@@ -28,7 +28,7 @@ source ./scripts-local/teardown-nbd
 # xCAT ssh address
 export XCAT_SERVER=root@nfs.example.com
 # xCAT root img
-export EXPORT_PATH=/install/netboot/rocky8.4/x86_64/compute/rootimg/
+export EXPORT_PATH=/install/netboot/rocky8.6/x86_64/compute/rootimg/
 
 source ./scripts-local/setup-nbd
 source ./scripts-local/rsync-to-xcat
