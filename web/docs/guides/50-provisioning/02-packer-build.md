@@ -224,13 +224,23 @@ rocky8.4-x86_64-netboot-compute:
     profile=compute
     provmethod=netboot
     rootimgdir=/install/netboot/rocky8.4/x86_64/compute
+    pkgdir=/tmp
+    pkglist=/dev/null
 ```
+
+:::note
+
+Since we are doing GitOps, we do not need to use the xCAT provisioning system. Therefore, we set `pkgdir=/tmp` and `pkglist=/dev/null`.
+
+:::
+
+````
 
 And apply it:
 
 ```shell title="ssh root@xcat"
 cat osimage.stanza | mkdef -z
-```
+````
 
 ### Generate the initramfs and pack the image as squashfs
 
