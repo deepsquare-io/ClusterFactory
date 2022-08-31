@@ -224,8 +224,16 @@ rocky8.4-x86_64-netboot-compute:
     postbootscripts=git-config-execute.sh <FILL ME: password>
     profile=compute
     provmethod=netboot
+    pkgdir=/tmp
+    pkglist=/dev/null
     rootimgdir=/install/netboot/rocky8.4/x86_64/compute
 ```
+
+:::note
+
+Since we are doing GitOps, we do not need to use the xCAT provisioning system. Therefore, we set `pkgdir=/tmp` and `pkglist=/dev/null`.
+
+:::
 
 Since the stanza contains a secret, you should store it in a Secret management system like HashiCorp Vault or a Sealed Secrets.
 

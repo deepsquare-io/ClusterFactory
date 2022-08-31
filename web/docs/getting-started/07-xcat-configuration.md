@@ -74,6 +74,8 @@ rocky8.4-x86_64-netboot-compute:
     postbootscripts=git-configs-execute its-a-fake-password-dont-worry compute
     profile=compute
     provmethod=netboot
+    pkgdir=/tmp
+    pkglist=/dev/null
     rootimgdir=/install/netboot/rocky8.4/x86_64/compute
 
 cn1:
@@ -289,8 +291,16 @@ rocky8.4-x86_64-netboot-compute:
     postbootscripts=git-configs-execute its-a-fake-password-dont-worry compute
     profile=compute
     provmethod=netboot
+    pkgdir=/tmp
+    pkglist=/dev/null
     rootimgdir=/install/netboot/rocky8.4/x86_64/compute
 ```
+
+:::note
+
+Since we are doing GitOps, we do not need to use the xCAT provisioning system. Therefore, we set `pkgdir=/tmp` and `pkglist=/dev/null`.
+
+:::
 
 Our root filesystem is stored inside `/install/netboot/rocky8.4/x86_64/compute/rootimg`.
 

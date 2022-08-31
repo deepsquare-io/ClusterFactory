@@ -79,8 +79,16 @@ rocky8.4-x86_64-netboot-compute:
     permission=755
     profile=compute
     provmethod=netboot
+    pkgdir=/tmp
+    pkglist=/dev/null
     rootimgdir=/install/netboot/rocky8.4/x86_64/compute
 ```
+
+:::note
+
+Since we are doing GitOps, we do not need to use the xCAT provisioning system. Therefore, we set `pkgdir=/tmp` and `pkglist=/dev/null`.
+
+:::
 
 Edit accordingly, and apply it:
 
