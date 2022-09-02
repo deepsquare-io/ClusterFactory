@@ -6,8 +6,12 @@ metadata:
 spec:
   template:
     spec:
+      initContainers:
+        - name: install-multus-binary
+          imagePullPolicy: Always
       containers:
         - name: kube-multus
+          imagePullPolicy: Always
           resources:
             requests:
               cpu: '100m'
