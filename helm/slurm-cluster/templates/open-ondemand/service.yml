@@ -32,10 +32,18 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+    {{ if .Values.ondemand.tls.enabled }}
+    - port: 443
+      targetPort: https
+      protocol: TCP
+      name: https
+    {{ end }}
+    {{ if .Values.ondemand.dex.enabled }}
     - port: 5556
       targetPort: oidc
       protocol: TCP
       name: oidc
+    {{ end }}
     - port: 22
       name: ssh
       targetPort: ssh

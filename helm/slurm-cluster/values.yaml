@@ -525,13 +525,6 @@ ondemand:
     medium: ''
     size: 50Gi
 
-  persistence:
-    storageClassName: ''
-    accessModes: ['ReadWriteOnce']
-    size: 50Gi
-    selectorLabels: {}
-  #    app: open-ondemand
-
   initContainers: []
 
   # Extra volume mounts
@@ -547,25 +540,25 @@ ondemand:
     enabled: true
     type: ClusterIP
 
-  httpIngress:
+  tls:
     enabled: false
-    annotations: {}
-    ingressClass: ''
 
-    hosts: []
-    # - www.example.com
+    # Secret will be mounted on /tls with perms 600
+    # Add to your ood portal settings:
+    # ssl:
+    #  - 'SSLCertificateFile "/tls/tls.crt"'
+    #  - 'SSLCertificateKeyFile "/tls/tls.key"'
+    #  - 'SSLCertificateChainFile "/tls/ca.crt"'
+    secretName: ''
 
-    tls: {}
-
-  oidcIngress:
+  dex:
     enabled: false
-    annotations: {}
-    ingressClass: ''
-
-    hosts: []
-    # - www.example.com
-
-    tls: {}
+    persistence:
+      storageClassName: ''
+      accessModes: ['ReadWriteOnce']
+      size: 50Gi
+      selectorLabels: {}
+      #  app: open-ondemand
 
 db:
   enabled: false
