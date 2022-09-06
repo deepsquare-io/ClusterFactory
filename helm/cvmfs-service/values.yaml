@@ -46,6 +46,8 @@ configs:
       CVMFS_USE_GEOAPI=no
       CVMFS_HTTP_PROXY="DIRECT"
       CVMFS_KEYS_DIR="/etc/cvmfs/keys"
+      #CVMFS_USE_SSL_SYSTEM_CA=true
+      #X509_CERT_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 
 ## The secret will be mounted on /etc/cvmfs/keys
 ## The items field is optional.
@@ -58,3 +60,28 @@ keys:
 
 persistence:
   hostPath: /cvmfs
+
+## Extra init containers
+initContainers: []
+#   - name: download-mozilla-ca-bundle
+#     imagePullPolicy: Always
+#     image: docker.io/curlimages/curl:latest
+#     args:
+#       - -k
+#       - -fL
+#       - https://curl.se/ca/cacert-2022-07-19.pem
+#       - -o
+#       - /out/ca-certificates.crt
+#     volumeMounts:
+#       - name: certs
+#         mountPath: /out
+
+## Extra volumes mounts
+volumeMounts: []
+#   - name: certs
+#     mountPath: /etc/ssl/certs
+
+## Extra volumes
+volumes: []
+#   - name: certs
+#     emptyDir: {}

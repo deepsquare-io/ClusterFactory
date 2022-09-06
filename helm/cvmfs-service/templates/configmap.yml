@@ -2,10 +2,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: "{{ template "cvmfs-service.name" . }}-config"
-  namespace: '{{ .Release.Namespace }}'
   labels:
-    release: '{{ .Release.Name }}'
-    chart: '{{ .Chart.Name }}'
     app: "{{ template "cvmfs-service.name" . }}"
 data:
   {{- range $key, $entry := .Values.configs -}}

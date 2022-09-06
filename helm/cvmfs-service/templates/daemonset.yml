@@ -2,10 +2,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: "{{ template "cvmfs-service.name" . }}"
-  namespace: '{{ .Release.Namespace }}'
   labels:
-    release: '{{ .Release.Name }}'
-    chart: '{{ .Chart.Name }}'
     app: "{{ template "cvmfs-service.name" . }}"
 spec:
   selector:
@@ -28,7 +25,6 @@ spec:
       affinity:
 {{ toYaml . | indent 8 }}
       {{- end }}
-      {{- if .Values.keys.secretName }}
       {{- if .Values.dnsPolicy }}
       dnsPolicy: "{{ .Values.dnsPolicy }}"
       {{- end }}
@@ -37,6 +33,10 @@ spec:
 {{ toYaml .Values.dnsConfig | indent 8 }}
       {{- end }}
       initContainers:
+      {{- if .Values.initContainers }}
+{{ toYaml .Values.initContainers | indent 8 }}
+      {{- end }}
+      {{- if .Values.keys.secretName }}
         - name: prepare-keys
           image: "{{ .Values.image }}"
           imagePullPolicy: "{{ .Values.imagePullPolicy }}"
@@ -125,6 +125,9 @@ spec:
             - name: all-cvmfs-keys
               mountPath: "/etc/cvmfs/keys"
             {{- end }}
+            {{- if .Values.volumeMounts }}
+{{ toYaml .Values.volumeMounts | indent 12 }}
+            {{- end }}
           readinessProbe:
             exec:
               command: ["/usr/bin/check_cvmfs.sh", "readiness"]
@@ -170,4 +173,7 @@ spec:
             items:
 {{ toYaml . | indent 14}}
             {{- end }}
+        {{- end }}
+        {{- if .Values.volumes }}
+{{ toYaml .Values.volumes | indent 8 }}
         {{- end }}
