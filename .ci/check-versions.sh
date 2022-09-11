@@ -38,7 +38,7 @@ current_coredns_version=$(sed -En "s/coredns_version=(.*)/\1/p" ".ci/version-loc
 coredns_version=$(curl -H "Authorization: token ${TOKEN}" -fsSL https://api.github.com/repos/coredns/coredns/releases/latest | jq -r '.tag_name' | tr -d 'v')
 if verlt "$current_coredns_version" "$coredns_version"; then
   sed -Ei "s|coredns_version=.*\$|coredns_version=${coredns_version}|g" "$script_path/version-lock"
-  sed -Ei "s|image: docker.io/coredns/coredns:.*|image: docker.io/coredns/coredns:${coredns_version}|g" "$project_path/core.example/coredns/base/deployment.yaml"
+  sed -Ei "s|image: docker.io/coredns/coredns:.*|image: docker.io/coredns/coredns:${coredns_version}|g" "$project_path/core.example/coredns/base/daemonset.yaml"
 fi
 
 # Utils version
