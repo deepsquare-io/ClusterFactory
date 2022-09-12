@@ -28,10 +28,12 @@ spec:
 {{ toYaml .Values.controller.labels | indent 8 }}
 {{- end }}
       annotations:
+{{- if .Values.controller.useNetworkAttachment }}
 {{- if not .Values.controller.networks }}
         k8s.v1.cni.cncf.io/networks: "{{ .Release.Namespace }}/{{ template "slurm-cluster.controller.name" . }}-net"
 {{- else }}
         k8s.v1.cni.cncf.io/networks: {{ .Values.controller.networks | toJson }}
+{{- end }}
 {{- end }}
 {{- if .Values.controller.annotations }}
 {{ toYaml .Values.controller.annotations | indent 8 }}
