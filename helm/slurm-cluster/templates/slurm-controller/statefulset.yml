@@ -86,13 +86,17 @@ spec:
 {{- if .Values.controller.useHostPort }}
               hostPort: {{ .Values.controller.hostPort }}
 {{- end }}
+{{- if not .Values.controller.useNetworkAttachment }}
           readinessProbe:
             tcpSocket:
               port: 6817
 {{ toYaml .Values.controller.readinessProbe | indent 12 }}
+{{- end }}
           livenessProbe:
             exec:
               command:
+                - timeout
+                - "10"
                 - sinfo
 {{ toYaml .Values.controller.livenessProbe | indent 12 }}
           volumeMounts:
