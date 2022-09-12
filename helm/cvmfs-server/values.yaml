@@ -1,6 +1,6 @@
 replicas: 1
 
-image: 'ghcr.io/squarefactory/cvmfs-server:0.1.0'
+image: 'ghcr.io/squarefactory/cvmfs-server:1.0.0'
 imagePullPolicy: 'IfNotPresent'
 
 labels: {}
