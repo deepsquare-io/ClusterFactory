@@ -151,11 +151,6 @@ spec:
                       expose: true
                       exposedPort: 53
                       protocol: UDP
-                    oidc:
-                      port: 5556
-                      expose: true
-                      exposedPort: 5556
-                      protocol: TCP
                     web:
                       port: 80
                       expose: true
