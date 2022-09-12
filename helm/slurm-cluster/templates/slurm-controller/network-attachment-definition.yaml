@@ -1,0 +1,17 @@
+{{- if and .Values.controller.enabled .Values.controller.useNetworkAttachment }}
+apiVersion: 'k8s.cni.cncf.io/v1'
+kind: NetworkAttachmentDefinition
+metadata:
+  name: {{ template "slurm-cluster.controller.name" . }}-net
+  labels:
+    app: "{{ template "slurm-cluster.controller.name" . }}"
+spec:
+  config: |
+    {
+      "cniVersion": "0.4.0",
+      "type": "{{ .Values.controller.net.type }}",
+      "master": "{{ .Values.controller.net.masterInterface }}",
+      "mode": "{{ .Values.controller.net.mode }}",
+      "ipam": {{ .Values.controller.net.ipam | toJson }}
+    }
+{{- end }}

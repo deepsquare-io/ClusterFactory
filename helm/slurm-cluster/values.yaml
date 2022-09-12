@@ -122,6 +122,21 @@ controller:
   useHostPort: true
   hostPort: 6817
 
+  useNetworkAttachment: false
+  net:
+    # Kubernetes host interface
+    type: ipvlan
+    masterInterface: eth0
+    mode: l2
+
+    # https://www.cni.dev/plugins/current/ipam/static/
+    ipam:
+      type: static
+      addresses:
+        []
+        # - address: 10.10.2.17/24
+        #   gateway: 10.10.2.1
+
   resources:
     requests:
       cpu: '250m'
@@ -327,10 +342,11 @@ login:
     ipam:
       type: host-local
       ranges:
-        - - subnet: 10.10.2.0/24
-            rangeStart: 10.10.2.46
-            rangeEnd: 10.10.2.50
-            gateway: 10.10.2.1
+        []
+        # - - subnet: 10.10.2.0/24
+        #     rangeStart: 10.10.2.46
+        #     rangeEnd: 10.10.2.50
+        #     gateway: 10.10.2.1
 
   service:
     enabled: true
@@ -664,10 +680,11 @@ db:
     ipam:
       type: host-local
       ranges:
-        - - subnet: 10.10.2.0/24
-            rangeStart: 10.10.2.46
-            rangeEnd: 10.10.2.50
-            gateway: 10.10.2.1
+        []
+        # - - subnet: 10.10.2.0/24
+        #     rangeStart: 10.10.2.46
+        #     rangeEnd: 10.10.2.50
+        #     gateway: 10.10.2.1
 
   service:
     enabled: true
