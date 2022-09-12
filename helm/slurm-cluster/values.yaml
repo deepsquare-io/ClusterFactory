@@ -119,6 +119,9 @@ controller:
 
   command: ['/init']
 
+  useHostPort: true
+  hostPort: 6817
+
   resources:
     requests:
       cpu: '250m'
