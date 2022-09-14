@@ -1,0 +1,74 @@
+#cloud-config
+disable_root: false
+
+ssh_authorized_keys:
+  ${indent(2, yamlencode(ssh_keys))}
+
+write_files:
+
+  - path: /etc/systemd/resolved.conf
+    content: |
+      [Resolve]
+      DNS=${dns}
+      DNSStubListener=no
+
+%{ if ostype == "ubuntu" ~}
+  - path: /etc/netplan/01-netcfg.yaml
+    content: |
+      network:
+        version: 2
+        ethernets:
+          eth1:  # Private Network Interface
+            addresses: [${addresses}]  # Private Network
+            routes:
+              - to: default
+                via: ${gw}
+                metric: 1
+%{ endif ~}%{ if ostype == "rhel8" || ostype == "rhel9" ~}
+  - path: /etc/NetworkManager/NetworkManager.conf
+    content: |
+      [main]
+      plugins = ifcfg-rh
+      dns = none
+
+      [logging]
+
+%{ endif ~}
+
+  - path: /etc/resolv.conf
+    content: |
+      nameserver ${dns}
+      %{ if search != null && search != "" ~}
+      search ${search}
+      %{ endif }
+
+%{ if is_storage ~}
+  - path: /etc/exports
+    content: |
+      /srv/nfs *(rw,sync,no_root_squash,no_subtree_check)
+%{ endif ~}
+
+runcmd:
+%{ if ostype == "ubuntu" ~}
+  - [ netplan, apply ]
+  - [ systemctl, stop, systemd-resolved ]
+  - [ systemctl, disable, systemd-resolved ]
+%{ endif ~}%{ if ostype == "rhel8" || ostype == "rhel9" ~}
+  - [ systemctl, restart, NetworkManager ]
+  - [ nmcli, connection, modify, "Wired connection 1", connection.autoconnect, "yes" ]
+  - [ nmcli, connection, modify, "Wired connection 1", ipv4.addresses, "${addresses}" ]
+  - [ nmcli, connection, modify, "Wired connection 1", ipv4.gateway, "${gw}" ]
+  - [ nmcli, connection, modify, "Wired connection 1", ipv4.route-metric, "1" ]
+  - [ nmcli, connection, modify, "Wired connection 1", ipv4.never-default, "no" ]
+  - [ nmcli, connection, modify, "Wired connection 1", ipv4.method, manual ]
+  - [ nmcli, connection, up, "Wired connection 1" ]
+  - [ nmcli, connection, down, "System ens3" ]
+  - [ nmcli, connection, modify, "System ens3", connection.autoconnect, "no" ]
+%{ endif ~}
+
+  - [ systemctl, stop, firewalld ]
+  - [ systemctl, disable, firewalld ]
+  - [ sed, "-i", "-e", 's/SELINUX=enforcing/SELINUX=disabled/g', /etc/selinux/config]
+  - [ setenforce, "0" ]
+
+  - [ touch, /etc/cloud/cloud-init.disabled ]

@@ -1,11 +1,11 @@
 # -----------------------------------
-# Exoscale instance common parameters
+# OVH instance common parameters
 # -----------------------------------
 
-variable "zone" {
-  description = "Zone"
+variable "region" {
+  description = "Region"
   type        = string
-  default     = "de-fra-1"
+  default     = "GRA9"
 }
 
 variable "ssh_keys" {
@@ -13,8 +13,8 @@ variable "ssh_keys" {
   type        = list(string)
 }
 
-variable "network_id" {
-  description = "Private Network ID"
+variable "network" {
+  description = "Private Network"
   type        = string
 }
 
@@ -25,7 +25,7 @@ variable "gw" {
 }
 
 # ---------------------------
-# Exoscale storage parameters
+# OVH storage parameters
 # ---------------------------
 
 variable "server_name" {
@@ -33,19 +33,19 @@ variable "server_name" {
   type        = string
 }
 
-variable "service_offering" {
-  description = "Service Offering (instance type)"
+variable "flavor_name" {
+  description = "Flavor (instance type)"
   type        = string
 }
 
-variable "labels" {
-  description = "Labels"
+variable "tags" {
+  description = "Tags"
   type        = map(string)
   default     = {}
 }
 
 variable "root_disk_size" {
-  description = "Disk size"
+  description = "Disk size (GB)"
   type        = number
 }
 
