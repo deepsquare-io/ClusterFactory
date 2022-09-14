@@ -1,0 +1,65 @@
+#cloud-config
+disable_root: false
+
+ssh_authorized_keys: ${indent(2, yamlencode(ssh_keys))}
+
+write_files:
+  - path: /etc/systemd/resolved.conf
+    content: |
+      [Resolve]
+      DNS=${dns}
+      DNSStubListener=no
+
+  - path: /etc/NetworkManager/NetworkManager.conf
+    content: |
+      [main]
+      plugins = ifcfg-rh
+      dns = none
+
+      [logging]
+
+  - path: /etc/resolv.conf
+    content: |
+      nameserver ${dns}
+      %{ if search != null && search != "" ~}
+      search ${search}
+      %{ endif }
+
+  - path: /etc/exports
+    content: |
+      /srv/nfs *(rw,sync,no_root_squash,no_subtree_check)
+
+runcmd:
+  - [systemctl, restart, NetworkManager]
+  - [nmcli, connection, modify, 'Wired connection 1', connection.autoconnect, 'yes']
+  - [nmcli, connection, modify, 'Wired connection 1', ipv4.addresses, '${addresses}']
+  - [nmcli, connection, modify, 'Wired connection 1', ipv4.gateway, '${gw}']
+  - [nmcli, connection, modify, 'Wired connection 1', ipv4.route-metric, '1']
+  - [nmcli, connection, modify, 'Wired connection 1', ipv4.never-default, 'no']
+  - [nmcli, connection, modify, 'Wired connection 1', ipv4.method, manual]
+  - [nmcli, connection, up, 'Wired connection 1']
+  - [nmcli, connection, down, 'System ens3']
+  - [nmcli, connection, modify, 'System ens3', connection.autoconnect, 'no']
+
+  - [dnf, install, "-y", nfs-utils]
+  - [dnf, clean, all]
+  - [firewall-cmd, "--permanent", "--add-service=nfs"]
+  - [firewall-cmd, "--permanent", "--add-service=mountd"]
+  - [firewall-cmd, "--permanent", "--add-service=rpc-bind"]
+  - [firewall-cmd, "--reload"]
+
+  %{~ for share in shares ~}
+  - [mkdir, "-p", "/srv/nfs/${share.path}"]
+  %{~ if share.mode != null ~}
+  - [chmod, "${share.mode}", "/srv/nfs/${share.path}"]
+  %{~ endif ~}
+  %{~ if share.owner != null ~}
+  - [chown, "${share.owner}", "/srv/nfs/${share.owner}"]
+  %{~ endif ~}
+  %{~ endfor ~}
+
+  - [systemctl, enable, "--now", rpcbind]
+  - [systemctl,enable, "--now", nfs-server]
+  - [exportfs, "-fa"]
+
+  - [touch, /etc/cloud/cloud-init.disabled]
