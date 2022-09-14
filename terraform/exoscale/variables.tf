@@ -64,7 +64,7 @@ variable "k0s_instances" {
 
 variable "enable_storage" {
   description = "Enable storage"
-  default     = true
+  default     = false
 }
 
 variable "storage" {
@@ -91,7 +91,7 @@ variable "storage" {
 
 variable "enable_router" {
   description = "Enable router"
-  default     = true
+  default     = false
 }
 
 variable "router" {
