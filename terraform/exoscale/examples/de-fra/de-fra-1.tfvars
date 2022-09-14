@@ -5,6 +5,7 @@ gw       = "172.26.0.2"
 
 k0s_instances = []
 
+enable_storage = true
 storage = {
   addresses        = "172.26.0.3"
   ostype           = "rhel9"

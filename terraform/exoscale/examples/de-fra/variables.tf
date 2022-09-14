@@ -73,9 +73,14 @@ variable "k0s_instances" {
   }
 }
 
-# ----------------------------
+# ---------------------------
 # Exoscale storage parameters
 # ---------------------------
+
+variable "enable_storage" {
+  description = "Enable storage"
+  default     = false
+}
 
 variable "storage" {
   description = "Storage definition"
@@ -93,4 +98,59 @@ variable "storage" {
       mode  = optional(string)
     }))
   })
+}
+
+# --------------------------
+# Exoscale router parameters
+# --------------------------
+
+variable "enable_router" {
+  description = "Enable router"
+  default     = false
+}
+
+variable "router" {
+  description = "Router definition"
+  type = object({
+    server_name      = string
+    service_offering = string
+    labels           = optional(map(string))
+    root_disk_size   = number
+    addresses        = string
+    bgp_asn          = number
+    wireguard_vpns = list(object({
+      interface   = string
+      port        = number
+      private_key = string
+      address     = string
+      peer = object({
+        name          = string
+        endpoint      = string
+        public_key    = string
+        preshared_key = string
+      })
+      bgp = object({
+        exports = list(string)
+        peer = object({
+          address = string
+          asn     = number
+        })
+      })
+    }))
+    ipsec_vpns = list(object({
+      address = string
+      peer = object({
+        address    = string
+        shared_key = string
+      })
+      bgp = object({
+        exports = list(string)
+        peer = object({
+          address = string
+          asn     = number
+        })
+      })
+    }))
+  })
+  sensitive = true
 }

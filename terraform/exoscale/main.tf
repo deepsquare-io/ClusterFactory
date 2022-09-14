@@ -28,6 +28,7 @@ module "k0s_instances" {
 
 module "storage" {
   source = "./modules/storage"
+  count  = var.enable_storage ? 1 : 0
 
   network_id = data.exoscale_private_network.private_network.id
   ssh_keys   = var.ssh_keys
@@ -42,4 +43,26 @@ module "storage" {
   dns              = var.storage.dns
   search           = var.storage.search
   shares           = var.storage.shares
+}
+
+# -------------------------
+# Exoscale Router node
+# -------------------------
+
+module "router" {
+  source = "./modules/router"
+  count  = var.enable_router ? 1 : 0
+
+  network_id = data.exoscale_private_network.private_network.id
+  ssh_keys   = var.ssh_keys
+  zone       = var.zone
+
+  server_name      = var.router.server_name
+  service_offering = var.router.service_offering
+  labels           = var.router.labels
+  root_disk_size   = var.router.root_disk_size
+  addresses        = var.router.addresses
+  bgp_asn          = var.router.bgp_asn
+  wireguard_vpns   = var.router.wireguard_vpns
+  ipsec_vpns       = var.router.ipsec_vpns
 }
