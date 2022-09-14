@@ -8,6 +8,11 @@ variable "region" {
   default     = "GRA9"
 }
 
+variable "service_name" {
+  description = "Service Name"
+  type        = string
+}
+
 variable "ssh_keys" {
   description = "Default SSH Keys"
   type        = list(string)
@@ -48,18 +53,55 @@ variable "addresses" {
   type        = string
 }
 
-variable "dns" {
-  description = "DNS IP address"
-  type        = string
-  default     = "8.8.8.8"
+variable "bgp_asn" {
+  description = "BGP ASN"
+  type        = number
 }
 
-variable "search" {
-  description = "Search names"
+variable "public_ip" {
+  description = "Public IP"
   type        = string
-  default     = ""
 }
 
-# TODO: Wireguard parameters
-# TODO: IPsec parameters
-# TODO: BGP parameters
+variable "wireguard_vpns" {
+  description = "Wireguard PTP definitions"
+  type = list(object({
+    interface   = string
+    port        = number
+    private_key = string
+    address     = string
+    peer = object({
+      name          = string
+      endpoint      = string
+      public_key    = string
+      preshared_key = string
+    })
+    bgp = object({
+      exports = list(string)
+      peer = object({
+        address = string
+        asn     = number
+      })
+    })
+  }))
+  sensitive = true
+}
+
+variable "ipsec_vpns" {
+  description = "IPsec PTP definitions"
+  type = list(object({
+    address = string
+    peer = object({
+      address    = string
+      shared_key = string
+    })
+    bgp = object({
+      exports = list(string)
+      peer = object({
+        address = string
+        asn     = number
+      })
+    })
+  }))
+  sensitive = true
+}
