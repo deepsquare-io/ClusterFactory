@@ -58,11 +58,6 @@ variable "bgp_asn" {
   type        = number
 }
 
-variable "public_ip" {
-  description = "Public IP"
-  type        = string
-}
-
 variable "wireguard_vpns" {
   description = "Wireguard PTP definitions"
   type = list(object({

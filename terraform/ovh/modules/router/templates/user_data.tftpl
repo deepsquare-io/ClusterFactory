@@ -44,7 +44,7 @@ vyos_config_commands:
   %{~ endfor ~}
 
   - set vpn ipsec esp-group ESP_DEFAULT compression 'disable'
-  - set vpn ipsec esp-group ESP_DEFAULT lifetime '1800'
+  - set vpn ipsec esp-group ESP_DEFAULT lifetime '3600'
   - set vpn ipsec esp-group ESP_DEFAULT mode 'tunnel'
   - set vpn ipsec esp-group ESP_DEFAULT pfs 'enable'
   - set vpn ipsec esp-group ESP_DEFAULT proposal 1 encryption 'aes256gcm128'

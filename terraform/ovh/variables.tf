@@ -100,7 +100,6 @@ variable "router" {
     root_disk_size = number
     addresses      = string
     bgp_asn        = number
-    public_ip      = string
     wireguard_vpns = list(object({
       interface   = string
       port        = number

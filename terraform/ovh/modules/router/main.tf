@@ -1,3 +1,8 @@
+resource "openstack_compute_floatingip_v2" "floatip" {
+  pool   = "public"
+  region = var.region
+}
+
 locals {
   image_name = "vyOS"
   tags = merge(var.tags != null ? var.tags : {}, {
@@ -11,7 +16,7 @@ locals {
     bgp_asn        = var.bgp_asn
     ipsec_vpns     = var.ipsec_vpns
     wireguard_vpns = var.wireguard_vpns
-    public_ip      = var.public_ip
+    public_ip      = openstack_compute_floatingip_v2.floatip.fixed_ip
   })
 }
 
@@ -41,10 +46,7 @@ resource "openstack_compute_instance_v2" "router" {
   }
 
   user_data = local.user_data
-}
-
-resource "ovh_cloud_project_failover_ip_attach" "myfailoverip" {
-  service_name = var.service_name
-  ip           = var.public_ip
-  routed_to    = openstack_compute_instance_v2.router.id
+  depends_on = [
+    openstack_compute_floatingip_v2.floatip
+  ]
 }

@@ -49,7 +49,6 @@ module "router" {
   ssh_keys     = var.ssh_keys
   region       = var.region
 
-  public_ip      = var.router.public_ip
   server_name    = var.router.server_name
   flavor_name    = var.router.flavor_name
   tags           = var.router.tags
