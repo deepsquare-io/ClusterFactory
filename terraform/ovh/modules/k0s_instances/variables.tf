@@ -35,7 +35,7 @@ variable "k0s_instances" {
     image_name     = string
     ostype         = string
     flavor_name    = string
-    tags           = optional(map(string))
+    tags           = optional(set(string))
     root_disk_size = number
     addresses      = string
     dns            = optional(string)

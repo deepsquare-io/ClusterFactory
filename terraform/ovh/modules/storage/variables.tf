@@ -33,6 +33,12 @@ variable "server_name" {
   type        = string
 }
 
+variable "image_name" {
+  description = "Image Name"
+  type        = string
+  default     = "Rocky Linux 9"
+}
+
 variable "flavor_name" {
   description = "Flavor (instance type)"
   type        = string
@@ -40,8 +46,8 @@ variable "flavor_name" {
 
 variable "tags" {
   description = "Tags"
-  type        = map(string)
-  default     = {}
+  type        = set(string)
+  default     = []
 }
 
 variable "root_disk_size" {

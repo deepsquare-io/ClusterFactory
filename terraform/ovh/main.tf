@@ -27,6 +27,7 @@ module "storage" {
   gw       = var.gw
 
   server_name    = var.storage.server_name
+  image_name     = var.storage.image_name
   flavor_name    = var.storage.flavor_name
   tags           = var.storage.tags
   root_disk_size = var.storage.root_disk_size
@@ -44,12 +45,12 @@ module "router" {
   source = "./modules/router"
   count  = var.enable_router ? 1 : 0
 
-  service_name = var.service_name
-  network      = var.network
-  ssh_keys     = var.ssh_keys
-  region       = var.region
+  network  = var.network
+  ssh_keys = var.ssh_keys
+  region   = var.region
 
   server_name    = var.router.server_name
+  image_name     = var.router.image_name
   flavor_name    = var.router.flavor_name
   tags           = var.router.tags
   root_disk_size = var.router.root_disk_size

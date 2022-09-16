@@ -1,10 +1,10 @@
 locals {
-  image_name = "Rocky Linux 9 (Blue Onyx) 64-bit"
-  tags = merge(var.tags != null ? var.tags : {}, {
-    provided  = "by Terraform"
-    addresses = var.addresses
-    type      = "storage"
-  })
+  image_name = var.image_name != null ? var.image_name : "Rocky Linux 9"
+  tags = setunion(var.tags != null ? var.tags : [], [
+    "by Terraform",
+    var.addresses,
+    "storage",
+  ])
   user_data = templatefile("${path.module}/templates/user_data.tftpl", {
     ssh_keys  = var.ssh_keys
     addresses = var.addresses

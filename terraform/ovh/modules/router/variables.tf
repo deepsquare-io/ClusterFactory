@@ -8,11 +8,6 @@ variable "region" {
   default     = "GRA9"
 }
 
-variable "service_name" {
-  description = "Service Name"
-  type        = string
-}
-
 variable "ssh_keys" {
   description = "Default SSH Keys"
   type        = list(string)
@@ -32,6 +27,12 @@ variable "server_name" {
   type        = string
 }
 
+variable "image_name" {
+  description = "Image Name"
+  type        = string
+  default     = "vyos-rolling-latest"
+}
+
 variable "flavor_name" {
   description = "Flavor (instance type)"
   type        = string
@@ -39,8 +40,8 @@ variable "flavor_name" {
 
 variable "tags" {
   description = "Tags"
-  type        = map(string)
-  default     = {}
+  type        = set(string)
+  default     = []
 }
 
 variable "root_disk_size" {

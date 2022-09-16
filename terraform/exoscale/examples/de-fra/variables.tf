@@ -98,6 +98,7 @@ variable "storage" {
       mode  = optional(string)
     }))
   })
+  default = null
 }
 
 # --------------------------
@@ -153,4 +154,5 @@ variable "router" {
     }))
   })
   sensitive = true
+  default   = null
 }

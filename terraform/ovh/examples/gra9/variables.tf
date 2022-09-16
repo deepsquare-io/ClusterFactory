@@ -1,20 +1,26 @@
 # --------------------
 # OVH credentials
 # --------------------
-variable "application_key" {
-  description = "OVH Application Key"
+variable "ovh_user_name" {
+  description = "OVH Openstack user name"
   type        = string
   sensitive   = true
 }
 
-variable "application_secret" {
-  description = "OVH Secret Key"
+variable "ovh_password" {
+  description = "OVH Openstack password"
   type        = string
   sensitive   = true
 }
 
-variable "consumer_key" {
-  description = "OVH Consumer Key"
+variable "ovh_tenant_name" {
+  description = "OVH Openstack tenant name"
+  type        = string
+  sensitive   = true
+}
+
+variable "ovh_tenant_id" {
+  description = "OVH Openstack tenant ID"
   type        = string
   sensitive   = true
 }
@@ -22,11 +28,6 @@ variable "consumer_key" {
 # -----------------------------------
 # OVH instance common parameters
 # -----------------------------------
-
-variable "service_name" {
-  description = "Service Name"
-  type        = string
-}
 
 variable "region" {
   description = "Region"
@@ -61,7 +62,7 @@ variable "k0s_instances" {
     image_name     = string
     ostype         = string
     flavor_name    = string
-    tags           = optional(map(string))
+    tags           = optional(set(string))
     root_disk_size = number
     addresses      = string
     dns            = optional(string)
@@ -96,8 +97,9 @@ variable "storage" {
   description = "Storage definition"
   type = object({
     server_name    = string
+    image_name     = optional(string)
     flavor_name    = string
-    tags           = optional(map(string))
+    tags           = optional(set(string))
     root_disk_size = number
     addresses      = string
     dns            = optional(string)
@@ -108,6 +110,7 @@ variable "storage" {
       mode  = optional(string)
     }))
   })
+  default = null
 }
 
 # --------------------------
@@ -123,8 +126,9 @@ variable "router" {
   description = "Router definition"
   type = object({
     server_name    = string
+    image_name     = optional(string)
     flavor_name    = string
-    tags           = optional(map(string))
+    tags           = optional(set(string))
     root_disk_size = number
     addresses      = string
     bgp_asn        = number
@@ -163,4 +167,5 @@ variable "router" {
     }))
   })
   sensitive = true
+  default   = null
 }

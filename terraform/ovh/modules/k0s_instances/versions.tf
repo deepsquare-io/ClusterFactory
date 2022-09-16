@@ -5,10 +5,6 @@ terraform {
       source  = "terraform-provider-openstack/openstack"
       version = "~> 1.48.0"
     }
-    ovh = {
-      source  = "ovh/ovh"
-      version = "~> 0.21.0"
-    }
   }
   experiments = [module_variable_optional_attrs]
 }

@@ -1,7 +1,6 @@
 module "cf_cluster" {
   source = "../../"
 
-  service_name = var.service_name
   network      = var.network
   ssh_keys     = var.ssh_keys
   region       = var.region

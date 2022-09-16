@@ -2,11 +2,6 @@
 # OVH instance common parameters
 # -----------------------------------
 
-variable "service_name" {
-  description = "Service Name"
-  type        = string
-}
-
 variable "region" {
   description = "Region"
   type        = string
@@ -40,7 +35,7 @@ variable "k0s_instances" {
     image_name     = string
     ostype         = string
     flavor_name    = string
-    tags           = optional(map(string))
+    tags           = optional(set(string))
     root_disk_size = number
     addresses      = string
     dns            = optional(string)
@@ -68,8 +63,9 @@ variable "storage" {
   description = "Storage definition"
   type = object({
     server_name    = string
+    image_name     = optional(string)
     flavor_name    = string
-    tags           = optional(map(string))
+    tags           = optional(set(string))
     root_disk_size = number
     addresses      = string
     dns            = optional(string)
@@ -80,6 +76,7 @@ variable "storage" {
       mode  = optional(string)
     }))
   })
+  default = null
 }
 
 # --------------------------
@@ -95,8 +92,9 @@ variable "router" {
   description = "Router definition"
   type = object({
     server_name    = string
+    image_name     = optional(string)
     flavor_name    = string
-    tags           = optional(map(string))
+    tags           = optional(set(string))
     root_disk_size = number
     addresses      = string
     bgp_asn        = number
@@ -135,4 +133,5 @@ variable "router" {
     }))
   })
   sensitive = true
+  default   = null
 }

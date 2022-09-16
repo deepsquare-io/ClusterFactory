@@ -40,8 +40,8 @@ variable "service_offering" {
 
 variable "labels" {
   description = "Labels"
-  type        = map(string)
-  default     = {}
+  type        = set(string)
+  default     = []
 }
 
 variable "root_disk_size" {

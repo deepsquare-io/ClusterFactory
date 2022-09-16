@@ -14,11 +14,11 @@ locals {
     })
   ]
   tags = [
-    for instance in var.k0s_instances : merge(instance.tags != null ? instance.tags : {}, {
-      provided  = "by Terraform"
-      addresses = instance.addresses
-      type      = "k0s"
-    })
+    for instance in var.k0s_instances : setunion(instance.tags != null ? instance.tags : [], [
+      "by Terraform",
+      instance.addresses,
+      "k0s",
+    ])
   ]
 }
 

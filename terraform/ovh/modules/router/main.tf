@@ -4,12 +4,12 @@ resource "openstack_compute_floatingip_v2" "floatip" {
 }
 
 locals {
-  image_name = "vyOS"
-  tags = merge(var.tags != null ? var.tags : {}, {
-    provided  = "by Terraform"
-    addresses = var.addresses
-    type      = "router"
-  })
+  image_name = var.image_name != null ? var.image_name : "vyos-rolling-latest"
+  tags = setunion(var.tags != null ? var.tags : [], [
+    "by Terraform",
+    var.addresses,
+    "router",
+  ])
   user_data = templatefile("${path.module}/templates/user_data.tftpl", {
     ssh_keys       = var.ssh_keys
     addresses      = var.addresses
