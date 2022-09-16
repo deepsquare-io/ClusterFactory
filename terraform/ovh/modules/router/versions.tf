@@ -3,7 +3,7 @@ terraform {
   required_providers {
     openstack = {
       source  = "terraform-provider-openstack/openstack"
-      version = "~> 1.35.0"
+      version = "~> 1.48.0"
     }
     ovh = {
       source  = "ovh/ovh"
