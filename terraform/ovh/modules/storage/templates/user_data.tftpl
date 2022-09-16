@@ -1,7 +1,8 @@
 #cloud-config
 disable_root: false
 
-ssh_authorized_keys: ${indent(2, yamlencode(ssh_keys))}
+ssh_authorized_keys:
+  ${indent(2, yamlencode(ssh_keys))}
 
 write_files:
   - path: /etc/systemd/resolved.conf

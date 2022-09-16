@@ -1,7 +1,8 @@
 #cloud-config
 disable_root: false
 
-ssh_authorized_keys: ${indent(2, yamlencode(ssh_keys))}
+ssh_authorized_keys:
+  ${indent(2, yamlencode(ssh_keys))}
 
 vyos_config_commands:
   - set service ssh port 22
