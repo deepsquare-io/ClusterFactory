@@ -60,6 +60,7 @@ storage = {
 enable_router = true
 router = {
   addresses      = "172.28.0.0/20"
+  image_name     = "vyos-rolling-latest"
   bgp_asn        = 65009
   flavor_name    = "s1-2"
   ipsec_vpns     = []

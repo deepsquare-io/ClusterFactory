@@ -30,7 +30,6 @@ variable "server_name" {
 variable "image_name" {
   description = "Image Name"
   type        = string
-  default     = "vyos-rolling-latest"
 }
 
 variable "flavor_name" {

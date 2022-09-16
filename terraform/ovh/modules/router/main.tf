@@ -4,7 +4,6 @@ resource "openstack_compute_floatingip_v2" "floatip" {
 }
 
 locals {
-  image_name = var.image_name != null ? var.image_name : "vyos-rolling-latest"
   tags = setunion(var.tags != null ? var.tags : [], [
     "by Terraform",
     var.addresses,
@@ -22,7 +21,7 @@ locals {
 
 data "openstack_images_image_v2" "image" {
   region      = var.region
-  name        = local.image_name
+  name        = var.image_name
   most_recent = true
 }
 

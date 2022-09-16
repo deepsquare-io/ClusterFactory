@@ -92,7 +92,7 @@ variable "router" {
   description = "Router definition"
   type = object({
     server_name    = string
-    image_name     = optional(string)
+    image_name     = string
     flavor_name    = string
     tags           = optional(set(string))
     root_disk_size = number
