@@ -37,7 +37,7 @@ spec:
           effect: NoSchedule
       containers:
         - name: coredns
-          image: docker.io/coredns/coredns:1.9.4
+          image: docker.io/coredns/coredns:1.10.0
           imagePullPolicy: IfNotPresent
           resources:
             limits:

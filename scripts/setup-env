@@ -68,7 +68,7 @@ export KUBECTL
 
 KUBESEAL="$(command -v kubeseal)"
 if ! [ -x "$KUBESEAL" ]; then
-  KUBESEAL_VERSION=0.18.2
+  KUBESEAL_VERSION=0.18.5
   echo "kubeseal could not be found. Downloading it locally in ./bin."
   rm -f ./bin/kubeseal
   curl -fsSL "https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-${os}-${architecture}.tar.gz" | tar -zxvf - kubeseal
@@ -82,7 +82,7 @@ export KUBESEAL
 
 HELM="$(command -v helm)"
 if ! [ -x "$HELM" ]; then
-  HELM_VERSION=v3.9.4
+  HELM_VERSION=v3.10.0
   echo "helm could not be found. Downloading it locally in ./bin."
   rm -f ./bin/helm
   curl -fsSL "https://get.helm.sh/helm-${HELM_VERSION}-${os}-${architecture}.tar.gz" | tar -zxvf - "${os}-${architecture}/helm"
@@ -98,7 +98,7 @@ export HELM
 
 ETCDCTL="$(command -v etcdctl)"
 if ! [ -x "$ETCDCTL" ]; then
-  ETCDCTL_VERSION=v3.5.4
+  ETCDCTL_VERSION=v3.5.5
   GOOGLE_URL=https://storage.googleapis.com/etcd
   echo "etcdctl could not be found. Downloading it locally in ./bin."
   rm -f ./bin/etcdctl

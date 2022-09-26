@@ -44,7 +44,7 @@ After you set the `hosts` field, you must configure the k0s architecture by edit
 
 ```yaml title="cfctl.yaml > spec > k0s"
 k0s:
-  version: '1.24.4+k0s.0'
+  version: '1.25.2+k0s.0'
   dynamicConfig: false
   config:
     apiVersion: k0s.k0sproject.io/v1beta1
