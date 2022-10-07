@@ -85,12 +85,12 @@ spec:
             charts:
               - name: metallb
                 chartname: bitnami/metallb
-                version: '4.1.3'
+                version: '4.1.5'
                 namespace: metallb
 
               - name: traefik
                 chartname: traefik/traefik
-                version: '10.24.3'
+                version: '12.0.1'
                 namespace: traefik
                 values: |
                   deployment:
@@ -190,7 +190,7 @@ spec:
 
               - name: cert-manager
                 chartname: jetstack/cert-manager
-                version: 'v1.9.1'
+                version: 'v1.10.0-alpha.0'
                 namespace: cert-manager
                 values: |
                   installCRDs: true

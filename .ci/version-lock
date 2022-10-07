@@ -1,7 +1,7 @@
 # Core Version
-argocd_version=5.5.5
+argocd_version=5.5.12
 sealed_secrets_version=2.6.9
-kubevirt_version=v0.57.1
+kubevirt_version=v0.58.0-rc.0
 coredns_version=1.10.0
 
 # Utils Version
@@ -12,11 +12,11 @@ etcdctl_version=v3.5.5
 
 # Apps
 local_path_provisioner_version=v0.0.22
-kube_prometheus_stack_version=40.1.2
+kube_prometheus_stack_version=40.5.0
 
 # cfctl.yaml
 k0s_version=1.25.2+k0s.0
-metallb_version=4.1.3
-traefik_version=10.24.3
-cert_manager_version=v1.9.1
+metallb_version=4.1.5
+traefik_version=12.0.1
+cert_manager_version=v1.10.0-alpha.0
 csi_driver_nfs_version=v4.1.0
