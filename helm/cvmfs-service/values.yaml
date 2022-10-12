@@ -1,4 +1,4 @@
-image: docker.io/cvmfs/service:2.9.4-1
+image: docker.io/cvmfs/service:2.10.0-1
 
 resources:
   limits:
