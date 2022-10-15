@@ -88,7 +88,7 @@ configmapReload:
   ##
   image:
     repository: jimmidyson/configmap-reload
-    tag: v0.7.1
+    tag: v0.8.0
     pullPolicy: IfNotPresent
 
   ## configmap-reload resource requests and limits
