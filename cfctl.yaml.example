@@ -90,7 +90,7 @@ spec:
 
               - name: traefik
                 chartname: traefik/traefik
-                version: '17.0.5'
+                version: '18.0.0'
                 namespace: traefik
                 values: |
                   deployment:

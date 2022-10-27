@@ -192,7 +192,7 @@ You must open ports 636 and 389 on the load balancer of Traefik by configuring t
 ```yaml title="cfctl.yaml > spec > k0s > config > spec > extensions > helm > chart[]
 - name: traefik
   chartname: traefik/traefik
-  version: '17.0.5'
+  version: '18.0.0'
   namespace: traefik
   values: |
     ports:
