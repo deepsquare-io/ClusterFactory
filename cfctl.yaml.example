@@ -85,12 +85,12 @@ spec:
             charts:
               - name: metallb
                 chartname: bitnami/metallb
-                version: '4.1.5'
+                version: '4.1.10'
                 namespace: metallb
 
               - name: traefik
                 chartname: traefik/traefik
-                version: '12.0.1'
+                version: '17.0.5'
                 namespace: traefik
                 values: |
                   deployment:

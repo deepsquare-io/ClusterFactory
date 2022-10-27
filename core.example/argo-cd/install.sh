@@ -8,7 +8,7 @@ helm repo update
 helm upgrade --install \
   -n argocd \
   -f "${BASEDIR}/values.yaml" \
-  --version 5.5.12 \
+  --version 5.8.0 \
   argocd \
   argo/argo-cd \
   --create-namespace
