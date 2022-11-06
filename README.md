@@ -7,7 +7,7 @@ This repository is where [SquareFactory](https://www.squarefactory.io) develops 
 ## Key features
 
 - Production-ready vanilla upstream [Kubernetes](https://docs.clusterfactory.io/docs/main-concepts/k0s)
-- Easy deploy, backup, restore, and update with [k0s](https://docs.clusterfactory.io/docs/main-concepts/k0s)
+- Easy deploy, backup, restore, and update with [cfctl](https://docs.clusterfactory.io/docs/reference/cfctl)
 - Scalable from single node to large, high-available clusters
 - GitOps-enabled with [ArgoCD](https://docs.clusterfactory.io/docs/main-concepts/gitops/argocd) and [Sealed Secrets](https://docs.clusterfactory.io/docs/main-concepts/gitops/sealed-secrets)
 - VM workloads with KubeVirt
