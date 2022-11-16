@@ -44,7 +44,7 @@ After you set the `hosts` field, you must configure the k0s architecture by edit
 
 ```yaml title="cfctl.yaml > spec > k0s"
 k0s:
-  version: '1.25.2+k0s.0'
+  version: '1.25.3+k0s.0'
   dynamicConfig: false
   config:
     apiVersion: k0s.k0sproject.io/v1beta1
@@ -105,7 +105,7 @@ You should configure Traefik, which is the main Ingress and L7 load balancer.
 ```yaml title="cfctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
 - name: traefik
   chartname: traefik/traefik
-  version: '18.0.0'
+  version: '20.2.0'
   namespace: traefik
   values: |
 
