@@ -30,6 +30,17 @@ data:
     SlurmdLogFile=/var/log/slurm/slurmd.log
     SrunPortRange={{ .Values.slurmConfig.compute.srunPortRangeStart }}-{{ .Values.slurmConfig.compute.srunPortRangeEnd }}
 
+    {{- if .Values.cloudBurster.enabled }}
+    #-- Cloud Bursting
+    SuspendProgram=/opt/cloud-burster/suspend
+    ResumeProgram=/opt/cloud-burster/resume
+    SuspendTime=300
+    ResumeTimeout=600
+    MessageTimeout=60
+    BatchStartTimeout=300
+    PrivateData=cloud
+    {{- end }}
+
     #-- Default ressources allocation
 {{ .Values.slurmConfig.defaultResourcesAllocation | indent 4 }}
 

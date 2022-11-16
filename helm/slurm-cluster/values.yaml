@@ -13,6 +13,15 @@ munge:
 jwt:
   secretName:
 
+cloudBurster:
+  enabled: false
+  version: 0.1.4
+  runAs: 1501:1501
+
+  # secret containing a config.yaml
+  # See: https://github.com/SquareFactory/cloud-burster
+  secretName:
+
 slurmConfig:
   clusterName: my-cluster
 

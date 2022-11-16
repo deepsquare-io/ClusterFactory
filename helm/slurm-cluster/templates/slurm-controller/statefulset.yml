@@ -61,16 +61,50 @@ spec:
       imagePullSecrets:
 {{ toYaml .Values.controller.imagePullSecrets | indent 8 }}
       {{- end }}
-      {{- if .Values.controller.initContainers }}
-      initContainers:
-{{ toYaml .Values.controller.initContainers | indent 8 }}
-      {{- end }}
       {{- if .Values.controller.dnsPolicy }}
       dnsPolicy: "{{ .Values.controller.dnsPolicy }}"
       {{- end }}
       {{- if .Values.controller.dnsConfig }}
       dnsConfig:
 {{ toYaml .Values.controller.dnsConfig | indent 8 }}
+      {{- end }}
+      initContainers:
+      {{- if .Values.cloudBurster.enabled }}
+        - name: init-cloud-burster
+          image: busybox
+          imagePullPolicy: Always
+          command: ["sh", "-c"]
+          args:
+            - |
+              set -ex;
+              wget -qO /opt/cloud-burster/cloud-burster https://github.com/SquareFactory/cloud-burster/releases/download/{{ .Values.cloudBurster.version }}/cloud-burster-linux-amd64;
+              cat << 'EOF' > /opt/cloud-burster/resume
+              #!/bin/sh
+              set -ex
+              /opt/cloud-burster/cloud-burster create "$1" > /var/log/resume.log
+              EOF
+
+              cat << 'EOF' > /opt/cloud-burster/suspend
+              #!/bin/sh
+              set -ex
+              /opt/cloud-burster/cloud-burster delete "$1" > /var/log/suspend.log
+              EOF
+
+              chmod +x /opt/cloud-burster/*;
+              cp -RLp /etc/cloud-burster-in/* /etc/cloud-burster/;
+              chown -R {{ .Values.cloudBurster.runAs }} /etc/cloud-burster/;
+              chmod 600 /etc/cloud-burster/*;
+
+          volumeMounts:
+            - name: cloudburster-executable
+              mountPath: /opt/cloud-burster
+            - name: cloudburster-config-with-perms
+              mountPath: /etc/cloud-burster
+            - name: cloudburster-config
+              mountPath: /etc/cloud-burster-in
+      {{- end }}
+      {{- if .Values.controller.initContainers }}
+{{ toYaml .Values.controller.initContainers | indent 8 }}
       {{- end }}
       containers:
         - name: "{{ template "slurm-cluster.controller.name" . }}"
@@ -136,6 +170,14 @@ spec:
               mountPath: /etc/slurm/epilog-slurmctld.d
               readOnly: true
             {{- end }}
+            {{- if .Values.cloudBurster.enabled }}
+            - name: cloudburster-config-with-perms
+              mountPath: /etc/cloud-burster
+              readOnly: true
+            - name: cloudburster-executable
+              mountPath: /opt/cloud-burster
+              readOnly: true
+            {{- end }}
             - name: slurm-spank
               mountPath: /etc/slurm/plugstack.conf.d
               readOnly: true
@@ -198,6 +240,16 @@ spec:
           secret:
             secretName: "{{ .Values.munge.secretName }}"
             defaultMode: 384
+        {{- if .Values.cloudBurster.enabled }}
+        - name: cloudburster-config-with-perms
+          emptyDir: {}
+        - name: cloudburster-executable
+          emptyDir: {}
+        - name: cloudburster-config
+          secret:
+            secretName: "{{ .Values.cloudBurster.secretName }}"
+            defaultMode: 256
+        {{- end }}
         {{- if .Values.controller.volumes }}
 {{ toYaml .Values.controller.volumes | indent 8 }}
         {{- end }}

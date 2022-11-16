@@ -94,14 +94,6 @@ slurmConfig:
     # Federation
     FederationParameters=fed_display
 
-    # Cloud Bursting
-    #SuspendProgram=/slurm_powersave/suspend.sh
-    #ResumeProgram=/slurm_powersave/resume.sh
-    SuspendTime=180
-    ResumeTimeout=600
-    MessageTimeout=60
-    BatchStartTimeout=300
-
 controller:
   replicas: 1
 
