@@ -42,12 +42,6 @@ write_files:
       search ${search}
       %{ endif }
 
-%{ if is_storage ~}
-  - path: /etc/exports
-    content: |
-      /srv/nfs *(rw,sync,no_root_squash,no_subtree_check)
-%{ endif ~}
-
 runcmd:
 %{ if ostype == "ubuntu" ~}
   - [ netplan, apply ]

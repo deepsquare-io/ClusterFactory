@@ -25,9 +25,32 @@ variable "ovh_tenant_id" {
   sensitive   = true
 }
 
+variable "ovh_application_key" {
+  description = "OVH API Application Key"
+  type        = string
+  sensitive   = true
+}
+
+variable "ovh_application_secret" {
+  description = "OVH API Application Secret"
+  type        = string
+  sensitive   = true
+}
+
+variable "consumer_key" {
+  description = "OVH API Consumer Key"
+  type        = string
+  sensitive   = true
+}
+
 # -----------------------------------
 # OVH instance common parameters
 # -----------------------------------
+
+variable "service_name" {
+  description = "Project ID"
+  type        = string
+}
 
 variable "region" {
   description = "Region"
@@ -45,10 +68,24 @@ variable "network" {
   type        = string
 }
 
+variable "subnet" {
+  description = "subnet"
+  type        = string
+  default     = "172.26.0.0/28"
+}
+
 variable "gw" {
   description = "Gateway"
   type        = string
   default     = "172.26.0.2"
+}
+
+variable "allocation_pool" {
+  description = "IP Allocation Pool"
+  type = object({
+    start = string
+    end   = string
+  })
 }
 
 # --------------------------------
@@ -74,13 +111,6 @@ variable "k0s_instances" {
       for instance in var.k0s_instances : contains(["ubuntu", "rhel8", "rhel9"], instance.ostype)
     ])
     error_message = "The ostype should be one of ['ubuntu', 'rhel8', 'rhel9']"
-  }
-
-  validation {
-    condition = alltrue([
-      for instance in var.k0s_instances : contains(["featured", "community", "mine"], instance.template_filter)
-    ])
-    error_message = "The template_filter should be one of ['featured', 'community', 'mine']"
   }
 }
 
@@ -128,6 +158,7 @@ variable "router" {
     image_name     = string
     flavor_name    = string
     tags           = optional(set(string))
+    public_ip      = string
     root_disk_size = number
     addresses      = string
     bgp_asn        = number
@@ -164,7 +195,9 @@ variable "router" {
         })
       })
     }))
+    netmaker_vpns = list(object({
+      token = string
+    }))
   })
-  sensitive = true
-  default   = null
+  default = null
 }

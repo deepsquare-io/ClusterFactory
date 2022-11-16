@@ -2,6 +2,11 @@
 # OVH instance common parameters
 # -----------------------------------
 
+variable "service_name" {
+  description = "Project ID"
+  type        = string
+}
+
 variable "region" {
   description = "Region"
   type        = string
@@ -18,10 +23,24 @@ variable "network" {
   type        = string
 }
 
+variable "subnet" {
+  description = "subnet"
+  type        = string
+  default     = "172.26.0.0/28"
+}
+
 variable "gw" {
   description = "Gateway"
   type        = string
   default     = "172.26.0.2"
+}
+
+variable "allocation_pool" {
+  description = "IP Allocation Pool"
+  type = object({
+    start = string
+    end   = string
+  })
 }
 
 # --------------------------------
@@ -95,6 +114,7 @@ variable "router" {
     image_name     = string
     flavor_name    = string
     tags           = optional(set(string))
+    public_ip      = string
     root_disk_size = number
     addresses      = string
     bgp_asn        = number
@@ -131,7 +151,9 @@ variable "router" {
         })
       })
     }))
+    netmaker_vpns = list(object({
+      token = string
+    }))
   })
-  sensitive = true
-  default   = null
+  default = null
 }

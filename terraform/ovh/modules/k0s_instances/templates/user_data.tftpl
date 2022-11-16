@@ -42,12 +42,6 @@ write_files:
       search ${search}
       %{ endif }
 
-%{ if is_storage ~}
-  - path: /etc/exports
-    content: |
-      /srv/nfs *(rw,sync,no_root_squash,no_subtree_check)
-%{ endif ~}
-
 runcmd:
 %{ if ostype == "ubuntu" ~}
   - [ netplan, apply ]
@@ -55,15 +49,6 @@ runcmd:
   - [ systemctl, disable, systemd-resolved ]
 %{ endif ~}%{ if ostype == "rhel8" || ostype == "rhel9" ~}
   - [ systemctl, restart, NetworkManager ]
-  - [ nmcli, connection, modify, "Wired connection 1", connection.autoconnect, "yes" ]
-  - [ nmcli, connection, modify, "Wired connection 1", ipv4.addresses, "${addresses}" ]
-  - [ nmcli, connection, modify, "Wired connection 1", ipv4.gateway, "${gw}" ]
-  - [ nmcli, connection, modify, "Wired connection 1", ipv4.route-metric, "1" ]
-  - [ nmcli, connection, modify, "Wired connection 1", ipv4.never-default, "no" ]
-  - [ nmcli, connection, modify, "Wired connection 1", ipv4.method, manual ]
-  - [ nmcli, connection, up, "Wired connection 1" ]
-  - [ nmcli, connection, down, "System ens3" ]
-  - [ nmcli, connection, modify, "System ens3", connection.autoconnect, "no" ]
 %{ endif ~}
 
   - [ systemctl, stop, firewalld ]

@@ -31,7 +31,7 @@ resource "exoscale_compute_instance" "storage" {
   disk_size   = var.root_disk_size
   labels      = local.labels
   network_interface {
-    network_id = var.network_id
+    network_id  = var.network_id
   }
 
   user_data = local.user_data

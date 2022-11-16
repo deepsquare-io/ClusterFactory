@@ -4,7 +4,7 @@
 
 locals {
   user_datas = [
-    for instance in var.k0s_instances : templatefile("templates/user_data.tftpl", {
+    for instance in var.k0s_instances : templatefile("${path.module}/templates/user_data.tftpl", {
       ssh_keys  = var.ssh_keys
       ostype    = instance.ostype
       addresses = instance.addresses
@@ -16,10 +16,16 @@ locals {
   tags = [
     for instance in var.k0s_instances : setunion(instance.tags != null ? instance.tags : [], [
       "by Terraform",
-      instance.addresses,
+      replace(instance.addresses, "/", "_"),
       "k0s",
     ])
   ]
+}
+
+data "cidr_network" "addresses" {
+  count = length(var.k0s_instances)
+
+  prefix = var.k0s_instances[count.index].addresses
 }
 
 data "openstack_images_image_v2" "image" {
@@ -28,6 +34,19 @@ data "openstack_images_image_v2" "image" {
   region      = var.region
   name        = var.k0s_instances[count.index].image_name
   most_recent = true
+}
+
+resource "openstack_networking_port_v2" "port" {
+  count = length(var.k0s_instances)
+
+  network_id            = var.network_id
+  admin_state_up        = true
+  no_security_groups    = true
+  port_security_enabled = false
+  fixed_ip {
+    ip_address = data.cidr_network.addresses[count.index].ip
+    subnet_id  = var.subnet_id
+  }
 }
 
 resource "openstack_compute_instance_v2" "k0s_instance" {
@@ -47,8 +66,10 @@ resource "openstack_compute_instance_v2" "k0s_instance" {
     delete_on_termination = true
   }
   tags = local.tags[count.index]
+  config_drive = true
+
   network {
-    name = var.network
+    port = openstack_networking_port_v2.port[count.index].id
   }
 
   user_data = local.user_datas[count.index]

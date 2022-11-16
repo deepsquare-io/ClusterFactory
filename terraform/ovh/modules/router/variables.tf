@@ -2,6 +2,11 @@
 # OVH instance common parameters
 # -----------------------------------
 
+variable "service_name" {
+  description = "Project ID"
+  type        = string
+}
+
 variable "region" {
   description = "Region"
   type        = string
@@ -13,8 +18,13 @@ variable "ssh_keys" {
   type        = list(string)
 }
 
-variable "network" {
-  description = "Private Network"
+variable "network_id" {
+  description = "Private Network ID"
+  type        = string
+}
+
+variable "subnet_id" {
+  description = "Subnet ID"
   type        = string
 }
 
@@ -58,6 +68,11 @@ variable "bgp_asn" {
   type        = number
 }
 
+variable "public_ip" {
+  description = "Failover IP"
+  type        = string
+}
+
 variable "wireguard_vpns" {
   description = "Wireguard PTP definitions"
   type = list(object({
@@ -79,7 +94,6 @@ variable "wireguard_vpns" {
       })
     })
   }))
-  sensitive = true
 }
 
 variable "ipsec_vpns" {
@@ -98,5 +112,11 @@ variable "ipsec_vpns" {
       })
     })
   }))
-  sensitive = true
+}
+
+variable "netmaker_vpns" {
+  description = "Netmaker definitions"
+  type = list(object({
+    token = string
+  }))
 }

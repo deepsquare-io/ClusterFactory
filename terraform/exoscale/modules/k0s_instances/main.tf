@@ -4,7 +4,7 @@
 
 locals {
   user_datas = [
-    for instance in var.k0s_instances : templatefile("templates/user_data.tftpl", {
+    for instance in var.k0s_instances : templatefile("${path.module}/templates/user_data.tftpl", {
       ssh_keys  = var.ssh_keys
       ostype    = instance.ostype
       addresses = instance.addresses

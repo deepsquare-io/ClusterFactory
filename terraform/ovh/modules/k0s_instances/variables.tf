@@ -13,8 +13,13 @@ variable "ssh_keys" {
   type        = list(string)
 }
 
-variable "network" {
-  description = "Private Network"
+variable "network_id" {
+  description = "Private Network ID"
+  type        = string
+}
+
+variable "subnet_id" {
+  description = "Subnet ID"
   type        = string
 }
 

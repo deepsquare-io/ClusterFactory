@@ -24,10 +24,13 @@ resource "openstack_images_image_v2" "rocky" {
 module "cf_cluster" {
   source = "../../"
 
-  network  = var.network
-  ssh_keys = var.ssh_keys
-  region   = var.region
-  gw       = var.gw
+  service_name = var.service_name
+  network      = var.network
+  ssh_keys     = var.ssh_keys
+  region       = var.region
+  gw           = var.gw
+  allocation_pool = var.allocation_pool
+  subnet = var.subnet
 
   enable_storage = var.enable_storage
   storage        = local.storage
@@ -36,6 +39,10 @@ module "cf_cluster" {
   k0s_instances  = var.k0s_instances
 
   depends_on = [
-    openstack_images_image_v2.rocky
+    openstack_images_image_v2.rocky,
   ]
+}
+
+output "user_data" {
+  value = module.cf_cluster.user_data
 }
