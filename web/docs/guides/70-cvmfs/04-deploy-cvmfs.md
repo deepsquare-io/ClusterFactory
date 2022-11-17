@@ -6,7 +6,7 @@ Let's assume we plan to replicate `http://cvmfs.example.com/cvmfs/repo.example.c
 
 ## Helm and Docker resources
 
-The Helm resources are stored on [ClusterFactory Git Repository](https://github.com/SquareFactory/ClusterFactory-CE/tree/main/helm/cvmfs-server).
+The Helm resources are stored on [ClusterFactory Git Repository](https://github.com/SquareFactory/ClusterFactory/tree/main/helm/cvmfs-server).
 
 The Dockerfile is described in the git repository [SquareFactory/cvmfs-server-docker](https://github.com/SquareFactory/cvmfs-server-docker).
 
@@ -18,7 +18,7 @@ docker pull ghcr.io/squarefactory/cvmfs-server:latest
 
 ## 1. Deploy Namespace and AppProject
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/cvmfs/
 ```
 
@@ -46,13 +46,13 @@ stringData:
 
 2. Seal the secret:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 cfctl kubeseal
 ```
 
 3. Apply the SealedSecret:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/cvmfs/secrets/keys-sealed-secret.yaml
 ```
 
@@ -64,7 +64,7 @@ Basically, `local-path-provisioner` creates the `/opt/local-path-provisioner` di
 
 To deploy the provisioner:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/default/apps/local-path-provisioner-app.yml
 ```
 
@@ -77,7 +77,7 @@ Change the `repoURL` to the URL used to pull the fork. Also add the `values-prod
 ```yaml title="argo.example/cvmfs/apps/cvmfs-server-app.yml > spec > source"
 source:
   # You should have forked this repo. Change the URL to your fork.
-  repoURL: git@github.com:<your account>/ClusterFactory-CE.git
+  repoURL: git@github.com:<your account>/ClusterFactory.git
   targetRevision: HEAD
   path: helm/cvmfs-server
   helm:
@@ -92,7 +92,7 @@ source:
 
 :::tip
 
-Read the [`values.yaml`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/helm/cvmfs-server/values.yaml) to see all the default values.
+Read the [`values.yaml`](https://github.com/SquareFactory/ClusterFactory/blob/main/helm/cvmfs-server/values.yaml) to see all the default values.
 
 :::
 
@@ -190,7 +190,7 @@ More about `cert-manager` in [their documentation](https://cert-manager.io/docs/
 
 Commit and push:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 git add .
 git commit -m "Added CVMFS server"
 git push
@@ -198,7 +198,7 @@ git push
 
 And deploy the Argo CD application:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/provisioning/apps/cvmfs-server-app.yml
 ```
 

@@ -1,8 +1,8 @@
-# ClusterFactory Community Edition
+# ClusterFactory
 
 ## Overview
 
-This repository is where [SquareFactory](https://www.squarefactory.io) develops ClusterFactory CE, the Kubernetes-based infrastructure orchestrator together with the community. ClusterFactory brings together best-in-class solutions from the HPC, Cloud, and DevOps industries to manage a cluster in a declarative way in combination with the GitOps practice.
+This repository is where [SquareFactory](https://www.squarefactory.io) develops ClusterFactory, the Kubernetes-based infrastructure orchestrator together with the community. ClusterFactory brings together best-in-class solutions from the HPC, Cloud, and DevOps industries to manage a cluster in a declarative way in combination with the GitOps practice.
 
 ## Key features
 
@@ -21,14 +21,14 @@ This repository is where [SquareFactory](https://www.squarefactory.io) develops 
 
 ## Getting started
 
-If you'd like to try ClusterFactory CE, you should start by reading our [Quick Start Guide](https://docs.clusterfactory.io/docs/getting-started/requirements-recommendations) and our [documentation](https://docs.clusterfactory.io/docs/overview/welcome)!
+If you'd like to try ClusterFactory, you should start by reading our [Quick Start Guide](https://docs.clusterfactory.io/docs/getting-started/requirements-recommendations) and our [documentation](https://docs.clusterfactory.io/docs/overview/welcome)!
 
 ## Join the Community
 
 - [Community Discord](https://discord.gg/zt4GF5HYHX) - Request for support and help from the ClusterFactory community.
-- [Github Issues](https://github.com/SquareFactory/ClusterFactory-CE/issues) - Submit your issues and feature requests via Github.
+- [Github Issues](https://github.com/SquareFactory/ClusterFactory/issues) - Submit your issues and feature requests via Github.
 
-We welcome your help in building ClusterFactory CE! If you are interested, we invite you to check
+We welcome your help in building ClusterFactory! If you are interested, we invite you to check
 out the [Contributing Guide](./CONTRIBUTING.md).
 
 ## Motivation
@@ -37,7 +37,7 @@ For [DeepSquare](https://deepsquare.io), we wish to develop applications for the
 which makes it difficult to scale. We believe that **flexibity**, **repeatability**, **availability** and **ease of use** should be prioritized
 for managing and scaling HPC clusters.
 
-This is why we are developing ClusterFactory CE:
+This is why we are developing ClusterFactory:
 
 - **Performance-oriented**: Integrates a key-in-hand HPC stack including Slurm, MPI, DFS, etc.
 - **Highly configurable**: With Helm, all configuration is done in a single `values.yaml` file.

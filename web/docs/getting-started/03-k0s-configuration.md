@@ -216,13 +216,13 @@ We use Traefik because it can do a lot of complex route operations while still b
 
 If you forgot to install the utilities, just run:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 . ./scripts/setup-env
 ```
 
 Deploy the cluster with:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 # Deploy the cluster
 cfctl apply --debug --config ./cfctl.yaml
 
@@ -233,7 +233,7 @@ chmod 600 ./kubeconfig
 
 You can store the kubeconfig inside `~/.kube/config`. Our recommendation is to set the `KUBECONFIG` environment variable to avoid mixing the Kubernetes contexts. Just like this:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 cfctl kubeconfig --config ./cfctl.yaml >./kubeconfig
 chmod 600 ./kubeconfig
 export KUBECONFIG=$(pwd)/kubeconfig

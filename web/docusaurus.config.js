@@ -6,7 +6,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/palenight');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'ClusterFactory CE',
+  title: 'ClusterFactory',
   tagline: 'A k8s-based infrastructure orchestration tool',
   url: 'https://docs.clusterfactory.io',
   baseUrl: '/',
@@ -14,7 +14,7 @@ const config = {
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
   organizationName: 'SquareFactory',
-  projectName: 'ClusterFactory-CE',
+  projectName: 'ClusterFactory',
   trailingSlash: false,
 
   presets: [
@@ -25,12 +25,12 @@ const config = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl: 'https://github.com/SquareFactory/ClusterFactory-CE/tree/main/web/',
+          editUrl: 'https://github.com/SquareFactory/ClusterFactory/tree/main/web/',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
-          editUrl: 'https://github.com/SquareFactory/ClusterFactory-CE/tree/feat/docs/web/',
+          editUrl: 'https://github.com/SquareFactory/ClusterFactory/tree/feat/docs/web/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -51,14 +51,14 @@ const config = {
         },
       },
       navbar: {
-        title: 'ClusterFactory CE Docs',
+        title: 'ClusterFactory Docs',
         logo: {
-          alt: 'ClusterFactory CE Logo',
+          alt: 'ClusterFactory Logo',
           src: 'img/logo.svg',
         },
         items: [
           {
-            href: 'https://github.com/SquareFactory/ClusterFactory-CE',
+            href: 'https://github.com/SquareFactory/ClusterFactory',
             label: 'GitHub',
             position: 'right',
           },
@@ -71,7 +71,7 @@ const config = {
           src: 'img/deepsquare-logo-h.svg',
           srcDark: 'img/deepsquare-logo-h-neg.svg',
         },
-        copyright: `<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> © ${new Date().getFullYear()} ClusterFactory CE Docs, <a href="https://squarefactory.io">SquareFactory</a>. Built with Docusaurus.`,
+        copyright: `<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> © ${new Date().getFullYear()} ClusterFactory Docs, <a href="https://squarefactory.io">SquareFactory</a>. Built with Docusaurus.`,
       },
       prism: {
         theme: lightCodeTheme,

@@ -22,7 +22,7 @@ Like in the Getting Started, we won't be deploying Thanos and AlertManager.
 
 ## 1. Deploy Namespace and AppProject
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/monitoring/
 ```
 
@@ -91,7 +91,7 @@ allowedTopologies:
           - <FILL ME> # <country code>-<city>-<index>
 ```
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/monitoring/volumes/storage-classes.yaml
 ```
 
@@ -156,7 +156,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
 ```
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/monitoring/volumes/persistent-volumes.yaml
 ```
 
@@ -180,7 +180,7 @@ spec:
       storage: 10Gi
 ```
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/monitoring/volumes/persistent-volume-claim.yaml
 ```
 
@@ -206,13 +206,13 @@ stringData:
 
 2. Seal the secret:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 cfctl kubeseal
 ```
 
 3. Apply the SealedSecret:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/monitoring/secrets/grafana-admin-sealed-secret.yaml
 ```
 
@@ -223,7 +223,7 @@ Replace the `repoURL` with the url of your fork:
 ```yaml title="argo/monitoring/apps/prometheus-app.yml > spec > source"
 source:
   # You should have forked this repo. Change the URL to your fork.
-  repoURL: git@github.com:<your account>/ClusterFactory-CE.git
+  repoURL: git@github.com:<your account>/ClusterFactory.git
   targetRevision: HEAD
   path: helm-subcharts/kube-prometheus-stack
   helm:
@@ -595,7 +595,7 @@ chown 1000:2000 /srv/nfs/k8s/prometheus
 
 Commit and push:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 git add .
 git commit -m "Added Prometheus stack application and values"
 git push
@@ -603,7 +603,7 @@ git push
 
 And deploy:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/monitoring/apps/prometheus-crd-app.yml
 kubectl apply -f argo/monitoring/apps/prometheus-app.yml
 ```

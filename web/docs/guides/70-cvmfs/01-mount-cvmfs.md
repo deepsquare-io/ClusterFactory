@@ -10,7 +10,7 @@ The CVMFS CSI Plugin isn't stable yet, so we have to do it the old way: using `h
 
 ## Helm and Docker resources
 
-The Helm resources are stored on [ClusterFactory Git Repository](https://github.com/SquareFactory/ClusterFactory-CE/tree/main/helm/cvmfs-service).
+The Helm resources are stored on [ClusterFactory Git Repository](https://github.com/SquareFactory/ClusterFactory/tree/main/helm/cvmfs-service).
 
 The Dockerfile is described in the git repository [cvmfs/cvmfs](https://github.dev/cvmfs/cvmfs/blob/devel/packaging/container/Dockerfile).
 
@@ -24,7 +24,7 @@ docker pull docker.io/cvmfs/cvmfs:latest
 
 Apply the AppProject:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/cvmfs/app-project.yml
 ```
 
@@ -50,13 +50,13 @@ stringData:
 
 2. Seal the secret:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 cfctl kubeseal
 ```
 
 3. Apply the SealedSecret:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/cvmfs/secrets/cvmfs-keys-sealed-secret.yml
 ```
 
@@ -67,7 +67,7 @@ Change the `repoURL` to the URL used to pull the fork. Also add the `values-prod
 ```yaml title="argo/provisioning/apps/cvmfs-service-app.yml > spec > source"
 source:
   # You should have forked this repo. Change the URL to your fork.
-  repoURL: git@github.com:<your account>/ClusterFactory-CE.git
+  repoURL: git@github.com:<your account>/ClusterFactory.git
   targetRevision: HEAD
   path: helm/cvmfs-service
   helm:
@@ -82,7 +82,7 @@ source:
 
 :::tip
 
-Read the [`values.yaml`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/helm/cvmfs-service/values.yaml) to see all the default values.
+Read the [`values.yaml`](https://github.com/SquareFactory/ClusterFactory/blob/main/helm/cvmfs-service/values.yaml) to see all the default values.
 
 :::
 
@@ -139,7 +139,7 @@ The key will be moved to the path `/etc/cvmfs/keys/sion.csquare.run/software.sio
 
 Commit and push:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 git add .
 git commit -m "Added CVMFS service"
 git push
@@ -147,7 +147,7 @@ git push
 
 And deploy the Argo CD application:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/provisioning/apps/cvmfs-service-app.yml
 ```
 

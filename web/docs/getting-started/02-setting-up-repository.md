@@ -1,6 +1,6 @@
 # 2. Setting up your repository for GitOps
 
-To enable GitOps and be able to follow the updates of the ClusterFactory CE repository, you should [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the [ClusterFactory CE repository](https://github.com/SquareFactory/ClusterFactory-CE) or create a private copy, so you could use Argo CD on your own repository.
+To enable GitOps and be able to follow the updates of the ClusterFactory repository, you should [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the [ClusterFactory repository](https://github.com/SquareFactory/ClusterFactory) or create a private copy, so you could use Argo CD on your own repository.
 
 ## 1. Fork the repository
 
@@ -18,7 +18,7 @@ To enable GitOps and be able to follow the updates of the ClusterFactory CE repo
 
    ```shell title="user@local:/"
    # SSH
-   git clone git@github.com:<your account>/ClusterFactory-CE.git
+   git clone git@github.com:<your account>/ClusterFactory.git
    ```
 
 ### Method 2: Create a private fork
@@ -26,52 +26,52 @@ To enable GitOps and be able to follow the updates of the ClusterFactory CE repo
 1. Create a bare clone of the repository.
 
    ```shell title="user@local:/"
-   git clone --bare https://github.com/SquareFactory/ClusterFactory-CE.git
+   git clone --bare https://github.com/SquareFactory/ClusterFactory.git
    ```
 
-2. Create [a new private repository on your favorite Git hosting website](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository) and name it `ClusterFactory-CE`.
+2. Create [a new private repository on your favorite Git hosting website](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository) and name it `ClusterFactory`.
 
-3. Mirror-push your bare clone to your new `ClusterFactory-CE` repository.
+3. Mirror-push your bare clone to your new `ClusterFactory` repository.
 
    ```shell title="user@local:/"
-   cd ClusterFactory-CE.git
+   cd ClusterFactory.git
    # SSH
-   git push --mirror git@github.com:<your account>/ClusterFactory-CE.git
+   git push --mirror git@github.com:<your account>/ClusterFactory.git
    ```
 
 4. Remove the bare clone.
 
-   ```shell title="user@local:/ClusterFactory-CE.git"
+   ```shell title="user@local:/ClusterFactory.git"
    cd ..
-   rm -rf ./ClusterFactory-CE.git
+   rm -rf ./ClusterFactory.git
 
    ```
 
-5. You can now clone your `ClusterFactory-CE` repository on your machine.
+5. You can now clone your `ClusterFactory` repository on your machine.
 
    ```shell title="user@local:/"
    # SSH
-   git clone git@github.com:<your account>/ClusterFactory-CE.git
+   git clone git@github.com:<your account>/ClusterFactory.git
    ```
 
 ## 2. Setup the upstream remote for git
 
-Git is capable of managing multiple remote repositories. By default, `origin` is linked to the `<your account>/ClusterFactory-CE` repository. To be able to fetch updates from the upstream `SquareFactory/ClusterFactory-CE` repository, we need to add a remote repository that we call `upstream`.
+Git is capable of managing multiple remote repositories. By default, `origin` is linked to the `<your account>/ClusterFactory` repository. To be able to fetch updates from the upstream `SquareFactory/ClusterFactory` repository, we need to add a remote repository that we call `upstream`.
 
 1. Add the upstream and disable push on the remote `upstream`:
 
-   ```shell title="user@local:/ClusterFactory-CE"
-   git remote add upstream https://github.com/SquareFactory/ClusterFactory-CE.git
+   ```shell title="user@local:/ClusterFactory"
+   git remote add upstream https://github.com/SquareFactory/ClusterFactory.git
    git remote set-url --push upstream DISABLE
    ```
 
 2. You can list all your remotes with `git remote -v`:
 
-   ```shell title="user@local:/ClusterFactory-CE"
+   ```shell title="user@local:/ClusterFactory"
    git remote -v
-   # origin	git@github.com:<your account>/ClusterFactory-CE.git (fetch)
-   # origin	git@github.com:<your account>/ClusterFactory-CE.git (push)
-   # upstream	https://github.com/SquareFactory/ClusterFactory-CE.git (fetch)
+   # origin	git@github.com:<your account>/ClusterFactory.git (fetch)
+   # origin	git@github.com:<your account>/ClusterFactory.git (push)
+   # upstream	https://github.com/SquareFactory/ClusterFactory.git (fetch)
    # upstream	DISABLE (push)
    ```
 
@@ -79,7 +79,7 @@ Git is capable of managing multiple remote repositories. By default, `origin` is
 
 You can checkout to a stable version:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 git checkout -b v0.7.0 configs
 # You can delete the local main branch
 git branch -D main
@@ -89,7 +89,7 @@ git branch -D main
 
 Copy `argo.example`, `core.example`, `cfctl.yaml.example`, and remove the `.example`:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 cp -R argo.example/ argo/
 cp -R core.example/ core/
 cp cfctl.yaml.example cfctl.yaml
@@ -97,7 +97,7 @@ cp cfctl.yaml.example cfctl.yaml
 
 You can track these files on Git:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 git add .
 git commit -m "Initialized my config"
 git push -u origin configs
@@ -106,9 +106,9 @@ git push -u origin configs
 
 ## 5. Use `git fetch` and `git merge` to merge the upstream main into the local branch
 
-Because ClusterFactory CE will be updated regularly, you can fetch the updates with git fetch:
+Because ClusterFactory will be updated regularly, you can fetch the updates with git fetch:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 git fetch --tags upstream
 ```
 
@@ -120,7 +120,7 @@ git fetch --tags upstream
 
 To merge the upstream changes, either rebase or create a merge commit.
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 git merge v0.8.0
 ```
 
@@ -130,7 +130,7 @@ git merge v0.8.0
 
 </div>
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 git push
 ```
 
@@ -144,7 +144,7 @@ git push
 
 If you wish to follow the upstream main branch:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 git merge upstream/main
 git push
 ```
@@ -172,6 +172,6 @@ Now that you have a fork, you can push your own changes into your repository. Fo
 └── ...
 ```
 
-Since ClusterFactory CE uses Argo CD, it is able to retrieve your repository from your Git hosting server, synchronize changes and deploy your Kubernetes manifests.
+Since ClusterFactory uses Argo CD, it is able to retrieve your repository from your Git hosting server, synchronize changes and deploy your Kubernetes manifests.
 
 For now, let's just deploy K0s!

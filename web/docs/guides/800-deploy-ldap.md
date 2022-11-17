@@ -5,7 +5,7 @@ import TabItem from '@theme/TabItem';
 
 ## Helm and Docker resources
 
-The Helm resources are stored on [ClusterFactory Git Repository](https://github.com/SquareFactory/ClusterFactory-CE/tree/main/helm/openldap).
+The Helm resources are stored on [ClusterFactory Git Repository](https://github.com/SquareFactory/ClusterFactory/tree/main/helm/openldap).
 
 The Dockerfile is described in the git repository [bitnami/bitnami-docker-openldap](https://github.com/bitnami/bitnami-docker-openldap).
 
@@ -17,7 +17,7 @@ docker pull docker.io/bitnami/openldap:latest
 
 ## 1. Deploy Namespace and AppProject
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/ldap/
 ```
 
@@ -59,7 +59,7 @@ allowedTopologies:
           - <FILL ME> # <country code>-<city>-<index>
 ```
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/ldap/volumes/storage-class.yaml
 ```
 
@@ -96,7 +96,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
 ```
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/ldap/volumes/persistent-volume.yaml
 ```
 
@@ -141,13 +141,13 @@ stringData:
 
 2. Seal the secret:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 cfctl kubeseal
 ```
 
 3. Apply the SealedSecret:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/ldap/secrets/openldap-env-sealed-secret.yaml
 ```
 
@@ -210,7 +210,7 @@ You must open ports 636 and 389 on the load balancer of Traefik by configuring t
 
 Apply:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 cfctl apply --debug --config cfctl.yaml
 kubectl apply -f argo/ldap/ingresses/ingress-routes-tcp.yaml
 ```
@@ -222,7 +222,7 @@ Change the `repoURL` to the URL used to pull the fork. Also add the `values-prod
 ```yaml title="argo.example/ldap/apps/openldap-app.yml > spec > source"
 source:
   # You should have forked this repo. Change the URL to your fork.
-  repoURL: git@github.com:<your account>/ClusterFactory-CE.git
+  repoURL: git@github.com:<your account>/ClusterFactory.git
   targetRevision: HEAD
   path: helm/openldap
   helm:
@@ -237,7 +237,7 @@ source:
 
 :::tip
 
-Read the [`values.yaml`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/helm/openldap/values.yaml) to see all the default values.
+Read the [`values.yaml`](https://github.com/SquareFactory/ClusterFactory/blob/main/helm/openldap/values.yaml) to see all the default values.
 
 :::
 
@@ -294,7 +294,7 @@ persistence:
 
 Commit and push:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 git add .
 git commit -m "Added OpenLDAP service"
 git push
@@ -302,7 +302,7 @@ git push
 
 And deploy the Argo CD application:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/ldap/apps/openldap-app.yml
 ```
 

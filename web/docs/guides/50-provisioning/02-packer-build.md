@@ -4,7 +4,7 @@
 
 ### Configuring and Launching Packer
 
-The [`packer-recipes` directory inside the git repository](https://github.com/SquareFactory/ClusterFactory-CE/tree/main/packer-recipes) contains examples of Packer configuration files.
+The [`packer-recipes` directory inside the git repository](https://github.com/SquareFactory/ClusterFactory/tree/main/packer-recipes) contains examples of Packer configuration files.
 
 ```json title="rocky.nothing.json"
 {
@@ -170,7 +170,7 @@ The `packages` and `post` blocks are probably what you are interested in.
 
 Run packer with:
 
-```shell title="user@local:/ClusterFactory-CE/packer-recipes/rocky"
+```shell title="user@local:/ClusterFactory/packer-recipes/rocky"
 packer build -ver "numvcpus=12" -var "memsize=23609" rocky.nothing.json
 ```
 
@@ -182,7 +182,7 @@ After building the OS image, a qcow2 file is generated inside a `output-qemu` di
 
 Mount the qcow with the script `setup-nbd`.
 
-```shell title="root@local:/ClusterFactory-CE/packer-recipes/rocky"
+```shell title="root@local:/ClusterFactory/packer-recipes/rocky"
 # Do it as root!
 export IMAGE_PATH=output-qemu/packer-qemu
 ./scripts-local/setup-nbd
@@ -193,14 +193,14 @@ mount "${NBD}p1" "$TMP_DIR"
 
 Then, copy the root filesystem via rsync:
 
-```shell title="root@local:/ClusterFactory-CE/packer-recipes/rocky"
+```shell title="root@local:/ClusterFactory/packer-recipes/rocky"
 rsync -avzP "$TMP_DIR/" "root@<xcat server>:/<path to os image>/rootimg/"
 # Example: rsync -avzP "$TMP_DIR/" "root@192.168.0.3:/install/netboot/rocky8.4/x86_64/compute/rootimg/"
 ```
 
 And unmount and tear down:
 
-```shell title="root@local:/ClusterFactory-CE/packer-recipes/rocky"
+```shell title="root@local:/ClusterFactory/packer-recipes/rocky"
 umount -f "$TMP_DIR"
 rmdir --ignore-fail-on-non-empty "$TMP_DIR"
 ./scripts-local/teardown-nbd

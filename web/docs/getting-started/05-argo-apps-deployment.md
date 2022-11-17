@@ -25,7 +25,7 @@ metadata:
 
 and apply:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/my-monitoring/namespace.yml
 ```
 
@@ -61,7 +61,7 @@ spec:
 
 and apply:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/my-monitoring/app-project.yml
 ```
 
@@ -182,7 +182,7 @@ allowedTopologies:
 
 Apply it:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/my-monitoring/storageclasses.yaml
 ```
 
@@ -231,7 +231,7 @@ Just run the `cfctl kubeseal`, this will generate a `grafana-admin-sealed-secret
 
 Apply this file:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/my-monitoring/grafana-admin-sealed-secret.yaml
 ```
 
@@ -315,7 +315,7 @@ spec:
   project: my-monitoring
   source:
     # You should have forked this repo. Change the URL to your fork.
-    repoURL: git@github.com:<your account>/ClusterFactory-CE.git
+    repoURL: git@github.com:<your account>/ClusterFactory.git
     targetRevision: HEAD
     path: helm-subcharts/kube-prometheus-stack
     helm:
@@ -521,7 +521,7 @@ kube-prometheus-stack:
 
 Now, you can commit and push:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 git add .
 git commit -m "Added kube-prometheus-stack subchart"
 git push
@@ -529,7 +529,7 @@ git push
 
 You can deploy the Argo CD app:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/my-monitoring/prometheus-crd-app.yml
 kubectl apply -f argo/my-monitoring/prometheus-app.yml
 ```

@@ -9,7 +9,7 @@ spec:
   project: slurm-cluster
   source:
     # You should have forked this repo. Change the URL to your fork.
-    repoURL: git@github.com:squarefactory/ClusterFactory-CE.git
+    repoURL: git@github.com:squarefactory/ClusterFactory.git
     targetRevision: HEAD
     path: helm/slurm-cluster
     helm:

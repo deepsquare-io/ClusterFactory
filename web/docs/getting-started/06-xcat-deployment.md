@@ -8,7 +8,7 @@ However, the order is the same.
 
 ## 1. Namespace and AppProject
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/provisioning
 ```
 
@@ -44,7 +44,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
 ```
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/provisioning/volumes/xcat-pv.yml
 ```
 
@@ -81,7 +81,7 @@ spec:
   project: provisioning
   source:
     # You should have forked this repo. Change the URL to your fork.
-    repoURL: git@github.com:<your account>/ClusterFactory-CE.git
+    repoURL: git@github.com:<your account>/ClusterFactory.git
     targetRevision: HEAD
     path: helm/xcat
     helm:
@@ -177,7 +177,7 @@ git push
 
 Deploy the app:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/provisioning/apps/xcat-app.yml
 ```
 

@@ -1,10 +1,10 @@
-# Releasing ClusterFactory CE
+# Releasing ClusterFactory
 
 ## Creating a release
 
 Creating a release happens via Github Actions by creating an [annotated](https://git-scm.com/book/en/v2/Git-Basics-Tagging#_creating_tags) git tag. Tag creation triggers the release workflow which will do most of the heavy-lifting:
 
-- Create the actual release in [releases](https://github.com/SquareFactory/ClusterFactory-CE/releases/)
+- Create the actual release in [releases](https://github.com/SquareFactory/ClusterFactory/releases/)
 
 After the action completes, the release will be in `draft` state to allow manual modification of the release notes. Currently there is no automation for the release notes, this has to be manually collected.
 

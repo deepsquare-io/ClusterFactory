@@ -66,7 +66,7 @@ spec:
 
 Apply the configuration:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f ./core/metallb/
 ```
 
@@ -104,7 +104,7 @@ spec:
 
 Apply the configuration:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f ./core/metallb/
 ```
 
@@ -114,13 +114,13 @@ That's all! The MetalLB speakers on all the nodes will advertise the IP address 
 
 The CoreDNS given by k0s does not meet our needs, so we added `--disable-components coredns` in the `installFlags` of `cfctl.yaml`. We are going to deploy our own.
 
-CoreDNS will be exposed to the external network thanks to the `IngressRoute` objects in the [`core/coredns/overlays/prod/ingress-route.yaml`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/core.example/coredns/overlays/prod/ingress-route.yaml).
+CoreDNS will be exposed to the external network thanks to the `IngressRoute` objects in the [`core/coredns/overlays/prod/ingress-route.yaml`](https://github.com/SquareFactory/ClusterFactory/blob/main/core.example/coredns/overlays/prod/ingress-route.yaml).
 
 :::caution
 
 If this is an unwanted feature (because you are using an other DNS for example), feel free to remove the routes and close the ports in the Traefik extension specification inside `cfctl.yaml`.
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 rm core.example/coredns/overlays/prod/ingress-route.yaml
 ```
 
@@ -148,13 +148,13 @@ rm core.example/coredns/overlays/prod/ingress-route.yaml
 -                     protocol: UDP
 ```
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 cfctl apply --debug --config ./cfctl.yaml
 ```
 
 :::
 
-The files that you should look for are [`core/coredns/overlays/prod/configmap.yaml`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/core.example/coredns/overlays/prod/configmap.yaml) and [`core/coredns/overlays/prod/deployment.yaml`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/core.example/coredns/overlays/prod/deployment.yaml).
+The files that you should look for are [`core/coredns/overlays/prod/configmap.yaml`](https://github.com/SquareFactory/ClusterFactory/blob/main/core.example/coredns/overlays/prod/configmap.yaml) and [`core/coredns/overlays/prod/deployment.yaml`](https://github.com/SquareFactory/ClusterFactory/blob/main/core.example/coredns/overlays/prod/deployment.yaml).
 
 Inside the `ConfigMap`, you'll find:
 
@@ -366,7 +366,7 @@ Our recommendation is to use Ingress for simple routes with HTTP. Otherwise, Ing
 
 ## (optional) Configure KubeVirt
 
-If you do not want to deploy KubeVirt in all zones, you can edit [`core/kubevirt/overlays/prod/kubevirt-cr.yaml`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/core.example/kubevirt/overlays/prod/kubevirt-cr.yaml).
+If you do not want to deploy KubeVirt in all zones, you can edit [`core/kubevirt/overlays/prod/kubevirt-cr.yaml`](https://github.com/SquareFactory/ClusterFactory/blob/main/core.example/kubevirt/overlays/prod/kubevirt-cr.yaml).
 
 ```yaml title="core/kubevirt/overlays/prod/kubevirt-cr.yaml"
 apiVersion: kubevirt.io/v1

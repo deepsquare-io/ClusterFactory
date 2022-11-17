@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 ## Helm and Docker resources
 
-The Helm resources are stored on [ClusterFactory Git Repository](https://github.com/SquareFactory/ClusterFactory-CE/tree/main/helm/xcat).
+The Helm resources are stored on [ClusterFactory Git Repository](https://github.com/SquareFactory/ClusterFactory/tree/main/helm/xcat).
 
 The Dockerfile is described in the git repository [SquareFactory/xcat-rocky](https://github.com/SquareFactory/xcat-rocky).
 
@@ -19,7 +19,7 @@ docker pull ghcr.io/squarefactory/xcat-rocky:latest
 
 ## 1. Deploy Namespace and AppProject
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/provisioning/
 ```
 
@@ -59,7 +59,7 @@ allowedTopologies:
           - <FILL ME> # <country code>-<city>-<index>
 ```
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/provisioning/volumes/storage-class.yaml
 ```
 
@@ -96,7 +96,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
 ```
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/provisioning/volumes/persistent-volume.yaml
 ```
 
@@ -110,7 +110,7 @@ The label `app=xcat` will be used by the PersistentVolumeClaim.
 ```yaml title="argo.example/provisioning/apps/xcat-app.yml > spec > source"
 source:
   # You should have forked this repo. Change the URL to your fork.
-  repoURL: git@github.com:<your account>/ClusterFactory-CE.git
+  repoURL: git@github.com:<your account>/ClusterFactory.git
   targetRevision: HEAD
   path: helm/xcat
   helm:
@@ -124,7 +124,7 @@ source:
 
 :::tip
 
-Read the [`values.yaml`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/helm/xcat/values.yaml) to see all the default values.
+Read the [`values.yaml`](https://github.com/SquareFactory/ClusterFactory/blob/main/helm/xcat/values.yaml) to see all the default values.
 
 :::
 
@@ -235,7 +235,7 @@ persistence:
 
 Commit and push:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 git add .
 git commit -m "Added xCAT application and values"
 git push
@@ -243,6 +243,6 @@ git push
 
 And deploy:
 
-```shell title="user@local:/ClusterFactory-CE"
+```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/provisioning/apps/xcat-app.yml
 ```

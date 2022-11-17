@@ -391,13 +391,13 @@ either inside a Git repository, more precisely, inside a fork.
 
 The Helm application must be available on a publicly accessible Git or Helm repository.
 
-The example for xCAT is stored inside [`helm/xcat`](https://github.com/SquareFactory/ClusterFactory-CE/tree/main/helm/xcat).
+The example for xCAT is stored inside [`helm/xcat`](https://github.com/SquareFactory/ClusterFactory/tree/main/helm/xcat).
 
 ## 4. Writing the Argo CD Application and custom values
 
 After writing the Helm Chart, you can write the Argo CD `Application`.
 
-The example for xCAT is stored inside [`argo/provisioning/apps`](https://github.com/SquareFactory/ClusterFactory-CE/blob/main/argo.example/provisioning/apps/xcat-app.yml).
+The example for xCAT is stored inside [`argo/provisioning/apps`](https://github.com/SquareFactory/ClusterFactory/blob/main/argo.example/provisioning/apps/xcat-app.yml).
 
 The custom values are stored inside the `helm/xcat` directory. If the Helm application is not a Git repository, it's better to use the [subchart pattern by using helm dependencies](https://github.com/argoproj/argocd-example-apps/blob/master/helm-dependency/README.md).
 

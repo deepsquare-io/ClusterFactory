@@ -8,7 +8,7 @@ See below for a simple inclusion within your own terraform project.
 
 ```hcl
 module "slurm_cluster" {
-  source = "github.com/SquareFactory/ClusterFactory-CE/terraform/exoscale?ref=v0.8.0"
+  source = "github.com/SquareFactory/ClusterFactory/terraform/exoscale?ref=v0.8.0"
 
   # ... omitted ...
 }
