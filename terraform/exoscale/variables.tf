@@ -137,6 +137,14 @@ variable "router" {
         })
       })
     }))
+    netmaker_vpns = list(object({
+      token = string
+    }))
+    tailscale_vpns = list(object({
+      address           = string
+      key               = string
+      advertised_routes = string
+    }))
   })
   sensitive = true
   default   = null

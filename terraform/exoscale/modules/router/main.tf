@@ -16,6 +16,8 @@ locals {
     bgp_asn        = var.bgp_asn
     ipsec_vpns     = var.ipsec_vpns
     wireguard_vpns = var.wireguard_vpns
+    netmaker_vpns  = var.netmaker_vpns
+    tailscale_vpns = var.tailscale_vpns
     public_ip      = exoscale_elastic_ip.storage_ip.ip_address
   })
 }

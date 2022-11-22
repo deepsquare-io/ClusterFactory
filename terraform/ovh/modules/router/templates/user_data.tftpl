@@ -117,3 +117,7 @@ write_files:
       %{~ for vpn in netmaker_vpns ~}
       netclient join -vvv -t '${vpn.token}'
       %{~ endfor ~}
+
+      %{~ for vpn in tailscale_vpns ~}
+      tailscale up --login-server '${vpn.address}' --authkey '${vpn.key}' --advertise-routes '${vpn.advertised_routes}' --accept-routes --snat-subnet-routes=false
+      %{~ endfor ~}

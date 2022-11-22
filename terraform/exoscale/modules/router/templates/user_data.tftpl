@@ -103,3 +103,19 @@ vyos_config_commands:
   - set protocols bgp neighbor '${vpn.bgp.peer.address}' description 'BGP-with-${vpn.peer.address}'
   - set protocols bgp neighbor '${vpn.bgp.peer.address}' address-family ipv4-unicast prefix-list export 'BGP-${vpn.peer.address}-OUT'
   %{~ endfor ~}
+
+write_files:
+  - path: /config/scripts/vyos-postconfig-bootup.script
+    owner: root:vyattacfg
+    permissions: '0775'
+    content: |
+      #!/bin/vbash
+      source /opt/vyatta/etc/functions/script-template
+
+      %{~ for vpn in netmaker_vpns ~}
+      netclient join -vvv -t '${vpn.token}'
+      %{~ endfor ~}
+
+      %{~ for vpn in tailscale_vpns ~}
+      tailscale up --login-server '${vpn.address}' --authkey '${vpn.key}' --advertise-routes '${vpn.advertised_routes}' --accept-routes --snat-subnet-routes=false
+      %{~ endfor ~}

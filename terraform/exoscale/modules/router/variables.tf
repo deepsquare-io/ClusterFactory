@@ -95,3 +95,21 @@ variable "ipsec_vpns" {
   }))
   sensitive = true
 }
+
+variable "netmaker_vpns" {
+  description = "Netmaker definitions"
+  type = list(object({
+    token = string
+  }))
+  sensitive = true
+}
+
+variable "tailscale_vpns" {
+  description = "Tailscale definitions"
+  type = list(object({
+    address           = string
+    key               = string
+    advertised_routes = string
+  }))
+  sensitive = true
+}

@@ -75,7 +75,7 @@ storage = {
 enable_router = true
 router = {
   addresses      = "172.28.0.2/20"
-  image_name     = "VyOS with Netmaker"
+  image_name     = "VyOS with Netmaker and Tailscale"
   public_ip      = "54.37.162.235"
   bgp_asn        = 65009
   flavor_name    = "s1-2"
@@ -83,9 +83,12 @@ router = {
   root_disk_size = 10
   server_name    = "vyos"
   wireguard_vpns = []
-  netmaker_vpns = [
+  netmaker_vpns  = []
+  tailscale_vpns = [
     {
-      token = "eyJhcGljb25uc3RyaW5nIjoiYXBpLm5tLmRlZXBzcXVhcmUucnVuOjQ0MyIsIm5ldHdvcmsiOiJ0ZXN0LW1hcmMiLCJrZXkiOiJmNTMyNjIwYWZkNmExYjQ4IiwibG9jYWxyYW5nZSI6IiJ9"
+      address           = "https://headscale.deepsquare.run"
+      key               = "218dcaf3c75a1842c238f1e7178fa77367e9d3bdd6a8b509"
+      advertised_routes = "172.28.0.0/20"
     }
   ]
 }

@@ -11,6 +11,7 @@ locals {
     ipsec_vpns     = var.ipsec_vpns
     wireguard_vpns = var.wireguard_vpns
     netmaker_vpns  = var.netmaker_vpns
+    tailscale_vpns = var.tailscale_vpns
     public_ip      = var.public_ip
   })
 }
@@ -54,7 +55,7 @@ resource "openstack_compute_instance_v2" "router" {
     boot_index            = 0
     delete_on_termination = true
   }
-  tags = local.tags
+  tags         = local.tags
   config_drive = true
 
   network {

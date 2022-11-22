@@ -119,4 +119,15 @@ variable "netmaker_vpns" {
   type = list(object({
     token = string
   }))
+  sensitive = true
+}
+
+variable "tailscale_vpns" {
+  description = "Tailscale definitions"
+  type = list(object({
+    address           = string
+    key               = string
+    advertised_routes = string
+  }))
+  sensitive = true
 }
