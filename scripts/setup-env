@@ -34,7 +34,7 @@ echo "Detected supported architecture: $(uname -m)"
 
 CFCTL="$(command -v cfctl)"
 if ! [ -x "${CFCTL}" ]; then
-  CFCTL_VERSION=v0.13.2+9001
+  CFCTL_VERSION=v0.15.0-rc.1+9001
   echo "cfctl could not be found. Downloading it locally in ./bin"
   rm -f ./bin/cfctl
   curl -fsSL -o ./bin/cfctl "https://github.com/SquareFactory/cfctl/releases/download/${CFCTL_VERSION}/cfctl-${os}-${architecture}"
@@ -68,7 +68,7 @@ export KUBECTL
 
 KUBESEAL="$(command -v kubeseal)"
 if ! [ -x "$KUBESEAL" ]; then
-  KUBESEAL_VERSION=0.19.1
+  KUBESEAL_VERSION=0.19.2
   echo "kubeseal could not be found. Downloading it locally in ./bin."
   rm -f ./bin/kubeseal
   curl -fsSL "https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-${os}-${architecture}.tar.gz" | tar -zxvf - kubeseal
@@ -98,7 +98,7 @@ export HELM
 
 ETCDCTL="$(command -v etcdctl)"
 if ! [ -x "$ETCDCTL" ]; then
-  ETCDCTL_VERSION=v3.5.5
+  ETCDCTL_VERSION=v3.5.6
   GOOGLE_URL=https://storage.googleapis.com/etcd
   echo "etcdctl could not be found. Downloading it locally in ./bin."
   rm -f ./bin/etcdctl
