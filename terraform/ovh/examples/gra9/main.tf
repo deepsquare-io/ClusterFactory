@@ -24,13 +24,13 @@ resource "openstack_images_image_v2" "rocky" {
 module "cf_cluster" {
   source = "../../"
 
-  service_name = var.service_name
-  network      = var.network
-  ssh_keys     = var.ssh_keys
-  region       = var.region
-  gw           = var.gw
+  service_name    = var.service_name
+  network         = var.network
+  ssh_keys        = var.ssh_keys
+  region          = var.region
+  gw              = var.gw
   allocation_pool = var.allocation_pool
-  subnet = var.subnet
+  subnet          = var.subnet
 
   enable_storage = var.enable_storage
   storage        = local.storage
