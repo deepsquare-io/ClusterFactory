@@ -101,6 +101,7 @@ variable "ipsec_vpns" {
   type = list(object({
     address = string
     peer = object({
+      name       = string
       address    = string
       shared_key = string
     })

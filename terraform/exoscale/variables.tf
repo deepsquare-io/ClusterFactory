@@ -126,6 +126,7 @@ variable "router" {
     ipsec_vpns = list(object({
       address = string
       peer = object({
+        name       = string
         address    = string
         shared_key = string
       })

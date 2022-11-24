@@ -7,6 +7,7 @@ locals {
   user_data = templatefile("${path.module}/templates/user_data.tftpl", {
     ssh_keys       = var.ssh_keys
     addresses      = var.addresses
+    network_cidr   = data.cidr_network.addresses.network
     bgp_asn        = var.bgp_asn
     ipsec_vpns     = var.ipsec_vpns
     wireguard_vpns = var.wireguard_vpns

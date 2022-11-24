@@ -1,9 +1,12 @@
 service_name = "9adc45ea0a4e4d84a5acff1d829613e0"
 region       = "GRA9"
-ssh_keys     = ["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPd+X08wpIGwKZ0FsJu1nkR3o1CzlXF3OkgQd/WYB2fX nguyen@csquare"]
-network      = "deepsquare-net"
-gw           = "172.28.0.2"
-subnet       = "172.28.0.0/20"
+ssh_keys = [
+  "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPd+X08wpIGwKZ0FsJu1nkR3o1CzlXF3OkgQd/WYB2fX nguyen@csquare",
+  "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK2MIrrisugtbMeoDbJJntMBbZno56Zwmc4LKYxeZh7k kiwi@mba"
+]
+network = "deepsquare-net"
+gw      = "172.28.0.2"
+subnet  = "172.28.0.0/20"
 allocation_pool = {
   start = "172.28.0.3"
   end   = "172.28.0.254"
@@ -16,8 +19,8 @@ k0s_instances = [
     ostype         = "rhel9"
     addresses      = "172.28.0.4/20"
     flavor_name    = "d2-4"
-    root_disk_size = 50
-  }
+    root_disk_size = 100
+  },
 ]
 
 enable_storage = false
@@ -74,12 +77,30 @@ storage = {
 
 enable_router = true
 router = {
-  addresses      = "172.28.0.2/20"
-  image_name     = "VyOS with Netmaker and Tailscale"
-  public_ip      = "54.37.162.235"
-  bgp_asn        = 65009
-  flavor_name    = "s1-2"
-  ipsec_vpns     = []
+  addresses   = "172.28.0.2/20"
+  image_name  = "VyOS with Netmaker and Tailscale"
+  public_ip   = "54.37.162.235"
+  bgp_asn     = 65009
+  flavor_name = "s1-2"
+  ipsec_vpns = [
+    {
+      address = "169.254.19.1/30"
+      peer = {
+        name       = "reindeer"
+        address    = "185.69.137.138"
+        shared_key = ""
+      }
+      bgp = {
+        exports = [
+          "172.28.0.0/20",
+        ]
+        peer = {
+          address = "169.254.19.2"
+          asn     = "65502"
+        }
+      }
+    }
+  ]
   root_disk_size = 10
   server_name    = "vyos"
   wireguard_vpns = []
@@ -87,7 +108,7 @@ router = {
   tailscale_vpns = [
     {
       address           = "https://headscale.deepsquare.run"
-      key               = "218dcaf3c75a1842c238f1e7178fa77367e9d3bdd6a8b509"
+      key               = ""
       advertised_routes = "172.28.0.0/20"
     }
   ]

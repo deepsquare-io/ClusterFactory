@@ -1,4 +1,5 @@
 #cloud-config
+# prettier-ignore
 
 users:
   - name: vyos
@@ -44,33 +45,18 @@ vyos_config_commands:
   - set firewall name OUTSIDE-LOCAL rule 40 source
   - set firewall interface eth0 in name 'OUTSIDE-IN'
   - set firewall interface eth0 local name 'OUTSIDE-LOCAL'
+  - set nat source rule 100 source address '${network_cidr}'
+  - set nat source rule 100 translation address 'masquerade'
+  - set nat source rule 100 outbound-interface 'eth0'
   - set protocols bgp system-as '${bgp_asn}'
-  %{~ for vpn in wireguard_vpns ~}
-  - set interfaces wireguard '${vpn.interface}' port '${vpn.port}'
-  - set firewall name OUTSIDE_LOCAL rule 20 destination port '${vpn.port}'
-  - set interfaces wireguard '${vpn.interface}' private-key '${vpn.private_key}'
-  - set interfaces wireguard '${vpn.interface}' address '${vpn.address}'
-  - set interfaces wireguard '${vpn.interface}' description 'VPN-to-${vpn.peer.name}'
-  - set interfaces wireguard '${vpn.interface}' peer '${vpn.peer.name}' allowed-ips '0.0.0.0/0'
-  - set interfaces wireguard '${vpn.interface}' peer '${vpn.peer.name}' endpoint '${vpn.peer.endpoint}'
-  - set interfaces wireguard '${vpn.interface}' peer '${vpn.peer.name}' public-key '${vpn.peer.public_key}'
-  - set interfaces wireguard '${vpn.interface}' peer '${vpn.peer.name}' preshared-key '${vpn.peer.preshared_key}'
-  %{~ for index, prefix in vpn.bgp.exports ~}
-  - set policy prefix-list 'BGP-${vpn.peer.name}-OUT' rule ${index} prefix '${prefix}'
-  - set policy prefix-list 'BGP-${vpn.peer.name}-OUT' rule ${index} action 'allow'
-  %{~ endfor ~}
-  - set policy prefix-list 'BGP-${vpn.peer.name}-OUT' rule 1000 prefix '0.0.0.0/0'
-  - set policy prefix-list 'BGP-${vpn.peer.name}-OUT' rule 1000 action 'deny'
-  - set protocols bgp neighbor '${vpn.bgp.peer.address}' remote-as '${vpn.bgp.peer.asn}'
-  - set protocols bgp neighbor '${vpn.bgp.peer.address}' description  'BGP-with-${vpn.peer.name}'
-  - set protocols bgp neighbor '${vpn.bgp.peer.address}' address-family ipv4-unicast prefix-list export 'BGP-${vpn.peer.name}-OUT'
-  %{~ endfor ~}
   - set vpn ipsec esp-group ESP_DEFAULT compression 'disable'
   - set vpn ipsec esp-group ESP_DEFAULT lifetime '3600'
   - set vpn ipsec esp-group ESP_DEFAULT mode 'tunnel'
   - set vpn ipsec esp-group ESP_DEFAULT pfs 'enable'
   - set vpn ipsec esp-group ESP_DEFAULT proposal 1 encryption 'aes256gcm128'
   - set vpn ipsec esp-group ESP_DEFAULT proposal 1 hash 'sha512'
+  - set vpn ipsec esp-group ESP_DEFAULT proposal 2 encryption 'aes256gcm128'
+  - set vpn ipsec esp-group ESP_DEFAULT proposal 2 hash 'sha384'
   - set vpn ipsec ike-group IKEv2_DEFAULT dead-peer-detection action 'clear'
   - set vpn ipsec ike-group IKEv2_DEFAULT dead-peer-detection interval '30'
   - set vpn ipsec ike-group IKEv2_DEFAULT dead-peer-detection timeout '120'
@@ -80,29 +66,10 @@ vyos_config_commands:
   - set vpn ipsec ike-group IKEv2_DEFAULT proposal 1 encryption 'aes256gcm128'
   - set vpn ipsec ike-group IKEv2_DEFAULT proposal 1 dh-group '14'
   - set vpn ipsec ike-group IKEv2_DEFAULT proposal 1 hash 'sha512'
-  %{~ for vpn_index,vpn in ipsec_vpns ~}
-  - set interfaces vti vti${vpn_index} address '${vpn.address}'
-  - set vpn ipsec interface 'eth0.${vpn_index}'
-  - set vpn ipsec site-to-site peer '${vpn.peer.address}' authentication id '${public_ip}'
-  - set vpn ipsec site-to-site peer '${vpn.peer.address}' authentication mode 'pre-shared-secret'
-  - set vpn ipsec site-to-site peer '${vpn.peer.address}' authentication pre-shared-secret '${vpn.peer.shared_key}'
-  - set vpn ipsec site-to-site peer '${vpn.peer.address}' authentication remote-id '${vpn.peer.address}'
-  - set vpn ipsec site-to-site peer '${vpn.peer.address}' connection-type 'initiate'
-  - set vpn ipsec site-to-site peer '${vpn.peer.address}' ike-group 'IKEv2_DEFAULT'
-  - set vpn ipsec site-to-site peer '${vpn.peer.address}' ikev2-reauth 'inherit'
-  - set vpn ipsec site-to-site peer '${vpn.peer.address}' local-address '${public_ip}'
-  - set vpn ipsec site-to-site peer '${vpn.peer.address}' vti bind 'vti${vpn_index}'
-  - set vpn ipsec site-to-site peer '${vpn.peer.address}' vti esp-group 'ESP_DEFAULT'
-  %{~ for index, prefix in vpn.bgp.exports ~}
-  - set policy prefix-list 'BGP-${vpn.peer.address}-OUT' rule ${index} prefix '${prefix}'
-  - set policy prefix-list 'BGP-${vpn.peer.address}-OUT' rule ${index} action 'allow'
-  %{~ endfor ~}
-  - set policy prefix-list 'BGP-${vpn.peer.address}-OUT' rule 1000 prefix '0.0.0.0/0'
-  - set policy prefix-list 'BGP-${vpn.peer.address}-OUT' rule 1000 action 'deny'
-  - set protocols bgp neighbor '${vpn.bgp.peer.address}' remote-as '${vpn.bgp.peer.asn}'
-  - set protocols bgp neighbor '${vpn.bgp.peer.address}' description 'BGP-with-${vpn.peer.address}'
-  - set protocols bgp neighbor '${vpn.bgp.peer.address}' address-family ipv4-unicast prefix-list export 'BGP-${vpn.peer.address}-OUT'
-  %{~ endfor ~}
+  - set vpn ipsec ike-group IKEv2_DEFAULT proposal 2 encryption 'aes256gcm128'
+  - set vpn ipsec ike-group IKEv2_DEFAULT proposal 2 dh-group '14'
+  - set vpn ipsec ike-group IKEv2_DEFAULT proposal 2 hash 'sha384'
+  - set protocols bgp address-family ipv4-unicast redistribute connected metric '100'
 
 write_files:
   - path: /config/scripts/vyos-postconfig-bootup.script
@@ -119,3 +86,60 @@ write_files:
       %{~ for vpn in tailscale_vpns ~}
       tailscale up --login-server '${vpn.address}' --authkey '${vpn.key}' --advertise-routes '${vpn.advertised_routes}' --accept-routes --snat-subnet-routes=false
       %{~ endfor ~}
+
+      configure
+      %{~ for vpn in wireguard_vpns ~}
+      set interfaces wireguard '${vpn.interface}' port '${vpn.port}'
+      set firewall name OUTSIDE_LOCAL rule 20 destination port '${vpn.port}'
+      set interfaces wireguard '${vpn.interface}' private-key '${vpn.private_key}'
+      set interfaces wireguard '${vpn.interface}' address '${vpn.address}'
+      set interfaces wireguard '${vpn.interface}' description 'VPN-to-${vpn.peer.name}'
+      set interfaces wireguard '${vpn.interface}' peer '${vpn.peer.name}' allowed-ips '0.0.0.0/0'
+      set interfaces wireguard '${vpn.interface}' peer '${vpn.peer.name}' endpoint '${vpn.peer.endpoint}'
+      set interfaces wireguard '${vpn.interface}' peer '${vpn.peer.name}' public-key '${vpn.peer.public_key}'
+      set interfaces wireguard '${vpn.interface}' peer '${vpn.peer.name}' preshared-key '${vpn.peer.preshared_key}'
+      %{~ for index, prefix in vpn.bgp.exports ~}
+      set policy prefix-list 'BGP-${vpn.peer.name}-OUT' rule ${index} prefix '${prefix}'
+      set policy prefix-list 'BGP-${vpn.peer.name}-OUT' rule ${index} action 'allow'
+      %{~ endfor ~}
+      set policy prefix-list 'BGP-${vpn.peer.name}-OUT' rule 1000 prefix '0.0.0.0/0'
+      set policy prefix-list 'BGP-${vpn.peer.name}-OUT' rule 1000 action 'deny'
+      set policy route-map 'BGP-${vpn.peer.name}-OUT' rule 10 action 'permit'
+      set policy route-map 'BGP-${vpn.peer.name}-OUT' rule 10 match ip address prefix-list 'BGP-${vpn.peer.name}-OUT'
+      set policy route-map 'BGP-${vpn.peer.name}-OUT' rule 10000 action 'deny'
+      set protocols bgp neighbor '${vpn.bgp.peer.address}' remote-as '${vpn.bgp.peer.asn}'
+      set protocols bgp neighbor '${vpn.bgp.peer.address}' description  'BGP-with-${vpn.peer.name}'
+      set protocols bgp neighbor '${vpn.bgp.peer.address}' address-family ipv4-unicast route-map export 'BGP-${vpn.peer.name}-OUT'
+      %{~ endfor ~}
+
+      %{~ for vpn_index,vpn in ipsec_vpns ~}
+      set interfaces vti vti${vpn_index} address '${vpn.address}'
+      set vpn ipsec interface 'eth0.${vpn_index}'
+      set vpn ipsec site-to-site peer '${vpn.peer.name}' authentication local-id '${public_ip}'
+      set vpn ipsec site-to-site peer '${vpn.peer.name}' authentication mode 'pre-shared-secret'
+      set vpn ipsec site-to-site peer '${vpn.peer.name}' authentication pre-shared-secret '${vpn.peer.shared_key}'
+      set vpn ipsec site-to-site peer '${vpn.peer.name}' authentication remote-id '${vpn.peer.address}'
+      set vpn ipsec site-to-site peer '${vpn.peer.name}' connection-type 'initiate'
+      set vpn ipsec site-to-site peer '${vpn.peer.name}' ike-group 'IKEv2_DEFAULT'
+      set vpn ipsec site-to-site peer '${vpn.peer.name}' ikev2-reauth 'inherit'
+      set vpn ipsec site-to-site peer '${vpn.peer.name}' remote-address '${vpn.peer.address}'
+      set vpn ipsec site-to-site peer '${vpn.peer.name}' local-address '${public_ip}'
+      set vpn ipsec site-to-site peer '${vpn.peer.name}' vti bind 'vti${vpn_index}'
+      set vpn ipsec site-to-site peer '${vpn.peer.name}' vti esp-group 'ESP_DEFAULT'
+      %{~ for index, prefix in vpn.bgp.exports ~}
+      set policy prefix-list 'BGP-${vpn.peer.name}-OUT' rule ${index + 1} prefix '${prefix}'
+      set policy prefix-list 'BGP-${vpn.peer.name}-OUT' rule ${index + 1} action 'permit'
+      %{~ endfor ~}
+      set policy prefix-list 'BGP-${vpn.peer.name}-OUT' rule 1000 prefix '0.0.0.0/0'
+      set policy prefix-list 'BGP-${vpn.peer.name}-OUT' rule 1000 action 'deny'
+      set policy route-map 'BGP-${vpn.peer.name}-OUT' rule 10 action 'permit'
+      set policy route-map 'BGP-${vpn.peer.name}-OUT' rule 10 match ip address prefix-list 'BGP-${vpn.peer.name}-OUT'
+      set policy route-map 'BGP-${vpn.peer.name}-OUT' rule 10000 action 'deny'
+      set protocols bgp neighbor '${vpn.bgp.peer.address}' remote-as '${vpn.bgp.peer.asn}'
+      set protocols bgp neighbor '${vpn.bgp.peer.address}' description 'BGP-with-${vpn.peer.name}'
+      set protocols bgp neighbor '${vpn.bgp.peer.address}' address-family ipv4-unicast route-map export 'BGP-${vpn.peer.name}-OUT'
+      set protocols bgp neighbor '${vpn.bgp.peer.address}' address-family ipv4-unicast soft-reconfiguration inbound
+      %{~ endfor ~}
+
+      commit
+      exit

@@ -13,6 +13,7 @@ locals {
   user_data = templatefile("${path.module}/templates/user_data.tftpl", {
     ssh_keys       = var.ssh_keys
     addresses      = var.addresses
+    network_cidr   = data.cidr_network.addresses.network
     bgp_asn        = var.bgp_asn
     ipsec_vpns     = var.ipsec_vpns
     wireguard_vpns = var.wireguard_vpns
@@ -20,6 +21,10 @@ locals {
     tailscale_vpns = var.tailscale_vpns
     public_ip      = exoscale_elastic_ip.storage_ip.ip_address
   })
+}
+
+data "cidr_network" "addresses" {
+  prefix = var.addresses
 }
 
 data "exoscale_compute_template" "storage" {
