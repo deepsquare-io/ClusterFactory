@@ -25,6 +25,7 @@ data "openstack_images_image_v2" "image" {
 }
 
 resource "openstack_networking_port_v2" "port" {
+  region                = var.region
   network_id            = var.network_id
   admin_state_up        = true
   no_security_groups    = true
@@ -33,6 +34,12 @@ resource "openstack_networking_port_v2" "port" {
     ip_address = data.cidr_network.addresses.ip
     subnet_id  = var.subnet_id
   }
+}
+
+resource "openstack_blockstorage_volume_v2" "storage_volume" {
+  region = var.region
+  name   = "storage_volume"
+  size   = var.storage_size
 }
 
 resource "openstack_compute_instance_v2" "storage" {
@@ -45,16 +52,18 @@ resource "openstack_compute_instance_v2" "storage" {
     uuid                  = data.openstack_images_image_v2.image.id
     source_type           = "image"
     destination_type      = "local"
-    volume_size           = var.root_disk_size
     boot_index            = 0
     delete_on_termination = true
   }
-  tags = local.tags
-  config_drive = true
-
-  network {
-    name = "Ext-Net"
+  block_device {
+    uuid                  = openstack_blockstorage_volume_v2.storage_volume.id
+    source_type           = "volume"
+    boot_index            = 1
+    destination_type      = "volume"
+    delete_on_termination = false
   }
+  tags         = local.tags
+  config_drive = true
 
   network {
     port = openstack_networking_port_v2.port.id

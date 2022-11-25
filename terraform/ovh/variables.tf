@@ -50,15 +50,14 @@ variable "allocation_pool" {
 variable "k0s_instances" {
   description = "Instances definition"
   type = list(object({
-    server_name    = string
-    image_name     = string
-    ostype         = string
-    flavor_name    = string
-    tags           = optional(set(string))
-    root_disk_size = number
-    addresses      = string
-    dns            = optional(string)
-    search         = optional(string)
+    server_name = string
+    image_name  = string
+    ostype      = string
+    flavor_name = string
+    tags        = optional(set(string))
+    addresses   = string
+    dns         = optional(string)
+    search      = optional(string)
   }))
 
   validation {
@@ -81,14 +80,14 @@ variable "enable_storage" {
 variable "storage" {
   description = "Storage definition"
   type = object({
-    server_name    = string
-    image_name     = optional(string)
-    flavor_name    = string
-    tags           = optional(set(string))
-    root_disk_size = number
-    addresses      = string
-    dns            = optional(string)
-    search         = optional(string)
+    server_name  = string
+    image_name   = optional(string)
+    flavor_name  = string
+    tags         = optional(set(string))
+    storage_size = number
+    addresses    = string
+    dns          = optional(string)
+    search       = optional(string)
     shares = list(object({
       path  = string
       owner = optional(string)
@@ -110,14 +109,13 @@ variable "enable_router" {
 variable "router" {
   description = "Router definition"
   type = object({
-    server_name    = string
-    image_name     = string
-    flavor_name    = string
-    tags           = optional(set(string))
-    public_ip      = string
-    root_disk_size = number
-    addresses      = string
-    bgp_asn        = number
+    server_name = string
+    image_name  = string
+    flavor_name = string
+    tags        = optional(set(string))
+    public_ip   = string
+    addresses   = string
+    bgp_asn     = number
     wireguard_vpns = list(object({
       interface   = string
       port        = number

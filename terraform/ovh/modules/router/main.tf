@@ -52,7 +52,6 @@ resource "openstack_compute_instance_v2" "router" {
     uuid                  = data.openstack_images_image_v2.image.id
     source_type           = "image"
     destination_type      = "local"
-    volume_size           = var.root_disk_size
     boot_index            = 0
     delete_on_termination = true
   }

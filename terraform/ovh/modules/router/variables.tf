@@ -53,11 +53,6 @@ variable "tags" {
   default     = []
 }
 
-variable "root_disk_size" {
-  description = "Disk size (GB)"
-  type        = number
-}
-
 variable "addresses" {
   description = "Addresses CIDR (ex: 192.168.0.1/24)"
   type        = string

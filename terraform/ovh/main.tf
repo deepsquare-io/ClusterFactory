@@ -19,7 +19,7 @@ module "k0s_instances" {
 # -------------------------
 
 resource "openstack_networking_network_v2" "net" {
-  name           = "cf-net"
+  name           = var.network
   admin_state_up = "true"
   region         = var.region
 }
@@ -50,15 +50,15 @@ module "storage" {
   region     = var.region
   gw         = var.gw
 
-  server_name    = var.storage.server_name
-  image_name     = var.storage.image_name
-  flavor_name    = var.storage.flavor_name
-  tags           = var.storage.tags
-  root_disk_size = var.storage.root_disk_size
-  addresses      = var.storage.addresses
-  dns            = var.storage.dns
-  search         = var.storage.search
-  shares         = var.storage.shares
+  server_name  = var.storage.server_name
+  image_name   = var.storage.image_name
+  flavor_name  = var.storage.flavor_name
+  tags         = var.storage.tags
+  storage_size = var.storage.storage_size
+  addresses    = var.storage.addresses
+  dns          = var.storage.dns
+  search       = var.storage.search
+  shares       = var.storage.shares
 }
 
 # -------------------------
@@ -79,7 +79,6 @@ module "router" {
   image_name     = var.router.image_name
   flavor_name    = var.router.flavor_name
   tags           = var.router.tags
-  root_disk_size = var.router.root_disk_size
   addresses      = var.router.addresses
   bgp_asn        = var.router.bgp_asn
   wireguard_vpns = var.router.wireguard_vpns

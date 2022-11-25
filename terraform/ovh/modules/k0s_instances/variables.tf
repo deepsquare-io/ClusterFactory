@@ -36,15 +36,14 @@ variable "gw" {
 variable "k0s_instances" {
   description = "Instances definition"
   type = list(object({
-    server_name    = string
-    image_name     = string
-    ostype         = string
-    flavor_name    = string
-    tags           = optional(set(string))
-    root_disk_size = number
-    addresses      = string
-    dns            = optional(string)
-    search         = optional(string)
+    server_name = string
+    image_name  = string
+    ostype      = string
+    flavor_name = string
+    tags        = optional(set(string))
+    addresses   = string
+    dns         = optional(string)
+    search      = optional(string)
   }))
 
   validation {

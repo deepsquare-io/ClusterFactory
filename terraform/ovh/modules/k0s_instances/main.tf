@@ -61,11 +61,10 @@ resource "openstack_compute_instance_v2" "k0s_instance" {
     uuid                  = data.openstack_images_image_v2.image[count.index].id
     source_type           = "image"
     destination_type      = "local"
-    volume_size           = var.k0s_instances[count.index].root_disk_size
     boot_index            = 0
     delete_on_termination = true
   }
-  tags = local.tags[count.index]
+  tags         = local.tags[count.index]
   config_drive = true
 
   network {

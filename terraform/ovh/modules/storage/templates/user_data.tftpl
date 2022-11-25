@@ -1,6 +1,9 @@
 #cloud-config
 disable_root: false
 
+packages:
+  - nfs-utils
+
 ssh_authorized_keys:
   ${indent(2, yamlencode(ssh_keys))}
 
@@ -30,24 +33,21 @@ write_files:
     content: |
       /srv/nfs *(rw,sync,no_root_squash,no_subtree_check)
 
-runcmd:
-  - [systemctl, restart, NetworkManager]
-  - [nmcli, connection, modify, 'Wired connection 1', connection.autoconnect, 'yes']
-  - [nmcli, connection, modify, 'Wired connection 1', ipv4.addresses, '${addresses}']
-  - [nmcli, connection, modify, 'Wired connection 1', ipv4.gateway, '${gw}']
-  - [nmcli, connection, modify, 'Wired connection 1', ipv4.route-metric, '1']
-  - [nmcli, connection, modify, 'Wired connection 1', ipv4.never-default, 'no']
-  - [nmcli, connection, modify, 'Wired connection 1', ipv4.method, manual]
-  - [nmcli, connection, up, 'Wired connection 1']
-  - [nmcli, connection, down, 'System ens3']
-  - [nmcli, connection, modify, 'System ens3', connection.autoconnect, 'no']
+mounts:
+  - ["/dev/sdb", "/mnt/storage", xfs, defaults, "0", "2"]
+  - ["/mnt/storage", "/srv/nfs", none, bind, "0", "0"]
 
-  - [dnf, install, "-y", nfs-utils]
-  - [dnf, clean, all]
+runcmd:
+  - [firewall-cmd, "--permanent", "--add-service=ssh"]
   - [firewall-cmd, "--permanent", "--add-service=nfs"]
   - [firewall-cmd, "--permanent", "--add-service=mountd"]
   - [firewall-cmd, "--permanent", "--add-service=rpc-bind"]
   - [firewall-cmd, "--reload"]
+
+  - [mkfs.xfs, "/dev/sdb"]
+  - [mkdir, -p, "/mnt/storage"]
+  - [mount, "/dev/sdb", "/mnt/storage"]
+  - [mount, "--bind", "/mnt/storage", "/srv/nfs"]
 
   %{~ for share in shares ~}
   - [mkdir, "-p", "/srv/nfs/${share.path}"]
@@ -60,7 +60,7 @@ runcmd:
   %{~ endfor ~}
 
   - [systemctl, enable, "--now", rpcbind]
-  - [systemctl,enable, "--now", nfs-server]
+  - [systemctl, enable, "--now", nfs-server]
   - [exportfs, "-fa"]
 
   - [touch, /etc/cloud/cloud-init.disabled]

@@ -4,7 +4,7 @@ ssh_keys = [
   "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPd+X08wpIGwKZ0FsJu1nkR3o1CzlXF3OkgQd/WYB2fX nguyen@csquare",
   "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK2MIrrisugtbMeoDbJJntMBbZno56Zwmc4LKYxeZh7k kiwi@mba"
 ]
-network = "deepsquare-net"
+network = "cf-net"
 gw      = "172.28.0.2"
 subnet  = "172.28.0.0/20"
 allocation_pool = {
@@ -14,21 +14,20 @@ allocation_pool = {
 
 k0s_instances = [
   {
-    server_name    = "k0s-ovh-fr-gra-9"
-    image_name     = "Rocky Linux 9"
-    ostype         = "rhel9"
-    addresses      = "172.28.0.4/20"
-    flavor_name    = "d2-4"
-    root_disk_size = 100
+    server_name = "k0s-ovh-fr-gra-9"
+    image_name  = "Rocky Linux 9"
+    ostype      = "rhel9"
+    addresses   = "172.28.0.4/20"
+    flavor_name = "d2-4"
   },
 ]
 
-enable_storage = false
+enable_storage = true
 storage = {
-  addresses      = "172.28.0.3/20"
-  root_disk_size = 400
-  server_name    = "nfs-server"
-  flavor_name    = "d2-2"
+  addresses    = "172.28.0.3/20"
+  storage_size = 400
+  server_name  = "nfs-server"
+  flavor_name  = "d2-2"
   shares = [
     {
       path = "ldap-users"

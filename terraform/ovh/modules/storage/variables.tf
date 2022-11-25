@@ -54,7 +54,7 @@ variable "tags" {
   default     = []
 }
 
-variable "root_disk_size" {
+variable "storage_size" {
   description = "Disk size (GB)"
   type        = number
 }
