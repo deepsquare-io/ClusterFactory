@@ -125,3 +125,15 @@ variable "tailscale_vpns" {
     advertised_routes = string
   }))
 }
+
+variable "bgp" {
+  description = "BGP definitions"
+  type = list(object({
+    exports = list(string)
+    peer = object({
+      name    = string
+      address = string
+      asn     = number
+    })
+  }))
+}

@@ -86,6 +86,7 @@ module "router" {
   netmaker_vpns  = var.router.netmaker_vpns
   tailscale_vpns = var.router.tailscale_vpns
   public_ip      = var.router.public_ip
+  bgp            = var.router.bgp
 }
 
 output "user_data" {

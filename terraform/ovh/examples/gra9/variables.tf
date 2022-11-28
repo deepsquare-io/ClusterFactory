@@ -202,6 +202,14 @@ variable "router" {
       key               = string
       advertised_routes = string
     }))
+    bgp = list(object({
+      exports = list(string)
+      peer = object({
+        name    = string
+        address = string
+        asn     = number
+      })
+    }))
   })
   default = null
 }

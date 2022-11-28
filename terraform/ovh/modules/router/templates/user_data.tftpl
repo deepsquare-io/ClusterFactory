@@ -43,12 +43,19 @@ vyos_config_commands:
   - set firewall name OUTSIDE-LOCAL rule 40 log 'enable'
   - set firewall name OUTSIDE-LOCAL rule 40 protocol 'udp'
   - set firewall name OUTSIDE-LOCAL rule 40 source
+  - set firewall name OUTSIDE-LOCAL rule 50 action 'accept'
+  - set firewall name OUTSIDE-LOCAL rule 50 description 'Allow IKE-IN'
+  - set firewall name OUTSIDE-LOCAL rule 50 destination port '500'
+  - set firewall name OUTSIDE-LOCAL rule 50 log 'enable'
+  - set firewall name OUTSIDE-LOCAL rule 50 protocol 'udp'
+  - set firewall name OUTSIDE-LOCAL rule 50 source
   - set firewall interface eth0 in name 'OUTSIDE-IN'
   - set firewall interface eth0 local name 'OUTSIDE-LOCAL'
   - set nat source rule 100 source address '${network_cidr}'
   - set nat source rule 100 translation address 'masquerade'
   - set nat source rule 100 outbound-interface 'eth0'
   - set protocols bgp system-as '${bgp_asn}'
+  - set vpn ipsec options disable-route-autoinstall
   - set vpn ipsec esp-group ESP_DEFAULT compression 'disable'
   - set vpn ipsec esp-group ESP_DEFAULT lifetime '3600'
   - set vpn ipsec esp-group ESP_DEFAULT mode 'tunnel'
@@ -72,20 +79,12 @@ vyos_config_commands:
   - set protocols bgp address-family ipv4-unicast redistribute connected metric '100'
 
 write_files:
-  - path: /config/scripts/vyos-postconfig-bootup.script
+  - path: /config/scripts/config-bgp.script
     owner: root:vyattacfg
     permissions: '0775'
     content: |
       #!/bin/vbash
       source /opt/vyatta/etc/functions/script-template
-
-      %{~ for vpn in netmaker_vpns ~}
-      netclient join -vvv -t '${vpn.token}'
-      %{~ endfor ~}
-
-      %{~ for vpn in tailscale_vpns ~}
-      tailscale up --login-server '${vpn.address}' --authkey '${vpn.key}' --advertise-routes '${vpn.advertised_routes}' --accept-routes --snat-subnet-routes=false
-      %{~ endfor ~}
 
       configure
       %{~ for vpn in wireguard_vpns ~}
@@ -141,5 +140,40 @@ write_files:
       set protocols bgp neighbor '${vpn.bgp.peer.address}' address-family ipv4-unicast soft-reconfiguration inbound
       %{~ endfor ~}
 
+      %{~ for b in bgp ~}
+      %{~ for index, prefix in b.exports ~}
+      set policy prefix-list 'BGP-${b.peer.name}-OUT' rule ${index} prefix '${prefix}'
+      set policy prefix-list 'BGP-${b.peer.name}-OUT' rule ${index} action 'allow'
+      %{~ endfor ~}
+      set policy prefix-list 'BGP-${b.peer.name}-OUT' rule 1000 prefix '0.0.0.0/0'
+      set policy prefix-list 'BGP-${b.peer.name}-OUT' rule 1000 action 'deny'
+      set policy route-map 'BGP-${b.peer.name}-OUT' rule 10 action 'permit'
+      set policy route-map 'BGP-${b.peer.name}-OUT' rule 10 match ip address prefix-list 'BGP-${b.peer.name}-OUT'
+      set policy route-map 'BGP-${b.peer.name}-OUT' rule 10000 action 'deny'
+      set protocols bgp neighbor '${b.peer.address}' remote-as '${b.peer.asn}'
+      set protocols bgp neighbor '${b.peer.address}' description  'BGP-with-${b.peer.name}'
+      set protocols bgp neighbor '${b.peer.address}' address-family ipv4-unicast route-map export 'BGP-${b.peer.name}-OUT'
+      %{~ endfor ~}
+
       commit
+      save
       exit
+
+  - path: /config/scripts/vyos-postconfig-bootup.script
+    owner: root:vyattacfg
+    permissions: '0775'
+    content: |
+      #!/bin/vbash
+      source /opt/vyatta/etc/functions/script-template
+
+      %{~ for vpn in netmaker_vpns ~}
+      sudo netclient join -vvv -t '${vpn.token}'
+      %{~ endfor ~}
+
+      %{~ for vpn in tailscale_vpns ~}
+      sudo tailscale up --login-server '${vpn.address}' --authkey '${vpn.key}' --advertise-routes '${vpn.advertised_routes}' --accept-routes --snat-subnet-routes=false
+      %{~ endfor ~}
+
+      exec sg vyattacfg -c "/config/scripts/config-bgp.script"
+
+      rm -f /config/scripts/vyos-postconfig-bootup.script

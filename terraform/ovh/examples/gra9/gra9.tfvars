@@ -111,4 +111,16 @@ router = {
       advertised_routes = "172.28.0.0/20"
     }
   ]
+  bgp = [
+    {
+      exports = [
+        "172.28.0.0/20"
+      ]
+      peer = {
+        name    = "k8s"
+        address = "172.28.0.4"
+        asn     = "64503"
+      }
+    }
+  ]
 }
