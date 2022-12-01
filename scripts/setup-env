@@ -104,7 +104,13 @@ if ! [ -x "$ETCDCTL" ]; then
   GOOGLE_URL=https://storage.googleapis.com/etcd
   echo "etcdctl could not be found. Downloading it locally in ./bin."
   rm -f ./bin/etcdctl
-  curl -fsSL "${GOOGLE_URL}/${ETCDCTL_VERSION}/etcd-${ETCDCTL_VERSION}-${os}-${architecture}.tar.gz" | tar -zxvf - "etcd-${ETCDCTL_VERSION}-${os}-${architecture}/etcdctl"
+  if [ "$os" = "darwin" ]; then
+    curl -fsSL "${GOOGLE_URL}/${ETCDCTL_VERSION}/etcd-${ETCDCTL_VERSION}-${os}-${architecture}.zip" -o "etcd-${ETCDCTL_VERSION}-${os}-${architecture}.zip"
+    unzip "etcd-${ETCDCTL_VERSION}-${os}-${architecture}.zip" "etcd-${ETCDCTL_VERSION}-${os}-${architecture}/etcdctl"
+    rm -f "etcd-${ETCDCTL_VERSION}-${os}-${architecture}.zip"
+  else
+    curl -fsSL "${GOOGLE_URL}/${ETCDCTL_VERSION}/etcd-${ETCDCTL_VERSION}-${os}-${architecture}.tar.gz" | tar -zxvf - "etcd-${ETCDCTL_VERSION}-${os}-${architecture}/etcdctl"
+  fi
   mv "etcd-${ETCDCTL_VERSION}-${os}-${architecture}/etcdctl" ./bin/etcdctl
   rmdir "etcd-${ETCDCTL_VERSION}-${os}-${architecture}"
   chmod +x ./bin/etcdctl
