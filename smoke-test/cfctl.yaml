@@ -5,18 +5,38 @@ metadata:
 spec:
   hosts:
     - ssh:
-        address: 192.168.0.2
+        address: 192.168.77.10
         user: root
         port: 22
-        keyPath: ~/.ssh/id_ed25519
+        keyPath: ~/.ssh/id_rsa_smoke_test
       role: controller+worker
+      hostname: manager0
       noTaints: true
-      privateInterface: eno1
-      privateAddress: 192.168.0.2
+      privateInterface: eth1
+      privateAddress: 192.168.77.10
       installFlags:
         - --debug
         - --labels="topology.kubernetes.io/region=ch-sion,topology.kubernetes.io/zone=ch-sion-1"
         - --disable-components coredns
+      hooks:
+        apply:
+          before:
+            # Set SELinux Permissive
+            - sh -c 'if [ "$(getenforce)" != "Permissive" ] && [ "$(getenforce)" != "Disabled" ]; then sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config; fi'
+            - sh -c 'if [ "$(getenforce)" != "Permissive" ] && [ "$(getenforce)" != "Disabled" ]; then setenforce 0; fi'
+
+    - ssh:
+        address: 192.168.77.11
+        user: root
+        port: 22
+        keyPath: ~/.ssh/id_rsa_smoke_test
+      role: worker
+      hostname: worker0
+      privateInterface: eth1
+      privateAddress: 192.168.77.11
+      installFlags:
+        - --debug
+        - --labels="topology.kubernetes.io/region=ch-sion,topology.kubernetes.io/zone=ch-sion-1"
       hooks:
         apply:
           before:

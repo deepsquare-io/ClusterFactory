@@ -136,8 +136,7 @@ controller:
   # Extra volume mounts
   volumeMounts:
     - name: ca-cert
-      mountPath: /etc/pki/ca-trust/source/anchors/example.com.ca.pem
-      subPath: example.com.ca.pem
+      mountPath: /etc/pki/ca-trust/source/anchors
 
   # Extra volumes
   volumes:
@@ -192,8 +191,7 @@ login:
   # Extra volume mounts
   volumeMounts:
     - name: ca-cert
-      mountPath: /etc/pki/ca-trust/source/anchors/example.ca.pem
-      subPath: example.ca.pem
+      mountPath: /etc/pki/ca-trust/source/anchors
     - name: ldap-users-pvc
       mountPath: /home/ldap-users
 
@@ -236,8 +234,7 @@ login:
     # Extra volume mounts
     volumeMounts:
       - name: ca-cert
-        mountPath: /etc/pki/ca-trust/source/anchors/example.ca.pem
-        subPath: example.ca.pem
+        mountPath: /etc/pki/ca-trust/source/anchors
 
 db:
   enabled: true
@@ -256,8 +253,7 @@ db:
 
   volumeMounts:
     - name: ca-cert
-      mountPath: /etc/pki/ca-trust/source/anchors/example.ca.pem
-      subPath: example.ca.pem
+      mountPath: /etc/pki/ca-trust/source/anchors
 
   volumes:
     - name: ca-cert

@@ -1,5 +1,0 @@
-namespace: traefik
-resources:
-  - certificate.yml
-  - ingress-route.yml
-  - middlewares.yml
