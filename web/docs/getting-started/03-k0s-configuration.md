@@ -96,8 +96,6 @@ Again, **you should read the specification carefully as the modification of one 
 
 If you wish to use a HA setup, please follow [this guide](/docs/guides/maintenance/high-availability).
 
-After setting up k0s, you can change the `extensions` field. This field can be changed at any time. You can add or change extensions. However, removing an extension is permanent.
-
 ## Initial Deployment
 
 If you forgot to install the utilities, just run:

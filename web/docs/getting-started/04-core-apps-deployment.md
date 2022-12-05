@@ -193,28 +193,23 @@ If this is an unwanted feature (because you are using an other DNS for example),
 rm core/coredns/overlays/prod/ingress-route.yaml
 ```
 
-```diff title="cfctl.yaml"
-              - name: traefik
-                chartname: traefik/traefik
-                version: '10.24.0'
-                namespace: traefik
-                values: |
-                  ports:
-                    traefik:
-                      port: 9000
-                      expose: false
-                      exposedPort: 9000
-                      protocol: TCP
--                   dns-tcp:
--                     port: 8053
--                     expose: true
--                     exposedPort: 53
--                     protocol: TCP
--                   dns-udp:
--                     port: 8054
--                     expose: true
--                     exposedPort: 53
--                     protocol: UDP
+```diff title="core/traefik/values.yaml"
+ports:
+  traefik:
+    port: 9000
+    expose: false
+    exposedPort: 9000
+    protocol: TCP
+- dns-tcp:
+-   port: 8053
+-   expose: true
+-   exposedPort: 53
+-   protocol: TCP
+- dns-udp:
+-   port: 8054
+-   expose: true
+-   exposedPort: 53
+-   protocol: UDP
 ```
 
 ```diff title="core/coredns/overlays/prod/daemonset.yaml"
@@ -488,13 +483,3 @@ If the script fails, you can run it again without harming the cluster.
 If CoreDNS and the IngressRoutes are configured, you should be able to access the ArgoCD dashboard and Traefik dashboard.
 
 Congratulations! You have successfully deployed a Kubernetes Cluster with the minimum requirements. We still recommend to deploy the Monitoring stack to monitor the RAM and CPU usage of the containers. Nevertheless, you can follow the [guides](/docs/guides), learn the [main concepts of ClusterFactory](/docs/main-concepts/k0s), or continue the [Getting Started](./argo-apps-deployment).
-
-:::note
-
-You may notice that the installation of Argo CD and Sealed Secrets could have been done using `cfctl.yaml`.
-
-However, we found that this would cause coupling problems with `cfctl` (for example, you would have to redeploy the k0s cluster every time you need to update Argo CD, which means downtime).
-
-We believe that the `extensions` field in `cfctl.yaml` should only be used for network applications, or should not be used at all.
-
-:::

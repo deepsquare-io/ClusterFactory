@@ -43,22 +43,6 @@ ingressRoute:
     matchRule: Host(`traefik.internal`)
     entryPoints: ['traefik']
 
-ports:
-  traefik:
-    port: 9000
-    expose: true
-    exposedPort: 9000
-    protocol: TCP
-  dns-tcp:
-    port: 8053
-    expose: true
-    exposedPort: 53
-    protocol: TCP
-  dns-udp:
-    port: 8054
-    expose: true
-    exposedPort: 53
-    protocol: UDP
   web:
     port: 80
     expose: true

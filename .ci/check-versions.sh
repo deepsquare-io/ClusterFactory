@@ -1,4 +1,6 @@
-#!/bin/sh -e
+#!/bin/sh
+
+set -ex
 
 script_path="$(dirname "$0")"
 project_path="$script_path/../"
@@ -95,35 +97,33 @@ if verlt "$current_k0s_version" "$k0s_version"; then
   sed -Ei "s/k0s_version=.*\$/k0s_version=${k0s_version}/g" "$script_path/version-lock"
   perl -i -0777 -pe "s/k0s:\n(.*)version: .*/k0s:\n\1version: '${k0s_version}'/g" "$project_path/cfctl.yaml.example"
   perl -i -0777 -pe "s/k0s:\n(.*)version: .*/k0s:\n\1version: '${k0s_version}'/g" "$project_path/web/docs/getting-started/03-k0s-configuration.md"
+  perl -i -0777 -pe "s/k0s:\n(.*)version: .*/k0s:\n\1version: '${k0s_version}'/g" "$project_path/web/docs/reference/cfctl.yaml.md"
 fi
 
 current_metallb_version=$(sed -En "s/metallb_version=(.*)/\1/p" ".ci/version-lock")
 metallb_version=$(curl -fsSL https://charts.bitnami.com/bitnami/index.yaml | yq '.entries.metallb.[0].version')
 if verlt "$current_metallb_version" "$metallb_version"; then
   sed -Ei "s/metallb_version=.*\$/metallb_version=${metallb_version}/g" "$script_path/version-lock"
-  perl -i -0777 -pe "s/name: metallb\n(.*)\n(.*)version: .*/name: metallb\n\1\n\2version: '${metallb_version}'/g" "$project_path/cfctl.yaml.example"
-  perl -i -0777 -pe "s/name: metallb\n(.*)\n(.*)version: .*/name: metallb\n\1\n\2version: '${metallb_version}'/g" "$project_path/web/docs/getting-started/03-k0s-configuration.md"
+  sed -Ei "s/version .*\$/version ${metallb_version} \\\\/g" "$project_path/core.example/metallb/install.sh"
 fi
 
 current_traefik_version=$(sed -En "s/traefik_version=(.*)/\1/p" ".ci/version-lock")
 traefik_version=$(curl -fsSL https://helm.traefik.io/traefik/index.yaml | yq '.entries.traefik.[0].version')
 if verlt "$current_traefik_version" "$traefik_version"; then
   sed -Ei "s/traefik_version=.*\$/traefik_version=${traefik_version}/g" "$script_path/version-lock"
-  perl -i -0777 -pe "s/name: traefik\n(.*)\n(.*)version: .*/name: traefik\n\1\n\2version: '${traefik_version}'/g" "$project_path/cfctl.yaml.example"
-  perl -i -0777 -pe "s/name: traefik\n(.*)\n(.*)version: .*/name: traefik\n\1\n\2version: '${traefik_version}'/g" "$project_path/web/docs/getting-started/03-k0s-configuration.md"
-  perl -i -0777 -pe "s/name: traefik\n(.*)\n(.*)version: .*/name: traefik\n\1\n\2version: '${traefik_version}'/g" "$project_path/web/docs/guides/800-deploy-ldap.md"
+  sed -Ei "s/version .*\$/version ${traefik_version} \\\\/g" "$project_path/core.example/traefik/install.sh"
 fi
 
 current_cert_manager_version=$(sed -En "s/cert_manager_version=(.*)/\1/p" ".ci/version-lock")
 cert_manager_version=$(curl -fsSL https://charts.jetstack.io/index.yaml | yq '.entries.cert-manager.[0].version')
 if verlt "$current_cert_manager_version" "$cert_manager_version"; then
   sed -Ei "s/cert_manager_version=.*\$/cert_manager_version=${cert_manager_version}/g" "$script_path/version-lock"
-  perl -i -0777 -pe "s/name: cert-manager\n(.*)\n(.*)version: .*/name: cert-manager\n\1\n\2version: '${cert_manager_version}'/g" "$project_path/cfctl.yaml.example"
+  sed -Ei "s/version .*\$/version ${cert_manager_version} \\\\/g" "$project_path/core.example/cert-manager/install.sh"
 fi
 
 current_csi_driver_nfs_version=$(sed -En "s/csi_driver_nfs_version=(.*)/\1/p" ".ci/version-lock")
 csi_driver_nfs_version=$(curl -fsSL https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts/index.yaml | yq '.entries.csi-driver-nfs.[0].version')
 if verlt "$current_csi_driver_nfs_version" "$csi_driver_nfs_version"; then
   sed -Ei "s/csi_driver_nfs_version=.*\$/csi_driver_nfs_version=${csi_driver_nfs_version}/g" "$script_path/version-lock"
-  perl -i -0777 -pe "s/name: csi-driver-nfs\n(.*)\n(.*)version: .*/name: csi-driver-nfs\n\1\n\2version: '${csi_driver_nfs_version}'/g" "$project_path/cfctl.yaml.example"
+  sed -Ei "s/version .*\$/version ${csi_driver_nfs_version} \\\\/g" "$project_path/core.example/csi-driver-nfs/install.sh"
 fi

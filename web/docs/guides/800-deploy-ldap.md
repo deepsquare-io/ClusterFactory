@@ -189,23 +189,18 @@ spec:
 
 You must open ports 636 and 389 on the load balancer of Traefik by configuring the `cfctl.yaml`:
 
-```yaml title="cfctl.yaml > spec > k0s > config > spec > extensions > helm > chart[]
-- name: traefik
-  chartname: traefik/traefik
-  version: '20.4.1'
-  namespace: traefik
-  values: |
-    ports:
-      ldap:
-        port: 1389
-        expose: yes
-        exposedPort: 389
-        protocol: TCP
-      ldaps:
-        port: 1636
-        expose: yes
-        exposedPort: 636
-        protocol: TCP
+```yaml title="core/traefik/values.yaml"
+ports:
+  ldap:
+    port: 1389
+    expose: yes
+    exposedPort: 389
+    protocol: TCP
+  ldaps:
+    port: 1636
+    expose: yes
+    exposedPort: 636
+    protocol: TCP
 ```
 
 Apply:
