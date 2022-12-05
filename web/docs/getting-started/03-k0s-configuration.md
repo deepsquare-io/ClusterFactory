@@ -105,7 +105,7 @@ You should configure Traefik, which is the main Ingress and L7 load balancer.
 ```yaml title="cfctl.yaml > spec > k0s > spec > extensions > helm > charts[]"
 - name: traefik
   chartname: traefik/traefik
-  version: '20.4.1'
+  version: '20.6.0'
   namespace: traefik
   values: |
 
