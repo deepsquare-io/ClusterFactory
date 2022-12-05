@@ -2,54 +2,67 @@
 
 BASEDIR="$(dirname "$(realpath "$0")")"
 PROJECTDIR="$BASEDIR/../"
+COREDIR="${COREDIR:-"core"}"
+CONFIGPATH="${CONFIGPATH:-"${PROJECTDIR}/cfctl.yaml"}"
 
 . "${BASEDIR}/setup-env"
 
 set -e
 
 section "Fetch the config"
-cfctl kubeconfig --config "${PROJECTDIR}/cfctl.yaml" >./kubeconfig
+cfctl kubeconfig --config "${CONFIGPATH}" >./kubeconfig
 chmod 600 ./kubeconfig
 
 export KUBECONFIG="${PROJECTDIR}/kubeconfig"
 
+section "Deploy Traefik"
+"${PROJECTDIR}/${COREDIR}/traefik/install.sh"
+
 section "Deploy CoreDNS"
-kubectl apply -k "${PROJECTDIR}/core/coredns/overlays/prod"
+kubectl apply -k "${PROJECTDIR}/${COREDIR}/coredns/overlays/prod"
+
+section "Deploy MetalLB"
+"${PROJECTDIR}/${COREDIR}/metallb/install.sh"
+sleep 2
 
 section "Make sure MetalLB is Available"
 sleep 10
 kubectl wait deployments --timeout=300s metallb-controller -n metallb --for condition=Available
 
-section "Deploy MetalLB"
-kubectl apply -f "${PROJECTDIR}/core/metallb"
+section "Deploy MetalLB configuration"
+kubectl apply -f "${PROJECTDIR}/${COREDIR}/metallb"
 
-section "Deploy kubevirt (virtual machines deployments)"
-# Updating is only supported to n-1 to n. Be warned.
-# https://kubevirt.io/user-guide/operations/updating_and_deletion/
-kubectl apply -k "${PROJECTDIR}/core/kubevirt/overlays/prod"
+# section "Deploy kubevirt (virtual machines deployments)"
+# # Updating is only supported to n-1 to n. Be warned.
+# # https://kubevirt.io/user-guide/operations/updating_and_deletion/
+# kubectl apply -k "${PROJECTDIR}/${COREDIR}/kubevirt/overlays/prod"
 
-section "Wait for KubeVirt deployments to be Available"
-sleep 10
-kubectl wait deployments --timeout=300s -n kubevirt --all --for condition=Available
+# section "Wait for KubeVirt deployments to be Available"
+# sleep 10
+# kubectl wait deployments --timeout=300s -n kubevirt --all --for condition=Available
 
 section "Deploy multus (multiple network interfaces support)"
-kubectl apply -k "${PROJECTDIR}/core/multus/"
+kubectl apply -k "${PROJECTDIR}/${COREDIR}/multus/"
 
 section "Deploy sealed secrets"
-"${PROJECTDIR}/core/sealed-secrets/install.sh"
+"${PROJECTDIR}/${COREDIR}/sealed-secrets/install.sh"
+
+section "Deploy cert-manager"
+"${PROJECTDIR}/${COREDIR}/cert-manager/install.sh"
+
+section "Make sure cert-manager is Available"
+sleep 10
+kubectl wait deployments --timeout=300s cert-manager -n cert-manager --for condition=Available
 
 section "Setup cert-manager issuers"
-kubectl apply -f "${PROJECTDIR}/core/cert-manager/"
-
-section "Setup Traefik dashboard and routes"
-kubectl apply -k "${PROJECTDIR}/core/traefik-dashboard/"
+kubectl apply -f "${PROJECTDIR}/${COREDIR}/cert-manager/"
 
 section "Deploy Argo CD and setup argo-cd routes"
-"${PROJECTDIR}/core/argo-cd/install.sh"
-kubectl apply -k "${PROJECTDIR}/core/argo-cd/"
+"${PROJECTDIR}/${COREDIR}/argo-cd/install.sh"
 
 section "Wait for ArgoCD deployments to be Available"
 kubectl wait deployments --timeout=300s -n argocd --all --for condition=Available
+kubectl apply -k "${PROJECTDIR}/${COREDIR}/argo-cd/"
 
 echo "Credentials for Argo CD are admin $(kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 --decode)"
 echo "You must change these credentials on the first login!"

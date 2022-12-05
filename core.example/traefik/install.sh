@@ -2,13 +2,13 @@
 
 BASEDIR="$(dirname "$(realpath "$0")")"
 
-helm repo add argo https://argoproj.github.io/argo-helm
+helm repo add traefik https://traefik.github.io/charts
 helm repo update
 
 helm upgrade --install \
-  -n argocd \
+  -n traefik \
+  --version 20.6.0 \
+  traefik \
   -f "${BASEDIR}/values.yaml" \
-  --version 5.16.1 \
-  argocd \
-  argo/argo-cd \
+  traefik/traefik \
   --create-namespace

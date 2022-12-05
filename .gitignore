@@ -2,3 +2,4 @@ bin/*
 kubeconfig
 **/*.local
 .secrets/
+*.log

@@ -1,31 +1,35 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: prometheus-crd-app
+  name: traefik-app
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: monitoring
+  project: traefik
   source:
-    repoURL: https://github.com/prometheus-community/helm-charts.git
-    path: charts/kube-prometheus-stack/crds/
-    targetRevision: kube-prometheus-stack-42.2.0
+    # You should have forked this repo. Change the URL to your fork.
+    repoURL: git@github.com:squarefactory/ClusterFactory.git
+    targetRevision: HEAD
+    path: helm-subcharts/traefik
+    helm:
+      releaseName: traefik
 
-    directory:
-      recurse: true
+      # Create a values file inside your fork and change the values.
+      valueFiles:
+        []
+        # - values-example.yaml
 
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: monitoring
+    namespace: traefik
 
   syncPolicy:
     automated:
       prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
       selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
       allowEmpty: false # Allows deleting all application resources during automatic syncing ( false by default ).
-    syncOptions:
-      - Replace=true
+    syncOptions: []
     retry:
       limit: 5 # number of failed sync attempt retries; unlimited number of attempts if less than 0
       backoff:

@@ -34,8 +34,8 @@ data:
     #-- Cloud Bursting
     SuspendProgram=/opt/cloud-burster/suspend
     ResumeProgram=/opt/cloud-burster/resume
-    SuspendTime=300
-    ResumeTimeout=600
+    SuspendTime={{ .Values.cloudBurster.suspendTime }}
+    ResumeTimeout={{ .Values.cloudBurster.resumeTimeout }}
     MessageTimeout=60
     BatchStartTimeout=300
     PrivateData=cloud
