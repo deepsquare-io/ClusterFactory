@@ -172,10 +172,6 @@ spec:
                       exposedPort: 9100
                       protocol: TCP
 
-                  experimental:
-                    http3:
-                      enabled: true
-
                   securityContext:
                     capabilities:
                       drop: [ALL]
