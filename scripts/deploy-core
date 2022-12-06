@@ -15,6 +15,9 @@ chmod 600 ./kubeconfig
 
 export KUBECONFIG="${PROJECTDIR}/kubeconfig"
 
+section "Deploy csi-driver-nfs"
+"${PROJECTDIR}/${COREDIR}/csi-driver-nfs/install.sh"
+
 section "Deploy Traefik"
 "${PROJECTDIR}/${COREDIR}/traefik/install.sh"
 
