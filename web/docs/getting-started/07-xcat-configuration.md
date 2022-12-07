@@ -1,13 +1,5 @@
 # 7. xCAT Configuration
 
-:::note
-
-This part of the documentation is mostly a draft.
-
-The best way to get started is to follow [the xCAT official quick start](https://xcat-docs.readthedocs.io/en/stable/guides/get-started/quick_start.html).
-
-:::
-
 The configuration of xCAT doesn't follow the GitOps ways and certainly doesn't follow the declarative way since we need to SSH to the pod.
 
 In the future, we plan to develop and integrate this feature. For now, let's just SSH to the container.
@@ -247,7 +239,7 @@ Some fields are auto-generated. So let's just configure the network, the OS Imag
     tftpserver=<xcatmaster>
 ```
 
-Apply the stanza:
+Adapt the configuration to your network and apply the stanza:
 
 ```shell title="ssh root@xcat"
 cat mystanzafile | mkdef -z
@@ -424,7 +416,9 @@ cn1:
     serialspeed=115200
 ```
 
-Apply the stanza:
+Our compute node, which is outside of the Kubernetes cluster, has a BMC which permits us to configure the compute node via IPMI. More details on the architecture [here](/docs/main-concepts/apps/xcat).
+
+Adapt the configuration, then apply the stanza:
 
 ```shell title="ssh root@xcat"
 cat mystanzafile | mkdef -z
