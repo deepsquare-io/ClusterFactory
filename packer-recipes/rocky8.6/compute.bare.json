@@ -3,7 +3,7 @@
     "boot_wait": "3s",
     "disk_size": "50G",
     "iso_checksum": "fe77cc293a2f2fe6ddbf5d4bc2b5c820024869bc7ea274c9e55416d215db0cc5",
-    "iso_url": "https://download.rockylinux.org/pub/rocky/8.6/isos/x86_64/Rocky-8.6-x86_64-boot.iso",
+    "iso_url": "https://download.rockylinux.org/vault/rocky/8.6/isos/x86_64/Rocky-8.6-x86_64-boot.iso",
     "memsize": "2048",
     "numvcpus": "4"
   },

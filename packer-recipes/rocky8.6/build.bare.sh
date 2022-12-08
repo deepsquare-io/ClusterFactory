@@ -1,3 +1,3 @@
 #!/bin/sh
 
-packer.io build -var "numvcpus=12" -var "memsize=32609" compute.bare.json
+packer build -var "numvcpus=6" -var "memsize=8000" compute.bare.json
