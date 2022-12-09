@@ -21,6 +21,6 @@ volumeBindingMode: Immediate
 reclaimPolicy: Retain
 allowedTopologies:
   - matchLabelExpressions:
-      - key: topology.kubernetes.io/zone
+      - key: topology.kubernetes.io/region
         values:
           - ch-sion

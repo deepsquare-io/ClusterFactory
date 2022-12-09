@@ -59,9 +59,9 @@ volumeBindingMode: Immediate
 reclaimPolicy: Retain
 allowedTopologies:
   - matchLabelExpressions:
-      - key: topology.kubernetes.io/zone
+      - key: topology.kubernetes.io/region
         values:
-          - <FILL ME> # <country code>-<city>-<index>
+          - <FILL ME> # <country code>-<city>
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -86,9 +86,9 @@ volumeBindingMode: Immediate
 reclaimPolicy: Retain
 allowedTopologies:
   - matchLabelExpressions:
-      - key: topology.kubernetes.io/zone
+      - key: topology.kubernetes.io/region
         values:
-          - <FILL ME> # <country code>-<city>-<index>
+          - <FILL ME> # <country code>-<city>
 ```
 
 ```shell title="user@local:/ClusterFactory"
@@ -224,6 +224,7 @@ Replace the `repoURL` with the url of your fork:
 source:
   # You should have forked this repo. Change the URL to your fork.
   repoURL: git@github.com:<your account>/ClusterFactory.git
+  # You should your branch too.
   targetRevision: HEAD
   path: helm-subcharts/kube-prometheus-stack
   helm:

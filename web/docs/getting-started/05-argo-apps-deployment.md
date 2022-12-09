@@ -148,7 +148,7 @@ volumeBindingMode: Immediate
 reclaimPolicy: Retain
 allowedTopologies:
   - matchLabelExpressions:
-      - key: topology.kubernetes.io/zone
+      - key: topology.kubernetes.io/region
         values:
           - ch-sion
 ---
@@ -175,7 +175,7 @@ volumeBindingMode: Immediate
 reclaimPolicy: Retain
 allowedTopologies:
   - matchLabelExpressions:
-      - key: topology.kubernetes.io/zone
+      - key: topology.kubernetes.io/region
         values:
           - ch-sion
 ```
@@ -218,7 +218,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: grafana-admin-secret
-  namespace: monitoring
+  namespace: my-monitoring
 stringData:
   admin-password: <FILL ME>
   admin-user: <FILL ME>
@@ -252,7 +252,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: monitoring
+  project: my-monitoring
   source:
     chart: kube-prometheus-stack
     repoURL: https://github.com/prometheus-community/helm-charts.git
@@ -264,7 +264,7 @@ spec:
 
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: monitoring
+    namespace: my-monitoring
 
   syncPolicy:
     automated:
@@ -316,7 +316,7 @@ spec:
   source:
     # You should have forked this repo. Change the URL to your fork.
     repoURL: git@github.com:<your account>/ClusterFactory.git
-    targetRevision: HEAD
+    targetRevision: configs
     path: helm-subcharts/kube-prometheus-stack
     helm:
       releaseName: prometheus

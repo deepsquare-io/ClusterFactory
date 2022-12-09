@@ -257,6 +257,7 @@ spec:
   source:
    # You should have forked this repo. Change the URL to your fork.
     repoURL: git@github.com:<FILL ME: your account>/ClusterFactory.git
+    # You should your branch too.
     targetRevision: HEAD
     path: helm/slurm-cluster
     helm:
@@ -498,9 +499,9 @@ volumeBindingMode: Immediate
 reclaimPolicy: Retain
 allowedTopologies:
   - matchLabelExpressions:
-      - key: topology.kubernetes.io/zone
+      - key: topology.kubernetes.io/region
         values:
-          - <FILL ME> # <country code>-<city>-<index>
+          - <FILL ME> # <country code>-<city>
 ```
 
 ```shell title="user@local:/ClusterFactory"

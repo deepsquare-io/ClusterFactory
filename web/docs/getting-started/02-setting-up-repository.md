@@ -80,7 +80,7 @@ Git is capable of managing multiple remote repositories. By default, `origin` is
 You can checkout to a stable version:
 
 ```shell title="user@local:/ClusterFactory"
-git checkout -b v0.7.0 configs
+git checkout -b configs v0.7.0
 # You can delete the local main branch
 git branch -D main
 ```

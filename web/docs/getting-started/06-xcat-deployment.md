@@ -82,6 +82,7 @@ spec:
   source:
     # You should have forked this repo. Change the URL to your fork.
     repoURL: git@github.com:<your account>/ClusterFactory.git
+    # You should your branch too.
     targetRevision: HEAD
     path: helm/xcat
     helm:

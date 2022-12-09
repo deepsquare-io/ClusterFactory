@@ -64,9 +64,9 @@ volumeBindingMode: Immediate
 reclaimPolicy: Retain
 allowedTopologies:
   - matchLabelExpressions:
-      - key: topology.kubernetes.io/zone
+      - key: topology.kubernetes.io/region
         values:
-          - <FILL ME> # <country code>-<city>-<index>
+          - <FILL ME> # <country code>-<city>
 ```
 
 ```shell title="user@local:/ClusterFactory"
