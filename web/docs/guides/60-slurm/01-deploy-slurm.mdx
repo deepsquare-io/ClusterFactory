@@ -708,7 +708,7 @@ Using the `packer-recipes` directory, we can create a recipe called `compute.my-
       "cpus": "{{ user `numvcpus` }}",
       "memory": "{{ user `memsize` }}",
       "vnc_bind_address": "0.0.0.0",
-      "http_directory": "http",
+      "shutdown_timeout": "3h",
       "shutdown_timeout": "1h",
       "qemuargs": [["-serial", "stdio"]]
     }

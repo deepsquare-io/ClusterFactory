@@ -36,7 +36,7 @@ The [`packer-recipes` directory inside the git repository](https://github.com/Sq
       "memory": "{{ user `memsize` }}",
       "vnc_bind_address": "0.0.0.0",
       "http_directory": "http",
-      "shutdown_timeout": "1h",
+      "shutdown_timeout": "3h",
       "qemuargs": [["-serial", "stdio"]]
     }
   ]
