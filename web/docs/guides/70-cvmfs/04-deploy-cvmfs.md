@@ -28,7 +28,7 @@ kubectl apply -f argo/cvmfs/
 
 Create a SealedSecret which contains the keys of the repositories:
 
-1. Create a `-secret.yml.local` file:
+1. Create a `-secret.yaml.local` file:
 
 ```yaml title="argo/cvmfs/secrets/keys-secret.yaml.local"
 apiVersion: v1
@@ -65,16 +65,16 @@ Basically, `local-path-provisioner` creates the `/opt/local-path-provisioner` di
 To deploy the provisioner:
 
 ```shell title="user@local:/ClusterFactory"
-kubectl apply -f argo/default/apps/local-path-provisioner-app.yml
+kubectl apply -f argo/default/apps/local-path-provisioner-app.yaml
 ```
 
 The `StorageClass` `local-path` should be deployed.
 
-## 3. Editing `cvmfs-server-app.yml` to use the fork
+## 3. Editing `cvmfs-server-app.yaml` to use the fork
 
 Change the `repoURL` to the URL used to pull the fork. Also add the `values-production.yaml` file to customize the values.
 
-```yaml title="argo.example/cvmfs/apps/cvmfs-server-app.yml > spec > source"
+```yaml title="argo.example/cvmfs/apps/cvmfs-server-app.yaml > spec > source"
 source:
   # You should have forked this repo. Change the URL to your fork.
   repoURL: git@github.com:<your account>/ClusterFactory.git
@@ -200,7 +200,7 @@ git push
 And deploy the Argo CD application:
 
 ```shell title="user@local:/ClusterFactory"
-kubectl apply -f argo/provisioning/apps/cvmfs-server-app.yml
+kubectl apply -f argo/provisioning/apps/cvmfs-server-app.yaml
 ```
 
 If the Ingress is enabled and configured, the CVMFS server should be available on the IP specified by MetalLB. Configure your DNS so it redirects to this IP.

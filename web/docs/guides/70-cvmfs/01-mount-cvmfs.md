@@ -25,16 +25,16 @@ docker pull docker.io/cvmfs/cvmfs:latest
 Apply the AppProject:
 
 ```shell title="user@local:/ClusterFactory"
-kubectl apply -f argo/cvmfs/app-project.yml
+kubectl apply -f argo/cvmfs/app-project.yaml
 ```
 
 ## 2. Secrets
 
 Create a SealedSecret which contains the keys of the repositories:
 
-1. Create a `-secret.yml.local` file:
+1. Create a `-secret.yaml.local` file:
 
-```yaml title="argo/cvmfs/secrets/cvmfs-keys-secret.yml.local"
+```yaml title="argo/cvmfs/secrets/cvmfs-keys-secret.yaml.local"
 apiVersion: v1
 kind: Secret
 metadata:
@@ -57,14 +57,14 @@ cfctl kubeseal
 3. Apply the SealedSecret:
 
 ```shell title="user@local:/ClusterFactory"
-kubectl apply -f argo/cvmfs/secrets/cvmfs-keys-sealed-secret.yml
+kubectl apply -f argo/cvmfs/secrets/cvmfs-keys-sealed-secret.yaml
 ```
 
-## 3. Editing `cvmfs-service-app.yml` to use the fork
+## 3. Editing `cvmfs-service-app.yaml` to use the fork
 
 Change the `repoURL` to the URL used to pull the fork. Also add the `values-production.yaml` file to customize the values.
 
-```yaml title="argo/provisioning/apps/cvmfs-service-app.yml > spec > source"
+```yaml title="argo/provisioning/apps/cvmfs-service-app.yaml > spec > source"
 source:
   # You should have forked this repo. Change the URL to your fork.
   repoURL: git@github.com:<your account>/ClusterFactory.git
@@ -149,7 +149,7 @@ git push
 And deploy the Argo CD application:
 
 ```shell title="user@local:/ClusterFactory"
-kubectl apply -f argo/provisioning/apps/cvmfs-service-app.yml
+kubectl apply -f argo/provisioning/apps/cvmfs-service-app.yaml
 ```
 
 ## 6. Mount the repositories to a container

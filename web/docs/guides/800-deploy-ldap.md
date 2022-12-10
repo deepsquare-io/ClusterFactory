@@ -210,11 +210,11 @@ cfctl apply --debug --config cfctl.yaml
 kubectl apply -f argo/ldap/ingresses/ingress-routes-tcp.yaml
 ```
 
-## 3. Editing `openldap-app.yml` to use the fork
+## 3. Editing `openldap-app.yaml` to use the fork
 
 Change the `repoURL` to the URL used to pull the fork. Also add the `values-production.yaml` file to customize the values.
 
-```yaml title="argo.example/ldap/apps/openldap-app.yml > spec > source"
+```yaml title="argo.example/ldap/apps/openldap-app.yaml > spec > source"
 source:
   # You should have forked this repo. Change the URL to your fork.
   repoURL: git@github.com:<your account>/ClusterFactory.git
@@ -299,7 +299,7 @@ git push
 And deploy the Argo CD application:
 
 ```shell title="user@local:/ClusterFactory"
-kubectl apply -f argo/ldap/apps/openldap-app.yml
+kubectl apply -f argo/ldap/apps/openldap-app.yaml
 ```
 
 If the Ingress is configured, the LDAP server should be available on the IP specified by MetalLB.

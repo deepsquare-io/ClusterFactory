@@ -191,7 +191,7 @@ kubectl apply -f argo/monitoring/volumes/persistent-volume-claim.yaml
 
 Create a SealedSecret which contains the initial credentials for Grafana:
 
-1. Create a `-secret.yml.local` file:
+1. Create a `-secret.yaml.local` file:
 
 ```yaml title="argo/monitoring/secrets/grafana-admin-secret.yaml.local"
 apiVersion: v1
@@ -216,11 +216,11 @@ cfctl kubeseal
 kubectl apply -f argo/monitoring/secrets/grafana-admin-sealed-secret.yaml
 ```
 
-## 3. Editing `prometheus-app.yml` to use the fork
+## 3. Editing `prometheus-app.yaml` to use the fork
 
 Replace the `repoURL` with the url of your fork:
 
-```yaml title="argo/monitoring/apps/prometheus-app.yml > spec > source"
+```yaml title="argo/monitoring/apps/prometheus-app.yaml > spec > source"
 source:
   # You should have forked this repo. Change the URL to your fork.
   repoURL: git@github.com:<your account>/ClusterFactory.git
@@ -605,6 +605,6 @@ git push
 And deploy:
 
 ```shell title="user@local:/ClusterFactory"
-kubectl apply -f argo/monitoring/apps/prometheus-crd-app.yml
-kubectl apply -f argo/monitoring/apps/prometheus-app.yml
+kubectl apply -f argo/monitoring/apps/prometheus-crd-app.yaml
+kubectl apply -f argo/monitoring/apps/prometheus-app.yaml
 ```

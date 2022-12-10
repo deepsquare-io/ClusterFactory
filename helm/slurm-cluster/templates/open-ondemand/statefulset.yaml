@@ -153,11 +153,11 @@ spec:
           {{- end }}
           volumeMounts:
             - name: ood-portal-conf
-              mountPath: /etc/ood/config/ood_portal.yml
-              subPath: ood_portal.yml
+              mountPath: /etc/ood/config/ood_portal.yaml
+              subPath: ood_portal.yaml
             - name: ood-conf
-              mountPath: /etc/ood/config/nginx_stage.yml
-              subPath: nginx_stage.yml
+              mountPath: /etc/ood/config/nginx_stage.yaml
+              subPath: nginx_stage.yaml
             - name: ood-conf
               mountPath: /etc/ood/config/hook.env
               subPath: hook.env
@@ -166,8 +166,8 @@ spec:
               subPath: missing_home_directory.html
             {{- range $key, $val := .Values.ondemand.config.clusters }}
             - name: ood-conf
-              mountPath: "/etc/ood/config/clusters.d/{{ $key }}.yml"
-              subPath: "{{ $key }}.yml"
+              mountPath: "/etc/ood/config/clusters.d/{{ $key }}.yaml"
+              subPath: "{{ $key }}.yaml"
             {{- end }}
             - name: "git-sync-volume"
               mountPath: "/k8s/apps/sys/"
@@ -263,8 +263,8 @@ spec:
             secretName: "{{ .Values.ondemand.oodPortalSecretName }}"
             defaultMode: 256
             items:
-              - key: ood_portal.yml
-                path: ood_portal.yml
+              - key: ood_portal.yaml
+                path: ood_portal.yaml
         - name: ood-conf
           configMap:
             name: "{{ template "slurm-cluster.ondemand.name" . }}-config"

@@ -14,7 +14,7 @@ Some objects shouldn't be handled by Argo CD, such as volumes, secrets and names
 
 Start with a namespace:
 
-```yaml title="argo/my-monitoring/namespace.yml"
+```yaml title="argo/my-monitoring/namespace.yaml"
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -26,12 +26,12 @@ metadata:
 and apply:
 
 ```shell title="user@local:/ClusterFactory"
-kubectl apply -f argo/my-monitoring/namespace.yml
+kubectl apply -f argo/my-monitoring/namespace.yaml
 ```
 
 And create an `AppProject`:
 
-```yaml title="argo/my-monitoring/app-project.yml"
+```yaml title="argo/my-monitoring/app-project.yaml"
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
@@ -62,7 +62,7 @@ spec:
 and apply:
 
 ```shell title="user@local:/ClusterFactory"
-kubectl apply -f argo/my-monitoring/app-project.yml
+kubectl apply -f argo/my-monitoring/app-project.yaml
 ```
 
 `AppProject` configures the permissions of the `Application`. This is to avoid supply chain attacks (for example malicious resources get injected into the git repositories). You can learn more [here](https://argo-cd.readthedocs.io/en/stable/user-guide/projects/).
@@ -241,9 +241,9 @@ After applying the file, feel free to delete the `-secret.yaml.local` file. If y
 
 Let's start with the CRDs of kube-prometheus-stack. Because the CRDs are too large, we need to deploy an Argo CD application which only deploys the CRDs.
 
-Create the file `argo/my-monitoring/prometheus-crd-app.yml` and add:
+Create the file `argo/my-monitoring/prometheus-crd-app.yaml` and add:
 
-```yaml title="argo/my-monitoring/prometheus-crd-app.yml"
+```yaml title="argo/my-monitoring/prometheus-crd-app.yaml"
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -303,7 +303,7 @@ dependencies:
 
 We will create the `values.yaml` file later on. Create the Argo CD Application which will use the subchart:
 
-```yaml title="argo/my-monitoring/prometheus-app.yml"
+```yaml title="argo/my-monitoring/prometheus-app.yaml"
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -530,8 +530,8 @@ git push
 You can deploy the Argo CD app:
 
 ```shell title="user@local:/ClusterFactory"
-kubectl apply -f argo/my-monitoring/prometheus-crd-app.yml
-kubectl apply -f argo/my-monitoring/prometheus-app.yml
+kubectl apply -f argo/my-monitoring/prometheus-crd-app.yaml
+kubectl apply -f argo/my-monitoring/prometheus-app.yaml
 ```
 
 Congratulation, you have deployed an Argo CD app!

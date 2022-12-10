@@ -16,7 +16,7 @@ kubectl apply -f argo/provisioning
 
 Start with the xCAT volume. This is where xCAT will be storing SQLite databases, os images and more.
 
-```yaml title="argo/provisioning/volumes/xcat-pv.yml"
+```yaml title="argo/provisioning/volumes/xcat-pv.yaml"
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -45,7 +45,7 @@ spec:
 ```
 
 ```shell title="user@local:/ClusterFactory"
-kubectl apply -f argo/provisioning/volumes/xcat-pv.yml
+kubectl apply -f argo/provisioning/volumes/xcat-pv.yaml
 ```
 
 The label `app=xcat` will be used by the `PersistentVolumeClaim` of the `StatefulSet` to locate the `PersistentVolume`.
@@ -69,7 +69,7 @@ That's why we will use the Multus and CNI plugins to solve this particular probl
 
 Let's start with the obvious:
 
-```yaml title="argo/provisioning/apps/xcat-app.yml"
+```yaml title="argo/provisioning/apps/xcat-app.yaml"
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -179,7 +179,7 @@ git push
 Deploy the app:
 
 ```shell title="user@local:/ClusterFactory"
-kubectl apply -f argo/provisioning/apps/xcat-app.yml
+kubectl apply -f argo/provisioning/apps/xcat-app.yaml
 ```
 
 Login to xCAT using the indicated IP address `ssh root@192.168.0.3 -p 2200` (the password is `cluster`).

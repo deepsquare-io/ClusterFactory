@@ -373,7 +373,7 @@ spec:
   restartPolicy: Always
 ```
 
-If we were to write a `docker-compose.yml`, we would open the same port, mount the same volumes and add the same capabilities.
+If we were to write a `docker-compose.yaml`, we would open the same port, mount the same volumes and add the same capabilities.
 
 The main advantage is that if it works with podman, it will certainly work with Kubernetes.
 
@@ -397,7 +397,7 @@ The example for xCAT is stored inside [`helm/xcat`](https://github.com/SquareFac
 
 After writing the Helm Chart, you can write the Argo CD `Application`.
 
-The example for xCAT is stored inside [`argo/provisioning/apps`](https://github.com/SquareFactory/ClusterFactory/blob/main/argo.example/provisioning/apps/xcat-app.yml).
+The example for xCAT is stored inside [`argo/provisioning/apps`](https://github.com/SquareFactory/ClusterFactory/blob/main/argo.example/provisioning/apps/xcat-app.yaml).
 
 The custom values are stored inside the `helm/xcat` directory. If the Helm application is not a Git repository, it's better to use the [subchart pattern by using helm dependencies](https://github.com/argoproj/argocd-example-apps/blob/master/helm-dependency/README.md).
 

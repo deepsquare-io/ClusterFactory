@@ -118,9 +118,9 @@ kubectl apply -f argo/slurm-cluster/volumes/dex-state-pv.yaml
 
 The configuration of Open OnDemand must be stored in a secret because it could leak the LDAP password:
 
-1. Create a `-secret.yml.local` file:
+1. Create a `-secret.yaml.local` file:
 
-```yaml title="argo/slurm-cluster/secrets/openondemand-portal-secret.yml.local"
+```yaml title="argo/slurm-cluster/secrets/openondemand-portal-secret.yaml.local"
 apiVersion: v1
 kind: Secret
 metadata:
@@ -128,7 +128,7 @@ metadata:
   namespace: slurm-cluster
 type: Opaque
 stringData:
-  ood_portal.yml: |
+  ood_portal.yaml: |
     ---
     #
     # Portal configuration
@@ -583,7 +583,7 @@ cfctl kubeseal
 3. Apply the SealedSecret:
 
 ```shell title="user@local:/ClusterFactory"
-kubectl apply -f argo/slurm-cluster/secrets/openondemand-portal-sealed-secret.yml
+kubectl apply -f argo/slurm-cluster/secrets/openondemand-portal-sealed-secret.yaml
 ```
 
 ## 2. Values: Enable Open OnDemand
@@ -669,14 +669,14 @@ ondemand:
 
 You might be also interested to mount extra configuration files:
 
-```yaml title="Sample argo/slurm-cluster/configs/ondemand-extra-configs.yml"
+```yaml title="Sample argo/slurm-cluster/configs/ondemand-extra-configs.yaml"
 kind: ConfigMap
 apiVersion: v1
 metadata:
   name: ondemand-extra-configs
   namespace: slurm-cluster
 data:
-  bc_desktop_<cluster name>.yml: |
+  bc_desktop_<cluster name>.yaml: |
     title: "My Cluster"
     cluster: "<cluster name>"
     attributes:
@@ -713,8 +713,8 @@ ondemand:
       mountPath: /etc/pki/ca-trust/source/anchors/example.com.ca.pem
       subPath: example.com.ca.pem
     - name: ondemand-extra-configs
-      mountPath: /etc/ood/config/apps/bc_desktop/<cluster name>.yml
-      subPath: bc_desktop_<cluster name>.yml
+      mountPath: /etc/ood/config/apps/bc_desktop/<cluster name>.yaml
+      subPath: bc_desktop_<cluster name>.yaml
     - name: ondemand-extra-configs
       mountPath: /etc/ood/config/apps/dashboard/env
       subPath: dashboard_env
@@ -819,7 +819,7 @@ git push
 
 ```shell title="user@local:/ClusterFactory"
 # This is optional if the application is already deployed.
-kubectl apply -f argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml
+kubectl apply -f argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yaml
 ```
 
 You should be able to connect to the website by using the configured URL.

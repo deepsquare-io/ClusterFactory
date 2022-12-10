@@ -105,9 +105,9 @@ The label `app=xcat` will be used by the PersistentVolumeClaim.
   </TabItem>
 </Tabs>
 
-## 3. Editing `xcat-app.yml` to use the fork
+## 3. Editing `xcat-app.yaml` to use the fork
 
-```yaml title="argo.example/provisioning/apps/xcat-app.yml > spec > source"
+```yaml title="argo.example/provisioning/apps/xcat-app.yaml > spec > source"
 source:
   # You should have forked this repo. Change the URL to your fork.
   repoURL: git@github.com:<your account>/ClusterFactory.git
@@ -162,7 +162,7 @@ kube-multus-ds   1         1         1       1            1           <none>    
 If it isn't already deployed, you can deploy Multus with:
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset-thick-plugin.yml
+kubectl apply -f https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset-thick-plugin.yaml
 ```
 
 :::
@@ -245,5 +245,5 @@ git push
 And deploy:
 
 ```shell title="user@local:/ClusterFactory"
-kubectl apply -f argo/provisioning/apps/xcat-app.yml
+kubectl apply -f argo/provisioning/apps/xcat-app.yaml
 ```

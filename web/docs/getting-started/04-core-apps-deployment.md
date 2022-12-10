@@ -335,7 +335,7 @@ search example.com
 
 :::note
 
-If some files were added and removed, you must change the `deployment.yml`:
+If some files were added and removed, you must change the `deployment.yaml`:
 
 ```diff title="core/coredns/overlays/prod/deployment.yaml > spec > template > spec > volumes"
         volumes:
@@ -362,7 +362,7 @@ Specify new certificate issuers in the `core/cert-manager` directory.
 
 If you wish to add your private certificate authority, follow the [official guide of cert-manager](https://cert-manager.io/docs/configuration/ca/).
 
-```yaml title="private-cluster-issuer.yml"
+```yaml title="private-cluster-issuer.yaml"
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
@@ -375,7 +375,7 @@ spec:
 
 If you wish to use ACME HTTP-01, follow [this guide](https://cert-manager.io/docs/configuration/acme/http01/). This will create an Ingress by using the `ingress` field.
 
-```yaml title="public-cluster-issuer.yml"
+```yaml title="public-cluster-issuer.yaml"
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:

@@ -53,7 +53,7 @@ Follow [the guide](/docs/guides/deploy-ldap).
 
 Let's store it in a `Secret`:
 
-1. Create the `argo/slurm-cluster/secrets/` directory and create a `-secret.yml.local` file:
+1. Create the `argo/slurm-cluster/secrets/` directory and create a `-secret.yaml.local` file:
 
 ```yaml title="argo/slurm-cluster/secrets/sssd-secret.yaml.local"
 apiVersion: v1
@@ -130,7 +130,7 @@ ssh-keygen -t rsa -b 4096 -m PEM -f jwtRS256.key
 
 Let's store it in a `Secret`:
 
-1. Create a `-secret.yml.local` file:
+1. Create a `-secret.yaml.local` file:
 
 ```yaml title="argo/slurm-cluster/secrets/slurm-secret.yaml.local"
 apiVersion: v1
@@ -169,9 +169,9 @@ cat /etc/munge/munge.key | base64
 
 Let's store it in a `Secret`:
 
-1. Create a `-secret.yml.local` file:
+1. Create a `-secret.yaml.local` file:
 
-```yaml title="argo/slurm-cluster/secrets/munge-secret.yml.local"
+```yaml title="argo/slurm-cluster/secrets/munge-secret.yaml.local"
 apiVersion: v1
 kind: Secret
 metadata:
@@ -192,14 +192,14 @@ cfctl kubeseal
 3. Apply the SealedSecret:
 
 ```shell title="user@local:/ClusterFactory"
-kubectl apply -f argo/cvmfs/secrets/munge-sealed-secret.yml
+kubectl apply -f argo/cvmfs/secrets/munge-sealed-secret.yaml
 ```
 
 ## 1. Namespace and AppProject
 
 Create and apply the `Namespace` and `AppProject`:
 
-```yaml title="argo/slurm-cluster/namespace.yml"
+```yaml title="argo/slurm-cluster/namespace.yaml"
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -208,7 +208,7 @@ metadata:
     app.kubernetes.io/name: slurm-cluster
 ```
 
-```yaml title="argo/slurm-cluster/app-project.yml"
+```yaml title="argo/slurm-cluster/app-project.yaml"
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
@@ -240,11 +240,11 @@ spec:
 kubectl apply -f argo/slurm-cluster/
 ```
 
-## 2. Begin writing the `slurm-cluster-<cluster name>-app.yml`
+## 2. Begin writing the `slurm-cluster-<cluster name>-app.yaml`
 
 ### 2.a. Argo CD Application configuration
 
-```yaml title="argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml"
+```yaml title="argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yaml"
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -367,9 +367,9 @@ slurmConfig:
 
 Assuming you have deployed LDAP and MySQL, we will store the `slurmdbd.conf` inside a secret:
 
-1. Create a `-secret.yml.local` file:
+1. Create a `-secret.yaml.local` file:
 
-```yaml title="argo/slurm-cluster/secrets/slurmdbd-conf-secret.yml.local"
+```yaml title="argo/slurm-cluster/secrets/slurmdbd-conf-secret.yaml.local"
 apiVersion: v1
 kind: Secret
 metadata:
@@ -410,7 +410,7 @@ cfctl kubeseal
 3. Apply the SealedSecret:
 
 ```shell title="user@local:/ClusterFactory"
-kubectl apply -f argo/slurm-cluster/secrets/slurmdbd-conf-sealed-secret.yml
+kubectl apply -f argo/slurm-cluster/secrets/slurmdbd-conf-sealed-secret.yaml
 ```
 
 ### 3.b. Values: Enable SLURM DB
@@ -461,7 +461,7 @@ git push
 
 ```shell title="user@local:/ClusterFactory"
 # This is optional if the application is already deployed.
-kubectl apply -f argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml
+kubectl apply -f argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yaml
 ```
 
 The service should be accessible at the address `slurm-cluster-<cluster name>-db-0.slurm-cluster.svc.cluster.local`. Use that URL in the slurm config.
@@ -647,7 +647,7 @@ git push
 
 ```shell title="user@local:/ClusterFactory"
 # This is optional if the application is already deployed.
-kubectl apply -f argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml
+kubectl apply -f argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yaml
 ```
 
 :::note
@@ -1062,9 +1062,9 @@ yes 'y' | ssh-keygen -N '' -f ./ssh_host_ed25519_key -t ed25519 -C login-node
 
 6 files will be generated. We will also add our `sshd_config`.
 
-1. Create a `-secret.yml.local` file:
+1. Create a `-secret.yaml.local` file:
 
-```yaml title="argo/slurm-cluster/secrets/login-sshd-secret.yml.local"
+```yaml title="argo/slurm-cluster/secrets/login-sshd-secret.yaml.local"
 apiVersion: v1
 kind: Secret
 metadata:
@@ -1131,7 +1131,7 @@ cfctl kubeseal
 3. Apply the SealedSecret:
 
 ```shell title="user@local:/ClusterFactory"
-kubectl apply -f argo/slurm-cluster/secrets/login-sshd-sealed-secret.yml
+kubectl apply -f argo/slurm-cluster/secrets/login-sshd-sealed-secret.yaml
 ```
 
 #### Home directory for the LDAP users
@@ -1142,7 +1142,7 @@ You must mount the home directory of the LDAP users using NFS.
 
 DO NOT use `StorageClass` since the provisioning is static. We don't want to create a volume per replica. There is only one common volume.
 
-```yaml title="argo/slurm-cluster/volumes/ldap-users-<cluster name>-pv.yml"
+```yaml title="argo/slurm-cluster/volumes/ldap-users-<cluster name>-pv.yaml"
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -1192,7 +1192,7 @@ spec:
 Apply the PV and PVC:
 
 ```shell title="user@local:/ClusterFactory"
-kubectl apply -f argo/slurm-cluster/volumes/ldap-users-<cluster name>-pv.yml
+kubectl apply -f argo/slurm-cluster/volumes/ldap-users-<cluster name>-pv.yaml
 ```
 
 ### 6.b. Values: Enable SLURM Login
@@ -1310,7 +1310,7 @@ git push
 
 ```shell title="user@local:/ClusterFactory"
 # This is optional if the application is already deployed.
-kubectl apply -f argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yml
+kubectl apply -f argo/slurm-cluster/apps/slurm-cluster-<cluster name>-app.yaml
 ```
 
 ### 6.c Testing: Access to a SLURM Login node

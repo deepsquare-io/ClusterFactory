@@ -12,7 +12,7 @@ sudo apt install -y python3 python3-pip
 pip install -U ansible
 
 ansible-playbook \
-  --ask-become-pass qemu.yml \
+  --ask-become-pass qemu.yaml \
   -e cloud_init=true \
   -e guest_agent=qemu \
   -e enable_dhcp=true \
