@@ -33,7 +33,7 @@ Don't replace `<xcatmaster>`.
 
 :::
 
-Edit the file accordingly.
+Edit the file [accordingly](https://xcat-docs.readthedocs.io/en/stable/guides/admin-guides/references/man5/networks.5.html).
 
 Apply the stanza:
 
@@ -69,19 +69,19 @@ After building the image, you should copy the root filesystem via `rsync` or `sc
 Create the stanza:
 
 ```shell title="osimage.stanza"
-rocky8.4-x86_64-netboot-compute:
+rocky8.6-x86_64-netboot-compute:
     objtype=osimage
-    exlist=/install/rocky8.4/x86_64/Packages/compute.rocky8.x86_64.exlist
+    exlist=/install/rocky8.6/x86_64/Packages/compute.rocky8.x86_64.exlist
     imagetype=linux
     osarch=x86_64
     osname=Linux
-    osvers=rocky8.4
+    osvers=rocky8.6
     permission=755
     profile=compute
     provmethod=netboot
     pkgdir=/tmp
     pkglist=/dev/null
-    rootimgdir=/install/netboot/rocky8.4/x86_64/compute
+    rootimgdir=/install/netboot/rocky8.6/x86_64/compute
 ```
 
 :::note
@@ -90,19 +90,19 @@ Since we are doing GitOps, we do not need to use the xCAT provisioning system. T
 
 :::
 
-Edit accordingly, and apply it:
+Edit [accordingly](https://xcat-docs.readthedocs.io/en/stable/guides/admin-guides/basic_concepts/xcat_object/osimage.html), and apply it:
 
 ```shell title="ssh root@xcat"
 cat osimage.stanza | mkdef -z
 ```
 
-`/install/netboot/rocky8.4/x86_64/compute/rootimg` should contains the root file-system.
+`/install/netboot/rocky8.6/x86_64/compute/rootimg` should contains the root file-system.
 
-`/install/rocky8.4/x86_64/Packages/compute.rocky8.x86_64.exlist` contains a list files/directories that are trimmed before packing the image.
+`/install/rocky8.6/x86_64/Packages/compute.rocky8.x86_64.exlist` contains a list files/directories that are trimmed before packing the image.
 
 Example:
 
-```shell title="/install/rocky8.4/x86_64/Packages/compute.rocky8.x86_64.exlist"
+```shell title="/install/rocky8.6/x86_64/Packages/compute.rocky8.x86_64.exlist"
 ./boot*
 ./usr/include*
 ./usr/lib/locale*
@@ -141,13 +141,13 @@ Example:
 Generate the kernel and initrd for the netboot:
 
 ```shell title="ssh root@xcat"
-geninitrd rocky8.4-x86_64-netboot-compute
+geninitrd rocky8.6-x86_64-netboot-compute
 ```
 
 To pack the image as SquashFS, call:
 
 ```shell title="ssh root@xcat"
-packimage -m squashfs -c pigz rocky8.4-x86_64-netboot-compute
+packimage -m squashfs -c pigz rocky8.6-x86_64-netboot-compute
 ```
 
 :::caution
@@ -178,20 +178,20 @@ cn1:
     bmcusername=admin
     cons=ipmi
     consoleenabled=1
-    currstate=netboot rocky8.4-x86_64-compute
+    currstate=netboot rocky8.6-x86_64-compute
     groups=compute,all
     ip=192.168.0.51
     mac=18:c0:4d:b7:88:5f
     mgt=ipmi
     netboot=xnba
-    os=rocky8.4
+    os=rocky8.6
     profile=compute
-    provmethod=rocky8.4-x86_64-netboot-compute
+    provmethod=rocky8.6-x86_64-netboot-compute
     serialport=1
     serialspeed=115200
 ```
 
-Edit accordingly and apply the stanza:
+Edit [accordingly](https://xcat-docs.readthedocs.io/en/stable/guides/admin-guides/basic_concepts/xcat_object/node.html) and apply the stanza:
 
 ```shell title="ssh root@xcat"
 cat cn1.stanza | mkdef -z
@@ -213,7 +213,7 @@ makedhcp -a
 And regenerate the PXE boot configuration:
 
 ```shell title="ssh root@xcat"
-nodeset <node/noderange> osimage=rocky8.4-x86_64-netboot-compute
+nodeset <node/noderange> osimage=rocky8.6-x86_64-netboot-compute
 ```
 
 More details [here](https://xcat-docs.readthedocs.io/en/stable/guides/admin-guides/references/man7/node.7.html).

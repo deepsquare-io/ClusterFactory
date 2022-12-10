@@ -180,31 +180,41 @@ The next steps is to export to xCAT, which can be a little tricky.
 
 After building the OS image, a qcow2 file is generated inside a `output-qemu` directory.
 
-Mount the qcow with the script `setup-nbd`.
+To extract the root filesystem, you need to have `qemu-nbd` and `qemu-img` installed.
 
-```shell title="root@local:/ClusterFactory/packer-recipes/rocky"
-# Do it as root!
+Edit and execute the `export.bare.sh` script **as root** to export the root filesystem to xCAT (xCAT root password should be `cluster`):
+
+```shell title="export.bare.sh"
+#!/bin/bash -ex
+
 export IMAGE_PATH=output-qemu/packer-qemu
-./scripts-local/setup-nbd
+export XCAT_SERVER=root@192.168.0.3  # You may need to edit this
+export EXPORT_PATH=/install/netboot/rocky8.6/x86_64/compute/rootimg/
 
-export TMP_DIR=$(mktemp -d /tmp/packer-XXXX)
-mount "${NBD}p1" "$TMP_DIR"
+teardown() {
+  source ./scripts-local/teardown-nbd
+}
+
+trap teardown EXIT
+
+source ./scripts-local/setup-nbd
+source ./scripts-local/rsync-to-xcat
+
 ```
 
-Then, copy the root filesystem via rsync:
+:::caution
 
-```shell title="root@local:/ClusterFactory/packer-recipes/rocky"
-rsync -avzP "$TMP_DIR/" "root@<xcat server>:/<path to os image>/rootimg/"
-# Example: rsync -avzP "$TMP_DIR/" "root@192.168.0.3:/install/netboot/rocky8.4/x86_64/compute/rootimg/"
-```
+Make sure it exports to the right place. The `--delete` flag has been set in the script and it can delete anything in the `EXPORT_PATH` directory.
 
-And unmount and tear down:
+:::
 
-```shell title="root@local:/ClusterFactory/packer-recipes/rocky"
-umount -f "$TMP_DIR"
-rmdir --ignore-fail-on-non-empty "$TMP_DIR"
-./scripts-local/teardown-nbd
-```
+:::info
+
+If you have `qemu-nbd: Failed to blk_new_open 'output-qemu/packer-qemu': Failed to get "write" lock`, it means the block device is already mounted.
+
+You should run `qemu-nbd -d /dev/nbdX` to dismount a block devices.
+
+:::
 
 ### Configure the OS Image on xCAT
 
@@ -213,17 +223,17 @@ SSH to the xCAT server (`ssh root@192.168.0.3 -p 2200`).
 Create a stanza:
 
 ```shell title="osimage.stanza"
-rocky8.4-x86_64-netboot-compute:
+rocky8.6-x86_64-netboot-compute:
     objtype=osimage
-    exlist=/install/rocky8.4/x86_64/Packages/compute.rocky8.x86_64.exlist
+    exlist=/install/rocky8.6/x86_64/Packages/compute.rocky8.x86_64.exlist
     imagetype=linux
     osarch=x86_64
     osname=Linux
-    osvers=rocky8.4
+    osvers=rocky8.6
     permission=755
     profile=compute
     provmethod=netboot
-    rootimgdir=/install/netboot/rocky8.4/x86_64/compute
+    rootimgdir=/install/netboot/rocky8.6/x86_64/compute
     pkgdir=/tmp
     pkglist=/dev/null
 ```
@@ -234,24 +244,22 @@ Since we are doing GitOps, we do not need to use the xCAT provisioning system. T
 
 :::
 
-````
-
 And apply it:
 
 ```shell title="ssh root@xcat"
 cat osimage.stanza | mkdef -z
-````
+```
 
 ### Generate the initramfs and pack the image as squashfs
 
 Generate the kernel and initrd for the netboot:
 
 ```shell title="ssh root@xcat"
-geninitrd rocky8.4-x86_64-netboot-compute
+geninitrd rocky8.6-x86_64-netboot-compute
 ```
 
 To pack the image as SquashFS, call:
 
 ```shell title="ssh root@xcat"
-packimage -m squashfs -c pigz rocky8.4-x86_64-netboot-compute
+packimage -m squashfs -c pigz rocky8.6-x86_64-netboot-compute
 ```

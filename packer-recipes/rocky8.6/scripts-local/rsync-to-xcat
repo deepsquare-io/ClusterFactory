@@ -1,5 +1,7 @@
 #!/bin/bash -ex
 
+set -eux
+
 if [ $UID -ne 0 ]; then
   echo "ERROR: Must be run as root!" >&2
   exit 1
@@ -14,28 +16,21 @@ clean() {
 trap clean EXIT
 
 export XCAT_SERVER=${XCAT_SERVER:-root@10.10.2.160}
-export XCAT_EXPORT_PATH=${XCAT_EXPORT_PATH:-/xcatdata/install/netboot/rocky8.6/x86_64/compute/rootimg/}
-export XCAT_OSIMAGE=${XCAT_OSIMAGE:-rocky8.6-x86_64-netboot-compute}
+export EXPORT_PATH=${EXPORT_PATH:-/xcatdata/install/netboot/rocky8.6/x86_64/compute/rootimg/}
 
 TMP_DIR=$(mktemp -d /tmp/packer-XXXX)
 
 echo 'Mounting root partition...'
 mount "${NBD}p1" "$TMP_DIR"
 
-echo "Content inside ${NFS_DIR}/${EXPORT_PATH}:"
-ssh "${XCAT_SERVER}" ls -lah "${NFS_DIR}/${EXPORT_PATH}"
+echo "Content inside ${XCAT_SERVER}:${EXPORT_PATH}:"
+ssh -p 2200 "${XCAT_SERVER}" ls -lah "${EXPORT_PATH}"
 
-echo "Preview: rsync -avzP --delete $TMP_DIR/ ${XCAT_SERVER}:${XCAT_EXPORT_PATH}"
-read -rp "Is the path ${XCAT_SERVER}:${XCAT_EXPORT_PATH}, correct (this may delete everything in that directory and subdirectories) (y/N)?" choice
+echo "Preview: rsync -avzP --delete $TMP_DIR/ ${XCAT_SERVER}:${EXPORT_PATH}"
+read -rp "Is the path ${XCAT_SERVER}:${EXPORT_PATH}, correct (this may delete everything in that directory and subdirectories) (y/N)?" choice
 case "$choice" in
 y | Y) ;;
 *) exit 1 ;;
 esac
 
-rsync -avzP --delete "$TMP_DIR/" "${XCAT_SERVER}:${XCAT_EXPORT_PATH}"
-echo "Wait 5 seconds"
-sleep 5
-${GENINITRD} ${XCAT_OSIMAGE}
-echo "Wait 5 seconds"
-sleep 5
-${PACKIMAGE} ${XCAT_OSIMAGE}
+rsync -e 'ssh -p 2200' -avzP --delete "$TMP_DIR/" "${XCAT_SERVER}:${EXPORT_PATH}"

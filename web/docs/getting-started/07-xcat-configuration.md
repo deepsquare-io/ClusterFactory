@@ -54,21 +54,21 @@ ib0ipv41:
     mgtifname=ib0
     net=192.168.1.0
 
-rocky8.4-x86_64-netboot-compute:
+rocky8.6-x86_64-netboot-compute:
     objtype=osimage
-    exlist=/xcatdata/install/rocky8.4/x86_64/Packages/compute.rocky8.x86_64.exlist
+    exlist=/xcatdata/install/rocky8.6/x86_64/Packages/compute.rocky8.x86_64.exlist
     imagetype=linux
     kernelver=4.18.0-305.17.1.el8_4.x86_64
     osarch=x86_64
     osname=Linux
-    osvers=rocky8.4
+    osvers=rocky8.6
     permission=755
     postbootscripts=git-configs-execute its-a-fake-password-dont-worry compute
     profile=compute
     provmethod=netboot
     pkgdir=/tmp
     pkglist=/dev/null
-    rootimgdir=/install/netboot/rocky8.4/x86_64/compute
+    rootimgdir=/install/netboot/rocky8.6/x86_64/compute
 
 cn1:
     objtype=node
@@ -79,7 +79,7 @@ cn1:
     bmcusername=admin
     cons=ipmi
     consoleenabled=1
-    currstate=netboot rocky8.4-x86_64-compute
+    currstate=netboot rocky8.6-x86_64-compute
     groups=compute,all
     ip=192.168.0.51
     mac=ab:cd:ef:12:34:56
@@ -88,10 +88,10 @@ cn1:
     nicips.ib0=192.168.1.51
     nicnetworks.ib0=ib0ipv41
     nictypes.ib0=Infiniband
-    os=rocky8.4
+    os=rocky8.6
     postbootscripts=nvidia-xorg
     profile=compute
-    provmethod=rocky8.4-x86_64-netboot-compute
+    provmethod=rocky8.6-x86_64-netboot-compute
     serialport=1
     serialspeed=115200
     status=booted
@@ -212,11 +212,11 @@ clustersite:
     xcatdport=3001
     xcatiport=3002
 
-rocky8.4-x86_64:
+rocky8.6-x86_64:
     objtype=osdistro
     arch=x86_64
     basename=rocky
-    dirpaths=/install/rocky8.4/x86_64
+    dirpaths=/install/rocky8.6/x86_64
     majorversion=8
     minorversion=4
     type=Linux
@@ -271,21 +271,21 @@ You can build the SquareFactory OS image using the recipes stored in `packer-rec
 You can then copy the root filesystem to xCAT using rsync. Follow the [guide "Build an OS Image with Packer" for more details](/docs/guides/provisioning/packer-build).
 
 ```shell title="mystanzafile"
-rocky8.4-x86_64-netboot-compute:
+rocky8.6-x86_64-netboot-compute:
     objtype=osimage
-    exlist=/install/rocky8.4/x86_64/Packages/compute.rocky8.x86_64.exlist
+    exlist=/install/rocky8.6/x86_64/Packages/compute.rocky8.x86_64.exlist
     imagetype=linux
     kernelver=4.18.0-305.17.1.el8_4.x86_64
     osarch=x86_64
     osname=Linux
-    osvers=rocky8.4
+    osvers=rocky8.6
     permission=755
     postbootscripts=git-configs-execute its-a-fake-password-dont-worry compute
     profile=compute
     provmethod=netboot
     pkgdir=/tmp
     pkglist=/dev/null
-    rootimgdir=/install/netboot/rocky8.4/x86_64/compute
+    rootimgdir=/install/netboot/rocky8.6/x86_64/compute
 ```
 
 :::note
@@ -294,13 +294,13 @@ Since we are doing GitOps, we do not need to use the xCAT provisioning system. T
 
 :::
 
-Our root filesystem is stored inside `/install/netboot/rocky8.4/x86_64/compute/rootimg`.
+Our root filesystem is stored inside `/install/netboot/rocky8.6/x86_64/compute/rootimg`.
 
-The file `/install/rocky8.4/x86_64/Packages/compute.rocky8.x86_64.exlist` contains a list files/directories that are trimmed before packing the image.
+The file `/install/rocky8.6/x86_64/Packages/compute.rocky8.x86_64.exlist` contains a list files/directories that are trimmed before packing the image.
 
 Create the file and add:
 
-```shell title="/install/rocky8.4/x86_64/Packages/compute.rocky8.x86_64.exlist"
+```shell title="/install/rocky8.6/x86_64/Packages/compute.rocky8.x86_64.exlist"
 ./boot*
 ./usr/include*
 ./usr/lib/locale*
@@ -380,13 +380,13 @@ cat mystanzafile | mkdef -z
 To generate the kernel and initrd for the netboot, call:
 
 ```shell title="ssh root@xcat"
-geninitrd rocky8.4-x86_64-netboot-compute
+geninitrd rocky8.6-x86_64-netboot-compute
 ```
 
 To pack the image as SquashFS, call:
 
 ```shell title="ssh root@xcat"
-packimage -m squashfs -c pigz rocky8.4-x86_64-netboot-compute
+packimage -m squashfs -c pigz rocky8.6-x86_64-netboot-compute
 ```
 
 More details [here](https://xcat-docs.readthedocs.io/en/stable/guides/admin-guides/references/man5/osimage.5.html).
@@ -403,15 +403,15 @@ cn1:
     bmcusername=admin
     cons=ipmi
     consoleenabled=1
-    currstate=netboot rocky8.4-x86_64-compute
+    currstate=netboot rocky8.6-x86_64-compute
     groups=compute,all
     ip=192.168.0.51
     mac=ab:cd:ef:12:34:56
     mgt=ipmi
     netboot=xnba
-    os=rocky8.4
+    os=rocky8.6
     profile=compute
-    provmethod=rocky8.4-x86_64-netboot-compute
+    provmethod=rocky8.6-x86_64-netboot-compute
     serialport=1
     serialspeed=115200
 ```
@@ -440,7 +440,7 @@ makedhcp -a
 And regenerate the PXE boot configuration:
 
 ```shell title="ssh root@xcat"
-nodeset <node/noderange> osimage=rocky8.4-x86_64-netboot-compute
+nodeset <node/noderange> osimage=rocky8.6-x86_64-netboot-compute
 ```
 
 More details [here](https://xcat-docs.readthedocs.io/en/stable/guides/admin-guides/references/man7/node.7.html).

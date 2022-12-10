@@ -212,21 +212,21 @@ chmod -R g-rwx,o-rwx .
 On xCAT, you should add the post-boot script inside an `osimage` stanza:
 
 ```shell title="stanzafile"
-rocky8.4-x86_64-netboot-compute:
+rocky8.6-x86_64-netboot-compute:
     objtype=osimage
-    exlist=/xcatdata/install/rocky8.4/x86_64/Packages/compute.rocky8.x86_64.exlist
+    exlist=/xcatdata/install/rocky8.6/x86_64/Packages/compute.rocky8.x86_64.exlist
     imagetype=linux
     kernelver=4.18.0-305.17.1.el8_4.x86_64
     osarch=x86_64
     osname=Linux
-    osvers=rocky8.4
+    osvers=rocky8.6
     permission=755
     postbootscripts=git-config-execute.sh <FILL ME: password>
     profile=compute
     provmethod=netboot
     pkgdir=/tmp
     pkglist=/dev/null
-    rootimgdir=/install/netboot/rocky8.4/x86_64/compute
+    rootimgdir=/install/netboot/rocky8.6/x86_64/compute
 ```
 
 :::note
