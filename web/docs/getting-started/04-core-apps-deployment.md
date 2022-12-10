@@ -187,6 +187,8 @@ CoreDNS will be exposed to the external network thanks to the `IngressRoute` obj
 
 :::caution
 
+Since `hostPort` will be used, make sure the host does not have port 53/udp busy. On most systems with SystemD, this port is occupied by a stub listener. Open the `/etc/systemd/resolved.conf` configuration file on the host and disable the stub listener by setting `DNSStubListener` to `no`. Finally, restart the service with `systemctl restart systemd-resolved.service`.
+
 If this is an unwanted feature (because you are using an other DNS for example), feel free to remove the routes and close the ports in the Traefik configuration.
 
 ```shell title="user@local:/ClusterFactory"
