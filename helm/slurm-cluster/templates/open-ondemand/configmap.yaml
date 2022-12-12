@@ -6,7 +6,7 @@ metadata:
   labels:
     app: "{{ template "slurm-cluster.ondemand.name" . }}"
 data:
-  nginx_stage.yaml: |
+  nginx_stage.yml: |
 {{ toYaml .Values.ondemand.config.nginxStage | indent 4 }}
   hook.env: |
 {{ .Values.ondemand.config.hookEnv | indent 4 }}
@@ -47,7 +47,7 @@ data:
     </html>
 
   {{- range $key, $val := .Values.ondemand.config.clusters }}
-  {{ $key }}.yaml: |
+  {{ $key }}.yml: |
 {{ toYaml $val | indent 4 }}
   {{- end }}
 {{- end }}

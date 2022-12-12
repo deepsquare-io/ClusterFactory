@@ -128,7 +128,7 @@ metadata:
   namespace: slurm-cluster
 type: Opaque
 stringData:
-  ood_portal.yaml: |
+  ood_portal.yml: |
     ---
     #
     # Portal configuration
@@ -676,7 +676,7 @@ metadata:
   name: ondemand-extra-configs
   namespace: slurm-cluster
 data:
-  bc_desktop_<cluster name>.yaml: |
+  bc_desktop_<cluster name>.yml: |
     title: "My Cluster"
     cluster: "<cluster name>"
     attributes:
@@ -713,8 +713,8 @@ ondemand:
       mountPath: /etc/pki/ca-trust/source/anchors/example.com.ca.pem
       subPath: example.com.ca.pem
     - name: ondemand-extra-configs
-      mountPath: /etc/ood/config/apps/bc_desktop/<cluster name>.yaml
-      subPath: bc_desktop_<cluster name>.yaml
+      mountPath: /etc/ood/config/apps/bc_desktop/<cluster name>.yml
+      subPath: bc_desktop_<cluster name>.yml
     - name: ondemand-extra-configs
       mountPath: /etc/ood/config/apps/dashboard/env
       subPath: dashboard_env
