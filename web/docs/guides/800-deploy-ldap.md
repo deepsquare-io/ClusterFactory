@@ -111,7 +111,7 @@ Take a look at the README of [389ds/dirsrv](https://hub.docker.com/r/389ds/dirsr
 
 Some of the environment variables are sensitive:
 
-- `dm-password`: The password of the `cn=Directory Manager` user.
+- `DS_DM_PASSWORD`: The password of the `cn=Directory Manager` user.
 
 We must store these value inside a secret.
 
