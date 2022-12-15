@@ -105,7 +105,7 @@ The label `app=ldap` will be used by the PersistentVolumeClaim.
   </TabItem>
 </Tabs>
 
-## 2.b. Editing the environment variables with secrets
+### 2.b. Editing the environment variables with secrets
 
 Take a look at the README of [389ds/dirsrv](https://hub.docker.com/r/389ds/dirsrv).
 
