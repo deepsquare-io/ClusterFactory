@@ -228,7 +228,7 @@ spec:
   project: default
   source:
     repoURL: git@github.com:<your account>/<your repo>.git
-    # You should your branch too.
+    # You should use your branch too.
     targetRevision: HEAD
     path: manifests/my-application
     directory:

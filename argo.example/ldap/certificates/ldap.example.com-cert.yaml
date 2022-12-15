@@ -1,0 +1,26 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ldap.example.com-cert
+  namespace: ldap
+spec:
+  secretName: ldap.example.com-secret
+  issuerRef:
+    name: private-cluster-issuer
+    kind: ClusterIssuer
+  commonName: ldap.example.com
+  subject:
+    countries: [CH]
+    localities: [Lonay]
+    organizationalUnits: []
+    organizations: [Example Org]
+    postalCodes: ['1027']
+    provinces: [Laud]
+    streetAddresses: [Chemin des Mouettes 1]
+  duration: 1y
+  dnsNames:
+    - ldap.example.com
+    - dirsrv-389ds.ldap.svc.cluster.local
+  privateKey:
+    size: 4096
+    algorithm: RSA

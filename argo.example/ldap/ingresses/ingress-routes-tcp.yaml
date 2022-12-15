@@ -1,0 +1,37 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: ldap-ingress-tcp
+  namespace: ldap
+  labels:
+    app.kubernetes.io/name: ldap
+    app.kubernetes.io/component: ingress-route-tcp
+spec:
+  entryPoints:
+    - ldap
+  routes:
+    - match: HostSNI(`*`)
+      services:
+        - name: dirsrv-389ds
+          port: 3389
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: ldaps
+  namespace: ldap
+  labels:
+    app.kubernetes.io/name: ldaps
+    app.kubernetes.io/component: ingress-route-tcp
+
+spec:
+  entryPoints:
+    - ldaps
+  routes:
+    - match: HostSNI(`*`)
+      services:
+        - name: dirsrv-389ds
+          namespace: ldap
+          port: 3636
+  tls:
+    passthrough: true

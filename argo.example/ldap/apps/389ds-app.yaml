@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: openldap-app
+  name: 389ds-app
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -12,9 +12,9 @@ spec:
     repoURL: git@github.com:squarefactory/ClusterFactory.git
     # You should use your branch too.
     targetRevision: HEAD
-    path: helm/openldap
+    path: helm/389ds
     helm:
-      releaseName: openldap
+      releaseName: 389ds
 
       # Create a values file inside your fork and change the values.
       valueFiles:

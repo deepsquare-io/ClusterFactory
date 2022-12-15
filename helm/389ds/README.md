@@ -37,7 +37,7 @@ Uniqueness:
 dsconf localhost plugin attr-uniq add "mail attribute uniqueness" --attr-name mail --subtree "dc=hpc,dc=deepsquare,dc=run"
 dsconf localhost plugin attr-uniq add "uid attribute uniqueness" --attr-name uid --subtree "dc=hpc,dc=deepsquare,dc=run"
 dsconf localhost plugin attr-uniq add "uidNumber attribute uniqueness" --attr-name uidNumber --subtree "dc=hpc,dc=deepsquare,dc=run"
-dsconf localhost plugin attr-uniq add "gidNumber attribute uniqueness" --attr-name gidNumber --subtree "dc=hpc,dc=deepsquare,dc=run"
+dsconf localhost plugin attr-uniq add "gidNumber attribute uniqueness" --attr-name gidNumber --subtree "ou=groups,dc=hpc,dc=deepsquare,dc=run"
 dsconf localhost plugin attr-uniq enable "mail attribute uniqueness"
 dsconf localhost plugin attr-uniq enable "uid attribute uniqueness"
 dsconf localhost plugin attr-uniq enable "uidNumber attribute uniqueness"
