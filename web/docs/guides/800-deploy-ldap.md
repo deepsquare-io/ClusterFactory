@@ -446,7 +446,7 @@ Restart the server after the changes:
 kubectl delete pod -n ldap dirsrv-389ds-0
 ```
 
-The database may have been destroyed because of the plugin, `kubectl exec` in the container and run it again:
+The database may have been destroyed because of the plugin, `kubectl exec` in the container and run again:
 
 ```shell title="pod: dirsrv-389ds-0 (namespace: ldap)"
 dsconf localhost backend create --suffix dc=example,dc=com --be-name example_backend
