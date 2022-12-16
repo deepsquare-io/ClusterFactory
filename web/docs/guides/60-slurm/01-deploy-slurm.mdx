@@ -69,7 +69,7 @@ stringData:
     [sssd]
     services = nss,pam,sudo,ssh
     config_file_version = 2
-    domains = ldap
+    domains = example-ldap
 
     [sudo]
 
@@ -78,26 +78,37 @@ stringData:
     [pam]
     offline_credentials_expiration = 60
 
-    [domain/ldap]
-    #debug_level = 0x3ff0   <= perfect for debugging
+    [domain/example-ldap]
+    debug_level=3
+    cache_credentials = True
+    dns_resolver_timeout = 15
+
+    override_homedir = /home/ldap-users/%u
 
     id_provider = ldap
+    auth_provider = ldap
     access_provider = ldap
-    cache_credentials = True
+    chpass_provider = ldap
 
-    ldap_uri = <LDAP/LDAPS uri>
-    ldap_default_bind_dn = <FILL ME: bind DN>
-    ldap_default_authtok = <FILL ME: bind password>
+    ldap_schema = rfc2307bis
+
+    ldap_uri = ldaps://dirsrv-389ds.ldap.svc.cluster.local:3636
+    ldap_default_bind_dn = cn=Directory Manager
+    ldap_default_authtok = <password>
     ldap_search_timeout = 50
     ldap_network_timeout = 60
+    ldap_user_member_of = memberof
+    ldap_user_gecos = cn
+    ldap_user_uuid = nsUniqueId
+    ldap_group_uuid = nsUniqueId
 
-    ldap_search_base = ou=People,dc=example,dc=com
-    ldap_group_search_base = ou=Group,dc=example,dc=com
-    ldap_sudo_search_base = ou=SUDOers,dc=example,dc=com
-    ldap_user_extra_attrs = publicSSHKey
-    ldap_user_ssh_public_key = publicSSHKey
+    ldap_search_base = ou=people,dc=example,dc=com
+    ldap_group_search_base = ou=groups,dc=example,dc=com
+    ldap_sudo_search_base = ou=sudoers,dc=example,dc=com
+    ldap_user_ssh_public_key = nsSshPublicKey
 
-    ldap_access_order = filter
+    ldap_account_expire_policy = rhds
+    ldap_access_order = filter, expire
     ldap_access_filter = (objectClass=posixAccount)
 
     ldap_tls_cipher_suite = HIGH
@@ -105,6 +116,8 @@ stringData:
     # In fact, it's not even a cipher suite name that goes here, but a so called "priority list" => see $> gnutls-cli --priority-list
     # See https://backreference.org/2009/11/18/openssl-vs-gnutls-cipher-names/ , gnutls-cli is part of package gnutls-bin
 ```
+
+Adapt this secret based on your LDAP configuration.
 
 2. Seal the secret:
 
