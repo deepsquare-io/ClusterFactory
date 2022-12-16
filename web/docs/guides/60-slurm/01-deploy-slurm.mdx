@@ -163,7 +163,7 @@ mysql -u root -p -h localhost
 # Enter your root password
 ```
 
-```sql title="Pod: mariadb-0 (sql)
+```sql title="Pod: mariadb-0 (sql)"
 create user 'slurm'@'%' identified by '<your password>';
 grant all on slurm_acct_db.* TO 'slurm_acct_db'@'%';
 create database slurm_acct_db;
