@@ -51,7 +51,7 @@ Deploying a SLURM cluster isn't easy and you MUST have these components ready:
 
 2. Open a shell on the LDAP server container and create a user and a group `slurm`:
 
-```shell
+```shell title="Pod: dirsrv-389ds-0 (namespace: ldap)"
 # Create user
 dsidm -b "dc=example,dc=com" localhost user create \
   --uid slurm \
