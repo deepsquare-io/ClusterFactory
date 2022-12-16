@@ -47,7 +47,29 @@ Deploying a SLURM cluster isn't easy and you MUST have these components ready:
 
 ### LDAP deployment
 
-Follow [the guide](/docs/guides/deploy-ldap).
+1. Follow [the guide](/docs/guides/deploy-ldap).
+
+2. Open a shell on the LDAP server container and create a user and a group `slurm`:
+
+```shell
+# Create user
+dsidm -b "dc=example,dc=com" localhost user create \
+  --uid slurm \
+  --cn slurm \
+  --displayName slurm \
+  --homeDirectory "/dev/shm" \
+  --uidNumber 1501 \
+  --gidNumber 1501
+
+# Create group
+dsidm -b "dc=example,dc=com" localhost group create \
+  --cn slurm
+
+# Add posixGroup property and gidNumber
+dsidm -b "dc=example,dc=com" localhost group modify slurm \
+  "add:objectClass:posixGroup" \
+  "add:gidNumber:1501"
+```
 
 ### SSSD configuration
 
@@ -133,6 +155,19 @@ kubectl apply -f argo/slurm-cluster/secrets/sssd-sealed-secret.yaml
 ### MySQL deployment
 
 You can deploy MySQL using the [Helm Chart of Bitnami](https://bitnami.com/stack/mysql/helm) and develop an [Argo CD app](/docs/guides/develop-apps-for-cluster-factory).
+
+After deploying the MySQL/MariaDB server, you must create a slurm database. Open a shell on the MySQL container and run:
+
+```shell title="Pod: mariadb-0"
+mysql -u root -p -h localhost
+# Enter your root password
+```
+
+```sql title="Pod: mariadb-0 (sql)
+create user 'slurm'@'%' identified by '<your password>';
+grant all on slurm_acct_db.* TO 'slurm_acct_db'@'%';
+create database slurm_acct_db;
+```
 
 ### JWT Key generation
 

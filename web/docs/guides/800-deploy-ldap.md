@@ -243,6 +243,12 @@ spec:
     algorithm: RSA
 ```
 
+:::caution
+
+Do not use `selfsigned-cluster-issuer` as self signed certificates are not accepted by 389ds.
+
+:::
+
 You want your LDAP server to be secure inside and outside the cluster. Therefore, you need to add 2 DNS names:
 
 - `ldap.example.com` which is used to access to the Ingress Controller which will forward to the LDAP service.

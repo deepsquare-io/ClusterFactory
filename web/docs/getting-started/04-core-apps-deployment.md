@@ -362,7 +362,35 @@ If some files were added and removed, you must change the `deployment.yaml`:
 
 Specify new certificate issuers in the `core/cert-manager` directory.
 
-If you wish to add your private certificate authority, follow the [official guide of cert-manager](https://cert-manager.io/docs/configuration/ca/).
+It is highly recommended to add your own private certificate authority, follow the [official guide of cert-manager](https://cert-manager.io/docs/configuration/ca/).
+
+You must create a Secret `ca-key-pair`:
+
+```yaml title="ca-key-pair-secret.yaml"
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ca-key-pair
+  namespace: cert-manager
+type: kubernetes.io/tls
+stringData:
+  tls.crt: |
+    -----BEGIN CERTIFICATE-----
+    -----END CERTIFICATE-----
+
+  tls.key: |
+    -----BEGIN RSA PRIVATE KEY-----
+    -----END RSA PRIVATE KEY-----
+```
+
+To generate a TLS certificate and its private key:
+
+```shell
+openssl genrsa -out tls.key 2048
+openssl req -x509 -sha256 -new -nodes -key tls.key -days 3650 -out tls.crt
+```
+
+Seal it with `cfctl kubeseal` and apply it.
 
 ```yaml title="private-cluster-issuer.yaml"
 apiVersion: cert-manager.io/v1
