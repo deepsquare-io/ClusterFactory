@@ -1,0 +1,2 @@
+resources:
+  - https://github.com/knative/operator/releases/download/knative-v1.8.1/operator.yaml

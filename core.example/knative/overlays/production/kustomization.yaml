@@ -1,0 +1,4 @@
+resources:
+  - ../../base
+  - ./knative-serving
+  - ./knative-eventing

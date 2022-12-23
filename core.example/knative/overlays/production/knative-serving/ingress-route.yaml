@@ -1,0 +1,35 @@
+# Forward Traefik to Kourier if the URL matches
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: kourier-https
+  labels:
+    app.kubernetes.io/name: kourier-https
+    app.kubernetes.io/component: ingress-route-tcp
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: HostSNIRegexp(`{subdomain:.*}.knative.example.com`)
+      services:
+        - name: kourier
+          port: 443
+  tls:
+    passthrough: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: kourier-http
+  labels:
+    app.kubernetes.io/name: kourier-http
+    app.kubernetes.io/component: ingress-route
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: HostRegexp(`{subdomain:.*}.knative.example.com`)
+      services:
+        - name: kourier
+          port: 80

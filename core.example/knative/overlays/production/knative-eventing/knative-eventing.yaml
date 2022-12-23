@@ -1,0 +1,18 @@
+apiVersion: operator.knative.dev/v1beta1
+kind: KnativeEventing
+metadata:
+  name: knative-eventing
+spec:
+  source:
+    # ceph:
+    #   enabled: true
+    # github:
+    #   enabled: true
+    # gitlab:
+    #   enabled: true
+    # kafka:
+    #   enabled: true
+    # rabbitmq:
+    #   enabled: true
+    # redis:
+    #   enabled: true

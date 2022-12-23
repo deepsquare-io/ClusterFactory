@@ -1,0 +1,5 @@
+namespace: knative-eventing
+resources:
+  - ../../../base/knative-eventing
+patchesStrategicMerge:
+  - knative-eventing.yaml
