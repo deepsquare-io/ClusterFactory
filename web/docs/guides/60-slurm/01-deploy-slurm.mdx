@@ -1027,6 +1027,8 @@ A simple postbootscript:
 
 ```shell title="sample-configure-slurm.sh
 #!/bin/sh -ex
+mkdir -p /var/log/slurm/
+
 cat <<\END | base64 -d >/etc/munge/munge.key
 ...
 END
@@ -1038,6 +1040,14 @@ cat <<\END >/etc/sssd/sssd.conf
 END
 
 chmod 600 /etc/sssd/sssd.conf
+
+#-- Add enroot extra hooks for PMIx and PyTorch multi-node support
+cp /usr/share/enroot/hooks.d/50-slurm-pmi.sh /usr/share/enroot/hooks.d/50-slurm-pytorch.sh /etc/enroot/hooks.d
+
+# Enable Pyxis (container jobs)
+cat <<\END >/etc/slurm/plugstack.conf.d/
+optional /usr/lib64/slurm/spank_pyxis.so runtime_path=/run/pyxis container_scope=job
+END
 
 cat <<\END >/etc/systemd/system/slurmd.service
 [Unit]
@@ -1083,8 +1093,8 @@ systemctl start --no-block slurmd
 After setup SLURM, you should also:
 
 - Mount the home directory of the LDAP users (probably like `/home/ldap-users`)
-- Use a postscript to configure SSSD
-- Use a postscript to import the `munge.key`
+- Use the postscript to configure SSSD
+- Use the postscript to import the `munge.key`
 
 ### 5.c. Reboot the nodes
 
