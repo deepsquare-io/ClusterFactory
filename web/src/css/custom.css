@@ -69,6 +69,7 @@
   --ifm-font-family-monospace: var(--custom-font-code);
   --ifm-heading-font-family: var(--custom-font-base);
   --ifm-font-size-base: var(--custom-font-size-base);
+  --ifm-h4-font-size: 1.2rem;
   --ifm-heading-font-weight: 400;
   --ifm-font-weight-bold: 800;
 

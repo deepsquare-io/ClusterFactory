@@ -45,6 +45,9 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      tableOfContents: {
+        maxHeadingLevel: 5,
+      },
       docs: {
         sidebar: {
           autoCollapseCategories: false,
