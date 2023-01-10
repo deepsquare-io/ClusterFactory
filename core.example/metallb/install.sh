@@ -5,6 +5,6 @@ helm repo update
 
 helm upgrade --install \
   -n metallb \
-  --version 4.1.12 metallb \
+  --version 4.1.13 \
   bitnami/metallb \
   --create-namespace
