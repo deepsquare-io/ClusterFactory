@@ -1057,10 +1057,9 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-EnvironmentFile=-/etc/default/slurmd
 Restart=always
 RestartSec=3
-ExecStart=/usr/sbin/slurmd -D -d /usr/sbin/slurmstepd --conf-server $CONTROLLER_HOST
+ExecStart=/usr/sbin/slurmd -d /usr/sbin/slurmstepd --conf-server <node host IP>
 ExecReload=/bin/kill -HUP $MAINPID
 PIDFile=/var/run/slurmd.pid
 KillMode=process
