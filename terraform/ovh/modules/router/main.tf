@@ -15,6 +15,7 @@ locals {
     tailscale_vpns = var.tailscale_vpns
     public_ip      = var.public_ip
     bgp            = var.bgp
+    extra_configs  = var.extra_configs
   })
 }
 

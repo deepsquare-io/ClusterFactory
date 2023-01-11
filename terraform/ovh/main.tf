@@ -87,6 +87,7 @@ module "router" {
   tailscale_vpns = var.router.tailscale_vpns
   public_ip      = var.router.public_ip
   bgp            = var.router.bgp
+  extra_configs  = var.router.extra_configs
 }
 
 output "user_data" {

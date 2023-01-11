@@ -55,7 +55,7 @@ variable "service_name" {
 variable "region" {
   description = "Region"
   type        = string
-  default     = "GRA9"
+  default     = "GRA11"
 }
 
 variable "ssh_keys" {
@@ -71,13 +71,13 @@ variable "network" {
 variable "subnet" {
   description = "subnet"
   type        = string
-  default     = "172.26.0.0/28"
+  default     = "172.28.0.0/20"
 }
 
 variable "gw" {
   description = "Gateway"
   type        = string
-  default     = "172.26.0.2"
+  default     = "172.28.0.2"
 }
 
 variable "allocation_pool" {
@@ -210,6 +210,7 @@ variable "router" {
         asn     = number
       })
     }))
+    extra_configs = list(string)
   })
   default = null
 }

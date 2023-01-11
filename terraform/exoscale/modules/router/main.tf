@@ -21,6 +21,7 @@ locals {
     tailscale_vpns = var.tailscale_vpns
     public_ip      = exoscale_elastic_ip.storage_ip.ip_address
     bgp            = var.bgp
+    extra_configs  = var.extra_configs
   })
 }
 

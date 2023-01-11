@@ -68,4 +68,5 @@ module "router" {
   netmaker_vpns    = var.router.netmaker_vpns
   tailscale_vpns   = var.router.tailscale_vpns
   bgp              = var.router.bgp
+  extra_configs    = var.router.extra_configs
 }

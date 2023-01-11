@@ -169,6 +169,7 @@ variable "router" {
         asn     = number
       })
     }))
+    extra_configs = list(string)
   })
   sensitive = true
   default   = null

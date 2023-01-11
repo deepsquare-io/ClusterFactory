@@ -37,12 +37,6 @@ vyos_config_commands:
   - set firewall name OUTSIDE-LOCAL rule 30 destination port '22'
   - set firewall name OUTSIDE-LOCAL rule 30 protocol 'tcp'
   - set firewall name OUTSIDE-LOCAL rule 30 state new 'enable'
-  - set firewall name OUTSIDE-LOCAL rule 40 action 'accept'
-  - set firewall name OUTSIDE-LOCAL rule 40 description 'Allow WireGuard-IN'
-  - set firewall name OUTSIDE-LOCAL rule 40 destination port '51820'
-  - set firewall name OUTSIDE-LOCAL rule 40 log 'enable'
-  - set firewall name OUTSIDE-LOCAL rule 40 protocol 'udp'
-  - set firewall name OUTSIDE-LOCAL rule 40 source
   - set firewall name OUTSIDE-LOCAL rule 50 action 'accept'
   - set firewall name OUTSIDE-LOCAL rule 50 description 'Allow IKE-IN'
   - set firewall name OUTSIDE-LOCAL rule 50 destination port '500'
@@ -79,7 +73,7 @@ vyos_config_commands:
   - set protocols bgp address-family ipv4-unicast redistribute connected metric '100'
 
 write_files:
-  - path: /config/scripts/config-bgp.script
+  - path: /config/scripts/config-vpn.script
     owner: root:vyattacfg
     permissions: '0775'
     content: |
@@ -89,12 +83,17 @@ write_files:
       configure
       %{~ for vpn in wireguard_vpns ~}
       set interfaces wireguard '${vpn.interface}' port '${vpn.port}'
-      set firewall name OUTSIDE_LOCAL rule 20 destination port '${vpn.port}'
+      set firewall name OUTSIDE-LOCAL rule 100 description 'Allow Wireguard'
+      set firewall name OUTSIDE-LOCAL rule 100 destination port '${vpn.port}'
+      set firewall name OUTSIDE-LOCAL rule 100 protocol 'udp'
+      set firewall name OUTSIDE-LOCAL rule 100 action 'accept'
+      set firewall name OUTSIDE-LOCAL rule 100 log 'enable'
+      set firewall name OUTSIDE-LOCAL rule 100 source
       set interfaces wireguard '${vpn.interface}' private-key '${vpn.private_key}'
       set interfaces wireguard '${vpn.interface}' address '${vpn.address}'
       set interfaces wireguard '${vpn.interface}' description 'VPN-to-${vpn.peer.name}'
       set interfaces wireguard '${vpn.interface}' peer '${vpn.peer.name}' allowed-ips '0.0.0.0/0'
-      set interfaces wireguard '${vpn.interface}' peer '${vpn.peer.name}' endpoint '${vpn.peer.endpoint}'
+      set interfaces wireguard '${vpn.interface}' peer '${vpn.peer.name}' address '${vpn.peer.endpoint}'
       set interfaces wireguard '${vpn.interface}' peer '${vpn.peer.name}' public-key '${vpn.peer.public_key}'
       set interfaces wireguard '${vpn.interface}' peer '${vpn.peer.name}' preshared-key '${vpn.peer.preshared_key}'
       %{~ for index, prefix in vpn.bgp.exports ~}
@@ -153,6 +152,10 @@ write_files:
       set protocols bgp neighbor '${b.peer.address}' remote-as '${b.peer.asn}'
       set protocols bgp neighbor '${b.peer.address}' description  'BGP-with-${b.peer.name}'
       set protocols bgp neighbor '${b.peer.address}' address-family ipv4-unicast route-map export 'BGP-${b.peer.name}-OUT'
+      %{~ endfor ~}
+
+      %{~ for line in extra_configs ~}
+      ${line}
       %{~ endfor ~}
 
       commit

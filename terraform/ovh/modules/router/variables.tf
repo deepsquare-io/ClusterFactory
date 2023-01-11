@@ -137,3 +137,8 @@ variable "bgp" {
     })
   }))
 }
+
+variable "extra_configs" {
+  description = "Extra configuration"
+  type        = list(string)
+}

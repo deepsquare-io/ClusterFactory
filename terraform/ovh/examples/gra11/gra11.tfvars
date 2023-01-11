@@ -1,5 +1,5 @@
 service_name = "9adc45ea0a4e4d84a5acff1d829613e0"
-region       = "GRA9"
+region       = "GRA11"
 ssh_keys = [
   "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPd+X08wpIGwKZ0FsJu1nkR3o1CzlXF3OkgQd/WYB2fX nguyen@csquare",
   "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK2MIrrisugtbMeoDbJJntMBbZno56Zwmc4LKYxeZh7k kiwi@mba"
@@ -14,7 +14,7 @@ allocation_pool = {
 
 k0s_instances = [
   {
-    server_name = "k0s-ovh-fr-gra-9"
+    server_name = "k0s-ovh-fr-gra-11-1"
     image_name  = "Rocky Linux 9"
     ostype      = "rhel9"
     addresses   = "172.28.0.4/20"
@@ -76,30 +76,12 @@ storage = {
 
 enable_router = true
 router = {
-  addresses   = "172.28.0.2/20"
-  image_name  = "VyOS with Netmaker and Tailscale"
-  public_ip   = "54.37.162.235"
-  bgp_asn     = 65009
-  flavor_name = "s1-2"
-  ipsec_vpns = [
-    {
-      address = "169.254.19.1/30"
-      peer = {
-        name       = "reindeer"
-        address    = "185.69.137.138"
-        shared_key = ""
-      }
-      bgp = {
-        exports = [
-          "172.28.0.0/20",
-        ]
-        peer = {
-          address = "169.254.19.2"
-          asn     = "65502"
-        }
-      }
-    }
-  ]
+  addresses      = "172.28.0.2/20"
+  image_name     = "VyOS with Netmaker and Tailscale"
+  public_ip      = "54.37.162.235"
+  bgp_asn        = 65009
+  flavor_name    = "s1-2"
+  ipsec_vpns     = []
   root_disk_size = 10
   server_name    = "vyos"
   wireguard_vpns = []
@@ -107,7 +89,7 @@ router = {
   tailscale_vpns = [
     {
       address           = "https://headscale.deepsquare.run"
-      key               = ""
+      key               = "a5b2748c7306fc9b0cfa0a9b173c3c87c5d53087c3217e6e"
       advertised_routes = "172.28.0.0/20"
     }
   ]
@@ -122,5 +104,17 @@ router = {
         asn     = "64503"
       }
     }
+  ]
+  extra_configs = [
+    "set firewall name OUTSIDE-LOCAL rule 100 destination port '51821'",
+    "set firewall name OUTSIDE-LOCAL rule 100 description 'Allow Wireguard'",
+    "set firewall name OUTSIDE-LOCAL rule 100 protocol 'udp'",
+    "set firewall name OUTSIDE-LOCAL rule 100 action 'accept'",
+    "set firewall name OUTSIDE-LOCAL rule 100 log 'enable'",
+    "set firewall name OUTSIDE-LOCAL rule 100 source",
+    "set interfaces wireguard 'wg0' private-key 'pk",
+    "set interfaces wireguard 'wg0' address '169.254.17.4/24'",
+    "set interfaces wireguard 'wg0' port '51821'",
+    "set interfaces wireguard 'wg0' description 'Wireguard Network'",
   ]
 }

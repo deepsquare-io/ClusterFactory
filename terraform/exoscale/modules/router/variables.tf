@@ -126,3 +126,8 @@ variable "bgp" {
     })
   }))
 }
+
+variable "extra_configs" {
+  description = "Extra VyOS configuration"
+  type        = list(string)
+}
