@@ -90,6 +90,48 @@ Since we are doing GitOps, we do not need to use the xCAT provisioning system. T
 
 :::
 
+Our root filesystem is stored inside `/install/netboot/rocky8.6/x86_64/compute/rootimg`.
+
+The file `/install/rocky8.6/x86_64/Packages/compute.rocky8.x86_64.exlist` contains a list files/directories that are trimmed before packing the image.
+
+Create the file and add:
+
+```shell title="/install/rocky8.6/x86_64/Packages/compute.rocky8.x86_64.exlist"
+./boot*
+./usr/include*
+./usr/lib/locale*
+./usr/lib64/perl5/Encode/CN*
+./usr/lib64/perl5/Encode/JP*
+./usr/lib64/perl5/Encode/TW*
+./usr/lib64/perl5/Encode/KR*
+./lib/kbd/keymaps/i386*
+./lib/kbd/keymaps/mac*
+./lib/kdb/keymaps/include*
+./usr/local/include*
+./usr/local/share/man*
+./usr/share/man*
+./usr/share/cracklib*
+./usr/share/doc*
+./usr/share/gnome*
+./usr/share/i18n*
++./usr/share/i18n/en_US*
+./usr/share/info*
+./usr/share/locale/*
++./usr/share/locale/en_US*
++./usr/share/locale/C*
++./usr/share/locale/locale.alias
++./usr/lib/locale/locale-archive
++./usr/lib/locale/en*
+./usr/share/man*
+./usr/share/omf*
+./usr/share/vim/site/doc*
+./usr/share/vim/vim74/doc*
+./usr/share/zoneinfo*
+./var/cache/man*
+./var/lib/yum*
+./tmp*
+```
+
 Edit [accordingly](https://xcat-docs.readthedocs.io/en/stable/guides/admin-guides/basic_concepts/xcat_object/osimage.html), and apply it:
 
 ```shell title="ssh root@xcat"

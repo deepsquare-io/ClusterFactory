@@ -32,7 +32,7 @@ You should always verify the default Helm [values](https://github.com/SquareFact
 
 :::
 
-## Preparation
+## 1. Preparation
 
 **Compared to the other guides we will start from scratch.**
 
@@ -44,6 +44,51 @@ Deploying a SLURM cluster isn't easy and you MUST have these components ready:
 - A MySQL server for the SLURM DB
 - A JWT private key, for the authentication via REST API
 - A MUNGE key, for the authentication of SLURM daemons
+
+### Namespace and AppProject
+
+Create and apply the `Namespace` and `AppProject`:
+
+```yaml title="argo/slurm-cluster/namespace.yaml"
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: slurm-cluster
+  labels:
+    app.kubernetes.io/name: slurm-cluster
+```
+
+```yaml title="argo/slurm-cluster/app-project.yaml"
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: slurm-cluster
+  namespace: argocd
+  # Finalizer that ensures that project is not deleted until it is not referenced by any application
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Slurm cluster
+  # Allow manifests to deploy from any Git repos
+  sourceRepos:
+    - '*'
+  # Only permit applications to deploy to the namespace in the same cluster
+  destinations:
+    - namespace: slurm-cluster
+      server: https://kubernetes.default.svc
+
+  namespaceResourceWhitelist:
+    - kind: '*'
+      group: '*'
+
+  clusterResourceWhitelist:
+    - kind: '*'
+      group: '*'
+```
+
+```shell title="user@local:/ClusterFactory"
+kubectl apply -f argo/slurm-cluster/
+```
 
 ### LDAP deployment
 
@@ -165,7 +210,7 @@ mysql -u root -p -h localhost
 
 ```sql title="Pod: mariadb-0 (sql)"
 create user 'slurm'@'%' identified by '<your password>';
-grant all on slurm_acct_db.* TO 'slurm_acct_db'@'%';
+grant all on slurm_acct_db.* TO 'slurm'@'%';
 create database slurm_acct_db;
 ```
 
@@ -240,51 +285,6 @@ cfctl kubeseal
 
 ```shell title="user@local:/ClusterFactory"
 kubectl apply -f argo/cvmfs/secrets/munge-sealed-secret.yaml
-```
-
-## 1. Namespace and AppProject
-
-Create and apply the `Namespace` and `AppProject`:
-
-```yaml title="argo/slurm-cluster/namespace.yaml"
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: slurm-cluster
-  labels:
-    app.kubernetes.io/name: slurm-cluster
-```
-
-```yaml title="argo/slurm-cluster/app-project.yaml"
-apiVersion: argoproj.io/v1alpha1
-kind: AppProject
-metadata:
-  name: slurm-cluster
-  namespace: argocd
-  # Finalizer that ensures that project is not deleted until it is not referenced by any application
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
-spec:
-  description: Slurm cluster
-  # Allow manifests to deploy from any Git repos
-  sourceRepos:
-    - '*'
-  # Only permit applications to deploy to the namespace in the same cluster
-  destinations:
-    - namespace: slurm-cluster
-      server: https://kubernetes.default.svc
-
-  namespaceResourceWhitelist:
-    - kind: '*'
-      group: '*'
-
-  clusterResourceWhitelist:
-    - kind: '*'
-      group: '*'
-```
-
-```shell title="user@local:/ClusterFactory"
-kubectl apply -f argo/slurm-cluster/
 ```
 
 ## 2. Begin writing the `slurm-cluster-<cluster name>-app.yaml`

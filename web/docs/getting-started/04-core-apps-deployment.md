@@ -97,7 +97,7 @@ spec:
     - main-pool
 ```
 
-That's all! The MetalLB speakers on all the nodes will advertise the IP address `192.168.1.100/32` to the router via ARP. By receiving the advertisement, the router will create a BGP route `192.168.1.100/32 via <ip of the node>`.
+That's all! The MetalLB speakers on all the nodes will advertise the IP address `192.168.1.100/32` to the router via ARP. You can also use an IP in the same subnet as the host.
 
 ## Configuring Traefik
 
@@ -327,6 +327,12 @@ data:
 
 Change the zones with your own and eventually change the `forward` field with your preferred DNS.
 Change, add or remove service names as you wish. The `example.com.db` is only an example.
+
+Kubernetes Services going through the Load Balancer should use the MetalLB IP.
+
+Compute nodes should be declared here. The IP should be the one declared on xCAT.
+
+The slurm controller node should take the IP of the kubernetes node on which the pod is hosted, as it uses `hostPort`.
 
 You should configure the DNS of the machines to use CoreDNS.
 

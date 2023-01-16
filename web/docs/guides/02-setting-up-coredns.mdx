@@ -1,0 +1,375 @@
+# Setting up CoreDNS
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+This guide repeats the same instructions as the [Getting Started](/docs/getting-started/core-apps-deployment#coredns-configuration), but with slighly more descriptions.
+
+## The different entrypoints
+
+To avoid mixing IP, this is a small reminder.
+
+If MetalLB and Multus CNI have been successfully deployed, you now have several types of entry points to access a Kubernetes service.
+
+### The official way: LoadBalancer/NodePort Service
+
+Traefik has been configured to be the main Load Balancer. Its IP can be configured and exposed via MetalLB. Like so:
+
+<Tabs groupId="metallb-config">
+  <TabItem value="l2" label="L2/ARP" default>
+
+```yaml title="core/metallb/address-pools.yaml"
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: main-pool
+  namespace: metallb
+spec:
+  addresses:
+    - 192.168.1.100/32
+```
+
+```yaml title="core/metallb/advertisements.yaml"
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: l2-advertisement
+  namespace: metallb
+spec:
+  ipAddressPools:
+    - main-pool
+```
+
+  </TabItem>
+  <TabItem value="bgp" label="BGP">
+
+```yaml title="core/metallb/address-pools.yaml"
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: main-pool
+  namespace: metallb
+spec:
+  addresses:
+    - 192.168.1.100/32
+```
+
+```yaml title="core/metallb/peers.yaml"
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: main-router
+  namespace: metallb
+spec:
+  myASN: 65001 # MetalLB Speaker ASN (Autonomous System Number)
+  peerASN: 65000 # The router ASN
+  peerAddress: 192.168.0.1 # The router address
+```
+
+```yaml title="core/metallb/advertisements.yaml"
+apiVersion: metallb.io/v1beta1
+kind: BGPAdvertisement
+metadata:
+  name: bgp-advertisement
+  namespace: metallb
+spec:
+  ipAddressPools:
+    - main-pool
+```
+
+  </TabItem>
+</Tabs>
+
+The router will see this address and can forward external traffic to this IP.
+
+To expose a Kubernetes pod, you will need to create a `Service` and an `Ingress`/`IngressRoute`.
+
+The `Service` will expose the pod to the other pods. The `Ingress`/`IngressRoute` will forward the traffic based on rules.
+
+The rules are often based on the domain name, therefore, you have to configure your DNS (or CoreDNS).
+
+**Scenario 1: I want to expose my Kubernetes pod to the world wide web.**
+
+Then, you need to configure the DNS from a domain name registrar (like Google Domains, for example).
+
+The A record (or AAAA record) that you have to add is `my-app.example.com -> <router public ip>`.
+
+If your kubernetes is multi-site and have multiple routers/IPs to the world wide web, you can create 2 DNS records for maximum Load Balancing:
+
+```
+A record (GEO) lb.example.com.  --> <router 1 public ip>
+                                --> <router 2 public ip>
+CNAME record my-app.example.com --> lb.example.com
+```
+
+**Scenario 2: I want to expose my Kubenetes pod to the local network.**
+
+Then, you can use a self-hosted DNS. Luckily, Kubernetes comes with a DNS integrated called CoreDNS.
+
+By default, CoreDNS is exposed to the local network through:
+
+- The `hostPort`s: Kubernetes nodes will have ports 53/udp and 53/tcp open.
+- The Load Balancer: Traefik will have ports 53/udp and 53/tcp open.
+
+You can configure your nodes to have a DNS config like this:
+
+```config title="/etc/resolv.conf"
+nameserver <load balancer IP>
+```
+
+Or like this:
+
+```config title="/etc/resolv.conf"
+nameserver <kubernetes node IP>
+```
+
+To add DNS records, you will need to direcly edit the CoreDNS configuration file:
+
+```yaml title="core/coredns/overlays/prod/configmap.yaml"
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns
+  namespace: kube-system
+  labels:
+    k0s.k0sproject.io/stack: coredns
+data:
+  Corefile: |
+    .:53 {
+      errors
+      health {
+        lameduck 5s
+      }
+      ready
+      kubernetes cluster.local in-addr.arpa ip6.arpa {
+        pods insecure
+        fallthrough in-addr.arpa ip6.arpa
+        ttl 30
+      }
+      prometheus :9153
+      forward . 8.8.8.8
+      cache 30
+      loop
+      reload
+      loadbalance
+      }
+      internal:53 {
+        log
+        errors
+        ready
+        hosts /etc/coredns/internal.db
+        reload
+      }
+
+  internal.db: |
+    <load balancer IP> my-app.internal
+```
+
+```diff title="core/coredns/overlays/prod/deployment.yaml > spec > template > spec > volumes"
+        volumes:
+          - name: config-volume
+            configMap:
+              name: coredns
+              items:
+                - key: Corefile
+                  path: Corefile
++               - key: internal.db
++                 path: internal.db
+              defaultMode: 420
+```
+
+You can test your configuration by using `dig`:
+
+```shell
+# Use host DNS configuration
+dig my-app.internal
+# Explicit DNS server
+dig @<DNS IP> my-app.internal
+```
+
+### The `hostPort` way
+
+Containers can be exposed to the local network by using `hostPort`. `hostPort` will use the Kubernetes host to expose the port.
+
+It is efficient to use `hostPort` when using a DaemonSet. However, when using a Deployment, you will need to "stick" the pod to the node using a `nodeSelector`.
+
+**Scenario 3: I want to expose my Kubenetes pod stuck on the controller node to the local network.**
+
+To add DNS records, you will need to direcly edit the CoreDNS configuration file:
+
+```yaml title="core/coredns/overlays/prod/configmap.yaml"
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns
+  namespace: kube-system
+  labels:
+    k0s.k0sproject.io/stack: coredns
+data:
+  Corefile: |
+    .:53 {
+      errors
+      health {
+        lameduck 5s
+      }
+      ready
+      kubernetes cluster.local in-addr.arpa ip6.arpa {
+        pods insecure
+        fallthrough in-addr.arpa ip6.arpa
+        ttl 30
+      }
+      prometheus :9153
+      forward . 8.8.8.8
+      cache 30
+      loop
+      reload
+      loadbalance
+      }
+      internal:53 {
+        log
+        errors
+        ready
+        hosts /etc/coredns/internal.db
+        reload
+      }
+
+  internal.db: |
+    <kubernetes node IP> my-app.internal
+```
+
+```diff title="core/coredns/overlays/prod/deployment.yaml > spec > template > spec > volumes"
+        volumes:
+          - name: config-volume
+            configMap:
+              name: coredns
+              items:
+                - key: Corefile
+                  path: Corefile
++               - key: internal.db
++                 path: internal.db
+              defaultMode: 420
+```
+
+You can test your configuration by using `dig`:
+
+```shell
+# Use host DNS configuration
+dig my-app.internal
+# Explicit DNS server
+dig @<DNS IP> my-app.internal
+```
+
+### The `ipvlan` way
+
+Using Multus, it is possible to attach an additional network interface to a pod. By using ipvlan like so:
+
+```yaml title="network-attachment-definition.yaml"
+apiVersion: 'k8s.cni.cncf.io/v1'
+kind: NetworkAttachmentDefinition
+metadata:
+  name: my-net
+  namespace: namespace
+spec:
+  config: |
+    {
+      "cniVersion": "0.4.0",
+      "type": "ipvlan",
+      "master": "eth0",
+      "mode": "l2",
+      "ipam": {
+        "type": "static",
+        "addresses": [
+          "<address CIDR: 192.168.0.3/24>"
+        ]
+      }
+    }
+```
+
+```yaml title="pod.yaml"
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp
+  labels:
+    name: myapp
+  annotations:
+    k8s.v1.cni.cncf.io/networks: 'namespace/my-net'
+spec:
+  containers:
+    - name: myapp
+      image: <Image>
+      resources:
+        limits:
+          memory: '128Mi'
+          cpu: '500m'
+      ports:
+        - containerPort: 80
+```
+
+the pod is exposed using the attachment and has the IP 192.168.0.3. Pay attention to the routing! Currently the `192.168.0.0/24` will go through the network interface, but everything else will go to the default Kubernetes network interface.
+
+**Scenario 4: I want to expose my Kubenetes pod to the local network without attaching to a specific node.**
+
+To add DNS records, you will need to direcly edit the CoreDNS configuration file:
+
+```yaml title="core/coredns/overlays/prod/configmap.yaml"
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns
+  namespace: kube-system
+  labels:
+    k0s.k0sproject.io/stack: coredns
+data:
+  Corefile: |
+    .:53 {
+      errors
+      health {
+        lameduck 5s
+      }
+      ready
+      kubernetes cluster.local in-addr.arpa ip6.arpa {
+        pods insecure
+        fallthrough in-addr.arpa ip6.arpa
+        ttl 30
+      }
+      prometheus :9153
+      forward . 8.8.8.8
+      cache 30
+      loop
+      reload
+      loadbalance
+      }
+      internal:53 {
+        log
+        errors
+        ready
+        hosts /etc/coredns/internal.db
+        reload
+      }
+
+  internal.db: |
+    <network attachment IP> my-app.internal
+```
+
+```diff title="core/coredns/overlays/prod/deployment.yaml > spec > template > spec > volumes"
+        volumes:
+          - name: config-volume
+            configMap:
+              name: coredns
+              items:
+                - key: Corefile
+                  path: Corefile
++               - key: internal.db
++                 path: internal.db
+              defaultMode: 420
+```
+
+You can test your configuration by using `dig`:
+
+```shell
+# Use host DNS configuration
+dig my-app.internal
+# Explicit DNS server
+dig @<DNS IP> my-app.internal
+```

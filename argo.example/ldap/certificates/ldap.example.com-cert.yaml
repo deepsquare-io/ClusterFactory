@@ -17,7 +17,7 @@ spec:
     postalCodes: ['1027']
     provinces: [Laud]
     streetAddresses: [Chemin des Mouettes 1]
-  duration: 1y
+  duration: 8760h
   dnsNames:
     - ldap.example.com
     - dirsrv-389ds.ldap.svc.cluster.local

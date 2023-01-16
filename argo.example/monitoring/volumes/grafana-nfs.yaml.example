@@ -2,7 +2,7 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: grafana-nfs
-  namespace: ldap
+  namespace: monitoring
   labels:
     app: grafana
     topology.kubernetes.io/region: ch-sion

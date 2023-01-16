@@ -234,7 +234,7 @@ spec:
     postalCodes: ['1027']
     provinces: [Laud]
     streetAddresses: [Chemin des Mouettes 1]
-  duration: 1y
+  duration: 8760h
   dnsNames:
     - ldap.example.com
     - dirsrv-389ds.ldap.svc.cluster.local
@@ -457,4 +457,55 @@ The database may have been destroyed because of the plugin, `kubectl exec` in th
 ```shell title="pod: dirsrv-389ds-0 (namespace: ldap)"
 dsconf localhost backend create --suffix dc=example,dc=com --be-name example_backend
 dsidm localhost initialise
+```
+
+## Snippets
+
+**Add user:**
+
+```shell title="pod: dirsrv-389ds-0 (namespace: ldap)"
+dsidm -b "dc=example,dc=com" localhost user create \
+  --uid example-user \
+  --cn example-user \
+  --displayName example-user \
+  --homeDirectory "/dev/shm" \
+  --uidNumber -1 \
+  --gidNumber 1600
+```
+
+**Create group:**
+
+```shell title="pod: dirsrv-389ds-0 (namespace: ldap)"
+dsidm -b "dc=example,dc=com" localhost group create \
+  --cn cluster-users
+```
+
+**Add posixGroup property and gidNumber**
+
+```shell title="pod: dirsrv-389ds-0 (namespace: ldap)"
+dsidm -b "dc=example,dc=com" localhost group modify cluster-users \
+ "add:objectClass:posixGroup" \
+ "add:gidNumber:1600"
+```
+
+**Add user to the group**
+
+```shell title="pod: dirsrv-389ds-0 (namespace: ldap)"
+dsidm -b "dc=example,dc=com" localhost group add_member \
+  cluster-users \
+  uid=example-user,ou=people,dc=example,dc=com
+```
+
+**Add a public ssh key to a user**
+
+```shell title="pod: dirsrv-389ds-0 (namespace: ldap)"
+dsidm -b "dc=example,dc=com" localhost user modify \
+  example-user add:nsSshPublicKey:"...."
+```
+
+**Set user password**
+
+```shell title="pod: dirsrv-389ds-0 (namespace: ldap)"
+dsidm -b "dc=example,dc=com" localhost user modify \
+  example-user add:userPassword:"...."
 ```

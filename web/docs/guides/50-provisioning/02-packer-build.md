@@ -171,7 +171,7 @@ The `packages` and `post` blocks are probably what you are interested in.
 Run packer with:
 
 ```shell title="user@local:/ClusterFactory/packer-recipes/rocky"
-packer build -ver "numvcpus=12" -var "memsize=23609" rocky.nothing.json
+packer build -var "numvcpus=12" -var "memsize=23609" rocky.nothing.json
 ```
 
 The next steps is to export to xCAT, which can be a little tricky.

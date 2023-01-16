@@ -178,11 +178,11 @@ login:
 
 You should be able to see the login nodes as targets on the Prometheus Dashboard:
 
-![image-20230110140546824](./02-setting-up-dashboards.assets/image-20230110140546824.png)
+![image-20230110140546824](./03-setting-up-dashboards.assets/image-20230110140546824.png)
 
 The dashboard ID is 4323, and can be reviewed here: [grafana.com/grafana/dashboards/4323-slurm-dashboard](https://grafana.com/grafana/dashboards/4323-slurm-dashboard/).
 
-![grafana-dashboard](./02-setting-up-dashboards.assets/image.png)
+![grafana-dashboard](./03-setting-up-dashboards.assets/image.png)
 
 You can import the dashboard following this [guide](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/).
 
