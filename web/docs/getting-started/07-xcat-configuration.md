@@ -391,6 +391,48 @@ packimage -m squashfs -c pigz rocky8.6-x86_64-netboot-compute
 
 More details [here](https://xcat-docs.readthedocs.io/en/stable/guides/admin-guides/references/man5/osimage.5.html).
 
+:::danger
+
+When using a diskless configuration, the image generated loses its linux capabilities.
+
+To determine which capabilities you need to restore, move to `/install/netboot/rocky8.6/x86_64/compute/rootimg` inside the xCAT container and run:
+
+```shell title="ssh root@xcat:/install/netboot/rocky8.6/x86_64/compute/rootimg"
+{
+    echo "#!/bin/bash"
+    echo "cd /"
+    find . |xargs getcap|awk -F= '{print "setcap" $2 " " $1}'
+} > restorecap
+chmod +x restorecap
+mv restorecap /install/postscripts/restorecap
+```
+
+This command will create a `restorecap` script that you will need to add as postscript:
+
+```shell title="mystanzafile"
+rocky8.6-x86_64-netboot-compute:
+    objtype=osimage
+    exlist=/install/rocky8.6/x86_64/Packages/compute.rocky8.x86_64.exlist
+    imagetype=linux
+    kernelver=4.18.0-305.17.1.el8_4.x86_64
+    osarch=x86_64
+    osname=Linux
+    osvers=rocky8.6
+    permission=755
+    postbootscripts=restorecap,git-configs-execute its-a-fake-password-dont-worry compute
+    profile=compute
+    provmethod=netboot
+    pkgdir=/tmp
+    pkglist=/dev/null
+    rootimgdir=/install/netboot/rocky8.6/x86_64/compute
+```
+
+```shell title="ssh root@xcat"
+cat mystanzafile | mkdef -z
+```
+
+:::
+
 ## Node configuration
 
 ```shell title="mystanzafile"
