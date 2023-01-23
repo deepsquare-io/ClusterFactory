@@ -1,11 +1,11 @@
 # Core Version
-argocd_version=5.19.3
+argocd_version=5.19.5
 sealed_secrets_version=2.7.3
 kubevirt_version=v0.59.0-alpha.2
 coredns_version=1.10.0
 
 # Utils Version
-cfctl_version=v0.15.0-rc.1+9001
+cfctl_version=v0.15.0+9001
 kubeseal_version=0.19.4
 helm_version=v3.11.0
 etcdctl_version=v3.5.7
