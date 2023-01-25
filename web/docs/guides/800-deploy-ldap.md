@@ -383,9 +383,9 @@ Based on what you want, you can add `uniqueness` attributes to some fields:
 
 ```shell title="pod: dirsrv-389ds-0 (namespace: ldap)"
 # Unique mail
-dsconf localhost plugin attr-uniq add "mail attribute uniqueness" --attr-name mail --subtree "dc=people,dc=example,dc=com"
+dsconf localhost plugin attr-uniq add "mail attribute uniqueness" --attr-name mail --subtree "opu=people,dc=example,dc=com"
 # Unique uid
-dsconf localhost plugin attr-uniq add "uid attribute uniqueness" --attr-name uid --subtree "dc=people,dc=example,dc=com"
+dsconf localhost plugin attr-uniq add "uid attribute uniqueness" --attr-name uid --subtree "ou=people,dc=example,dc=com"
 # Unique uid number
 dsconf localhost plugin attr-uniq add "uidNumber attribute uniqueness" --attr-name uidNumber --subtree "dc=example,dc=com"
 # Unique gid number
