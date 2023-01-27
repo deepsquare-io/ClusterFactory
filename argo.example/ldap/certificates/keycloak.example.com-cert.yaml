@@ -1,0 +1,23 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: keycloak.example.com-cert
+spec:
+  secretName: keycloak.example.com-secret
+  issuerRef:
+    name: private-cluster-issuer
+    kind: ClusterIssuer
+  commonName: keycloak.example.com
+  subject:
+    countries: [CH]
+    localities: [Lonay]
+    organizationalUnits: []
+    organizations: [Example Org]
+    postalCodes: ['1027']
+    provinces: [Laud]
+    streetAddresses: [Chemin des Mouettes 1]
+  dnsNames:
+    - keycloak.example.com
+  privateKey:
+    size: 4096
+    algorithm: RSA

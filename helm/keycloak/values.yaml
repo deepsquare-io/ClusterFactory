@@ -1,0 +1,86 @@
+replicas: 1
+
+image:
+  repository: 'quay.io/keycloak/keycloak'
+  tag: ''
+imagePullPolicy: 'IfNotPresent'
+
+labels: {}
+annotations: {}
+
+resources:
+  {}
+  # requests:
+  #   # Beware that to low cpu will kill the container.
+  #   cpu: 300m
+  #   memory: 512Mi
+  # limits:
+  #   memory: 512Mi
+
+nodeAffinity: {}
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 1
+
+livenessProbe:
+  initialDelaySeconds: 30
+  timeoutSeconds: 10
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 10
+readinessProbe:
+  timeoutSeconds: 10
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 5
+
+# How long to wait to stop gracefully
+terminationGracePeriod: 10
+
+## Use an alternate scheduler.
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+schedulerName: ''
+
+imagePullSecrets: {}
+
+nodeSelector: {}
+tolerations: []
+
+initContainers: []
+
+## TLS MUST be mounted on the container.
+##
+## Use `Certificate` from cert-manager to generate and maintains certificates.
+##
+## Then, when creating Ingresses, makes sure the Ingresses are using TLS passthrough.
+## For example, with Traefik, you should create a IngressRouteTCP to keycloak:8443 with tls passthrough.
+tls:
+  ## Secret containing tls.key and tls.crt
+  secretName: ''
+
+env:
+  ## Secret containing:
+  ## KEYCLOAK_ADMIN: admin
+  ## KEYCLOAK_ADMIN_PASSWORD: <admin-password>
+  ## KC_DB: mariadb
+  ## KC_DB_USERNAME: keycloak
+  ## KC_DB_PASSWORD: <db password>
+  ## KC_DB_URL: 'jdbc:mariadb://mariadb.mariadb.svc.cluster.local:3306/keycloak_db'
+  ## KC_HOSTNAME: <domain name>
+  ##
+  ## Make sure to create the DB user on mariadb.
+  secretName: ''
+
+# Extra volume mounts
+volumeMounts: []
+
+# Extra volumes
+volumes: []
+
+service:
+  enabled: true
+  type: ClusterIP

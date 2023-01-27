@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: keycloak-http
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: keycloak.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: keycloak-keycloak
+                port:
+                  name: http
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: keycloak-https
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: HostSNI(`keycloak.example.com`)
+      services:
+        - name: keycloak-keycloak
+          port: 8443
+  tls:
+    passthrough: true

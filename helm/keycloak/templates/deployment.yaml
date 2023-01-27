@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ template "keycloak.fullname" . }}"
+  labels:
+    app: "{{ template "keycloak.fullname" . }}"
+spec:
+  selector:
+    matchLabels:
+      app: "{{ template "keycloak.fullname" . }}"
+  replicas: {{ .Values.replicas }}
+  strategy:
+{{ toYaml .Values.strategy | trim | indent 4 }}
+  template:
+    metadata:
+      name: "{{ template "keycloak.fullname" . }}"
+      labels:
+        app: "{{ template "keycloak.fullname" . }}"
+{{- if .Values.labels }}
+{{ toYaml .Values.labels | indent 8 }}
+{{- end }}
+{{- if .Values.annotations }}
+      annotations:
+{{ toYaml .Values.annotations | indent 8 }}
+{{- end }}
+    spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.nodeAffinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriod }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
+      initContainers:
+      {{- if .Values.initContainers }}
+{{ toYaml .Values.initContainers | indent 8 }}
+      {{- end }}
+      {{- if .Values.dnsPolicy }}
+      dnsPolicy: "{{ .Values.dnsPolicy }}"
+      {{- end }}
+      {{- if .Values.dnsConfig }}
+      dnsConfig:
+{{ toYaml .Values.dnsConfig | indent 8 }}
+      {{- end }}
+      containers:
+        - name: "{{ template "keycloak.fullname" . }}"
+          image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+          args:
+            - 'start'
+            # Rebuild DB drivers
+            - '--auto-build'
+            # Enable HTTP
+            - '--http-enabled=true'
+            # Mount TLS certs
+            - '--https-certificate-file=/certs/tls.crt'
+            - '--https-certificate-key-file=/certs/tls.key'
+            # Allow reverse proxy
+            - '--proxy=edge'
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: https
+              containerPort: 8443
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+{{ toYaml .Values.readinessProbe | indent 12 }}
+          livenessProbe:
+            httpGet:
+              path: /realms/master
+              port: 8080
+{{ toYaml .Values.livenessProbe | indent 12 }}
+          volumeMounts:
+            - mountPath: /certs
+              name: certs
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          envFrom:
+            - secretRef:
+                name: "{{ .Values.env.secretName }}"
+      volumes:
+        - name: keycloak-certs
+          secret:
+            secretName:  "{{ .Values.tls.secretName }}"
+        {{- if .Values.volumes }}
+{{ toYaml .Values.volumes | indent 8 }}
+        {{- end }}

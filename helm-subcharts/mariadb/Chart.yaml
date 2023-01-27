@@ -1,0 +1,11 @@
+apiVersion: v2
+name: mariadb-subchart
+description: MariaDB subchart
+type: application
+version: 11.0.14
+appVersion: '11.0.14'
+
+dependencies:
+  - name: mariadb
+    version: 11.4.4
+    repository: https://charts.bitnami.com/bitnami
