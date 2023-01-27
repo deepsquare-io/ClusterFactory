@@ -208,7 +208,7 @@ spec:
             - mountPath: /var/lib/ondemand-nginx/tmp
               name: tmp
               subPath: nginx-tmp
-            {{- if .Values.ondemand.enabled }}
+            {{- if .Values.ondemand.tls.enabled }}
             - name: certs-with-perms
               mountPath: /tls/
             {{- end }}
