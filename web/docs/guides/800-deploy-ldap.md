@@ -509,3 +509,12 @@ dsidm -b "dc=example,dc=com" localhost user modify \
 dsidm -b "dc=example,dc=com" localhost user modify \
   example-user add:userPassword:"...."
 ```
+
+**Adding indexes**
+
+```shell title="pod: dirsrv-389ds-0 (namespace: ldap)"
+dsconf localhost backend index add --index-type eq --attr uidNumber example_backend
+dsconf localhost backend index add --index-type eq --attr gidNumber example_backend
+dsconf localhost backend index add --index-type eq --attr nsSshPublicKey example_backend
+dsconf localhost backend index reindex example_backend
+```
