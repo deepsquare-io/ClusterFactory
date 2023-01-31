@@ -8,6 +8,10 @@ metadata:
     chart: '{{ .Chart.Name }}'
     app: "{{ template "cvmfs-server.name" . }}"
 data:
+  default.local: |
+    {{- range $name, $value := .Values.config.default }}
+    {{ $name }}={{ $value | quote }}
+    {{- end }}
   server.local: |
     {{- range $name, $value := .Values.config.server }}
     {{ $name }}={{ $value | quote }}

@@ -4,35 +4,31 @@ dnsPolicy: 'None'
 dnsConfig:
   nameservers:
     - 10.96.0.10
-  searches:
-    - slurm-cluster.svc.cluster.local
-    - example.com
   options:
     - name: ndots
       value: '0'
 
 nodeSelector:
-  kubernetes.io/hostname: mn1.example.com
-  topology.kubernetes.io/region: ch-sion
-  topology.kubernetes.io/zone: ch-sion-1
+  kubernetes.io/hostname: k0s-bare-ch-basel-1
+  topology.kubernetes.io/region: ch-basel
+  topology.kubernetes.io/zone: ch-basel-1
 
 config:
   replicas:
-    - name: stdenv.sion.csquare.run
-      url: http://cvmfs.ch1.deepsquare.run/cvmfs/stdenv.sion.csquare.run
-      keys: /etc/cvmfs/keys/sion.csquare.run
+    - name: repo.example.com
+      url: https://cvmfs-0.example.com/cvmfs/repo.example.com
+      keys: /etc/cvmfs/keys/example.com
       options: '-o root'
 
 volumeMounts:
-  - name: sion-csquare-run-keys
-    mountPath: /etc/cvmfs/keys/sion.csquare.run/stdenv.sion.csquare.run.pub
-    subPath: stdenv.sion.csquare.run.pub
+  - name: cvmfs-keys
+    mountPath: /etc/cvmfs/keys/example.com
     readOnly: true
 
 volumes:
-  - name: sion-csquare-run-keys
+  - name: cvmfs-keys
     secret:
-      secretName: sion-csquare-run-keys-secret
+      secretName: cvmfs-keys-secret
       defaultMode: 256
 
 state:
@@ -40,3 +36,20 @@ state:
 
 storage:
   storageClassName: 'local-path'
+
+ingress:
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: production-cluster-issuer
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: 'true'
+
+  ingressClass: 'traefik'
+
+  hosts:
+    - cvmfs-1.example.com
+
+  tls:
+    - secretName: cvmfs-1.example.com-secret
+      hosts:
+        - cvmfs-1.example.com

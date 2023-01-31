@@ -102,6 +102,10 @@ spec:
               mountPath: /etc/cvmfs/server.local
               subPath: server.local
               readOnly: true
+            - name: cvmfs-config
+              mountPath: /etc/cvmfs/default.local
+              subPath: default.local
+              readOnly: true
             - mountPath: /tmp
               name: tmp
               subPath: tmp

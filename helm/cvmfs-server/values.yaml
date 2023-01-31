@@ -1,12 +1,20 @@
 replicas: 1
 
-image: 'ghcr.io/squarefactory/cvmfs-server:1.0.0'
+image: 'ghcr.io/squarefactory/cvmfs-server:1.1.0'
 imagePullPolicy: 'IfNotPresent'
 
 labels: {}
 annotations: {}
 
 config:
+  default:
+    CVMFS_QUOTA_LIMIT: '-1'
+    CVMFS_USE_GEOAPI: 'no'
+    CVMFS_HTTP_PROXY: 'DIRECT'
+    CVMFS_KEYS_DIR: '/etc/cvmfs/keys'
+    CVMFS_USER: root
+    CVMFS_USE_SSL_SYSTEM_CA: 'true'
+    X509_CERT_BUNDLE: /etc/ssl/certs/ca-bundle.trust.crt
   server:
     CVMFS_GEO_DB_FILE: NONE
   replicas:
