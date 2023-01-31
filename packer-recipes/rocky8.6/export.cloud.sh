@@ -1,3 +1,4 @@
 #!/bin/sh
 
-AWS_PROFILE=exoscale s5cmd --endpoint-url https://sos-at-vie-1.exo.io run commands.s5cmd
+s3cmd --acl-public put output-cloud-gpu/packer-cloud-gpu put s3://compute-custom-template-de-fra/cn-template-gpu.qcow2
+s3cmd --acl-public put output-cloud-light/packer-cloud-light put s3://compute-custom-template-de-fra/cn-template-light.qcow2
