@@ -87,7 +87,7 @@ spec:
 {{ toYaml .Values.livenessProbe | indent 12 }}
           volumeMounts:
             - mountPath: /certs
-              name: certs
+              name: keycloak-certs
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           envFrom:
