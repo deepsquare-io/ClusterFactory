@@ -1,4 +1,4 @@
-image: docker.io/cvmfs/service:2.10.0-1
+image: ghcr.io/squarefactory/cvmfs-service:latest
 
 resources:
   limits:
@@ -46,6 +46,8 @@ configs:
       CVMFS_USE_GEOAPI=no
       CVMFS_HTTP_PROXY="DIRECT"
       CVMFS_KEYS_DIR="/etc/cvmfs/keys"
+      CVMFS_DEBUGLOG=/cvmfs/cvmfs.log
+      #CVMFS_SERVER_URL="https://cvmfs.example.com/cvmfs/@fqrn@"
       #CVMFS_USE_SSL_SYSTEM_CA=true
       #X509_CERT_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 
@@ -69,7 +71,7 @@ initContainers: []
 #     args:
 #       - -k
 #       - -fL
-#       - https://curl.se/ca/cacert-2022-07-19.pem
+#       - https://curl.se/ca/cacert-2023-01-10.pem
 #       - -o
 #       - /out/ca-certificates.crt
 #     volumeMounts:
