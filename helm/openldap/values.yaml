@@ -1,6 +1,6 @@
 replicas: 1
 
-image: 'docker.io/bitnami/openldap:2.6.3'
+image: 'docker.io/bitnami/openldap:2.6.4'
 imagePullPolicy: 'IfNotPresent'
 
 labels: {}
