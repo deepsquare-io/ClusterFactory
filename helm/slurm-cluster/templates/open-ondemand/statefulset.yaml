@@ -295,7 +295,7 @@ spec:
         name: dex-state
       spec:
         accessModes: {{ .Values.ondemand.dex.persistence.accessModes }}
-        storageClassName: "{{ .Values.ondemand.persistence.storageClassName }}"
+        storageClassName: "{{ .Values.ondemand.dex.persistence.storageClassName }}"
         resources:
           requests:
             storage: {{ .Values.ondemand.dex.persistence.size }}
