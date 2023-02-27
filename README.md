@@ -18,6 +18,7 @@ This repository is where [SquareFactory](https://www.squarefactory.io) develops 
 - Mirror of DeepSquare's software library (end user software) by using [CVMFS Stratum 1](https://docs.clusterfactory.io/docs/main-concepts/apps/cvmfs)
 - A web-based HPC user portal Open Ondemand
 - Monitoring stack (Grafana, Prometheus with ready-to-use exporters)
+- Easiest way to join the [DeepSquare](https://deepsquare.io) Grid
 
 ## Getting started
 
@@ -33,11 +34,11 @@ out the [Contributing Guide](./CONTRIBUTING.md).
 
 ## Motivation
 
-For [DeepSquare](https://deepsquare.io), we wish to develop applications for the DeepSquare Grid. Because of that, our infrastructure uses a lot of HPC technologies,
-which makes it difficult to scale. We believe that **flexibity**, **repeatability**, **availability** and **ease of use** should be prioritized
+ClusterFactory makes the process of deploying a full fledge HPC cluster and join the [DeepSquare](https://deepsquare.io) Grid fast and easy.
+We believe that **flexibity**, **repeatability**, **availability** and **ease of use** should be prioritized
 for managing and scaling HPC clusters.
 
-This is why we are developing ClusterFactory:
+ClusterFactory has been developed to be:
 
 - **Performance-oriented**: Integrates a key-in-hand HPC stack including Slurm, MPI, DFS, etc.
 - **Highly configurable**: With Helm, all configuration is done in a single `values.yaml` file.

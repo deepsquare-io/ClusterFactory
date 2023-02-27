@@ -7,7 +7,7 @@ helm repo update
 
 helm upgrade --install \
   -n traefik \
-  --version 20.8.0 \
+  --version 21.1.0 \
   traefik \
   -f "${BASEDIR}/values.yaml" \
   traefik/traefik \
