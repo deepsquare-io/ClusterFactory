@@ -3,7 +3,7 @@ terraform {
   required_providers {
     openstack = {
       source  = "terraform-provider-openstack/openstack"
-      version = "~> 1.49.0"
+      version = "~> 1.50.0"
     }
     cidr = {
       source  = "volcano-coffee-company/cidr"
