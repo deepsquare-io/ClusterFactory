@@ -1,0 +1,192 @@
+harbor:
+  expose:
+    type: ingress
+    tls:
+      enabled: true
+      certSource: secret
+      secret:
+        secretName: 'registry-1.example.com'
+        notarySecretName: 'notary.example.com'
+    ingress:
+      hosts:
+        core: registry-1.example.com
+        notary: notary.example.com
+      controller: default
+      className: 'traefik'
+      annotations:
+        cert-manager.io/cluster-issuer: production-cluster-issuer
+        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+        traefik.ingress.kubernetes.io/router.tls: 'true'
+      notary:
+        # notary ingress-specific annotations
+        annotations: {}
+        # notary ingress-specific labels
+        labels: {}
+      harbor:
+        # harbor ingress-specific annotations
+        annotations: {}
+        # harbor ingress-specific labels
+        labels: {}
+
+  externalURL: https://registry-1.example.com
+
+  internalTLS:
+    enabled: false
+
+  # The persistence is enabled by default and a default StorageClass
+  # is needed in the k8s cluster to provision volumes dynamically.
+  # Specify another StorageClass in the "storageClass" or set "existingClaim"
+  # if you already have existing persistent volumes to use
+  #
+  # For storing images and charts, you can also use "azure", "gcs", "s3",
+  # "swift" or "oss". Set it in the "imageChartStorage" section
+  persistence:
+    enabled: true
+    # Setting it to "keep" to avoid removing PVCs during a helm delete
+    # operation. Leaving it empty will delete PVCs after the chart deleted
+    # (this does not apply for PVCs that are created for internal database
+    # and redis components, i.e. they are never deleted automatically)
+    resourcePolicy: 'keep'
+    persistentVolumeClaim:
+      registry:
+        existingClaim: ''
+        storageClass: 'harbor-nfs'
+        subPath: ''
+        accessMode: ReadWriteMany
+        size: 5Gi
+        annotations: {}
+      chartmuseum:
+        existingClaim: ''
+        storageClass: 'harbor-nfs'
+        subPath: ''
+        accessMode: ReadWriteMany
+        size: 5Gi
+        annotations: {}
+      jobservice:
+        jobLog:
+          existingClaim: ''
+          storageClass: 'harbor-nfs'
+          subPath: ''
+          accessMode: ReadWriteOnce
+          size: 1Gi
+          annotations: {}
+        scanDataExports:
+          existingClaim: ''
+          storageClass: 'harbor-nfs'
+          subPath: ''
+          accessMode: ReadWriteOnce
+          size: 1Gi
+          annotations: {}
+      # If external database is used, the following settings for database will
+      # be ignored
+      database:
+        existingClaim: ''
+        storageClass: 'harbor-nfs'
+        subPath: ''
+        accessMode: ReadWriteOnce
+        size: 1Gi
+        annotations: {}
+      # If external Redis is used, the following settings for Redis will
+      # be ignored
+      redis:
+        existingClaim: ''
+        storageClass: 'harbor-nfs'
+        subPath: ''
+        accessMode: ReadWriteOnce
+        size: 1Gi
+        annotations: {}
+      trivy:
+        existingClaim: ''
+        storageClass: 'harbor-nfs'
+        subPath: ''
+        accessMode: ReadWriteOnce
+        size: 5Gi
+        annotations: {}
+    # Define which storage backend is used for registry and chartmuseum to store
+    # images and charts. Refer to
+    # https://github.com/docker/distribution/blob/master/docs/configuration.md#storage
+    # for the detail.
+    imageChartStorage:
+      # Specify whether to disable `redirect` for images and chart storage, for
+      # backends which not supported it (such as using minio for `s3` storage type), please disable
+      # it. To disable redirects, simply set `disableredirect` to `true` instead.
+      # Refer to
+      # https://github.com/docker/distribution/blob/master/docs/configuration.md#redirect
+      # for the detail.
+      disableredirect: false
+      # Specify the "caBundleSecretName" if the storage service uses a self-signed certificate.
+      # The secret must contain keys named "ca.crt" which will be injected into the trust store
+      # of registry's and chartmuseum's containers.
+      # caBundleSecretName:
+
+      # Specify the type of storage: "filesystem", "azure", "gcs", "s3", "swift",
+      # "oss" and fill the information needed in the corresponding section. The type
+      # must be "filesystem" if you want to use persistent volumes for registry
+      # and chartmuseum
+      type: filesystem
+      filesystem:
+        rootdirectory: /storage
+        #maxthreads: 100
+
+  imagePullPolicy: IfNotPresent
+
+  # The initial password of Harbor admin. Change it from portal after launching Harbor
+  # or give an existing secret for it
+  # key in secret is given via (default to HARBOR_ADMIN_PASSWORD)
+  existingSecretAdminPassword: harbor-secret
+  existingSecretAdminPasswordKey: HARBOR_ADMIN_PASSWORD
+
+  # If using existingSecretSecretKey, the key must be secretKey
+  existingSecretSecretKey: 'harbor-secret'
+
+  portal:
+    replicas: 2
+
+  core:
+    replicas: 2
+
+  jobservice:
+    replicas: 2
+
+  registry:
+    replicas: 2
+
+  chartmuseum:
+    enabled: false
+
+    replicas: 2
+
+  notary:
+    enabled: false
+    server:
+      replicas: 2
+
+    signer:
+      replicas: 2
+
+  trivy:
+    enabled: true
+
+    gitHubToken: ''
+
+  database:
+    type: internal
+
+  redis:
+    type: internal
+
+  metrics:
+    enabled: true
+
+  trace:
+    enabled: false
+
+  # cache layer configurations
+  # if this feature enabled, harbor will cache the resource
+  # `project/project_metadata/repository/artifact/manifest` in the redis
+  # which help to improve the performance of high concurrent pulling manifest.
+  cache:
+    # default is not enabled.
+    enabled: true
+    # default keep cache for one day.
+    expireHours: 24

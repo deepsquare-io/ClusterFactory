@@ -1,0 +1,11 @@
+apiVersion: v2
+name: harbor-subchart
+description: Harbot subchart
+type: application
+version: 1.11.1
+appVersion: '1.11.1'
+
+dependencies:
+  - name: harbor
+    version: 1.11.1
+    repository: https://helm.goharbor.io/
