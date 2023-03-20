@@ -1,0 +1,10 @@
+controller:
+  nodeSelector:
+    # Host the metallb controller
+    #node-role.kubernetes.io/control-plane: 'true'
+
+speaker:
+  nodeSelector:
+    # Only announce from the control-plane.
+    # The control-plane will act as a Load Balancer.
+    #node-role.kubernetes.io/control-plane: 'true'
