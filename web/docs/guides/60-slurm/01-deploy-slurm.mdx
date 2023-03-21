@@ -1105,7 +1105,10 @@ If the controller is running, the nodes should automatically receive the `slurm.
 
 #### SSH Server configuration
 
-The login nodes are exposed to the external network using Multus CNI and the IPVLAN plugin. This is to expose the `srunPortRange` and the SSH port.
+The login nodes can be exposed to the external network using Multus CNI and the IPVLAN plugin. This is to expose the `srunPortRange` and the SSH port.
+
+If you don't plan to use `srun` and prefer `sbatch`, we recommend to use a simple Kubernetes Service to expose the login nodes.
+
 Thanks to SSSD, the users can log in to the nodes using SSH using the passwords stored in LDAP.
 
 We have to generate the SSH host keys:
@@ -1276,23 +1279,51 @@ login:
       persistentVolumeClaim:
         claimName: ldap-users-<cluster name>-pvc
 
+  service:
+    enabled: true
+    type: ClusterIP
+    # Use LoadBalancer to expose via MetalLB
+    # type: LoadBalancer
+
+    # annotations:
+    #   metallb.universe.tf/address-pool: slurm-ch-basel-1-pool
+
+  # Expose via IPVLAN, can be unstable.
+  # Using IPVLAN permits srun commands.
   net:
+    enabled: false
     # Kubernetes host interface
+    type: ipvlan
     masterInterface: eth0
     mode: l2
-    type: ipvlan
 
     # https://www.cni.dev/plugins/current/ipam/static/
     ipam:
-      type: host-local
-      ranges:
-        - - subnet: 192.168.0.0/24
-            rangeStart: 192.168.0.20
-            rangeEnd: 192.168.0.21
-            gateway: 192.168.0.1
+      type: static
+      addresses:
+        - address: 192.168.0.20/24
+          gateway: 192.168.0.1
 ```
 
 Edit the values accordingly.
+
+:::warning
+
+**Service or IPVLan?**
+
+A Kubernetes Service offers a lot of advantages while IPVLan offers a solution to a problem.
+
+It is **extremely** recommended to use a Kubernetes service to expose your connection node as it provides load balancing and is easy to configure.
+
+| Kubernetes LoadBalancer Service                              | Multus CNI                                                   |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| A LoadBalancer service provides limited control over networking, as it only provides a single IP address for a Kubernetes service. | IPVLan with Multus allows you to have more fine-grained control over networking by enabling you to use multiple network interfaces in a pod, each with its own IP address and route table. |
+| A LoadBalancer service is a simple and straightforward way to expose a Kubernetes service to the internet. | Setting up IPVLan with Multus can be more complex than using a simple LoadBalancer service, as it requires more configuration and setup time. |
+| A LoadBalancer service can only expose a set of ports.       | Using IPVLan with Multus will allow a pod to directly connect to the host network. |
+
+**As a result, using a Kubernetes LoadBalancer service will render the Slurm `srun` commands inoperable (although `sbatch` will work and is the preferred method for job submission). On the other hand, adopting Multus CNI eliminates the load balancing feature, but could lead to instability.**
+
+:::
 
 :::warning
 
@@ -1302,12 +1333,10 @@ For example, if we have two sites `10.10.0.0/24` and `10.10.1.0/24`, you would w
 
 ```yaml
 ipam:
-  type: host-local
-  ranges:
-    - - subnet: 10.10.0.0/24
-        rangeStart: 10.10.0.20
-        rangeEnd: 10.10.0.21
-        gateway: 10.10.0.1
+  type: static
+  addresses:
+    - address: 192.168.0.20/24
+      gateway: 192.168.0.1
   routes:
     - dst: 10.10.1.0/24
 ```

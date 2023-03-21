@@ -33,7 +33,7 @@ sleep 10
 kubectl wait deployments --timeout=300s metallb-controller -n metallb --for condition=Available
 
 section "Deploy MetalLB configuration"
-kubectl apply -f "${PROJECTDIR}/${COREDIR}/metallb"
+kubectl apply -k "${PROJECTDIR}/${COREDIR}/metallb"
 
 # section "Deploy kubevirt (virtual machines deployments)"
 # # Updating is only supported to n-1 to n. Be warned.

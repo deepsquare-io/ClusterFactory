@@ -27,10 +27,12 @@ spec:
 {{ toYaml .Values.login.labels | indent 8 }}
 {{- end }}
       annotations:
-{{- if not .Values.login.networks }}
-        k8s.v1.cni.cncf.io/networks: "{{ .Release.Namespace }}/{{ template "slurm-cluster.login.name" . }}-net"
-{{- else }}
+{{- if .Values.login.networks }}
         k8s.v1.cni.cncf.io/networks: {{ .Values.login.networks | toJson }}
+{{- else }}
+{{- if .Values.login.net.enabled }}
+        k8s.v1.cni.cncf.io/networks: "{{ .Release.Namespace }}/{{ template "slurm-cluster.login.name" . }}-net"
+{{- end }}
 {{- end }}
 {{- if .Values.login.annotations }}
 {{ toYaml .Values.login.annotations | indent 8 }}

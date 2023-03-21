@@ -1,4 +1,4 @@
-{{- if .Values.login.enabled }}
+{{- if and .Values.login.enabled .Values.login.net.enabled }}
 apiVersion: 'k8s.cni.cncf.io/v1'
 kind: NetworkAttachmentDefinition
 metadata:

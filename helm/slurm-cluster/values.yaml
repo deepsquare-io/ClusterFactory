@@ -343,7 +343,19 @@ login:
   # Extra volumes
   volumes: []
 
+  service:
+    enabled: true
+    type: ClusterIP
+    # Use LoadBalancer to expose via MetalLB
+    # type: LoadBalancer
+
+    # annotations:
+    #   metallb.universe.tf/address-pool: slurm-ch-basel-1-pool
+
+  # Expose via IPVLAN, can be unstable.
+  # Using IPVLAN permits srun commands.
   net:
+    enabled: false
     # Kubernetes host interface
     type: ipvlan
     masterInterface: eth0
@@ -351,17 +363,18 @@ login:
 
     # https://www.cni.dev/plugins/current/ipam/static/
     ipam:
-      type: host-local
-      ranges:
+      type: static
+      addresses:
         []
-        # - - subnet: 10.10.2.0/24
-        #     rangeStart: 10.10.2.46
-        #     rangeEnd: 10.10.2.50
-        #     gateway: 10.10.2.1
-
-  service:
-    enabled: true
-    type: ClusterIP
+        # - address: 10.10.2.160/24
+        #   gateway: 10.10.2.1
+      # Use host-local if there is multiple replicas
+      # type: host-local
+      # ranges:
+      #   - - subnet: 10.10.2.0/24
+      #       rangeStart: 10.10.2.46
+      #       rangeEnd: 10.10.2.50
+      #       gateway: 10.10.2.1
 
   # Slurm REST API
   rest:
