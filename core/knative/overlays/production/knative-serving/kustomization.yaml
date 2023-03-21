@@ -1,0 +1,6 @@
+namespace: knative-serving
+resources:
+  - ../../../base/knative-serving
+  - ingress-route.yaml
+patchesStrategicMerge:
+  - knative-serving.yaml

@@ -1,0 +1,7 @@
+namespace: kube-system
+resources:
+  - ../../base
+  - ingress-route.yaml
+patchesStrategicMerge:
+  - daemonset.yaml
+  - configmap.yaml

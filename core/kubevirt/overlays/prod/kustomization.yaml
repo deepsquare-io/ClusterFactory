@@ -1,0 +1,5 @@
+namespace: kubevirt
+resources:
+  - ../../base
+patchesStrategicMerge:
+  - kubevirt-cr.yaml

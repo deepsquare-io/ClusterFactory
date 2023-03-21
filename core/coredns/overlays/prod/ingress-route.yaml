@@ -1,0 +1,35 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: dns-tcp
+  labels:
+    app.kubernetes.io/name: dns-tcp
+    app.kubernetes.io/component: ingress-route-tcp
+
+spec:
+  entryPoints:
+    - dns-tcp
+  routes:
+    - match: HostSNI(`*`)
+      services:
+        - name: kube-dns
+          namespace: kube-system
+          port: 53
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteUDP
+metadata:
+  name: dns-udp
+  labels:
+    app.kubernetes.io/name: dns-udp
+    app.kubernetes.io/component: ingress-route-udp
+
+spec:
+  entryPoints:
+    - dns-udp
+  routes:
+    - services:
+        - name: kube-dns
+          namespace: kube-system
+          port: 53

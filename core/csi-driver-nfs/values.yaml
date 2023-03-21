@@ -1,0 +1,3 @@
+driver:
+  mountPermissions: 0775
+kubeletDir: /var/lib/k0s/kubelet

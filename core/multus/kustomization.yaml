@@ -1,0 +1,4 @@
+resources:
+  - https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset.yml
+patchesStrategicMerge:
+  - daemonset.yaml

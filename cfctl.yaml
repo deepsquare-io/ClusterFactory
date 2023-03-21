@@ -1,0 +1,120 @@
+apiVersion: cfctl.clusterfactory.io/v1beta1
+kind: Cluster
+metadata:
+  name: deepsquare.satoshispain.com-cluster
+spec:
+  hosts:
+  - ssh:
+      address: 10.60.0.101
+      user: root
+      port: 22
+      keyPath: ~/.ssh/id_rsa_satoshi
+    role: controller+worker
+    noTaints: true
+    privateInterface: enp36s0f0
+    privateAddress: 10.60.0.101
+    installFlags:
+      - --debug
+      - --labels="topology.kubernetes.io/region=ch-sion,topology.kubernetes.io/zone=ch-sion-1"
+      - --disable-components coredns
+  - ssh:
+      address: 10.60.0.102
+      user: root
+      port: 22
+      keyPath: ~/.ssh/id_rsa_satoshi
+    role: worker
+    privateInterface: enp36s0f0
+    privateAddress: 10.60.0.102
+  - ssh:
+      address: 10.60.0.103
+      user: root
+      port: 22
+      keyPath: ~/.ssh/id_rsa_satoshi
+    role: worker
+    privateInterface: enp36s0f0
+    privateAddress: 10.60.0.103
+  - ssh:
+      address: 10.60.0.104
+      user: root
+      port: 22
+      keyPath: ~/.ssh/id_rsa_satoshi
+    role: worker
+    privateInterface: enp36s0f0
+    privateAddress: 10.60.0.104
+  - ssh:
+      address: 10.60.0.105
+      user: root
+      port: 22
+      keyPath: ~/.ssh/id_rsa_satoshi
+    role: worker
+    privateInterface: enp36s0f0
+    privateAddress: 10.60.0.105
+  - ssh:
+      address: 10.60.0.106
+      user: root
+      port: 22
+      keyPath: ~/.ssh/id_rsa_satoshi
+    role: worker
+    privateInterface: enp36s0f0
+    privateAddress: 10.60.0.106
+  - ssh:
+      address: 10.60.0.107
+      user: root
+      port: 22
+      keyPath: ~/.ssh/id_rsa_satoshi
+    role: worker
+    privateInterface: enp36s0f0
+    privateAddress: 10.60.0.107
+  - ssh:
+      address: 10.60.0.108
+      user: root
+      port: 22
+      keyPath: ~/.ssh/id_rsa_satoshi
+    role: worker
+    privateInterface: enp36s0f0
+    privateAddress: 10.60.0.108
+  k0s:
+    version: '1.26.1+k0s.0'
+    dynamicConfig: false
+    config:
+      apiVersion: k0s.k0sproject.io/v1beta1
+      kind: Cluster
+      metadata:
+        name: deepsquare.satoshispain.com
+      spec:
+        api:
+          k0sApiPort: 9443
+          port: 6443
+        installConfig:
+          users:
+            etcdUser: etcd
+            kineUser: kube-apiserver
+            konnectivityUser: konnectivity-server
+            kubeAPIserverUser: kube-apiserver
+            kubeSchedulerUser: kube-scheduler
+        konnectivity:
+          adminPort: 8133
+          agentPort: 8132
+        network:
+          calico:
+            mode: 'vxlan'
+            overlay: Always
+            mtu: 0
+            wireguard: false
+          kubeProxy:
+            disabled: false
+            mode: iptables
+          kuberouter:
+            autoMTU: true
+            mtu: 0
+            peerRouterASNs: ''
+            peerRouterIPs: ''
+          podCIDR: 10.244.0.0/16
+          provider: calico
+          serviceCIDR: 10.96.0.0/12
+        podSecurityPolicy:
+          defaultPolicy: 00-k0s-privileged
+        storage:
+          type: etcd
+        telemetry:
+          enabled: false

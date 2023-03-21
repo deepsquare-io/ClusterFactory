@@ -1,0 +1,27 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: argocd.internal-cert
+  namespace: argocd
+spec:
+  secretName: argocd.internal-secret
+  issuerRef:
+    name: selfsigned-cluster-issuer
+    kind: ClusterIssuer
+  commonName: argocd.internal
+  duration: 43800h
+  subject:
+    countries: [CH]
+    localities: [Lonay]
+    organizationalUnits: []
+    organizations: [Example Org]
+    postalCodes: ['1027']
+    provinces: [Laud]
+    streetAddresses: [Chemin des Mouettes 1]
+  dnsNames:
+    - argocd.internal
+  emailAddresses:
+    - john.smith@example.com
+  privateKey:
+    size: 4096
+    algorithm: RSA

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: coredns
+spec:
+  template:
+    spec:
+      containers:
+        - name: coredns
+          ports:
+            - name: dns
+              containerPort: 53
+              hostPort: 53
+              protocol: UDP
+            - name: dns-tcp
+              containerPort: 53
+              hostPort: 53
+              protocol: TCP
+      volumes:
+        - name: config-volume
+          configMap:
+            name: coredns
+            items:
+              - key: Corefile
+                path: Corefile
+              - key: example.com.db
+                path: example.com.db
+              - key: internal.db
+                path: internal.db
+            defaultMode: 420

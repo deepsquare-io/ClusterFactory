@@ -1,0 +1,4 @@
+namespace: knative-serving
+resources:
+  - namespace.yaml
+  - knative-serving.yaml

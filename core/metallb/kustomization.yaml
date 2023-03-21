@@ -1,0 +1,4 @@
+namespace: metallb
+resources:
+  - address-pools.yaml
+  - advertisements.yaml

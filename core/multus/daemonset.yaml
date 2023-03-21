@@ -1,0 +1,14 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: kube-multus-ds
+  namespace: kube-system
+spec:
+  template:
+    spec:
+      initContainers:
+        - name: install-multus-binary
+          imagePullPolicy: Always
+      containers:
+        - name: kube-multus
+          imagePullPolicy: Always
