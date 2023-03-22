@@ -79,8 +79,10 @@ metadata:
   namespace: metallb
 spec:
   addresses:
-    - 192.168.1.100/32
+    - 192.168.0.100/32
 ```
+
+**Notice that the address is a part of the local network.**
 
 The indicated IP address will be allocated to the `LoadBalancer` Kubernetes Services, which is Traefik.
 
@@ -112,13 +114,10 @@ service:
     metallb.universe.tf/address-pool: main-pool
     metallb.universe.tf/allow-shared-ip: traefik-lb-key
   spec:
-    externalTrafficPolicy: Cluster
-    loadBalancerIP: 192.168.1.100
+    externalTrafficPolicy: Cluster # Load Balance horizontally via MetalLB too
 ```
 
 Since we are using MetalLB, we select our `IPAddressPool` by using the `metallb.universe.tf/address-pool` annotation.
-
-The value of the `loadBalancerIP` correspond to an IP address included in the `IPAddressPool`. **This IP address will be exposed to the external network.**
 
 After that, you can add or remove ports:
 
@@ -177,7 +176,9 @@ ingressRoute:
 
 This means that the Traefik dashboard is accessible to `traefik.internel` on the `traefik` entry point, which is the 9000/tcp port. In short: [http://traefik.internal:9000/dashboard/](http://traefik.internal:9000/dashboard/) (the trailing slash is important).
 
-Your DNS should be configured to redirect `traefik.internal` to the load balancer at `192.168.1.100`. Fortunately, we can configure and expose our own DNS.
+Your DNS should be configured to redirect `traefik.internal` to the load balancer at `192.168.1.100` (or `192.168.0.100` if using L2). Fortunately, we can configure and expose our own DNS.
+
+For the rest of the guide, we will assume that you have announced `192.168.1.100/32` to the router.
 
 ## CoreDNS configuration
 
