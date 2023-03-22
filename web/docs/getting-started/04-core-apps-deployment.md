@@ -82,7 +82,7 @@ spec:
     - 192.168.0.100/32
 ```
 
-**Notice that the address is a part of the local network.**
+**Note that the address is part of the local network.**
 
 The indicated IP address will be allocated to the `LoadBalancer` Kubernetes Services, which is Traefik.
 
