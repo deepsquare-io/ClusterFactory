@@ -122,7 +122,7 @@ controller:
   enabled: true
   replicas: 1
 
-  image: 'ghcr.io/squarefactory/slurm:22.05.3-1-4-controller-rocky8.6'
+  image: 'ghcr.io/squarefactory/slurm:22.05.3-1-5-controller-rocky8.6'
   imagePullPolicy: 'IfNotPresent'
 
   labels: {}
@@ -263,7 +263,7 @@ login:
   enabled: false
   replicas: 1
 
-  image: 'ghcr.io/squarefactory/slurm:22.05.3-1-4-login-rocky8.6'
+  image: 'ghcr.io/squarefactory/slurm:22.05.3-1-5-login-rocky8.6'
   imagePullPolicy: 'IfNotPresent'
 
   labels: {}
@@ -379,7 +379,7 @@ login:
   # Slurm REST API
   rest:
     enabled: false
-    image: 'ghcr.io/squarefactory/slurm:22.05.3-1-4-rest-rocky8.6'
+    image: 'ghcr.io/squarefactory/slurm:22.05.3-1-5-rest-rocky8.6'
     imagePullPolicy: 'IfNotPresent'
     command: ['/init']
 
@@ -402,7 +402,7 @@ login:
     ## command: ['sh', '-c', 'update-ca-trust && /init']
     command: ['/init']
 
-    image: ghcr.io/squarefactory/slurm:22.05.3-1-4-prometheus-exporter-rocky8.6
+    image: ghcr.io/squarefactory/slurm:22.05.3-1-5-prometheus-exporter-rocky8.6
     imagePullPolicy: IfNotPresent
 
     # Extra volume mounts (use login.volumes to add volumes)
@@ -607,7 +607,7 @@ db:
   enabled: false
   replicas: 1
 
-  image: 'ghcr.io/squarefactory/slurm:22.05.3-1-4-db-rocky8.6'
+  image: 'ghcr.io/squarefactory/slurm:22.05.3-1-5-db-rocky8.6'
   imagePullPolicy: 'IfNotPresent'
 
   labels: {}
