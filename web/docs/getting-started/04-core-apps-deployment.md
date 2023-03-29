@@ -225,15 +225,15 @@ spec:
     spec:
       containers:
         - name: coredns
--         ports:
--           - name: dns
--             containerPort: 53
+          ports:
+            - name: dns
+              containerPort: 53
 -             hostPort: 53
--             protocol: UDP
--           - name: dns-tcp
--             containerPort: 53
+              protocol: UDP
+            - name: dns-tcp
+              containerPort: 53
 -             hostPort: 53
--             protocol: TCP
+              protocol: TCP
       volumes:
         - name: config-volume
           configMap:
@@ -255,7 +255,7 @@ spec:
 
 :::
 
-The files that you should look for are [`core/coredns/overlays/prod/configmap.yaml`](https://github.com/SquareFactory/ClusterFactory/blob/main/core.example/coredns/overlays/prod/configmap.yaml) and [`core/coredns/overlays/prod/deployment.yaml`](https://github.com/SquareFactory/ClusterFactory/blob/main/core.example/coredns/overlays/prod/deployment.yaml).
+The files that you should look for are [`core/coredns/overlays/prod/configmap.yaml`](https://github.com/SquareFactory/ClusterFactory/blob/main/core.example/coredns/overlays/prod/configmap.yaml) and [`core/coredns/overlays/prod/daemonset.yaml`](https://github.com/SquareFactory/ClusterFactory/blob/main/core.example/coredns/overlays/prod/daemonset.yaml).
 
 Inside the `ConfigMap`, you'll find:
 
@@ -344,9 +344,9 @@ search example.com
 
 :::note
 
-If some files were added and removed, you must change the `deployment.yaml`:
+If some files were added and removed, you must change the `daemonset.yaml`:
 
-```diff title="core/coredns/overlays/prod/deployment.yaml > spec > template > spec > volumes"
+```diff title="core/coredns/overlays/prod/daemonset.yaml > spec > template > spec > volumes"
         volumes:
           - name: config-volume
             configMap:
