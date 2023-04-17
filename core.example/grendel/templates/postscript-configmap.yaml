@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "grendel.name" . }}-config
+data:
+  postscript.sh: |
+{{ .Values.config.postscript | nindent 4 }}
+
+  hosts.json: |
+{{ .Values.config.hosts | toJson | nindent 4 }}
+
+  images.json: |
+{{ .Values.config.images | toJson | nindent 4 }}

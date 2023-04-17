@@ -1,0 +1,17 @@
+apiVersion: 'k8s.cni.cncf.io/v1'
+kind: NetworkAttachmentDefinition
+metadata:
+  name: {{ template "grendel.name" . }}-net
+  namespace: {{ .Release.Namespace }}
+  labels:
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}"
+spec:
+  config: |
+    {
+      "cniVersion": "0.4.0",
+      "type": "{{ .Values.net.type }}",
+      "master": "{{ .Values.net.masterInterface }}",
+      "mode": "{{ .Values.net.mode }}",
+      "ipam": {{ .Values.net.ipam | toJson }}
+    }

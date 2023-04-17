@@ -1,0 +1,41 @@
+{{- if .Values.ipmi.service.enabled -}}
+{{- $serviceValues := .Values.ipmi.service -}}
+kind: Service
+apiVersion: v1
+metadata:
+  name: "{{ template "ipmi-api.name" $ }}"
+  namespace: "{{ $.Release.Namespace }}"
+  labels:
+    heritage: {{ $.Release.Service | quote }}
+    release: {{ $.Release.Name | quote }}
+    chart: "{{ $.Chart.Name }}"
+    app: "{{ template "ipmi-api.name" $ }}"
+spec:
+  type: {{ $serviceValues.type }}
+  {{- if $serviceValues.clusterIP }}
+  clusterIP: {{ $serviceValues.clusterIP }}
+  {{- end }}
+  {{- if $serviceValues.externalIPs }}
+  externalIPs:
+  {{ toYaml $serviceValues.externalIPs | indent 4 }}
+  {{- end }}
+  {{- if $serviceValues.loadBalancerIP }}
+  loadBalancerIP: {{ $serviceValues.loadBalancerIP }}
+  {{- end }}
+  {{- if $serviceValues.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := $serviceValues.loadBalancerSourceRanges }}
+    - {{ $cidr }}
+  {{- end }}
+  {{- end }}
+  {{- if ne $serviceValues.type "ClusterIP" }}
+  externalTrafficPolicy: {{ $serviceValues.externalTrafficPolicy }}
+  {{- end }}
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: http
+  selector:
+    app: "{{ template "ipmi-api.name" $ }}"
+{{- end }}

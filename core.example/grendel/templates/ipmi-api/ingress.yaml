@@ -1,0 +1,31 @@
+{{- if .Values.ipmi.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: "{{ template "ipmi-api.name" . }}"
+  labels:
+    app: "{{ template "ipmi-api.name" . }}"
+{{- if .Values.ipmi.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.ipmi.ingress.annotations | indent 4 }}
+{{- end }}
+spec:
+  ingressClassName: "{{ .Values.ipmi.ingress.ingressClass }}"
+  rules:
+    {{- range $host := .Values.ipmi.ingress.hosts }}
+    - host: {{ $host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: "{{ template "ipmi-api.name" $ }}"
+                port:
+                  name: http
+    {{- end }}
+  {{- if .Values.ipmi.ingress.tls }}
+  tls:
+{{ toYaml .Values.ipmi.ingress.tls | indent 4 }}
+  {{- end }}
+{{- end }}

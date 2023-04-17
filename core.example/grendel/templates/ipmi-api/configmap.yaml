@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ template "ipmi-api.name" $ }}-config"
+data:
+{{- range .Values.config.hosts }}
+  {{ .name }}: {{ range .interfaces -}}
+{{- if .bmc -}}
+{{- regexReplaceAll "(.*)/.*" .ip "${1}" | quote -}}
+{{- end }}
+{{- end }}
+{{- end }}

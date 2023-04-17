@@ -1,0 +1,76 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "ipmi-api.name" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    release: {{ .Release.Name | quote }}
+    chart:  {{ .Chart.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: "{{ template "ipmi-api.name" . }}"
+  replicas: 1
+  podManagementPolicy: {{ .Values.ipmi.podManagementPolicy }}
+  strategy:
+    type: {{ .Values.ipmi.updateStrategy }}
+  template:
+    metadata:
+      name: "{{ template "ipmi-api.name" . }}"
+      labels:
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}"
+        app: "{{ template "ipmi-api.name" . }}"
+        {{- range $key, $value := .Values.ipmi.labels }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      annotations:
+        {{- range $key, $value := .Values.ipmi.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+    spec:
+      {{- if .Values.ipmi.schedulerName }}
+      schedulerName: "{{ .Values.ipmi.schedulerName }}"
+      {{- end }}
+      securityContext:
+{{ toYaml .Values.ipmi.podSecurityContext | indent 8 }}
+      {{- with .Values.ipmi.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.ipmi.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.ipmi.hostAliases }}
+      hostAliases:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.ipmi.nodeAffinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.ipmi.terminationGracePeriod }}
+      {{- if .Values.ipmi.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.ipmi.imagePullSecrets | indent 8 }}
+      {{- end }}
+      containers:
+        - name: "{{ template "ipmi-api.name" . }}"
+          securityContext:
+{{ toYaml .Values.ipmi.securityContext | indent 12}}
+          image: "{{ .Values.ipmi.image.repository }}:{{ .Values.ipmi.image.tag }}"
+          imagePullPolicy: "{{ .Values.ipmi.imagePullPolicy }}"
+          envFrom:
+            - configMapRef:
+                name: "{{ template "ipmi-api.name" $ }}-config"
+
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            {{- toYaml .Values.ipmi.livenessProbe | trim | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.ipmi.readinessProbe | trim | nindent 12 }}

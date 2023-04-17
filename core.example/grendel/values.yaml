@@ -1,0 +1,232 @@
+---
+replicas: 1
+
+image:
+  repository: 'ghcr.io/squarefactory/grendel'
+  # Image tag. If empty, defaults to appVersion.
+  tag: ''
+imagePullPolicy: 'IfNotPresent'
+
+config:
+  ## Secret containing grendel.toml
+  secretName: grendel-secret
+  secretKey: grendel.toml
+
+  hosts:
+    []
+    # - name: cn4
+    #   provision: true
+    #   boot_image: ubuntu-focal-live
+    #   interfaces:
+    #   - ip: 10.10.2.54/24
+    #     mac: 18:c0:4d:b7:88:5f
+    #     bmc: false
+    #   - ip: 10.10.3.54/32
+    #     bmc: true
+
+  images:
+    []
+    # - name: ubuntu-focal-live
+    #   kernel: '/var/lib/grendel/ubuntu-focal-vmlinuz'
+    #   initrd:
+    #     - '/var/lib/grendel/ubuntu-focal-initramfs.img'
+    #   liveimg: '/var/lib/grendel/ubuntu-focal-squashfs.img'
+    #   cmdline: console=ttyS0 console=tty0 root=live:http://grendel.internal/repo/ubuntu-focal-squashfs.img BOOTIF={{ $.nic.MAC }} ip=dhcp rd.live.overlay.readonly=1 rd.live.overlay.overlayfs=1 rd.neednet=1
+
+  ## This script is run on each node after booting
+  ##
+  ## It is executed like this: /postscript.sh $(hostname)
+  postscript: |
+    #!/bin/sh
+
+    set -ex
+
+    # Fetch encrypted deploy key
+    curl --retry 5 -fsSL http://grendel.internal/repo/key.enc -o /key.enc
+    chmod 600 /key.enc
+
+    # Decrypt deploy key
+    echo "password" | openssl aes-256-cbc -d -a -pbkdf2 -in /key.enc -out /key -pass stdin
+    chmod 600 /key
+
+    # Cloning git repo containing postscripts.
+    mkdir -p /configs
+    GIT_SSH_COMMAND='ssh -i /key -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' git clone git@github.com:SquareFactory/compute-configs.git /configs
+    if [ -f /configs/post.sh ] && [ -x /configs/post.sh ]; then
+      cd /configs || exit 1
+      ./post.sh "$1"
+    fi
+    rm -f /key /key.env
+
+    # Security
+    chmod -R g-rwx,o-rwx .
+
+podAnnotations: {}
+
+# additionals labels
+labels: {}
+
+resources:
+  {}
+  # requests:
+  #   cpu: '2'
+  #   memory: '8Gi'
+  # limits:
+  #   cpu: '2'
+  #   memory: '8Gi'
+
+# This is the node affinity settings as defined in
+# https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#node-affinity-beta-feature
+nodeAffinity: {}
+
+updateStrategy: RollingUpdate
+
+podSecurityContext:
+  runAsUser: 0
+
+securityContext:
+  capabilities:
+    add:
+      - NET_ADMIN
+  readOnlyRootFilesystem: false
+  runAsNonRoot: false
+  runAsUser: 0
+
+# How long to wait for xcat to stop gracefully
+terminationGracePeriod: 10
+
+## Use an alternate scheduler.
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+schedulerName: ''
+imagePullSecrets: {}
+
+# Try to use nodeSelector to filter the hosts without the master interface
+nodeSelector: {}
+tolerations: []
+
+persistence:
+  storageClassName: ''
+  accessModes: ['ReadWriteMany']
+  size: 20Gi
+  selectorLabels:
+    app: grendel
+
+net:
+  # Kubernetes host interface
+  masterInterface: eth0
+  mode: l2
+  type: ipvlan
+
+  # https://www.cni.dev/plugins/current/ipam/static/
+  ipam:
+    type: static
+    addresses:
+      []
+      # - address: 192.168.0.3/24
+      #   gateway: 192.168.0.1
+    routes:
+      - dst: 0.0.0.0/0
+
+  # https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config
+  dns:
+    nameservers:
+      []
+      # - 1.1.1.1
+
+## Extra volumes
+volumes:
+  []
+  ## To mount the private key of the git repository, create the secret
+  ## "postscript-privatekey-secret" which contains a "key.enc" which is a
+  ## SSH deploy key generated with:
+  ##
+  ##     ssh-keygen -t ed25519 -f key
+  ##     openssl enc -aes-256-cbc -a -salt -pbkdf2 -in key -out key.enc
+  ##
+  # - name: postscript-privatekey
+  #   secret:
+  #     defaultMode: 384
+  #     secretName: postscript-privatekey-secret
+
+## Extra volume mounts
+volumeMounts:
+  []
+  # - name: postscript-privatekey
+  #   subPath: key.enc
+  #   mountPath: /var/lib/grendel/key.enc
+
+ipmi:
+  replicas: 1
+
+  image:
+    repository: 'ghcr.io/squarefactory/ipmi-api'
+    tag: 'latest'
+  imagePullPolicy: 'Always'
+
+  podAnnotations: {}
+
+  # additionals labels
+  labels: {}
+
+  resources:
+    {}
+    # requests:
+    #   cpu: '2'
+    #   memory: '8Gi'
+    # limits:
+    #   cpu: '2'
+    #   memory: '8Gi'
+
+  # This is the node affinity settings as defined in
+  # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#node-affinity-beta-feature
+  nodeAffinity: {}
+
+  updateStrategy: RollingUpdate
+
+  podSecurityContext:
+    runAsUser: 1000
+
+  securityContext:
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+
+  terminationGracePeriod: 10
+
+  ## Use an alternate scheduler.
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  schedulerName: ''
+  imagePullSecrets: {}
+
+  # Try to use nodeSelector to filter the hosts without the master interface
+  nodeSelector: {}
+  tolerations: []
+
+  service:
+    enabled: true
+    labels: {}
+    type: ClusterIP
+    annotations: {}
+
+  ingress:
+    enabled: false
+    ingressClass: ''
+
+    annotations: {}
+
+    hosts:
+      []
+      # - ipmi.internal
+
+    path: /
+
+    tls:
+      []
+      # - secretName: ipmi.internal-secret
+      #   hosts:
+      #     - ipmi.internal

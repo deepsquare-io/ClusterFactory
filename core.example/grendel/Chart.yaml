@@ -1,0 +1,10 @@
+apiVersion: v2
+name: grendel
+description: Bare Metal Provisioning system for HPC Linux clusters
+type: application
+home: https://github.com/squarefactory/grendel-rocky
+icon: https://github.com/ubccr/grendel/blob/main/docs/pages/images/logo-lg.png
+sources:
+  - https://github.com/squarefactory/grendel-rocky
+version: 0.1.0
+appVersion: '0.2.3'
