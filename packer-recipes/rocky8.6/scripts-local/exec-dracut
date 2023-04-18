@@ -1,0 +1,37 @@
+#!/bin/sh -eux
+
+set -eux
+
+if [ $UID -ne 0 ]; then
+  echo "ERROR: Must be run as root!" >&2
+  exit 1
+fi
+
+TMP_DIR=$(mktemp -d /tmp/packer-XXXX)
+
+clean() {
+  echo 'Unmounting image...'
+  umount -f "$TMP_DIR"
+  rmdir --ignore-fail-on-non-empty "$TMP_DIR"
+}
+
+trap clean EXIT
+
+echo 'Mounting root partition...'
+mount "${NBD}p1" "$TMP_DIR"
+
+chroot "$TMP_DIR" /bin/bash -c '
+for kv in /lib/modules/*; do
+  kver=$(basename "${kv}")
+
+  dracut -v \
+    --no-hostonly \
+    --add "network base dmsquash-live livenet kernel-modules uefi-lib rootfs-block" \
+    --force "/tmp/initramfs-$kver.img" \
+    "$kver"
+done
+'
+
+mkdir -p ./output-boot/
+find "$TMP_DIR/boot/" -name "vmlinuz-*" -type f -exec cp {} ./output-boot/ \;
+find "$TMP_DIR/tmp/" -name "initramfs-*" -type f -exec mv {} ./output-boot/ \;
