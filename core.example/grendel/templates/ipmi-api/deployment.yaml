@@ -65,12 +65,23 @@ spec:
           envFrom:
             - configMapRef:
                 name: "{{ template "ipmi-api.name" $ }}-config"
+          env:
+            - name: GIN_MODE
+              value: release
 
           ports:
             - name: http
               containerPort: 8080
               protocol: TCP
           livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
             {{- toYaml .Values.ipmi.livenessProbe | trim | nindent 12 }}
           readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
             {{- toYaml .Values.ipmi.readinessProbe | trim | nindent 12 }}

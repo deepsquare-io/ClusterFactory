@@ -207,6 +207,19 @@ ipmi:
   nodeSelector: {}
   tolerations: []
 
+  livenessProbe:
+    initialDelaySeconds: 30
+    timeoutSeconds: 1
+    periodSeconds: 10
+    successThreshold: 1
+    failureThreshold: 3
+
+  readinessProbe:
+    timeoutSeconds: 1
+    periodSeconds: 2
+    successThreshold: 1
+    failureThreshold: 3
+
   service:
     enabled: true
     labels: {}
