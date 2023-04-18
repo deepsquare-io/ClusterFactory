@@ -37,7 +37,7 @@ spec:
     dynamicConfig: false
     config:
       apiVersion: k0s.k0sproject.io/v1beta1
-      kind: Cluster
+      kind: ClusterConfig
       metadata:
         name: k8s.example.com
       spec:
