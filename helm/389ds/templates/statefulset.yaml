@@ -59,7 +59,6 @@ spec:
           volumeMounts:
             - name: 389ds-data
               mountPath: /data
-        {{- end }}
         - name: init-perms
           image: busybox:1.35.0
           command: ["sh", "-c"]
@@ -78,6 +77,7 @@ spec:
             - name: 389ds-data
               mountPath: /out
               subPath: tls
+        {{- end }}
         {{- if .Values.initContainers }}
 {{ toYaml .Values.initContainers | indent 8 }}
         {{- end }}
