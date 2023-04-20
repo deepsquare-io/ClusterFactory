@@ -12,7 +12,7 @@ etcdctl_version=v3.5.8
 
 # Apps
 local_path_provisioner_version=v0.0.24
-kube_prometheus_stack_version=45.10.1
+kube_prometheus_stack_version=45.17.0
 
 # cfctl.yaml
 k0s_version=1.26.3+k0s.0
