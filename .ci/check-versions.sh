@@ -86,8 +86,6 @@ if verlt "$current_kube_prometheus_stack_version" "$kube_prometheus_stack_versio
   sed -Ei "s/kube_prometheus_stack_version=.*\$/kube_prometheus_stack_version=${kube_prometheus_stack_version}/g" "$script_path/version-lock"
   sed -Ei "s/version: .*\$/version: ${kube_prometheus_stack_version}/g" "$project_path/helm-subcharts/kube-prometheus-stack/Chart.yaml"
   sed -Ei "s/targetRevision: .*\$/targetRevision: kube-prometheus-stack-${kube_prometheus_stack_version}/g" "$project_path/argo.example/monitoring/apps/prometheus-crd-app.yaml"
-  sed -Ei "s/version: .*\$/version: ${kube_prometheus_stack_version}/g" "$project_path/web/docs/getting-started/06-argo-apps-deployment.md"
-  sed -Ei "s/targetRevision: kube-prometheus-stack-.*\$/targetRevision: kube-prometheus-stack-${kube_prometheus_stack_version}/g" "$project_path/web/docs/getting-started/06-argo-apps-deployment.md"
 fi
 
 # cfctl.yaml
