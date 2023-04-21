@@ -77,7 +77,7 @@ current_local_path_provisioner_version=$(sed -En "s/local_path_provisioner_versi
 local_path_provisioner_version=$(curl -H "Authorization: token ${TOKEN}" -fsSL https://api.github.com/repos/rancher/local-path-provisioner/tags | jq -r '.[0].name')
 if verlt "$current_local_path_provisioner_version" "$local_path_provisioner_version"; then
   sed -Ei "s/local_path_provisioner_version=.*\$/local_path_provisioner_version=${local_path_provisioner_version}/g" "$script_path/version-lock"
-  sed -Ei "s/targetRevision: .*\$/targetRevision: ${local_path_provisioner_version}/g" "$project_path/argo.example/default/apps/local-path-provisioner-app.yaml"
+  sed -Ei "s/targetRevision: .*\$/targetRevision: ${local_path_provisioner_version}/g" "$project_path/argo.example/local-path-storage/apps/local-path-storage-app.yaml"
 fi
 
 current_kube_prometheus_stack_version=$(sed -En "s/kube_prometheus_stack_version=(.*)/\1/p" ".ci/version-lock")
@@ -86,8 +86,8 @@ if verlt "$current_kube_prometheus_stack_version" "$kube_prometheus_stack_versio
   sed -Ei "s/kube_prometheus_stack_version=.*\$/kube_prometheus_stack_version=${kube_prometheus_stack_version}/g" "$script_path/version-lock"
   sed -Ei "s/version: .*\$/version: ${kube_prometheus_stack_version}/g" "$project_path/helm-subcharts/kube-prometheus-stack/Chart.yaml"
   sed -Ei "s/targetRevision: .*\$/targetRevision: kube-prometheus-stack-${kube_prometheus_stack_version}/g" "$project_path/argo.example/monitoring/apps/prometheus-crd-app.yaml"
-  sed -Ei "s/version: .*\$/version: ${kube_prometheus_stack_version}/g" "$project_path/web/docs/getting-started/05-argo-apps-deployment.md"
-  sed -Ei "s/targetRevision: kube-prometheus-stack-.*\$/targetRevision: kube-prometheus-stack-${kube_prometheus_stack_version}/g" "$project_path/web/docs/getting-started/05-argo-apps-deployment.md"
+  sed -Ei "s/version: .*\$/version: ${kube_prometheus_stack_version}/g" "$project_path/web/docs/getting-started/06-argo-apps-deployment.md"
+  sed -Ei "s/targetRevision: kube-prometheus-stack-.*\$/targetRevision: kube-prometheus-stack-${kube_prometheus_stack_version}/g" "$project_path/web/docs/getting-started/06-argo-apps-deployment.md"
 fi
 
 # cfctl.yaml
