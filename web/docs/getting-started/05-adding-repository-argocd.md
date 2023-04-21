@@ -1,4 +1,4 @@
-# 4. Adding the Git repository to ArgoCD
+# 5. Adding the Git repository to ArgoCD
 
 Argo CD can retrieve your repository from your Git hosting server, synchronize changes and deploy your Kubernetes manifests.
 
