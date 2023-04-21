@@ -12,7 +12,7 @@ This repository is where [SquareFactory](https://www.squarefactory.io) develops 
 - GitOps-enabled with [ArgoCD](https://docs.clusterfactory.io/docs/main-concepts/gitops/argocd) and [Sealed Secrets](https://docs.clusterfactory.io/docs/main-concepts/gitops/sealed-secrets)
 - VM workloads with KubeVirt
 - Bare-metal workloads with [Slurm](https://docs.clusterfactory.io/docs/main-concepts/apps/slurm)
-- Bare-metal provisioning with [xCAT](https://docs.clusterfactory.io/docs/main-concepts/apps/xcat)
+- Bare-metal provisioning with [Grendel](https://docs.clusterfactory.io/docs/main-concepts/apps/grendel)
 - Supports CNI plugins with [Multus CNI](https://docs.clusterfactory.io/docs/main-concepts/core-network/multus-cni)
 - TLS/SSL certificates management with [cert-manager](https://docs.clusterfactory.io/docs/main-concepts/gitops/cert-manager)
 - Mirror of DeepSquare's software library (end user software) by using [CVMFS Stratum 1](https://docs.clusterfactory.io/docs/main-concepts/apps/cvmfs)

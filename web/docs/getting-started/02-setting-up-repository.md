@@ -75,15 +75,21 @@ Git is capable of managing multiple remote repositories. By default, `origin` is
    # upstream	DISABLE (push)
    ```
 
-## 3. Checkout to a stable version and create a new branch
+## 3. (Optional) Checkout to a stable version and create a new branch
 
 You can checkout to a stable version:
 
 ```shell title="user@local:/ClusterFactory"
-git checkout -b configs v0.7.0
-# You can delete the local main branch
-git branch -D main
+git checkout -b configs <CF version>
 ```
+
+:::info
+
+Please note that ClusterFactory is under development, it is strongly recommended to follow the latest version of ClusterFactory.
+
+Unannounced breaking changes are to be expected.
+
+:::
 
 ## 4. Rename the examples and commit
 
@@ -163,9 +169,8 @@ Now that you have a fork, you can push your own changes into your repository. Fo
 │   ├── cvmfs-server/
 │   ├── cvmfs-service/
 │   ├── ipmi-exporter/
-│   ├── openldap/
 │   ├── slurm-cluster/
-│   └── xcat/
+│   └── grendel/
 ├── manifests/                <-----
 │   └── my-application/       <-----
 │       └── statefulset.yaml  <-----

@@ -1,0 +1,72 @@
+# Grendel, the Bare-Metal Provisioner
+
+[Grendel](https://github.com/SquareFactory/grendel) is a solution used to deploy and manage HPC (High Performance Computing) clusters. It is designed to automate the process of configuring and installing software on compute nodes using a custom DHCP, DNS, TFTP, and HTTP server written in Go.
+
+## Architecture
+
+The architecture is the following:
+
+<div style={{textAlign: 'center'}}>
+
+![grendel-arch](07-grendel.assets/grendel.drawio.svg#invert-on-dark)
+
+</div>
+
+**Grendel** is deployed as a container and runs multiple network services responsible for the provisioning of bare-metal systems.
+
+**The Service Processor (SP)** controls the hardware and is used to perform out-of-band hardware control (e.g. Integrated Management Module (IMM), Flexible Service Processor (FSP), Baseboard Management Controller (BMC), etc).
+
+The Service Processor is connected to Grendel via **the Service Network.**
+
+**The Management Network** is used for OS provisioning (via PXE).
+
+## Why Grendel ?
+
+Our main criteria for choosing a bare metal provisioning solution is:
+
+- Operating system image management: provisioning methods, supported operating systems, ease of use.
+- BMC configuration (IPMI, ...)
+- Configuration management (declarative, post-boot scripts, backups, ...)
+
+While a lot of solutions exist for bare-metal provisioning like [OpenStack Ironic](https://wiki.openstack.org/wiki/Ironic) or [MAAS](https://maas.io/), only a few can do **disk-less provisioning**.
+
+Disk-less (or Stateless) provisioning is based on an OverlayFS root, with the OS being loaded from a SquashFS image. The OverlayFS is mounted as a `tmpfs`, that is, in the RAM.
+
+<div style={{textAlign: 'center'}}>
+
+![upper-lower](07-grendel.assets/overlayfs.drawio.svg#invert-on-dark)
+
+</div>
+
+Since the root is mounted in RAM, restarting a node will "clean it up", similar to a Docker container.
+
+With OverlayFS, we follow a proper DevOps practice where the architecture is immutable and mutable data is stored on disks.
+
+## How does it work ?
+
+### OS Image Building
+
+Grendel doesn't have an OS image builder. This is because we do not want the users to use a non-standard tool to build their OS images.
+
+Instead, we prefer to use [Packer](https://www.packer.io), mksquashfs and [Dracut](https://github.com/dracutdevs/dracut) to automate the building of OS images, linux kernels and linux initramfs.
+
+The steps to build disklessn OS image are the following:
+
+1. Use Packer to build an image that includes the operating system and any additional packages or customizations you require. This image will serve as the base for the diskless OS.
+2. Mount the OS image, chroot in the OS image and execute dracut to generate initramfs.
+3. Extract the kernel and initramfs
+4. Use mksquashfs to create a squashfs filesystem image that will serve as the base layer of the overlayfs. The squashfs image should include any read-only files that will be shared across multiple diskless nodes.
+
+### Provisioning
+
+The steps to provision an OS image are the following:
+
+1. Enable network boot on the BIOS of the nodes. This will cause the node to broadcast a DHCP request for an IP address and PXE server.
+2. The Grendel DHCP server will respond with an IP address based on the node's MAC address, and send the Network Boot Program (NBP) - in this case, the iPXE firmware.
+3. The iPXE firmware will then download the Linux kernel and initramfs.
+4. The Linux kernel options `rd.live.*` will be used to download the squashfs file from the Grendel server and mount the OS image as a /dev/loop device.
+5. Once the base image is mounted, an overlayfs will be created using the loop device as the base image and an upper layer created using a tmpfs (RAM). This will provide a writeable layer for temporary files and system changes.
+
+### Postscript
+
+After initializing the operating system image, a SystemD service can be utilized to retrieve the postscript file stored on the Grendel HTTP server and execute it.

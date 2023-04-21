@@ -31,7 +31,7 @@ config:
     #   initrd:
     #     - '/var/lib/grendel/ubuntu-focal-initramfs.img'
     #   liveimg: '/var/lib/grendel/ubuntu-focal-squashfs.img'
-    #   cmdline: console=ttyS0 console=tty0 root=live:http://grendel.internal/repo/ubuntu-focal-squashfs.img BOOTIF={{ $.nic.MAC }} ip=dhcp rd.live.overlay.readonly=1 rd.live.overlay.overlayfs=1 rd.neednet=1
+    #   cmdline: console=ttyS0 console=tty0 root=live:http://grendel.example.com/repo/ubuntu-focal-squashfs.img BOOTIF={{ $.nic.MAC }} ip=dhcp rd.live.overlay.readonly=1 rd.live.overlay.overlayfs=1 rd.neednet=1
 
   ## This script is run on each node after booting
   ##
@@ -42,7 +42,7 @@ config:
     set -ex
 
     # Fetch encrypted deploy key
-    curl --retry 5 -fsSL http://grendel.internal/repo/key.enc -o /key.enc
+    curl --retry 5 -fsSL http://grendel.example.com/repo/key.enc -o /key.enc
     chmod 600 /key.enc
 
     # Decrypt deploy key
@@ -92,7 +92,7 @@ securityContext:
   runAsNonRoot: false
   runAsUser: 0
 
-# How long to wait for xcat to stop gracefully
+# How long to wait for grendel to stop gracefully
 terminationGracePeriod: 10
 
 ## Use an alternate scheduler.

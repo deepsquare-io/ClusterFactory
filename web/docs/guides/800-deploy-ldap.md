@@ -21,91 +21,9 @@ docker pull docker.io/389ds/dirsrv:latest
 kubectl apply -f argo/ldap/
 ```
 
-## 2. Persistent Volumes, Secrets and Ingresses
+## 2. Secrets and Ingresses
 
-### 2.a. Creating a `StorageClass` or `PersistentVolume`
-
-We will use NFS. Feel free to use another type of storage. We recommend at least 100 GB since the storage is used to store the root file system of the operating system images.
-
-<Tabs groupId="volume">
-  <TabItem value="storage-class" label="StorageClass (dynamic)" default>
-
-```yaml title="argo/ldap/volumes/storage-class.yaml"
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: 389ds-nfs
-  namespace: ldap
-  labels:
-    app: 389ds
-    topology.kubernetes.io/region: <FILL ME> # <country code>-<city>
-    topology.kubernetes.io/zone: <FILL ME> # <country code>-<city>-<index>
-provisioner: nfs.csi.k8s.io
-parameters:
-  server: <FILL ME> # IP or host
-  share: <FILL ME> # /srv/nfs/k8s/389ds
-  mountPermissions: '0775'
-mountOptions:
-  - hard
-  - nfsvers=4.1
-  - noatime
-  - nodiratime
-volumeBindingMode: Immediate
-reclaimPolicy: Retain
-allowedTopologies:
-  - matchLabelExpressions:
-      - key: topology.kubernetes.io/zone
-        values:
-          - <FILL ME> # <country code>-<city>-<index>
-```
-
-```shell title="user@local:/ClusterFactory"
-kubectl apply -f argo/ldap/volumes/storage-class.yaml
-```
-
-  </TabItem>
-  <TabItem value="persistent-volume" label="PersistentVolume (static)">
-
-```yaml title="argo/ldap/volumes/persistent-volume.yaml"
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: 389ds-pv
-  namespace: ldap
-  labels:
-    app: 389ds
-    topology.kubernetes.io/region: <FILL ME> # <country code>-<city>
-    topology.kubernetes.io/zone: <FILL ME> # <country code>-<city>-<index>
-spec:
-  capacity:
-    storage: 100Gi
-  mountOptions:
-    - hard
-    - nfsvers=4.1
-    - noatime
-    - nodiratime
-  csi:
-    driver: nfs.csi.k8s.io
-    readOnly: false
-    volumeHandle: <unique id> # uuidgen
-    volumeAttributes:
-      server: <FILL ME> # IP or host
-      share: <FILL ME> # /srv/nfs/k8s/389ds
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-```
-
-```shell title="user@local:/ClusterFactory"
-kubectl apply -f argo/ldap/volumes/persistent-volume.yaml
-```
-
-The label `app=ldap` will be used by the PersistentVolumeClaim.
-
-  </TabItem>
-</Tabs>
-
-### 2.b. Editing the environment variables with secrets
+### 2.a. Editing the environment variables with secrets
 
 Take a look at the README of [389ds/dirsrv](https://hub.docker.com/r/389ds/dirsrv).
 
@@ -141,7 +59,7 @@ kubectl apply -f argo/ldap/secrets/389ds-sealed-secret.yaml
 
 You can track `389ds-env-sealed-secret.yaml` in Git, but not the `-secret.yaml.local` file.
 
-### 2.c. Creating an `IngressRouteTCP` to expose the LDAP server
+### 2.b. Creating an `IngressRouteTCP` to expose the LDAP server
 
 You can expose the LDAP using Traefik `IngressRouteTCP`.
 
@@ -314,27 +232,11 @@ Edit the `suffixName` according to your need. This is the path in LDAP where the
 
 ### 4.c. Mount the volume
 
-<Tabs groupId="volume">
-  <TabItem value="storage-class" label="StorageClass (dynamic)" default>
-
 ```yaml title="helm/389ds/values-production.yaml"
 # ...
 persistence:
-  storageClassName: '389ds-nfs'
+  storageClassName: 'dynamic-nfs'
 ```
-
-  </TabItem>
-  <TabItem value="persistent-volume" label="PersistentVolume (static)">
-
-```yaml title="helm/389ds/values-production.yaml"
-# ...
-persistence:
-  selectorLabels:
-    app: 389ds
-```
-
-  </TabItem>
-</Tabs>
 
 ## 4. Deploy the app
 

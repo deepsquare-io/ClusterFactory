@@ -40,6 +40,9 @@ We recommend:
 ## Recommended documentation
 
 - [Kubernetes documentation](https://kubernetes.io/docs/concepts/)
-- [Kubernetes API reference](https://kubernetes.io/docs/reference/kubernetes-api/)
 - [cfctl.yaml API reference](/docs/reference/cfctl.yaml)
 - [Argo CD declarative setup](https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/)
+
+**Before using ClusterFactory, it is strongly advised to have a comprehensive understanding of how Kubernetes operates, specifically with regard to storage and network management using features such as PersistentVolume, StorageClass, Service, Ingresses, LoadBalancer, and more."**
+
+To try a "mini" version of Kubernetes we recommend k0s or minikube.

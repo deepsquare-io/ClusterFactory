@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: local-path-storage
+  namespace: argocd
+  # Finalizer that ensures that project is not deleted until it is not referenced by any application
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Local Path Storage
+  # Allow manifests to deploy from any Git repos
+  sourceRepos:
+    - '*'
+  # Only permit applications to deploy to the namespace in the same cluster
+  destinations:
+    - namespace: local-path-storage
+      server: https://kubernetes.default.svc
+
+  namespaceResourceWhitelist:
+    - kind: '*'
+      group: '*'
+
+  clusterResourceWhitelist:
+    - kind: '*'
+      group: '*'

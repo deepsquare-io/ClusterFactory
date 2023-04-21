@@ -1,0 +1,24 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: dynamic-nfs
+  labels:
+    topology.kubernetes.io/region: ch-sion
+    topology.kubernetes.io/zone: ch-sion-1
+provisioner: nfs.csi.k8s.io
+parameters:
+  server: nfs.example.com
+  share: /srv/nfs/dynamic
+  mountPermissions: '0775'
+mountOptions:
+  - hard
+  - nfsvers=4.1
+  - noatime
+  - nodiratime
+volumeBindingMode: Immediate
+reclaimPolicy: Retain
+allowedTopologies:
+  - matchLabelExpressions:
+      - key: topology.kubernetes.io/region
+        values:
+          - ch-sion

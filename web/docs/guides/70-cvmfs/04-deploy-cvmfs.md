@@ -4,6 +4,18 @@
 
 Let's assume we plan to replicate `http://cvmfs.example.com/cvmfs/repo.example.com`.
 
+:::warning
+
+There is an issue with the Cgroups V2, a feature in recent linux kernels.
+
+The issue happens when a container image uses SystemD as the init system.
+
+When using a container image with SystemD, `/sys/fs/cgroup` must be mounted on the container. However, with Cgroups v2, the structure of this directory changed.
+
+Therefore, you MUST rollback to Cgroups v1 until SystemD can run with Cgroups v2. To rollback, add `systemd.unified_cgroup_hierarchy=0` to the kernel cmdline parameter.
+
+:::
+
 ## Helm and Docker resources
 
 The Helm resources are stored on [ClusterFactory Git Repository](https://github.com/SquareFactory/ClusterFactory/tree/main/helm/cvmfs-server).
@@ -65,7 +77,7 @@ Basically, `local-path-provisioner` creates the `/opt/local-path-provisioner` di
 To deploy the provisioner:
 
 ```shell title="user@local:/ClusterFactory"
-kubectl apply -f argo/default/apps/local-path-provisioner-app.yaml
+kubectl apply -f argo/local-path-storage/apps/local-path-storage-app.yaml
 ```
 
 The `StorageClass` `local-path` should be deployed.

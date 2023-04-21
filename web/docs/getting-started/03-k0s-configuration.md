@@ -2,6 +2,24 @@
 
 ## Specifying the hosts
 
+Specify the nodes that will be included in the Kubernetes Cluster, which will function as the control plane for managing compute nodes.
+
+A node designated as a **controller** will run the following components:
+
+- An **etcd server**, which serves as the Kubernetes database.
+- An **API server**, which serves as the entry point for `kubectl` commands.
+- A **Pod scheduler**.
+- A **controller-manager**, which acts as the central decision-making component of Kubernetes.
+- A **Konnectivity-server**, responsible for facilitating communication between Kubernetes controller and worker nodes.
+- A **k0s API**, which serves as the entry point for `k0s` commands.
+
+A node designated as a **worker** will solely run the following components:
+
+- A **kubelet**, which acts as an agent to communicate with the Konnectivity server
+- **Containerd** containers, which refer to Pods running on the worker node.
+
+It is crucial to always have an odd number of controllers (1, 3, 5, ...) to prevent the cluster from getting stuck in a deadlock.
+
 Edit the `cfctl.yaml` file. Start with the `hosts` field :
 
 ```yaml title=cfctl.yaml
@@ -48,7 +66,7 @@ k0s:
   dynamicConfig: false
   config:
     apiVersion: k0s.k0sproject.io/v1beta1
-    kind: Cluster
+    kind: ClusterConfig
     metadata:
       name: k8s.example.com
     spec:
@@ -90,19 +108,21 @@ k0s:
         enabled: false
 ```
 
-Check the CIDR and make sure it doesn't conflict with any IP range of your network.
-
-Again, **you should read the specification carefully as the modification of one the k0s field won't be allowed in the future**.
+Most of the values are already sane but you should check if the CIDR doesn't conflict with any IP range of your network. It is also recommended to tune manually the MTU and match it to your switch and router values.
 
 If you wish to use a HA setup, please follow [this guide](/docs/guides/maintenance/high-availability).
 
 ## Initial Deployment
+
+:::tip
 
 If you forgot to install the utilities, just run:
 
 ```shell title="user@local:/ClusterFactory"
 . ./scripts/setup-env
 ```
+
+:::
 
 Deploy the cluster with:
 

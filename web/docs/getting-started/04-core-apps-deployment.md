@@ -6,14 +6,15 @@ We will deploy:
 - MetalLB advertisements, for Load Balancing
 - CoreDNS, the internal DNS for Kubernetes
 - Sealed Secrets, secret management optimized for GitOps
-- Cert-manager issuers, to generate your SSL certificates and enable, for free, TLS configuration.
+- Cert-manager issuers, generate your SSL certificates and enable, for free, TLS configuration.
 - Argo CD, to enable GitOps.
 - Multus CNI, to support multiple network interfaces
-- KubeVirt, to deploy VM workloads
 
 ## Configuring MetalLB
 
-MetalLB is a L2/L3 load balancer designed for bare metal Kubernetes clusters. It exposes the kubernetes `Services` to the external network. It uses either L2 (ARP) or BGP to advertise routes. It is possible to make "zoned" advertisements with L2, but we heavily recommend to use BGP for multi-zone clusters.
+We need to configure MetalLB to expose Kubernetes Services like Traefik to the external network.
+
+MetalLB is an L2/L3 load balancer designed for bare metal Kubernetes clusters. It exposes the Kubernetes `Services` to the external network. It uses either L2 (ARP) or BGP to advertise routes. It is possible to make "zoned" advertisements with L2, but we heavily recommend using BGP for multi-zone clusters.
 
 <div style={{textAlign: 'center'}}>
 
@@ -82,7 +83,7 @@ spec:
     - 192.168.0.100/32
 ```
 
-**Note that the address is part of the local network.**
+By using ARP, every machine in the super net will be able to see that machine. For example, we are announcing 192.168.0.100. This IP is part of 192.168.0.0/24 and therefore, all the machines will be able to see 192.168.0.100.
 
 The indicated IP address will be allocated to the `LoadBalancer` Kubernetes Services, which is Traefik.
 
@@ -103,7 +104,9 @@ That's all! The MetalLB speakers on all the nodes will advertise the IP address 
 
 ## Configuring Traefik
 
-You should configure Traefik, which is the main Ingress and L7 load balancer. `core/traefik/values.yaml` is the main configuration file.
+Traefik is the main L7 load balancer and router. It is mostly used to route HTTP packets based on rules (URL path, headers, ...).
+
+To configure Traefik, edit the `core/traefik/values.yaml` file, which is the main configuration file.
 
 You should look for `loadBalancerIP` and the `metallb.universe.tf` annotations:
 
@@ -176,7 +179,7 @@ ingressRoute:
 
 This means that the Traefik dashboard is accessible to `traefik.internel` on the `traefik` entry point, which is the 9000/tcp port. In short: [http://traefik.internal:9000/dashboard/](http://traefik.internal:9000/dashboard/) (the trailing slash is important).
 
-Your DNS should be configured to redirect `traefik.internal` to the load balancer at `192.168.1.100` (or `192.168.0.100` if using L2). Fortunately, we can configure and expose our own DNS.
+**Your DNS should be configured to redirect `traefik.internal` to the load balancer at `192.168.1.100` (or `192.168.0.100` if using L2). Fortunately, we configure and expose our the CoreDNS.**
 
 For the rest of the guide, we will assume that you have announced `192.168.1.100/32` to the router.
 
@@ -188,66 +191,7 @@ CoreDNS will be exposed to the external network thanks to the `IngressRoute` obj
 
 :::caution
 
-Since `hostPort` will be used, make sure the host does not have port 53/udp busy. On most systems with SystemD, this port is occupied by a stub listener. Open the `/etc/systemd/resolved.conf` configuration file on the host and disable the stub listener by setting `DNSStubListener` to `no`. Finally, restart the service with `systemctl restart systemd-resolved.service`.
-
-If this is an unwanted feature (because you are using an other DNS for example), feel free to remove the routes and close the ports in the Traefik configuration.
-
-```shell title="user@local:/ClusterFactory"
-rm core/coredns/overlays/prod/ingress-route.yaml
-```
-
-```diff title="core/traefik/values.yaml"
-ports:
-  traefik:
-    port: 9000
-    expose: false
-    exposedPort: 9000
-    protocol: TCP
-- dns-tcp:
--   port: 8053
--   expose: true
--   exposedPort: 53
--   protocol: TCP
-- dns-udp:
--   port: 8054
--   expose: true
--   exposedPort: 53
--   protocol: UDP
-```
-
-```diff title="core/coredns/overlays/prod/daemonset.yaml"
-apiVersion: apps/v1
-kind: DaemonSet
-metadata:
-  name: coredns
-spec:
-  template:
-    spec:
-      containers:
-        - name: coredns
-          ports:
-            - name: dns
-              containerPort: 53
--             hostPort: 53
-              protocol: UDP
-            - name: dns-tcp
-              containerPort: 53
--             hostPort: 53
-              protocol: TCP
-      volumes:
-        - name: config-volume
-          configMap:
-            name: coredns
-            items:
-              - key: Corefile
-                path: Corefile
-              - key: example.com.db
-                path: example.com.db
-              - key: internal.db
-                path: internal.db
-            defaultMode: 420
-
-```
+Since `hostPort` will be used, make sure the host does not have port 53/udp busy. On most systems with SystemD, this port is occupied by a stub listener. Open the `/etc/systemd/resolved.conf` configuration file on the Kubernetes hosts and disable the stub listener by setting `DNSStubListener` to `no`. Finally, restart the service with `systemctl restart systemd-resolved.service`.
 
 ```shell title="user@local:/ClusterFactory"
 ./scripts/deploy-core
@@ -310,7 +254,7 @@ data:
     # Examples of external services
     192.168.0.1 gateway.example.com
     192.168.0.2 mn1.example.com
-    192.168.0.3 xcatmn.example.com
+    192.168.0.3 grendel.example.com
     192.168.0.5 cvmfs.example.com
     192.168.0.6 nfs.example.com
     192.168.0.7 mysql.example.com
@@ -326,23 +270,32 @@ data:
     192.168.1.100 grafana.example.com
 ```
 
-Change the zones with your own and eventually change the `forward` field with your preferred DNS.
-Change, add or remove service names as you wish. The `example.com.db` is only an example.
+There are three DNS zones in this configuration:
 
-Kubernetes Services going through the Load Balancer should use the MetalLB IP.
+- The general zone `.:53`, which forwards DNS requests to `8.8.8.8` and announces the Kubernetes Services and Pod domain names.
+- The internal zone `internal:53`, which contains rules to access the ArgoCD and Traefik dashboard.
+- The internal zone `example.com:53`, which contains examples of rules to access to other services.
 
-Compute nodes should be declared here. The IP should be the one declared on xCAT.
+**Modify the zones with your own custom ones and update the `forward` field with your preferred DNS.** Additionally, you can add, remove or modify domain names as per your requirements. Please note the following:
 
-The slurm controller node should take the IP of the kubernetes node on which the pod is hosted, as it uses `hostPort`.
+- For Kubernetes Services that are routed through the Traefik Load Balancer, you must use the MetalLB IP.
+- If you are using `hostPort` on your pod (such as the Slurm Controller), set the IP to be the Kubernetes host that is hosting the pod.
+- If you are using IPVLAN, set the IP to be the IP that you declared in the IPVLAN settings.
 
-You should configure the DNS of the machines to use CoreDNS.
+You should configure the DNS of your machines to use CoreDNS.
 
 ```conf title="resolv.conf"
 nameserver 192.168.1.100
 search example.com
 ```
 
-:::note
+:::warning
+
+Be aware of the chicken-egg problem, you do NOT want to have the Kubernetes hosts using the DNS.
+
+:::
+
+:::warning
 
 If some files were added and removed, you must change the `daemonset.yaml`:
 
@@ -371,33 +324,16 @@ Specify new certificate issuers in the `core/cert-manager` directory.
 
 It is highly recommended to add your own private certificate authority, follow the [official guide of cert-manager](https://cert-manager.io/docs/configuration/ca/).
 
-You must create a Secret `ca-key-pair`:
-
-```yaml title="ca-key-pair-secret.yaml"
-apiVersion: v1
-kind: Secret
-metadata:
-  name: ca-key-pair
-  namespace: cert-manager
-type: kubernetes.io/tls
-stringData:
-  tls.crt: |
-    -----BEGIN CERTIFICATE-----
-    -----END CERTIFICATE-----
-
-  tls.key: |
-    -----BEGIN RSA PRIVATE KEY-----
-    -----END RSA PRIVATE KEY-----
-```
-
-To generate a TLS certificate and its private key:
+You must create a Secret `ca-key-pair`. To generate a TLS certificate and its private key:
 
 ```shell
 openssl genrsa -out tls.key 2048
 openssl req -x509 -sha256 -new -nodes -key tls.key -days 3650 -out tls.crt
+kubectl create secret tls ca-key-pair -n cert-manager --cert=tls.crt --key=tls.key
+rm ca-key-pair-secret.yaml
 ```
 
-Seal it with `cfctl kubeseal` and apply it.
+Then you can create a private ClusterIssuer:
 
 ```yaml title="private-cluster-issuer.yaml"
 apiVersion: cert-manager.io/v1
@@ -410,31 +346,33 @@ spec:
     secretName: ca-key-pair
 ```
 
-If you wish to use ACME HTTP-01, follow [this guide](https://cert-manager.io/docs/configuration/acme/http01/). This will create an Ingress by using the `ingress` field.
+Edit the production ClusterIssuer to use your email address:
 
-```yaml title="public-cluster-issuer.yaml"
+```yaml title="production-cluster-issuer.yaml"
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: public-cluster-issuer
+  name: production-cluster-issuer
   namespace: cert-manager
 spec:
   acme:
     email: john.smith@example.com
     server: https://acme-staging-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
-      name: public-cluster-issuer-account-key
+      name: production-cluster-issuer-account-key
     solvers:
       - http01:
           ingress:
             class: traefik
 ```
 
+The production ClusterIssuer will contact the ACME servers to generate public TLS certificates on trusted root CA servers.
+
 ## Configure the route and certificate for the ArgoCD dashboard
 
-ArgoCD has a dashboard. To change the address and certificate, modify the `ingress-route.yaml` file and `certificate.yaml` in the `core/argo-cd` directory.
+ArgoCD has a dashboard. To change the URL and certificate, modify the `ingress-route.yaml` file and `certificate.yaml` in the `core/argo-cd` directory.
 
-**Make sure the addresses correspond to the ones defined in the CoreDNS (or in your private DNS).**
+**Make sure the domain name correspond to the ones defined in the CoreDNS (or in your private DNS).**
 
 ```yaml title="Example of ingress-route.yaml for ArgoCD"
 apiVersion: traefik.containo.us/v1alpha1
@@ -468,40 +406,7 @@ spec:
 
 IngressRoute allows us to create more complex routing rules than the classic Ingress. However, Ingress can automatically generate a TLS certificate by using annotations, without the need to create a Certificate resource.
 
-Example:
-
-```yaml title="ingress.yaml"
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: grafana-ingress
-  labels:
-    app.kubernetes.io/name: grafana-ingress
-    app.kubernetes.io/component: ingress
-  annotations:
-    cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.tls: 'true'
-spec:
-  ingressClassName: traefik
-  rules:
-    - host: grafana.example.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: grafana
-                port:
-                  number: 80
-  tls:
-    - hosts:
-        - grafana.example.com
-      secretName: grafana.example.com-secret
-```
-
-Our recommendation is to use Ingress for simple routes with HTTP. Otherwise, IngressRoute is the best solution for all the cases.
+Our recommendation is to use Ingress for simple routes with HTTP. Otherwise, IngressRoute is the best solution for all cases.
 
 ## Deploying the core apps
 

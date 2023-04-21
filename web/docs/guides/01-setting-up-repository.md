@@ -179,7 +179,7 @@ If you want to deploy your applications, you should write your manifests and com
 │   │   └── values.yaml
 │   ├── openldap/
 │   ├── slurm-cluster/
-│   └── xcat/
+│   └── grendel/
 ├── manifests/                <----- Or HERE if it's a kustomized/vanilla Kubernetes application
 │   └── my-application/       <-----
 │       └── statefulset.yaml  <-----
@@ -258,4 +258,4 @@ spec:
 kubectl apply -f argo/default/apps/my-application.yaml
 ```
 
-Argo CD will deploy and synchroize automatically by following the HEAD commit. You can also specify the branch instead of `HEAD`.
+Argo CD will deploy and synchronize automatically by following the HEAD commit. You can also specify the branch instead of `HEAD`.

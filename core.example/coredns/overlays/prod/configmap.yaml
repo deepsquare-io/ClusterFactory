@@ -44,7 +44,7 @@ data:
   example.com.db: |
     192.168.0.1 gateway.example.com
     192.168.0.2 mn1.example.com
-    192.168.0.3 xcatmn.example.com
+    192.168.0.3 grendel.example.com
     192.168.0.5 cvmfs.example.com
     192.168.0.6 nfs.example.com
     192.168.0.7 mysql.example.com
