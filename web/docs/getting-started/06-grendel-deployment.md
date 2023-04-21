@@ -307,7 +307,7 @@ ipmi:
 
 With this, you can use `cfctl` to control your nodes.
 
-## CoreDNS configuration
+## 5. CoreDNS configuration
 
 Remember to add a DNS entry each time you want to expose an application:
 
@@ -319,7 +319,7 @@ data:
     192.168.1.100 ipmi.example.com
 ```
 
-## Commit, Push, Deploy
+## 6. Commit, Push, Deploy
 
 Commit and push:
 
@@ -335,7 +335,7 @@ Deploy the app:
 kubectl apply -f argo/provisioning/apps/grendel-app.yaml
 ```
 
-## (Optional) Building the OS Image
+## 7. (Optional) Building the OS Image
 
 This step is optional, you can download a pre-built SquareOS image:
 
@@ -350,7 +350,7 @@ If you want to build it yourself, we use Packer to build the OS image. To build 
 - 3. Build the OS image using the `build.bare.sh` script.
 - 4. Extract the kernel, initramfs and create the squashfs file using the `export.bare.sh` script.
 
-## Adding the OS Image to Grendel
+## 8. Adding the OS Image to Grendel
 
 After deploying Grendel, a file server is exposed for you to copy the OS images.
 
@@ -358,7 +358,7 @@ You can access using this URL: http://grendel.example.com:8080
 
 Drag & Drop the OS image, linux kernel and initramfs there.
 
-## BIOS configuration
+## 9. BIOS configuration
 
 Make sure your nodes are configured with network boot as the first boot option. Grendel supports:
 
@@ -367,7 +367,7 @@ Make sure your nodes are configured with network boot as the first boot option. 
 - x86_64 UEFI
 - ARM64 UEFI
 
-## IPMI commands, rebooting and provision
+## 10. IPMI commands, rebooting and provision
 
 If you've deployed the IPMI API, you can run:
 
@@ -388,3 +388,4 @@ You've finished the guide. However, there is still a lot of application we didn'
 
 - [Deploy SLURM, the bare-metal batch scheduler](/docs/guides/slurm/deploy-slurm)
 - [Configure the postscript to follow the GitOps practices](/docs/guides/provisioning/gitops-with-grendel)
+- [About maintenance](/docs/guides/maintenance/high-availability)
