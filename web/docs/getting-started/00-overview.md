@@ -16,7 +16,7 @@ The purpose of this guide is to achieve the following objectives:
 
 ![getting-started.drawio](./00-overview.assets/getting-started.drawio.svg#invert-on-dark)
 
-The Kubernetes Cluster functions as the control plane for managing compute nodes. **Therefore, the compute nodes which are not considered as part of the Kubernetes Cluster and do not run any Kubernetes workloads.**
+The Kubernetes Cluster functions as the control plane for managing compute nodes. **Therefore, the compute nodes are not considered as part of the Kubernetes Cluster and do not run any Kubernetes workloads.**
 
 ClusterFactory is designed to prioritize bare-metal performance and thus leverages Slurm as the bare-metal batch job scheduler.
 
