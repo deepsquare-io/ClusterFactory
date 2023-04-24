@@ -12,7 +12,7 @@ The first reason we use Multus is so that KubeVirt supports multiple network int
 
 The second and most important reason is that it allows us to use CNI plugins, and thus use ipvlan or macvlan, just like with Docker.
 
-The experience becomes similar to Docker where you can allocate an IP address to a container. This solves a lot of problems for pods that need to use the host network, like xCAT, the bare-metal provisioner.
+The experience becomes similar to Docker where you can allocate an IP address to a container. This solves a lot of problems for pods that need to use the host network, like Grenddel, the bare-metal provisioner.
 
 While Multus solves a lot of problems, it also creates some issues related to routing.
 
