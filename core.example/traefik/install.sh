@@ -7,7 +7,7 @@ helm repo update
 
 helm upgrade --install \
   -n traefik \
-  --version 22.1.0 \
+  --version 23.0.0 \
   traefik \
   -f "${BASEDIR}/values.yaml" \
   traefik/traefik \
