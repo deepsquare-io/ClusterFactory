@@ -7,4 +7,4 @@ icon: https://github.com/ubccr/grendel/blob/main/docs/pages/images/logo-lg.png
 sources:
   - https://github.com/squarefactory/grendel-rocky
 version: 0.1.0
-appVersion: '0.2.3'
+appVersion: '0.2.5'
