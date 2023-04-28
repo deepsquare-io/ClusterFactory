@@ -44,11 +44,10 @@ slurmConfig:
 
   accounting: |
     AccountingStorageType=accounting_storage/slurmdbd
-    AccountingStorageHost=slurmdb.example.com
+    AccountingStorageHost=slurm-cluster-my-cluster-db.slurm-cluster.svc.cluster.local
     AccountingStoragePort=6819
     AccountingStorageTRES=gres/gpu
     AccountingStoreFlags=job_comment,job_env,job_script
-    AccountingStorageEnforce=associations,limits,qos
 
   defaultResourcesAllocation: |
     DefCpuPerGPU=4
@@ -106,7 +105,7 @@ slurmConfig:
     ProctrackType=proctrack/cgroup
     TaskPlugin=task/cgroup
     SwitchType=switch/none
-    MpiDefault=pmix_v2
+    MpiDefault=pmix_v4
     ReturnToService=2 #temp
     GresTypes=gpu
     PreemptType=preempt/qos
@@ -114,9 +113,13 @@ slurmConfig:
     PreemptExemptTime=-1
     Prolog=/etc/slurm/prolog.d/*
     Epilog=/etc/slurm/epilog.d/*
+    RebootProgram="/usr/sbin/reboot"
 
     # Federation
     FederationParameters=fed_display
+
+    #JobCompType=jobcomp/provider
+    JobAcctGatherType=jobacct_gather/cgroup
 
 controller:
   enabled: true
