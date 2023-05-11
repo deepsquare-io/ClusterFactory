@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ldap-connector
+  labels:
+    app: ldap-connector
+spec:
+  template:
+    spec:
+      containers:
+        - name: ldap-connector
+          volumeMounts:
+            - mountPath: /tls
+              name: ca
+          envFrom:
+            - secretRef:
+                name: ldap-connector-env
+                optional: false
+      volumes:
+        - name: ca
+          secret:
+            secretName: ldap.example.com-secret

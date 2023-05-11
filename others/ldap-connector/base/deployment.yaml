@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ldap-connector
+  labels:
+    app: ldap-connector
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ldap-connector
+  template:
+    metadata:
+      labels:
+        app: ldap-connector
+    spec:
+      containers:
+        - name: ldap-connector
+          image: ghcr.io/deepsquare-io/ldap-connector:1.0.9
+          volumeMounts:
+            - mountPath: /config
+              name: config
+          env:
+            - name: 'CONFIG_PATH'
+              value: /config/config.yaml
+      volumes:
+        - name: config
+          configMap:
+            name: ldap-connector-config
+            optional: false
+            items:
+              - key: config.yaml
+                path: config.yaml

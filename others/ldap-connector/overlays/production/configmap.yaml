@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ldap-connector-config
+data:
+  config.yaml: |
+
+    peopleDN: ou=people,dc=example,dc=com
+    groupDN: cn=cluster-users,ou=groups,dc=example,dc=com
+    addUserToGroup:
+      memberAttributes:
+        - member
+    createUser:
+      rdnAttribute: uid
+      objectClasses:
+        - nsPerson
+        - nsOrgPerson
+        - nsAccount
+        - posixAccount
+      userNameAttributes:
+        - uid
+        - displayName
+        - cn
+      defaultAttributes:
+        homeDirectory:
+          - /dev/shm
+        gidNumber:
+          - '1600'
+        uidNumber:
+          - '-1'

@@ -1,0 +1,6 @@
+namespace: ldap
+resources:
+  - ../../base
+patchesStrategicMerge:
+  - configmap.yaml
+  - deployment.yaml
