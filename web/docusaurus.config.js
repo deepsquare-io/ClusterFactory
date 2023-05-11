@@ -25,12 +25,14 @@ const config = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl: 'https://github.com/SquareFactory/ClusterFactory/tree/main/web/',
+          editUrl:
+            'https://github.com/deepsquare-io/ClusterFactory/tree/main/web/',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
-          editUrl: 'https://github.com/SquareFactory/ClusterFactory/tree/feat/docs/web/',
+          editUrl:
+            'https://github.com/deepsquare-io/ClusterFactory/tree/feat/docs/web/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -61,7 +63,7 @@ const config = {
         },
         items: [
           {
-            href: 'https://github.com/SquareFactory/ClusterFactory',
+            href: 'https://github.com/deepsquare-io/ClusterFactory',
             label: 'GitHub',
             position: 'right',
           },

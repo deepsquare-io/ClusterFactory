@@ -18,7 +18,7 @@ Therefore, you MUST rollback to Cgroups v1 until SystemD can run with Cgroups v2
 
 ## Helm and Docker resources
 
-The Helm resources are stored on [ClusterFactory Git Repository](https://github.com/SquareFactory/ClusterFactory/tree/main/helm/cvmfs-server).
+The Helm resources are stored on [ClusterFactory Git Repository](https://github.com/deepsquare-io/ClusterFactory/tree/main/helm/cvmfs-server).
 
 The Dockerfile is described in the git repository [SquareFactory/cvmfs-server-docker](https://github.com/SquareFactory/cvmfs-server-docker).
 
@@ -105,7 +105,7 @@ source:
 
 :::tip
 
-Read the [`values.yaml`](https://github.com/SquareFactory/ClusterFactory/blob/main/helm/cvmfs-server/values.yaml) to see all the default values.
+Read the [`values.yaml`](https://github.com/deepsquare-io/ClusterFactory/blob/main/helm/cvmfs-server/values.yaml) to see all the default values.
 
 :::
 

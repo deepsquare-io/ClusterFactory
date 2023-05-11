@@ -7,7 +7,7 @@ You need 4 command line tools to be able to manage your Kubernetes cluster:
 - [`kubeseal`](https://github.com/bitnami-labs/sealed-secrets/releases/), for encrypting the secrets.
 - [`helm`](https://github.com/helm/helm/releases/), for Helm chart template.
 
-We have a script inside the [`scripts`](https://github.com/SquareFactory/ClusterFactory/tree/main/scripts) directory to install and set up a working environment.
+We have a script inside the [`scripts`](https://github.com/deepsquare-io/ClusterFactory/tree/main/scripts) directory to install and set up a working environment.
 
 Just run:
 

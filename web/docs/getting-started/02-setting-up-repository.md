@@ -1,6 +1,6 @@
 # 2. Setting up your repository for GitOps
 
-To enable GitOps and be able to follow the updates of the ClusterFactory repository, you should [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the [ClusterFactory repository](https://github.com/SquareFactory/ClusterFactory) or create a private copy, so you could use Argo CD on your own repository.
+To enable GitOps and be able to follow the updates of the ClusterFactory repository, you should [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the [ClusterFactory repository](https://github.com/deepsquare-io/ClusterFactory) or create a private copy, so you could use Argo CD on your own repository.
 
 ## 1. Fork the repository
 
@@ -26,7 +26,7 @@ To enable GitOps and be able to follow the updates of the ClusterFactory reposit
 1. Create a bare clone of the repository.
 
    ```shell title="user@local:/"
-   git clone --bare https://github.com/SquareFactory/ClusterFactory.git
+   git clone --bare https://github.com/deepsquare-io/ClusterFactory.git
    ```
 
 2. Create [a new private repository on your favorite Git hosting website](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository) and name it `ClusterFactory`.
@@ -56,12 +56,12 @@ To enable GitOps and be able to follow the updates of the ClusterFactory reposit
 
 ## 2. Setup the upstream remote for git
 
-Git is capable of managing multiple remote repositories. By default, `origin` is linked to the `<your account>/ClusterFactory` repository. To be able to fetch updates from the upstream `SquareFactory/ClusterFactory` repository, we need to add a remote repository that we call `upstream`.
+Git is capable of managing multiple remote repositories. By default, `origin` is linked to the `<your account>/ClusterFactory` repository. To be able to fetch updates from the upstream `deepsquare-io/ClusterFactory` repository, we need to add a remote repository that we call `upstream`.
 
 1. Add the upstream and disable push on the remote `upstream`:
 
    ```shell title="user@local:/ClusterFactory"
-   git remote add upstream https://github.com/SquareFactory/ClusterFactory.git
+   git remote add upstream https://github.com/deepsquare-io/ClusterFactory.git
    git remote set-url --push upstream DISABLE
    ```
 
@@ -71,7 +71,7 @@ Git is capable of managing multiple remote repositories. By default, `origin` is
    git remote -v
    # origin	git@github.com:<your account>/ClusterFactory.git (fetch)
    # origin	git@github.com:<your account>/ClusterFactory.git (push)
-   # upstream	https://github.com/SquareFactory/ClusterFactory.git (fetch)
+   # upstream	https://github.com/deepsquare-io/ClusterFactory.git (fetch)
    # upstream	DISABLE (push)
    ```
 

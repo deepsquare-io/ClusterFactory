@@ -7,7 +7,7 @@ Open OnDemand, a dashboard for SLURM, can be deployed along with the SLURM contr
 
 ## Helm and Docker resources
 
-The Helm resources are stored on [the ClusterFactory Git Repository](https://github.com/SquareFactory/ClusterFactory/tree/main/helm/slurm-cluster).
+The Helm resources are stored on [the ClusterFactory Git Repository](https://github.com/deepsquare-io/ClusterFactory/tree/main/helm/slurm-cluster).
 
 The Dockerfile is described in the git repository [SquareFactory/open-ondemand-docker](https://github.com/SquareFactory/open-ondemand-docker).
 
@@ -19,7 +19,7 @@ docker pull ghcr.io/squarefactory/open-ondemand:latest-dex
 
 :::note
 
-You should always verify the default Helm [values](https://github.com/SquareFactory/ClusterFactory/blob/main/helm/slurm-cluster/values.yaml) before editing the `values` field of an Argo CD `Application`.
+You should always verify the default Helm [values](https://github.com/deepsquare-io/ClusterFactory/blob/main/helm/slurm-cluster/values.yaml) before editing the `values` field of an Argo CD `Application`.
 
 :::
 

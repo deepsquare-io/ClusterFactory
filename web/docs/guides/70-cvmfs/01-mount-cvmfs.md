@@ -10,7 +10,7 @@ The CVMFS CSI Plugin isn't stable yet, so we have to do it the old way: using `h
 
 ## Helm and Docker resources
 
-The Helm resources are stored on [ClusterFactory Git Repository](https://github.com/SquareFactory/ClusterFactory/tree/main/helm/cvmfs-service).
+The Helm resources are stored on [ClusterFactory Git Repository](https://github.com/deepsquare-io/ClusterFactory/tree/main/helm/cvmfs-service).
 
 The Dockerfile is described in the git repository [cvmfs/cvmfs](https://github.dev/cvmfs/cvmfs/blob/devel/packaging/container/Dockerfile).
 
@@ -83,7 +83,7 @@ source:
 
 :::tip
 
-Read the [`values.yaml`](https://github.com/SquareFactory/ClusterFactory/blob/main/helm/cvmfs-service/values.yaml) to see all the default values.
+Read the [`values.yaml`](https://github.com/deepsquare-io/ClusterFactory/blob/main/helm/cvmfs-service/values.yaml) to see all the default values.
 
 :::
 

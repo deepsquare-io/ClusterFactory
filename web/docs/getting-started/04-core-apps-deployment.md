@@ -187,7 +187,7 @@ For the rest of the guide, we will assume that you have announced `192.168.1.100
 
 The CoreDNS given by k0s does not meet our needs, so we added `--disable-components coredns` in the `installFlags` of `cfctl.yaml`. We will deploy our own.
 
-CoreDNS will be exposed to the external network thanks to the `IngressRoute` objects in the [`core/coredns/overlays/prod/ingress-route.yaml`](https://github.com/SquareFactory/ClusterFactory/blob/main/core.example/coredns/overlays/prod/ingress-route.yaml). **It is also exposed using `hostPort` ([`core/coredns/overlays/prod/daemonset.yaml`](https://github.com/SquareFactory/ClusterFactory/blob/main/core.example/coredns/overlays/prod/daemonset.yaml)).**
+CoreDNS will be exposed to the external network thanks to the `IngressRoute` objects in the [`core/coredns/overlays/prod/ingress-route.yaml`](https://github.com/deepsquare-io/ClusterFactory/blob/main/core.example/coredns/overlays/prod/ingress-route.yaml). **It is also exposed using `hostPort` ([`core/coredns/overlays/prod/daemonset.yaml`](https://github.com/deepsquare-io/ClusterFactory/blob/main/core.example/coredns/overlays/prod/daemonset.yaml)).**
 
 :::caution
 
@@ -199,7 +199,7 @@ Since `hostPort` will be used, make sure the host does not have port 53/udp busy
 
 :::
 
-The files that you should look for are [`core/coredns/overlays/prod/configmap.yaml`](https://github.com/SquareFactory/ClusterFactory/blob/main/core.example/coredns/overlays/prod/configmap.yaml) and [`core/coredns/overlays/prod/daemonset.yaml`](https://github.com/SquareFactory/ClusterFactory/blob/main/core.example/coredns/overlays/prod/daemonset.yaml).
+The files that you should look for are [`core/coredns/overlays/prod/configmap.yaml`](https://github.com/deepsquare-io/ClusterFactory/blob/main/core.example/coredns/overlays/prod/configmap.yaml) and [`core/coredns/overlays/prod/daemonset.yaml`](https://github.com/deepsquare-io/ClusterFactory/blob/main/core.example/coredns/overlays/prod/daemonset.yaml).
 
 Inside the `ConfigMap`, you'll find:
 

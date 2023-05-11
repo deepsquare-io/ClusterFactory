@@ -4,7 +4,7 @@
 
 ### Configuring and Launching Packer
 
-The [`packer-recipes` directory inside the git repository](https://github.com/SquareFactory/ClusterFactory/tree/main/packer-recipes) contains examples of Packer configuration files.
+The [`packer-recipes` directory inside the git repository](https://github.com/deepsquare-io/ClusterFactory/tree/main/packer-recipes) contains examples of Packer configuration files.
 
 ```json title="compute.bare.json"
 {

@@ -5,7 +5,7 @@ import TabItem from '@theme/TabItem';
 
 ## Helm and Docker resources
 
-The Helm resources are stored on [ClusterFactory Git Repository](https://github.com/SquareFactory/ClusterFactory/tree/main/helm/389ds).
+The Helm resources are stored on [ClusterFactory Git Repository](https://github.com/deepsquare-io/ClusterFactory/tree/main/helm/389ds).
 
 The Dockerfile is described in the git repository [389ds/dirsrv](https://github.com/389ds/389-ds-base).
 
@@ -204,7 +204,7 @@ source:
 
 :::tip
 
-Read the [`values.yaml`](https://github.com/SquareFactory/ClusterFactory/blob/main/helm/389ds/values.yaml) to see all the default values.
+Read the [`values.yaml`](https://github.com/deepsquare-io/ClusterFactory/blob/main/helm/389ds/values.yaml) to see all the default values.
 
 :::
 

@@ -20,7 +20,7 @@ ClusterFactory has been fully tested on Rocky Linux which is our recommended OS.
 - [`kubeseal`](https://github.com/bitnami-labs/sealed-secrets/releases/), for encrypting the secrets.
 - [`helm`](https://github.com/helm/helm/releases/), for Helm chart template.
 
-There is a script inside the [`scripts`](https://github.com/SquareFactory/ClusterFactory/tree/main/scripts) directory to install and set up a working environment.
+There is a script inside the [`scripts`](https://github.com/deepsquare-io/ClusterFactory/tree/main/scripts) directory to install and set up a working environment.
 
 Just run:
 

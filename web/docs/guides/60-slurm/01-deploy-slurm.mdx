@@ -7,13 +7,13 @@ import TabItem from '@theme/TabItem';
 
 :::caution
 
-Deploying the SLURM database isn't stable yet. Please feel free to [create an issue](https://github.com/SquareFactory/ClusterFactory/issues/new) so we can improve its stability.
+Deploying the SLURM database isn't stable yet. Please feel free to [create an issue](https://github.com/deepsquare-io/ClusterFactory/issues/new) so we can improve its stability.
 
 :::
 
 ## Helm and Docker resources
 
-The Helm resources are stored on [the ClusterFactory Git Repository](https://github.com/SquareFactory/ClusterFactory/tree/main/helm/slurm-cluster).
+The Helm resources are stored on [the ClusterFactory Git Repository](https://github.com/deepsquare-io/ClusterFactory/tree/main/helm/slurm-cluster).
 
 The Dockerfile is described in the git repository [SquareFactory/slurm-docker](https://github.com/SquareFactory/slurm-docker).
 
@@ -28,7 +28,7 @@ docker pull ghcr.io/squarefactory/slurm:latest-rest
 
 :::note
 
-You should always verify the default Helm [values](https://github.com/SquareFactory/ClusterFactory/blob/main/helm/slurm-cluster/values.yaml) before editing the `values` field of an Argo CD `Application`.
+You should always verify the default Helm [values](https://github.com/deepsquare-io/ClusterFactory/blob/main/helm/slurm-cluster/values.yaml) before editing the `values` field of an Argo CD `Application`.
 
 :::
 
@@ -1014,7 +1014,7 @@ default via 169.254.1.1 dev eth0
 10.10.0.0/20 dev net1 proto kernel scope link src 10.10.0.21
 ```
 
-The issue is tracked at [SquareFactory/ClusterFactory#29](https://github.com/SquareFactory/ClusterFactory/issues/29) and [projectcalico/calico#5199](https://github.com/projectcalico/calico/issues/5199).
+The issue is tracked at [deepsquare-io/ClusterFactory#29](https://github.com/deepsquare-io/ClusterFactory/issues/29) and [projectcalico/calico#5199](https://github.com/projectcalico/calico/issues/5199).
 
 :::
 

@@ -1,6 +1,6 @@
 # Contributing
 
-You can read the contributing guide in the [official GitHub repository](https://github.com/SquareFactory/ClusterFactory/blob/main/CONTRIBUTING.md).
+You can read the contributing guide in the [official GitHub repository](https://github.com/deepsquare-io/ClusterFactory/blob/main/CONTRIBUTING.md).
 
 ## Welcome
 
