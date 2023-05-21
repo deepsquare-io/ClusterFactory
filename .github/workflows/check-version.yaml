@@ -33,7 +33,7 @@ jobs:
         run: ./.ci/check-versions.sh ${TOKEN}
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ steps.generate_token.outputs.token }}
           commit-message: 'chore: update dependencies'
