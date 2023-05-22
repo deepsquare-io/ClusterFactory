@@ -1,0 +1,99 @@
+supervisor:
+  image:
+    repository: ghcr.io/deepsquare-io/supervisor
+    tag: dev
+  imagePullPolicy: Always
+
+  config:
+    publicAddress: 'supervisor.satoshi.internal:443'
+    provider:
+      privateKeyRef:
+        secretName: provider-wallet-secret
+        key: wallet-private-key
+
+    metascheduler:
+      endpoint:
+        rpc: 'https://testnet.deepsquare.run/rpc'
+        ws: 'wss://testnet.deepsquare.run/ws'
+      smartContract: '0xc9AcB97F1132f0FB5dC9c5733B7b04F9079540f0'
+
+    sbatchService:
+      endpoint: 'sbatch.dev.deepsquare.run:443'
+      tls:
+        enable: true
+        insecure: false
+        ca: /etc/ssl/certs/ca-certificates.crt
+        serverHostOverride: 'sbatch.dev.deepsquare.run'
+
+    slurm:
+      ssh:
+        adminUser: slurm
+        address: slurm-cluster-satoshi-1-login.slurm-cluster.svc.cluster.local:22
+
+        privateKeyRef:
+          secretName: supervisor-ssh-key-secret
+          key: ssh-private-key
+
+    spec:
+      nodes: 4
+      cpus: 64
+      gpus: 8
+      memory: 513840
+
+  resources:
+    requests:
+      cpu: '100m'
+      memory: '256Mi'
+    limits:
+      memory: '256Mi'
+
+  nodeSelector:
+    topology.kubernetes.io/region: es-barcelona
+
+  service:
+    enabled: true
+    type: ClusterIP
+
+  extra:
+    - apiVersion: cert-manager.io/v1
+      kind: Certificate
+      metadata:
+        name: supervisor.satoshi.internal-cert
+      spec:
+        secretName: supervisor.satoshi.internal-secret
+        issuerRef:
+          name: private-cluster-issuer
+          kind: ClusterIssuer
+        commonName: supervisor.satoshi.internal
+        subject:
+          countries: [ES]
+          localities: [Barcelona]
+          organizationalUnits: [IT]
+          organizations: [Satoshi]
+          provinces: [Catalonia]
+        dnsNames:
+          - supervisor.satoshi.internal
+
+    - apiVersion: traefik.containo.us/v1alpha1
+      kind: IngressRoute
+      metadata:
+        name: supervisor-https
+      spec:
+        entryPoints:
+          - websecure
+        routes:
+          - kind: Rule
+            match: Host(`supervisor.satoshi.internal`)
+            priority: 10
+            services:
+              - name: supervisor-satoshi-1
+                port: 3000
+          - kind: Rule
+            match: Host(`supervisor.satoshi.internal`) && HeadersRegexp(`Content-Type`, `^application/grpc.*$`)
+            priority: 11
+            services:
+              - name: supervisor-satoshi-1
+                port: 3000
+                scheme: h2c
+        tls:
+          secretName: supervisor.satoshi.internal-secret
