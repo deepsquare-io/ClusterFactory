@@ -22,8 +22,6 @@ Here are some other resources you can read:
 - Learn about templating with [Helm](https://helm.sh/docs/intro/quickstart/)
 - Learn about [MetalLB](https://metallb.universe.tf)
 
-Then, if you are interested in bare-metal provisioning, you should read our [guides](/docs/guides/provisioning/deploy-grendel).
-
 If you've got all this figured out, you will now know that putting Kubernetes into practice is less complicated than setting up a virtual machine.
 
 ## Why Kubernetes over Virtual Machines?

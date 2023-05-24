@@ -199,7 +199,7 @@ kubectl apply -f argo/slurm-cluster/secrets/sssd-sealed-secret.yaml
 
 ### MySQL deployment
 
-You can deploy MySQL using the [Helm Chart of Bitnami](https://bitnami.com/stack/mysql/helm) and develop an [Argo CD app](/docs/guides/develop-apps-for-cluster-factory).
+You can deploy MySQL using the [Helm Chart of Bitnami](https://bitnami.com/stack/mysql/helm) and deploy it with [ArgoCD](https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/).
 
 After deploying the MySQL/MariaDB server, you must create a slurm database. Open a shell on the MySQL container and run:
 

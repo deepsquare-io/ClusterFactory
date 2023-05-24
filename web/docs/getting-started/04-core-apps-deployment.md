@@ -424,4 +424,4 @@ If the script fails, you can run it again without harming the cluster.
 
 If CoreDNS and the IngressRoutes are configured, you should be able to access the ArgoCD dashboard and Traefik dashboard.
 
-Congratulations! You have successfully deployed a Kubernetes Cluster with the minimum requirements. We still recommend to deploy the Monitoring stack to monitor the RAM and CPU usage of the containers. Nevertheless, you can follow the [guides](/docs/guides), learn the [main concepts of ClusterFactory](/docs/main-concepts/k0s), or continue the [Getting Started](./argo-apps-deployment).
+Congratulations! You have successfully deployed a Kubernetes Cluster with the minimum requirements. We still recommend deploying the Monitoring stack to monitor the RAM and CPU usage of the containers. Nevertheless, you can follow the [guides](/docs/guides/installing-the-utilities), learn the [main concepts of ClusterFactory](/docs/main-concepts/k0s), or continue the [Getting Started](./adding-repository-argocd).
