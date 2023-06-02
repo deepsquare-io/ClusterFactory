@@ -82,10 +82,8 @@ module "router" {
   addresses      = var.router.addresses
   bgp_asn        = var.router.bgp_asn
   wireguard_vpns = var.router.wireguard_vpns
-  ipsec_vpns     = var.router.ipsec_vpns
   netmaker_vpns  = var.router.netmaker_vpns
   tailscale_vpns = var.router.tailscale_vpns
-  public_ip      = var.router.public_ip
   bgp            = var.router.bgp
   extra_configs  = var.router.extra_configs
 }

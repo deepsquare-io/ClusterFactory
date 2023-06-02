@@ -157,7 +157,6 @@ variable "router" {
     image_name  = string
     flavor_name = string
     tags        = optional(set(string))
-    public_ip   = string
     addresses   = string
     bgp_asn     = number
     wireguard_vpns = list(object({
@@ -170,21 +169,6 @@ variable "router" {
         endpoint      = string
         public_key    = string
         preshared_key = string
-      })
-      bgp = object({
-        exports = list(string)
-        peer = object({
-          address = string
-          asn     = number
-        })
-      })
-    }))
-    ipsec_vpns = list(object({
-      address = string
-      peer = object({
-        name       = string
-        address    = string
-        shared_key = string
       })
       bgp = object({
         exports = list(string)

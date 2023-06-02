@@ -9,11 +9,9 @@ locals {
     addresses      = var.addresses
     network_cidr   = data.cidr_network.addresses.network
     bgp_asn        = var.bgp_asn
-    ipsec_vpns     = var.ipsec_vpns
     wireguard_vpns = var.wireguard_vpns
     netmaker_vpns  = var.netmaker_vpns
     tailscale_vpns = var.tailscale_vpns
-    public_ip      = var.public_ip
     bgp            = var.bgp
     extra_configs  = var.extra_configs
   })
@@ -38,6 +36,55 @@ resource "openstack_compute_secgroup_v2" "router_secgroup" {
   description = "Router Security Group"
 
   rule {
+    from_port   = 22
+    to_port     = 22
+    ip_protocol = "tcp"
+    cidr        = "0.0.0.0/0"
+  }
+
+  rule {
+    from_port   = 80
+    to_port     = 80
+    ip_protocol = "tcp"
+    cidr        = "::/0"
+  }
+
+  rule {
+    from_port   = 80
+    to_port     = 80
+    ip_protocol = "tcp"
+    cidr        = "0.0.0.0/0"
+  }
+
+  rule {
+    from_port   = 443
+    to_port     = 443
+    ip_protocol = "tcp"
+    cidr        = "::/0"
+  }
+
+  rule {
+    from_port   = 443
+    to_port     = 443
+    ip_protocol = "tcp"
+    cidr        = "0.0.0.0/0"
+  }
+
+  rule {
+    from_port   = 443
+    to_port     = 443
+    ip_protocol = "udp"
+    cidr        = "::/0"
+  }
+
+  rule {
+    from_port   = 443
+    to_port     = 443
+    ip_protocol = "udp"
+    cidr        = "0.0.0.0/0"
+  }
+
+  rule {
     from_port   = 500
     to_port     = 500
     ip_protocol = "udp"
@@ -66,15 +113,29 @@ resource "openstack_compute_secgroup_v2" "router_secgroup" {
   }
 
   rule {
-    from_port   = 51820
-    to_port     = 51820
+    from_port   = 51821
+    to_port     = 51821
     ip_protocol = "udp"
     cidr        = "::/0"
   }
 
   rule {
-    from_port   = 51820
-    to_port     = 51820
+    from_port   = 51821
+    to_port     = 51821
+    ip_protocol = "udp"
+    cidr        = "0.0.0.0/0"
+  }
+
+  rule {
+    from_port   = 51822
+    to_port     = 51822
+    ip_protocol = "udp"
+    cidr        = "::/0"
+  }
+
+  rule {
+    from_port   = 51822
+    to_port     = 51822
     ip_protocol = "udp"
     cidr        = "0.0.0.0/0"
   }
@@ -144,14 +205,14 @@ resource "openstack_compute_instance_v2" "router" {
   user_data = local.user_data
 }
 
-resource "ovh_cloud_project_failover_ip_attach" "failoverip" {
-  service_name = var.service_name
-  ip           = var.public_ip
-  routed_to    = openstack_compute_instance_v2.router.id
+# resource "ovh_cloud_project_failover_ip_attach" "failoverip" {
+#   service_name = var.service_name
+#   ip           = var.public_ip
+#   routed_to    = openstack_compute_instance_v2.router.id
 
-  lifecycle {
-    replace_triggered_by = [
-      openstack_compute_instance_v2.router.id
-    ]
-  }
-}
+#   lifecycle {
+#     replace_triggered_by = [
+#       openstack_compute_instance_v2.router.id
+#     ]
+#   }
+# }

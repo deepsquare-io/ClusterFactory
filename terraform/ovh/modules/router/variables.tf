@@ -63,11 +63,6 @@ variable "bgp_asn" {
   type        = number
 }
 
-variable "public_ip" {
-  description = "Failover IP"
-  type        = string
-}
-
 variable "wireguard_vpns" {
   description = "Wireguard PTP definitions"
   type = list(object({
@@ -80,25 +75,6 @@ variable "wireguard_vpns" {
       endpoint      = string
       public_key    = string
       preshared_key = string
-    })
-    bgp = object({
-      exports = list(string)
-      peer = object({
-        address = string
-        asn     = number
-      })
-    })
-  }))
-}
-
-variable "ipsec_vpns" {
-  description = "IPsec PTP definitions"
-  type = list(object({
-    address = string
-    peer = object({
-      name       = string
-      address    = string
-      shared_key = string
     })
     bgp = object({
       exports = list(string)

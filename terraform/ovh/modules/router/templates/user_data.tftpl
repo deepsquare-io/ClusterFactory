@@ -13,7 +13,6 @@ vyos_config_commands:
   - set interfaces ethernet eth0 address 'dhcp'
   - set interfaces ethernet eth0 description 'Outside Network'
   - set interfaces ethernet eth0 mtu '1500'
-  - set interfaces ethernet eth0 address '${public_ip}/32'
   - set interfaces ethernet eth1 address '${addresses}'
   - set interfaces ethernet eth1 mtu '9000'
   - set interfaces ethernet eth1 description 'LAN Private Network'
@@ -49,27 +48,6 @@ vyos_config_commands:
   - set nat source rule 100 translation address 'masquerade'
   - set nat source rule 100 outbound-interface 'eth0'
   - set protocols bgp system-as '${bgp_asn}'
-  - set vpn ipsec options disable-route-autoinstall
-  - set vpn ipsec esp-group ESP_DEFAULT compression 'disable'
-  - set vpn ipsec esp-group ESP_DEFAULT lifetime '3600'
-  - set vpn ipsec esp-group ESP_DEFAULT mode 'tunnel'
-  - set vpn ipsec esp-group ESP_DEFAULT pfs 'enable'
-  - set vpn ipsec esp-group ESP_DEFAULT proposal 1 encryption 'aes256gcm128'
-  - set vpn ipsec esp-group ESP_DEFAULT proposal 1 hash 'sha512'
-  - set vpn ipsec esp-group ESP_DEFAULT proposal 2 encryption 'aes256gcm128'
-  - set vpn ipsec esp-group ESP_DEFAULT proposal 2 hash 'sha384'
-  - set vpn ipsec ike-group IKEv2_DEFAULT dead-peer-detection action 'clear'
-  - set vpn ipsec ike-group IKEv2_DEFAULT dead-peer-detection interval '30'
-  - set vpn ipsec ike-group IKEv2_DEFAULT dead-peer-detection timeout '120'
-  - set vpn ipsec ike-group IKEv2_DEFAULT ikev2-reauth 'no'
-  - set vpn ipsec ike-group IKEv2_DEFAULT key-exchange 'ikev2'
-  - set vpn ipsec ike-group IKEv2_DEFAULT lifetime '10800'
-  - set vpn ipsec ike-group IKEv2_DEFAULT proposal 1 encryption 'aes256gcm128'
-  - set vpn ipsec ike-group IKEv2_DEFAULT proposal 1 dh-group '14'
-  - set vpn ipsec ike-group IKEv2_DEFAULT proposal 1 hash 'sha512'
-  - set vpn ipsec ike-group IKEv2_DEFAULT proposal 2 encryption 'aes256gcm128'
-  - set vpn ipsec ike-group IKEv2_DEFAULT proposal 2 dh-group '14'
-  - set vpn ipsec ike-group IKEv2_DEFAULT proposal 2 hash 'sha384'
   - set protocols bgp address-family ipv4-unicast redistribute connected metric '100'
 
 write_files:
@@ -98,7 +76,7 @@ write_files:
       set interfaces wireguard '${vpn.interface}' peer '${vpn.peer.name}' preshared-key '${vpn.peer.preshared_key}'
       %{~ for index, prefix in vpn.bgp.exports ~}
       set policy prefix-list 'BGP-${vpn.peer.name}-OUT' rule ${index} prefix '${prefix}'
-      set policy prefix-list 'BGP-${vpn.peer.name}-OUT' rule ${index} action 'allow'
+      set policy prefix-list 'BGP-${vpn.peer.name}-OUT' rule ${index} action 'permit'
       %{~ endfor ~}
       set policy prefix-list 'BGP-${vpn.peer.name}-OUT' rule 1000 prefix '0.0.0.0/0'
       set policy prefix-list 'BGP-${vpn.peer.name}-OUT' rule 1000 action 'deny'
@@ -110,39 +88,10 @@ write_files:
       set protocols bgp neighbor '${vpn.bgp.peer.address}' address-family ipv4-unicast route-map export 'BGP-${vpn.peer.name}-OUT'
       %{~ endfor ~}
 
-      %{~ for vpn_index,vpn in ipsec_vpns ~}
-      set interfaces vti vti${vpn_index} address '${vpn.address}'
-      set vpn ipsec interface 'eth0.${vpn_index}'
-      set vpn ipsec site-to-site peer '${vpn.peer.name}' authentication local-id '${public_ip}'
-      set vpn ipsec site-to-site peer '${vpn.peer.name}' authentication mode 'pre-shared-secret'
-      set vpn ipsec site-to-site peer '${vpn.peer.name}' authentication pre-shared-secret '${vpn.peer.shared_key}'
-      set vpn ipsec site-to-site peer '${vpn.peer.name}' authentication remote-id '${vpn.peer.address}'
-      set vpn ipsec site-to-site peer '${vpn.peer.name}' connection-type 'initiate'
-      set vpn ipsec site-to-site peer '${vpn.peer.name}' ike-group 'IKEv2_DEFAULT'
-      set vpn ipsec site-to-site peer '${vpn.peer.name}' ikev2-reauth 'inherit'
-      set vpn ipsec site-to-site peer '${vpn.peer.name}' remote-address '${vpn.peer.address}'
-      set vpn ipsec site-to-site peer '${vpn.peer.name}' local-address '${public_ip}'
-      set vpn ipsec site-to-site peer '${vpn.peer.name}' vti bind 'vti${vpn_index}'
-      set vpn ipsec site-to-site peer '${vpn.peer.name}' vti esp-group 'ESP_DEFAULT'
-      %{~ for index, prefix in vpn.bgp.exports ~}
-      set policy prefix-list 'BGP-${vpn.peer.name}-OUT' rule ${index + 1} prefix '${prefix}'
-      set policy prefix-list 'BGP-${vpn.peer.name}-OUT' rule ${index + 1} action 'permit'
-      %{~ endfor ~}
-      set policy prefix-list 'BGP-${vpn.peer.name}-OUT' rule 1000 prefix '0.0.0.0/0'
-      set policy prefix-list 'BGP-${vpn.peer.name}-OUT' rule 1000 action 'deny'
-      set policy route-map 'BGP-${vpn.peer.name}-OUT' rule 10 action 'permit'
-      set policy route-map 'BGP-${vpn.peer.name}-OUT' rule 10 match ip address prefix-list 'BGP-${vpn.peer.name}-OUT'
-      set policy route-map 'BGP-${vpn.peer.name}-OUT' rule 10000 action 'deny'
-      set protocols bgp neighbor '${vpn.bgp.peer.address}' remote-as '${vpn.bgp.peer.asn}'
-      set protocols bgp neighbor '${vpn.bgp.peer.address}' description 'BGP-with-${vpn.peer.name}'
-      set protocols bgp neighbor '${vpn.bgp.peer.address}' address-family ipv4-unicast route-map export 'BGP-${vpn.peer.name}-OUT'
-      set protocols bgp neighbor '${vpn.bgp.peer.address}' address-family ipv4-unicast soft-reconfiguration inbound
-      %{~ endfor ~}
-
       %{~ for b in bgp ~}
       %{~ for index, prefix in b.exports ~}
       set policy prefix-list 'BGP-${b.peer.name}-OUT' rule ${index} prefix '${prefix}'
-      set policy prefix-list 'BGP-${b.peer.name}-OUT' rule ${index} action 'allow'
+      set policy prefix-list 'BGP-${b.peer.name}-OUT' rule ${index} action 'permit'
       %{~ endfor ~}
       set policy prefix-list 'BGP-${b.peer.name}-OUT' rule 1000 prefix '0.0.0.0/0'
       set policy prefix-list 'BGP-${b.peer.name}-OUT' rule 1000 action 'deny'
@@ -177,6 +126,6 @@ write_files:
       sudo tailscale up --login-server '${vpn.address}' --authkey '${vpn.key}' --advertise-routes '${vpn.advertised_routes}' --accept-routes --snat-subnet-routes=false
       %{~ endfor ~}
 
-      exec sg vyattacfg -c "/config/scripts/config-bgp.script"
+      exec sg vyattacfg -c "/config/scripts/config-vpn.script"
 
       rm -f /config/scripts/vyos-postconfig-bootup.script
