@@ -1,0 +1,226 @@
+rook-ceph:
+  crds:
+    # -- Whether the helm chart should create and update the CRDs. If false, the CRDs must be
+    # managed independently with deploy/examples/crds.yaml.
+    # **WARNING** Only set during first deployment. If later disabled the cluster may be DESTROYED.
+    # If the CRDs are deleted in this case, see
+    # [the disaster recovery guide](https://rook.io/docs/rook/latest/Troubleshooting/disaster-recovery/#restoring-crds-after-deletion)
+    # to restore them.
+    enabled: true
+
+  # -- Pod resource requests & limits
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  # -- Kubernetes [`nodeSelector`](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector) to add to the Deployment.
+  nodeSelector: {}
+  # Constraint rook-ceph-operator Deployment to nodes with label `disktype: ssd`.
+  # For more info, see https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  #  disktype: ssd
+
+  # -- List of Kubernetes [`tolerations`](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/) to add to the Deployment.
+  tolerations: []
+
+  enableDiscoveryDaemon: true
+
+  csi:
+    # -- Enable Ceph CSI RBD driver
+    enableRbdDriver: true
+    # -- Enable Ceph CSI CephFS driver
+    enableCephfsDriver: true
+    # -- Enable Ceph CSI GRPC Metrics
+    enableGrpcMetrics: false
+    # -- Enable host networking for CSI CephFS and RBD nodeplugins. This may be necessary
+    # in some network configurations where the SDN does not provide access to an external cluster or
+    # there is significant drop in read/write performance
+    enableCSIHostNetwork: false
+    # -- Enable Snapshotter in CephFS provisioner pod
+    enableCephfsSnapshotter: true
+    # -- Enable Snapshotter in NFS provisioner pod
+    enableNFSSnapshotter: true
+    # -- Enable Snapshotter in RBD provisioner pod
+    enableRBDSnapshotter: true
+    # -- Enable Host mount for `/etc/selinux` directory for Ceph CSI nodeplugins
+    enablePluginSelinuxHostMount: false
+    # -- Enable Ceph CSI PVC encryption support
+    enableCSIEncryption: false
+
+    # -- PriorityClassName to be set on csi driver plugin pods
+    pluginPriorityClassName: system-node-critical
+
+    # -- PriorityClassName to be set on csi driver provisioner pods
+    provisionerPriorityClassName: system-cluster-critical
+
+    # -- Policy for modifying a volume's ownership or permissions when the RBD PVC is being mounted.
+    # supported values are documented at https://kubernetes-csi.github.io/docs/support-fsgroup.html
+    rbdFSGroupPolicy: 'File'
+
+    # -- Policy for modifying a volume's ownership or permissions when the CephFS PVC is being mounted.
+    # supported values are documented at https://kubernetes-csi.github.io/docs/support-fsgroup.html
+    cephFSFSGroupPolicy: 'File'
+
+    # -- Policy for modifying a volume's ownership or permissions when the NFS PVC is being mounted.
+    # supported values are documented at https://kubernetes-csi.github.io/docs/support-fsgroup.html
+    nfsFSGroupPolicy: 'File'
+
+    # -- OMAP generator generates the omap mapping between the PV name and the RBD image
+    # which helps CSI to identify the rbd images for CSI operations.
+    # `CSI_ENABLE_OMAP_GENERATOR` needs to be enabled when we are using rbd mirroring feature.
+    # By default OMAP generator is disabled and when enabled, it will be deployed as a
+    # sidecar with CSI provisioner pod, to enable set it to true.
+    enableOMAPGenerator: false
+
+    # -- Set CephFS Kernel mount options to use https://docs.ceph.com/en/latest/man/8/mount.ceph/#options.
+    # Set to "ms_mode=secure" when connections.encrypted is enabled in CephCluster CR
+    cephFSKernelMountOptions:
+
+    # -- Enable adding volume metadata on the CephFS subvolumes and RBD images.
+    # Not all users might be interested in getting volume/snapshot details as metadata on CephFS subvolume and RBD images.
+    # Hence enable metadata is false by default
+    enableMetadata: false
+
+    # -- Set replicas for csi provisioner deployment
+    provisionerReplicas: 2
+
+    # -- Cluster name identifier to set as metadata on the CephFS subvolume and RBD images. This will be useful
+    # in cases like for example, when two container orchestrator clusters (Kubernetes/OCP) are using a single ceph cluster
+    clusterName:
+
+    # -- Set logging level for cephCSI containers maintained by the cephCSI.
+    # Supported values from 0 to 5. 0 for general useful logs, 5 for trace level verbosity.
+    logLevel: 0
+
+    # -- Set logging level for Kubernetes-csi sidecar containers.
+    # Supported values from 0 to 5. 0 for general useful logs (the default), 5 for trace level verbosity.
+    # @default -- `0`
+    sidecarLogLevel:
+
+    # -- CSI RBD plugin daemonset update strategy, supported values are OnDelete and RollingUpdate
+    # @default -- `RollingUpdate`
+    rbdPluginUpdateStrategy:
+
+    # -- A maxUnavailable parameter of CSI RBD plugin daemonset update strategy.
+    # @default -- `1`
+    rbdPluginUpdateStrategyMaxUnavailable:
+
+    # -- CSI CephFS plugin daemonset update strategy, supported values are OnDelete and RollingUpdate
+    # @default -- `RollingUpdate`
+    cephFSPluginUpdateStrategy:
+
+    # -- CSI NFS plugin daemonset update strategy, supported values are OnDelete and RollingUpdate
+    # @default -- `RollingUpdate`
+    nfsPluginUpdateStrategy:
+
+    # -- Set GRPC timeout for csi containers (in seconds). It should be >= 120. If this value is not set or is invalid, it defaults to 150
+    grpcTimeoutInSeconds: 150
+
+    # -- Allow starting an unsupported ceph-csi image
+    allowUnsupportedVersion: false
+
+    # -- The volume of the CephCSI RBD plugin DaemonSet
+    csiRBDPluginVolume:
+    #  - name: lib-modules
+    #    hostPath:
+    #      path: /run/booted-system/kernel-modules/lib/modules/
+    #  - name: host-nix
+    #    hostPath:
+    #      path: /nix
+
+    # -- The volume mounts of the CephCSI RBD plugin DaemonSet
+    csiRBDPluginVolumeMount:
+    #  - name: host-nix
+    #    mountPath: /nix
+    #    readOnly: true
+
+    # -- The volume of the CephCSI CephFS plugin DaemonSet
+    csiCephFSPluginVolume:
+    #  - name: lib-modules
+    #    hostPath:
+    #      path: /run/booted-system/kernel-modules/lib/modules/
+    #  - name: host-nix
+    #    hostPath:
+    #      path: /nix
+
+    # -- The volume mounts of the CephCSI CephFS plugin DaemonSet
+    csiCephFSPluginVolumeMount:
+    #  - name: host-nix
+    #    mountPath: /nix
+    #    readOnly: true
+
+    # -- CEPH CSI RBD provisioner resource requirement list
+    # csi-omap-generator resources will be applied only if `enableOMAPGenerator` is set to `true`
+    # @default -- see values.yaml
+    csiRBDProvisionerResource: |
+      - name : csi-provisioner
+        resource:
+      - name : csi-resizer
+        resource:
+      - name : csi-attacher
+        resource:
+      - name : csi-snapshotter
+        resource:
+      - name : csi-rbdplugin
+        resource:
+      - name : csi-omap-generator
+        resource:
+      - name : liveness-prometheus
+        resource:
+
+    # -- CEPH CSI RBD plugin resource requirement list
+    # @default -- see values.yaml
+    csiRBDPluginResource: |
+      - name : driver-registrar
+        resource:
+      - name : csi-rbdplugin
+        resource:
+      - name : liveness-prometheus
+        resource:
+
+    # -- CEPH CSI CephFS provisioner resource requirement list
+    # @default -- see values.yaml
+    csiCephFSProvisionerResource: |
+      - name : csi-provisioner
+        resource:
+      - name : csi-resizer
+        resource:
+      - name : csi-attacher
+        resource:
+      - name : csi-snapshotter
+        resource:
+      - name : csi-cephfsplugin
+        resource:
+      - name : liveness-prometheus
+        resource:
+
+    # -- CEPH CSI CephFS plugin resource requirement list
+    # @default -- see values.yaml
+    csiCephFSPluginResource: |
+      - name : driver-registrar
+        resource:
+      - name : csi-cephfsplugin
+        resource:
+      - name : liveness-prometheus
+        resource:
+
+    # -- CEPH CSI NFS provisioner resource requirement list
+    # @default -- see values.yaml
+    csiNFSProvisionerResource: |
+      - name : csi-provisioner
+        resource:
+      - name : csi-nfsplugin
+        resource:
+      - name : csi-attacher
+        resource:
+
+    # -- CEPH CSI NFS plugin resource requirement list
+    # @default -- see values.yaml
+    csiNFSPluginResource: |
+      - name : driver-registrar
+        resource:
+      - name : csi-nfsplugin
+        resource:

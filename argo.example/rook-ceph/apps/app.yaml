@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rook-ceph-app
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: rook-ceph
+  source:
+    # You should have forked this repo. Change the URL to your fork.
+    repoURL: git@github.com:deepsquare-io/ClusterFactory.git
+    # You should use your branch too.
+    targetRevision: HEAD
+    path: helm-subcharts/rook-ceph
+    helm:
+      releaseName: rook-ceph
+
+      # Create a values file inside your fork and change the values.
+      valueFiles:
+        []
+        # - values-example.yaml
+
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: rook-ceph
+
+  syncPolicy:
+    automated:
+      prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+      allowEmpty: false # Allows deleting all application resources during automatic syncing ( false by default ).
+    syncOptions: []
+    retry:
+      limit: 5 # number of failed sync attempt retries; unlimited number of attempts if less than 0
+      backoff:
+        duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
+        factor: 2 # a factor to multiply the base duration after each failed retry
+        maxDuration: 3m # the maximum amount of time allowed for the backoff strategy

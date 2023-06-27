@@ -1,0 +1,11 @@
+apiVersion: v2
+name: rook-ceph-subchart
+description: rook-ceph subchart
+type: application
+version: 1.11.8
+appVersion: '1.11.8'
+
+dependencies:
+  - name: rook-ceph
+    version: 1.11.8
+    repository: https://charts.bitnami.com/bitnami
