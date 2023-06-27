@@ -3,7 +3,7 @@ terraform {
   required_providers {
     exoscale = {
       source  = "exoscale/exoscale"
-      version = "~> 0.49.0"
+      version = "~> 0.50.0"
     }
     cidr = {
       source  = "volcano-coffee-company/cidr"
