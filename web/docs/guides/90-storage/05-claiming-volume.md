@@ -58,7 +58,7 @@ spec:
   storageClassName: ceph-bucket
 ```
 
-If you setup the `ingress`, you can access to the bucket externally by fetching the values in the Secret, like this:
+If you set up the `ingress`, you can access the bucket externally by fetching the values in the Secret, like this:
 
 ```shell
 echo AWS_HOST=<ingress address>
