@@ -70,7 +70,7 @@ export KUBECTL
 
 KUBESEAL="$(command -v kubeseal)"
 if ! [ -x "$KUBESEAL" ]; then
-  KUBESEAL_VERSION=0.23.0
+  KUBESEAL_VERSION=0.23.1
   echo "kubeseal could not be found. Downloading it locally in ./bin."
   rm -f ./bin/kubeseal
   curl -fsSL "https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-${os}-${architecture}.tar.gz" | tar -zxvf - kubeseal
