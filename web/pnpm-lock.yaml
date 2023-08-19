@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 dependencies:
   '@algolia/client-search':
     specifier: 4.17.0
@@ -40,8 +44,8 @@ devDependencies:
     specifier: 2.4.1
     version: 2.4.1(react-dom@17.0.2)(react@17.0.2)
   '@tsconfig/docusaurus':
-    specifier: 1.0.7
-    version: 1.0.7
+    specifier: 2.0.0
+    version: 2.0.0
   '@types/react':
     specifier: 17.0.59
     version: 17.0.59
@@ -2603,8 +2607,8 @@ packages:
     engines: {node: '>=10.13.0'}
     dev: false
 
-  /@tsconfig/docusaurus@1.0.7:
-    resolution: {integrity: sha512-ffTXxGIP/IRMCjuzHd6M4/HdIrw1bMfC7Bv8hMkTadnePkpe0lG0oDSdbRpSDZb2rQMAgpbWiR10BvxvNYwYrg==}
+  /@tsconfig/docusaurus@2.0.0:
+    resolution: {integrity: sha512-X5wptT7pXA/46/IRFTW76oR5GNjoy9qjNM/1JGhFV4QAsmLh3YUpJJA+Vpx7Ds6eEBxSxz1QrgoNEBy6rLVs8w==}
     dev: true
 
   /@types/body-parser@1.19.2:
