@@ -7,7 +7,7 @@ helm repo update
 
 helm upgrade --install \
   -n csi-driver-nfs \
-  --version v4.2.0 \
+  --version v4.4.0 \
   csi-driver-nfs \
   -f "${BASEDIR}/values.yaml" \
   csi-driver-nfs/csi-driver-nfs \
