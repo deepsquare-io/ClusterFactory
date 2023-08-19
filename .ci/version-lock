@@ -6,7 +6,7 @@ coredns_version=1.11.1
 
 # Utils Version
 cfctl_version=v0.15.5+9001
-kubeseal_version=0.23.1
+kubeseal_version=helm-2.12.0
 helm_version=v3.12.3
 etcdctl_version=v3.5.9
 
