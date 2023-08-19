@@ -52,7 +52,7 @@ if verlt "$current_cfctl_version" "$cfctl_version"; then
 fi
 
 current_kubeseal_version=$(sed -En "s/kubeseal_version=(.*)/\1/p" ".ci/version-lock")
-kubeseal_version=$(curl -H "Authorization: token ${TOKEN}" -fsSL https://api.github.com/repos/bitnami-labs/sealed-secrets/releases/latest | jq -r '.tag_name' | tr -d 'v')
+kubeseal_version=$(curl -H "Authorization: token ${TOKEN}" -fsSL https://api.github.com/repos/bitnami-labs/sealed-secrets/releases | jq -r 'map(select(.tag_name | test("^v\\d+\\.\\d+\\.\\d+(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"))) | first.tag_name' | tr -d 'v')
 if verlt "$current_kubeseal_version" "$kubeseal_version"; then
   sed -Ei "s|kubeseal_version=.*\$|kubeseal_version=${kubeseal_version}|g" "$script_path/version-lock"
   sed -Ei "s|KUBESEAL_VERSION=.*|KUBESEAL_VERSION=${kubeseal_version}|g" "$project_path/scripts/setup-env"
