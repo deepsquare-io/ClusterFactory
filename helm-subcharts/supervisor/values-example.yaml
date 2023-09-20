@@ -1,7 +1,7 @@
 supervisor:
   image:
     repository: ghcr.io/deepsquare-io/supervisor
-    tag: 0.12.4
+    tag: 0.12.5
 
   config:
     publicAddress: 'supervisor.example.com:443'
