@@ -14,7 +14,7 @@ supervisor:
       endpoint:
         rpc: 'https://testnet.deepsquare.run/rpc'
         ws: 'wss://testnet.deepsquare.run/ws'
-      smartContract: '0xc9AcB97F1132f0FB5dC9c5733B7b04F9079540f0'
+      smartContract: '0x196A7EB3E16a8359c30408f4F79622157Ef86d7c'
 
       prices:
         cpuPerMin: '950000000000000000'
