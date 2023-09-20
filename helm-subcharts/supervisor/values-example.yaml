@@ -1,11 +1,10 @@
 supervisor:
   image:
     repository: ghcr.io/deepsquare-io/supervisor
-    tag: dev
-  imagePullPolicy: Always
+    tag: 0.12.4
 
   config:
-    publicAddress: 'supervisor.satoshi.internal:443'
+    publicAddress: 'supervisor.example.com:443'
     provider:
       privateKeyRef:
         secretName: provider-wallet-secret
@@ -17,28 +16,47 @@ supervisor:
         ws: 'wss://testnet.deepsquare.run/ws'
       smartContract: '0xc9AcB97F1132f0FB5dC9c5733B7b04F9079540f0'
 
+      prices:
+        cpuPerMin: '950000000000000000'
+        gpuPerMin: '8500000000000000000'
+        memPerMin: '80000000000000'
+
+      labels:
+        name: sion-1
+        zone: ch-sion-1
+        region: ch-sion
+
     sbatchService:
-      endpoint: 'sbatch.dev.deepsquare.run:443'
+      endpoint: 'sbatch.deepsquare.run:443'
       tls:
         enable: true
         insecure: false
         ca: /etc/ssl/certs/ca-certificates.crt
-        serverHostOverride: 'sbatch.dev.deepsquare.run'
+        serverHostOverride: 'sbatch.deepsquare.run'
 
     slurm:
       ssh:
         adminUser: slurm
-        address: slurm-cluster-satoshi-1-login.slurm-cluster.svc.cluster.local:22
+        address: slurm-cluster-ch-sion-1-login.slurm-cluster.svc.cluster.local:22
 
         privateKeyRef:
           secretName: supervisor-ssh-key-secret
           key: ssh-private-key
 
-    spec:
-      nodes: 4
-      cpus: 64
-      gpus: 8
-      memory: 513840
+    benchmark:
+      hpl:
+        singleNode: true
+      ior:
+        singleNode: true
+      disable: false
+      runAs: 'root'
+      unresponsive: false
+      timeLimit: '24h'
+
+      ucx:
+        enable: false
+        affinity: mlx5_2:0|mlx5_2:0|mlx5_2:0
+        transport: ''
 
   resources:
     requests:
@@ -48,7 +66,7 @@ supervisor:
       memory: '256Mi'
 
   nodeSelector:
-    topology.kubernetes.io/region: es-barcelona
+    topology.kubernetes.io/region: ch-sion
 
   service:
     enabled: true
@@ -58,21 +76,23 @@ supervisor:
     - apiVersion: cert-manager.io/v1
       kind: Certificate
       metadata:
-        name: supervisor.satoshi.internal-cert
+        name: supervisor.example.com-cert
       spec:
-        secretName: supervisor.satoshi.internal-secret
+        secretName: supervisor.example.com-secret
         issuerRef:
           name: private-cluster-issuer
           kind: ClusterIssuer
-        commonName: supervisor.satoshi.internal
+        commonName: supervisor.example.com
         subject:
-          countries: [ES]
-          localities: [Barcelona]
+          countries: [CH]
+          localities: [Zug]
           organizationalUnits: [IT]
-          organizations: [Satoshi]
-          provinces: [Catalonia]
+          organizations: [DeepSquare Association]
+          postalCodes: ['6300']
+          provinces: [Zug]
+          streetAddresses: [Gotthardstrasse 26]
         dnsNames:
-          - supervisor.satoshi.internal
+          - supervisor.example.com
 
     - apiVersion: traefik.containo.us/v1alpha1
       kind: IngressRoute
@@ -83,17 +103,17 @@ supervisor:
           - websecure
         routes:
           - kind: Rule
-            match: Host(`supervisor.satoshi.internal`)
+            match: Host(`supervisor.example.com`)
             priority: 10
             services:
-              - name: supervisor-satoshi-1
+              - name: supervisor-ch-sion-1
                 port: 3000
           - kind: Rule
-            match: Host(`supervisor.satoshi.internal`) && HeadersRegexp(`Content-Type`, `^application/grpc.*$`)
+            match: Host(`supervisor.example.com`) && HeadersRegexp(`Content-Type`, `^application/grpc.*$`)
             priority: 11
             services:
-              - name: supervisor-satoshi-1
+              - name: supervisor-ch-sion-1
                 port: 3000
                 scheme: h2c
         tls:
-          secretName: supervisor.satoshi.internal-secret
+          secretName: supervisor.example.com-secret
