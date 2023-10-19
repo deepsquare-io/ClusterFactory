@@ -1,5 +1,11 @@
 # Deploy Open OnDemand
 
+:::Warning
+
+This feature is no longer maintained as we are focusing on developing the DeepSquare Nexus, which is also front-end for SLURM.
+
+:::
+
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
