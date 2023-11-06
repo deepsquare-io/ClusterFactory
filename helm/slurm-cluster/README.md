@@ -4,7 +4,7 @@
 
 Slurm: A Highly Scalable Workload Manager
 
-**Homepage:** <https://github.com/SquareFactory/slurm-docker>
+**Homepage:** <https://github.com/deepsquare-io/slurm-docker>
 
 ## Maintainers
 
@@ -15,4 +15,4 @@ Slurm: A Highly Scalable Workload Manager
 
 ## Source Code
 
-- <https://github.com/SquareFactory/slurm-docker>
+- <https://github.com/deepsquare-io/slurm-docker>

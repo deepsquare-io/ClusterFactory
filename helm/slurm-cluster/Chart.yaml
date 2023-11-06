@@ -2,10 +2,10 @@ apiVersion: v2
 name: slurm-cluster
 description: 'Slurm: A Highly Scalable Workload Manager'
 type: application
-home: https://github.com/SquareFactory/slurm-docker
+home: https://github.com/deepsquare-io/slurm-docker
 icon: https://upload.wikimedia.org/wikipedia/commons/3/3a/Slurm_logo.svg
 sources:
-  - https://github.com/SquareFactory/slurm-docker
+  - https://github.com/deepsquare-io/slurm-docker
 version: 0.1.0
 appVersion: '22.05.3-1-5'
 maintainers:
