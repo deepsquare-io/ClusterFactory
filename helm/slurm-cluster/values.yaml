@@ -125,7 +125,7 @@ controller:
   enabled: true
   replicas: 1
 
-  image: 'ghcr.io/deepsquare-io/slurm:22.05.3-1-6-controller-rocky8.6'
+  image: 'ghcr.io/deepsquare-io/slurm:23.02.6-2-controller-rocky9.2'
   imagePullPolicy: 'IfNotPresent'
 
   labels: {}
@@ -266,7 +266,7 @@ login:
   enabled: false
   replicas: 1
 
-  image: 'ghcr.io/deepsquare-io/slurm:22.05.3-1-6-login-rocky8.6'
+  image: 'ghcr.io/deepsquare-io/slurm:23.02.6-2-login-rocky9.2'
   imagePullPolicy: 'IfNotPresent'
 
   labels: {}
@@ -382,7 +382,7 @@ login:
   # Slurm REST API
   rest:
     enabled: false
-    image: 'ghcr.io/deepsquare-io/slurm:22.05.3-1-6-rest-rocky8.6'
+    image: 'ghcr.io/deepsquare-io/slurm:23.02.6-2-rest-rocky9.2'
     imagePullPolicy: 'IfNotPresent'
     command: ['/init']
 
@@ -405,7 +405,7 @@ login:
     ## command: ['sh', '-c', 'update-ca-trust && /init']
     command: ['/init']
 
-    image: ghcr.io/deepsquare-io/slurm:22.05.3-1-6-prometheus-exporter-rocky8.6
+    image: ghcr.io/deepsquare-io/slurm:23.02.6-2-prometheus-exporter-rocky9.2
     imagePullPolicy: IfNotPresent
 
     # Extra volume mounts (use login.volumes to add volumes)
@@ -610,7 +610,7 @@ db:
   enabled: false
   replicas: 1
 
-  image: 'ghcr.io/deepsquare-io/slurm:22.05.3-1-6-db-rocky8.6'
+  image: 'ghcr.io/deepsquare-io/slurm:23.02.6-2-db-rocky9.2'
   imagePullPolicy: 'IfNotPresent'
 
   labels: {}

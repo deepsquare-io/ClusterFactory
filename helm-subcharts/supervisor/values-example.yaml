@@ -1,7 +1,7 @@
 supervisor:
   image:
     repository: ghcr.io/deepsquare-io/supervisor
-    tag: 0.12.8
+    tag: 0.14.3
 
   config:
     publicAddress: 'supervisor.example.com:443'
@@ -14,7 +14,7 @@ supervisor:
       endpoint:
         rpc: 'https://testnet.deepsquare.run/rpc'
         ws: 'wss://testnet.deepsquare.run/ws'
-      smartContract: '0x196A7EB3E16a8359c30408f4F79622157Ef86d7c'
+      smartContract: '0x7524fBB0c1e099A4A472C5A7b0B1E1E3aBd3fE97'
 
       prices:
         cpuPerMin: '950000000000000000'
