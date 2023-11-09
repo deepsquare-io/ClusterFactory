@@ -7,5 +7,5 @@ appVersion: '0.10.1'
 
 dependencies:
   - name: supervisor
-    version: 0.10.1
+    version: 0.12.5
     repository: https://deepsquare-io.github.io/helm-charts/
