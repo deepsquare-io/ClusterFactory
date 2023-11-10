@@ -1,6 +1,6 @@
 # Deploy Open OnDemand
 
-:::Warning
+:::warning
 
 This feature is no longer maintained as we are focusing on developing the DeepSquare Nexus, which is also front-end for SLURM.
 

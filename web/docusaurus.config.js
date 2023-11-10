@@ -81,7 +81,15 @@ const config = {
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
-        additionalLanguages: ['properties', 'docker'],
+        additionalLanguages: [
+          'properties',
+          'docker',
+          'json',
+          'bash',
+          'diff',
+          'c',
+          'python',
+        ],
       },
       colorMode: {
         defaultMode: 'light',
