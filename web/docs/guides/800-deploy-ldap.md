@@ -66,7 +66,7 @@ You can expose the LDAP using Traefik `IngressRouteTCP`.
 Create a `argo/ldap/ingresses/ingress-route-tcp.yaml` file and add:
 
 ```yaml title="argo/ldap/ingresses/ingress-routes-tcp.yaml"
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRouteTCP
 metadata:
   name: ldap-ingress-tcp
@@ -83,7 +83,7 @@ spec:
         - name: dirsrv-389ds
           port: 3389
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRouteTCP
 metadata:
   name: ldaps

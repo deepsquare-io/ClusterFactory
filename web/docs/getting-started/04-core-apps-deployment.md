@@ -375,7 +375,7 @@ ArgoCD has a dashboard. To change the URL and certificate, modify the `ingress-r
 **Make sure the domain name correspond to the ones defined in the CoreDNS (or in your private DNS).**
 
 ```yaml title="Example of ingress-route.yaml for ArgoCD"
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: argocd-server-https
