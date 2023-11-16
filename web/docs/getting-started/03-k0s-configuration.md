@@ -20,9 +20,9 @@ A node designated as a **worker** will solely run the following components:
 
 It is crucial to always have an odd number of controllers (1, 3, 5, ...) to prevent the cluster from getting stuck in a deadlock.
 
-Edit the `cfctl.yaml` file. Start with the `hosts` field :
+Edit the `cfctl.yaml` file. Start with the `hosts` field:
 
-```yaml title=cfctl.yaml
+```yaml title="cfctl.yaml"
 apiVersion: cfctl.clusterfactory.io/v1beta1
 kind: Cluster
 metadata:
@@ -108,7 +108,7 @@ k0s:
         enabled: false
 ```
 
-Most of the values are already sane but you should check if the CIDR doesn't conflict with any IP range of your network. It is also recommended to tune manually the MTU and match it to your switch and router values.
+Most of the values are already sane, but you should check if the CIDR doesn't conflict with any IP range of your network. It is also recommended to tune manually the MTU and match it to your switch and router values.
 
 If you wish to use a HA setup, please follow [this guide](/docs/guides/maintenance/high-availability).
 

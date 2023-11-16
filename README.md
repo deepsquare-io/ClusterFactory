@@ -27,7 +27,7 @@ If you'd like to try ClusterFactory, you should start by reading our [Quick Star
 ## Join the Community
 
 - [Community Discord](https://discord.gg/zt4GF5HYHX) - Request for support and help from the ClusterFactory community.
-- [Github Issues](https://github.com/deepsquare-io/ClusterFactory/issues) - Submit your issues and feature requests via Github.
+- [GitHub Issues](https://github.com/deepsquare-io/ClusterFactory/issues) - Submit your issues and feature requests via GitHub.
 
 We welcome your help in building ClusterFactory! If you are interested, we invite you to check
 out the [Contributing Guide](./CONTRIBUTING.md).

@@ -1,4 +1,4 @@
-# Argo CD
+# Argo CD, GitOps for Kubernetes
 
 Argo CD is a GitOps continuous delivery solution for Kubernetes. It clones, retrieves
 all changes from a Git repository and deploys the application based on the declarative

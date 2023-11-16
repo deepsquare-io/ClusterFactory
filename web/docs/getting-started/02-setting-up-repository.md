@@ -6,7 +6,7 @@ To enable GitOps and be able to follow the updates of the ClusterFactory reposit
 
 ### Method 1: Create a public fork
 
-1. Use the "Fork" button on Github and create the fork on your favorite account.
+1. Use the "Fork" button on GitHub and create the fork on your favorite account.
 
 <div style={{textAlign: 'center'}}>
 
@@ -54,7 +54,7 @@ To enable GitOps and be able to follow the updates of the ClusterFactory reposit
    git clone git@github.com:<your account>/ClusterFactory.git
    ```
 
-## 2. Setup the upstream remote for git
+## 2. Set up the upstream remote for git
 
 Git is capable of managing multiple remote repositories. By default, `origin` is linked to the `<your account>/ClusterFactory` repository. To be able to fetch updates from the upstream `deepsquare-io/ClusterFactory` repository, we need to add a remote repository that we call `upstream`.
 
@@ -77,19 +77,11 @@ Git is capable of managing multiple remote repositories. By default, `origin` is
 
 ## 3. (Optional) Checkout to a stable version and create a new branch
 
-You can checkout to a stable version:
+You can check out to a stable version:
 
 ```shell title="user@local:/ClusterFactory"
 git checkout -b configs <CF version>
 ```
-
-:::info
-
-Please note that ClusterFactory is under development, it is strongly recommended to follow the latest version of ClusterFactory.
-
-Unannounced breaking changes are to be expected.
-
-:::
 
 ## 4. Rename the examples and commit
 

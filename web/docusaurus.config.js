@@ -2,7 +2,7 @@
 // Note: type annotations allow type checking and IDEs autocompletion
 
 const lightCodeTheme = require('prism-react-renderer').themes.github;
-const darkCodeTheme = require('prism-react-renderer').themes.palenight;
+const darkCodeTheme = require('prism-react-renderer').themes.oneDark;
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -89,6 +89,8 @@ const config = {
           'diff',
           'c',
           'python',
+          'yaml',
+          'hcl',
         ],
       },
       colorMode: {

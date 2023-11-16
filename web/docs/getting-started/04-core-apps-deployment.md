@@ -322,7 +322,7 @@ If some files were added and removed, you must change the `daemonset.yaml`:
 
 Specify new certificate issuers in the `core/cert-manager` directory.
 
-It is highly recommended to add your own private certificate authority, follow the [official guide of cert-manager](https://cert-manager.io/docs/configuration/ca/).
+It is highly recommended adding your own private certificate authority, follow the [official guide of cert-manager](https://cert-manager.io/docs/configuration/ca/).
 
 You must create a Secret `ca-key-pair`. To generate a TLS certificate and its private key:
 

@@ -26,4 +26,4 @@ This command generates static content into the `build` directory and can be serv
 
 ### Deployment
 
-We are using Github Actions to deploy the documentation to Github Pages. A commit to the `main` branch will deploy the documentation.
+We are using GitHub Actions to deploy the documentation to GitHub Pages. A commit to the `main` branch will deploy the documentation.

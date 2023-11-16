@@ -1,6 +1,6 @@
 # 6. Grendel Deployment
 
-The `argo/provisioning` directory deploys the Grendel application.
+The `argo/provisioning` directory deploys the Grendel application. Grendel is a PXE, TFTP and DHCP server used for network booting. It's lightweight and written in Go.
 
 ## 1. Namespace and AppProject
 
@@ -10,15 +10,15 @@ Create the Kubernetes namespace and ArgoCD AppProject.
 kubectl apply -f argo/provisioning
 ```
 
-Kubernetes namespaces are used to isolate workloads and organize the Kubernetes cluster application.
+Kubernetes' namespaces are used to isolate workloads and organize the Kubernetes cluster application.
 
-ArgoCD AppProjects are used in the continuous deployment process to prevent unauthorized deployment of resources. The more restrictive this is, the better we can avoid a supply chain attack.
+ArgoCD's AppProjects are used in the continuous deployment process to prevent unauthorized deployment of resources. The more restrictive this is, the better we can avoid a supply chain attack.
 
 ## 2. Preparing the dynamic provisioning of volumes
 
-Grendel needs to store its OS images. We will use NFS for the storage in this guide but there are other solution like OpenEBS or local-path (see the local-path-storage ArgoCD application in the `argo/local-path-storage` directory).
+Grendel needs to store its OS images. We will use NFS for the storage in this guide, but there are other solution like OpenEBS or local-path (see the local-path-storage ArgoCD application in the `argo/local-path-storage` directory).
 
-We need to deploy a StorageClass so that Kubernetes can dynamically provision volumes.
+We need to deploy a StorageClass, so that Kubernetes can dynamically provision volumes.
 
 Look at the `argo/volumes/dynamic-nfs.yaml`:
 
@@ -204,7 +204,7 @@ config:
   hosts:
     - name: cn1
       provision: true
-      boot_image: squareos-8.6
+      boot_image: squareos-9.2
       interfaces:
         - ip: 10.10.2.51/24
           mac: aa:bb:cc:11:22:33
@@ -213,12 +213,12 @@ config:
           bmc: true
 
   images:
-    - name: squareos-8.6
-      kernel: '/var/lib/grendel/vmlinuz-4.18.0-372.19.1.el8_6.x86_64'
+    - name: squareos-9.2
+      kernel: '/var/lib/grendel/vmlinuz-5.14.0-284.30.1.el9_2.x86_64'
       initrd:
-        - '/var/lib/grendel/initramfs-4.18.0-372.19.1.el8_6.x86_64.img'
-      liveimg: '/var/lib/grendel/squareos-8.6.squashfs'
-      cmdline: console=ttyS0 console=tty0 root=live:http://grendel.example.com/repo/squareos-8.6.squashfs BOOTIF=01-{{ $.nic.MAC | toString | replace ":" "-" }} grendel.hostname={{ $.host.Name }} grendel.address=http://grendel.example.com rd.live.overlay.readonly=1 rd.live.overlay.overlayfs=1 rd.neednet=1
+        - '/var/lib/grendel/initramfs-5.14.0-284.30.1.el9_2.x86_64.img'
+      liveimg: '/var/lib/grendel/squareos-9.2.squashfs'
+      cmdline: console=ttyS0 console=tty0 root=live:http://sos-ch-dk-2.exo.io/osimages/squareos-9.2/squareos-9.2.squashfs BOOTIF=01-{{ $.nic.MAC | toString | replace ":" "-" }} grendel.hostname={{ $.host.Name }} grendel.address=http://grendel.example.com rd.live.overlay.readonly=1 rd.live.overlay.overlayfs=1 rd.neednet=1
 
   postscript: |
     #!/bin/sh
@@ -230,8 +230,8 @@ The MAC address corresponds to the network interface connected to the network wi
 Inside the image configuration, you can notice some kernel parameters:
 
 - `console=ttyS0 console=tty0` means that the kernel messages will appear on both the first serial port and virtual terminal.
-- `root=live:http://grendel.example.com/repo/squareos-8.6.squashfs` means that dracut will load the OS image as a live OS image. **Modify the URL based on the domain name you want to use.**
-- `rd.live.overlay.readonly=1 rd.live.overlay.overlayfs=1 rd.neednet=1` are parameters relative to loading the live OS image. Here, we are mounting the OS image as a read-only base image for the OverlayFS. This is to create a stateless filesystem.
+- `root=live:http://sos-ch-dk-2.exo.io/osimages/squareos-9.2/squareos-9.2.squashfs` means that Dracut will load the OS image as a live OS image. **Modify the URL based on the domain name you want to use.**
+- `rd.live.overlay.readonly=1 rd.live.overlay.overlayfs=1 rd.neednet=1` are parameters relative to loading the live OS image. Here, we are mounting the OS image as a read-only base image for the OverlayFS. This is to create a stateless file system.
 - `grendel.hostname={{ $.host.Name }} grendel.address=http://grendel.example.com` are parameters used to change the hostname of the OS and fetch the postscript. **Modify the URL based on the domain name you want to use.**
 
 ### Persistence
@@ -339,14 +339,14 @@ kubectl apply -f argo/provisioning/apps/grendel-app.yaml
 
 This step is optional, you can download a pre-built SquareOS image:
 
-- [initramfs](https://sos-ch-dk-2.exo.io/osimages/squareos-8.6/initramfs-4.18.0-372.19.1.el8_6.x86_64.img)
-- [OS image](https://sos-ch-dk-2.exo.io/osimages/squareos-8.6/squareos-8.6.squashfs)
-- [linux kernel](https://sos-ch-dk-2.exo.io/osimages/squareos-8.6/vmlinuz-4.18.0-372.19.1.el8_6.x86_64)
+- [initramfs](https://sos-ch-dk-2.exo.io/osimages/squareos-9.2/initramfs-4.18.0-372.19.1.el8_6.x86_64.img)
+- [OS image](https://sos-ch-dk-2.exo.io/osimages/squareos-9.2/squareos-9.2.squashfs)
+- [linux kernel](https://sos-ch-dk-2.exo.io/osimages/squareos-9.2/vmlinuz-4.18.0-372.19.1.el8_6.x86_64)
 
 If you want to build it yourself, we use Packer to build the OS image. To build the OS image:
 
 - 1. Install Packer and QEMU.
-- 2. Go to the `packer-recipes/rocky8.6`.
+- 2. Go to the `packer-recipes/rocky9.2`.
 - 3. Build the OS image using the `build.bare.sh` script.
 - 4. Extract the kernel, initramfs and create the squashfs file using the `export.bare.sh` script.
 
@@ -389,3 +389,4 @@ You've finished the guide. However, there is still a lot of application we didn'
 - [Deploy SLURM, the bare-metal batch scheduler](/docs/guides/slurm/deploy-slurm)
 - [Configure the postscript to follow the GitOps practices](/docs/guides/provisioning/gitops-with-grendel)
 - [About maintenance](/docs/guides/maintenance/high-availability)
+- [Join the DeepSquare Grid](https://docs.deepsquare.run/deepsquare-grid/clusterfactory/overview)

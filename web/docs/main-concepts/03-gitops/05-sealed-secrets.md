@@ -1,4 +1,4 @@
-# Sealed Secrets
+# Sealed Secrets, the Secret Manager for Kubernetes
 
 Sealed Secrets encrypt the Secret resources into a SealedSecret using asymmetric encryption.
 
