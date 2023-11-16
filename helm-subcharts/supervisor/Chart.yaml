@@ -2,8 +2,8 @@ apiVersion: v2
 name: supervisor-subchart
 description: supervisor subchart
 type: application
-version: 0.10.1
-appVersion: '0.10.1'
+version: 0.12.5
+appVersion: '0.12.5'
 
 dependencies:
   - name: supervisor
