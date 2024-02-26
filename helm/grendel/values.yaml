@@ -135,26 +135,10 @@ net:
       # - 1.1.1.1
 
 ## Extra volumes
-volumes:
-  []
-  ## To mount the private key of the git repository, create the secret
-  ## "postscript-privatekey-secret" which contains a "key.enc" which is a
-  ## SSH deploy key generated with:
-  ##
-  ##     ssh-keygen -t ed25519 -f key
-  ##     openssl enc -aes-256-cbc -a -salt -pbkdf2 -in key -out key.enc
-  ##
-  # - name: postscript-privatekey
-  #   secret:
-  #     defaultMode: 384
-  #     secretName: postscript-privatekey-secret
+volumes: []
 
 ## Extra volume mounts
-volumeMounts:
-  []
-  # - name: postscript-privatekey
-  #   subPath: key.enc
-  #   mountPath: /var/lib/grendel/key.enc
+volumeMounts: []
 
 ipmi:
   replicas: 1

@@ -58,7 +58,7 @@ The strategy to enable GitOps is the following:
 
 ### You first postscript tracked with Git
 
-Create a **private** empty repository for your scripts and add a `post.sh` script.
+Create a **private** Git repository for your scripts and add a `post.sh` script.
 
 This script is the main entry point. If you want to add a hierarchy, you use this script:
 
@@ -94,54 +94,27 @@ ssh-keygen -f $(pwd)/id_rsa -C grendel
 
 [And add the `id_rsa.pub` as a deploy key.](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/managing-deploy-keys#set-up-deploy-keys)
 
+## Node Configuration: Sending the private key to the compute nodes
+
+Assuming `/dev/nvme0n1` is the disk storing the private key, add the private key to the disk of the compute nodes:
+
+```shell title="root@cn1:/root"
+mkdir -p /secret
+mount /dev/nvme0n1 /secret
+cat << 'EOF' > /secret/key
+-----BEGIN OPENSSH PRIVATE KEY-----
+<your private key>
+-----END OPENSSH PRIVATE KEY-----
+EOF
+chmod 600 /secret/key
+umount /secret
+```
+
+This key will be protected via Linux permissions and will be accessible only by the root user.
+
+**This step has to be done manually.**
+
 ## Grendel configuration
-
-Let's add the private key to the Grendel HTTP server.
-
-### Private key secret
-
-Create a secret:
-
-```yaml title="argo/provisioning/secrets/postscript-privatekey-secret.yaml.local"
-apiVersion: v1
-kind: Secret
-metadata:
-  name: postscript-privatekey-secret
-  namespace: provisioning
-type: Opaque
-stringData:
-  ## Create the key with:
-  ## ssh-keygen -f $(pwd)/key -C grendel
-  key: ''
-```
-
-Seal it and apply it:
-
-```yaml title="user@local:/ClusterFactory"
-cfctl kubeseal
-kubectl apply -f argo/provisioning/secrets/postscript-privatekey-sealed-secret.yaml
-```
-
-### Mounting the private key
-
-In the Grendel values file, add:
-
-```yaml title="helm/grendel/values-production.yaml"
-## Extra volumes
-volumes:
-  - name: postscript-privatekey
-    secret:
-      defaultMode: 384
-      secretName: postscript-privatekey-secret
-
-## Extra volume mounts
-volumeMounts:
-  - name: postscript-privatekey
-    subPath: key
-    mountPath: /var/lib/grendel/key
-```
-
-This will mount the key inside the HTTP server.
 
 ### Setup the Grendel postscript for GitOps
 
@@ -155,20 +128,20 @@ config:
     set -ex
 
     # Fetch deploy key
-    curl --retry 5 -fsSL http://grendel.internal/repo/key -o /key
-    chmod 600 /key
+    mkdir -p /secret
+    mount /dev/nvme0n1 /secret  # HERE!!!!: Change the device with the disk which will store the private key.
 
     # Cloning git repo containing postscripts.
     mkdir -p /configs
-    GIT_SSH_COMMAND='ssh -i /key -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' git clone git@github.com:<repo owner>/<repo>.git /configs
+    GIT_SSH_COMMAND='ssh -i /secret/key -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' git clone git@github.com:<repo owner>/<repo>.git /configs
     if [ -f /configs/post.sh ] && [ -x /configs/post.sh ]; then
       cd /configs || exit 1
       ./post.sh "$1"
     fi
-    rm -f /key
 
     # Security
     chmod -R g-rwx,o-rwx .
+    umount -f /secret
 ```
 
 ## Conclusion
