@@ -11,7 +11,7 @@ terraform {
     }
     ovh = {
       source  = "ovh/ovh"
-      version = "0.41.0"
+      version = "0.42.0"
     }
   }
 }
