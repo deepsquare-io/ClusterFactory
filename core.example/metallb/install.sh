@@ -9,6 +9,6 @@ helm upgrade --install \
   -n metallb \
   metallb \
   -f "${BASEDIR}/values.yaml" \
-  --version 4.7.14 \
+  --version 6.3.9 \
   bitnami/metallb \
   --create-namespace
