@@ -15,7 +15,7 @@
     "typecheck": "tsc"
   },
   "devDependencies": {
-    "@algolia/client-search": "5.17.1",
+    "@algolia/client-search": "5.18.0",
     "@docusaurus/core": "3.6.3",
     "@docusaurus/module-type-aliases": "3.6.3",
     "@docusaurus/plugin-google-gtag": "3.6.3",
