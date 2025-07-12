@@ -2,7 +2,7 @@ restartPolicy: Always
 
 image:
   repository: docker.io/prometheuscommunity/ipmi-exporter
-  tag: v1.10.0
+  tag: v1.10.1
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
