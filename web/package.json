@@ -27,8 +27,8 @@
     "@tsconfig/docusaurus": "2.0.3",
     "clsx": "2.1.1",
     "prism-react-renderer": "2.4.1",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
     "typescript": "5.8.3"
   },
   "browserslist": {
