@@ -33,8 +33,8 @@ devDependencies:
     specifier: 3.1.1
     version: 3.1.1(@types/react@18.2.37)(react@19.2.3)
   '@tsconfig/docusaurus':
-    specifier: 2.0.7
-    version: 2.0.7
+    specifier: 2.0.9
+    version: 2.0.9
   clsx:
     specifier: 2.1.1
     version: 2.1.1
@@ -3349,8 +3349,8 @@ packages:
     engines: {node: '>=10.13.0'}
     dev: true
 
-  /@tsconfig/docusaurus@2.0.7:
-    resolution: {integrity: sha512-sDDxcltg2pcV0U3sQf5EMaX4/ER+x3IXmUc5EXuz4JnFDyxfGhTG7zGKJ8cLLZzjZALgdTK2LSKQbFLSKuGvQQ==}
+  /@tsconfig/docusaurus@2.0.9:
+    resolution: {integrity: sha512-0jVxZCgy2v7TnJrW9kVNikNwJHeiWb68Zhiiw2vHw4tzBFSP5vS2zn3O5EY2oPEVz5dXZRkK7MnWG3Ay5q0mIg==}
     dev: true
 
   /@types/acorn@4.0.6:
