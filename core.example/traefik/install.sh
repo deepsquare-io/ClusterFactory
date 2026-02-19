@@ -8,7 +8,7 @@ helm repo update
 kubectl apply --server-side --force-conflicts -k https://github.com/traefik/traefik-helm-chart/traefik/crds/
 helm upgrade --install \
   -n traefik \
-  --version 25.0.0 \
+  --version 39.1.0-ea.2 \
   traefik \
   -f "${BASEDIR}/values.yaml" \
   traefik/traefik \
