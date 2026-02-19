@@ -5,7 +5,7 @@ helm repo update
 
 helm upgrade --install \
   -n cert-manager \
-  --version v1.13.2 \
+  --version v1.20.0-alpha.1 \
   cert-manager \
   jetstack/cert-manager \
   --create-namespace \

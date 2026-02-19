@@ -9,7 +9,7 @@ spec:
   project: local-path-storage
   source:
     repoURL: https://github.com/rancher/local-path-provisioner.git
-    targetRevision: v0.0.24
+    targetRevision: v0.0.34
     path: deploy
     kustomize: {}
 
